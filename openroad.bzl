@@ -75,7 +75,8 @@ def build_openroad(
     stage_args['place'] = stage_args.get('place', []) + libs_args + io_constraints_args
 
     stage_args['final'] = stage_args.get('final', []) + gds_args + lefs_args + (
-        ["GND_NETS_VOLTAGES=\"\"","PWR_NETS_VOLTAGES=\"\""])
+        ["GND_NETS_VOLTAGES=\"\"","PWR_NETS_VOLTAGES=\"\""]) + (
+            ['"GDS_ALLOW_EMPTY=(' + '|'.join(macros) + ')"'] if len(macros) > 0 else [])
 
     stage_args['route'] = stage_args.get('route', []) + (
         [] if len(macros) == 0 else ['MIN_ROUTING_LAYER=M2',
@@ -83,8 +84,7 @@ def build_openroad(
 
     abstract_source = str(mock_stage) + "_" + all_stages[mock_stage - 1][1]
     stage_args['generate_abstract'] = stage_args.get('generate_abstract', []) + gds_args + lefs_args + (
-        ['ABSTRACT_SOURCE=' + abstract_source] if mock_abstract else []) + (
-            ['"GDS_ALLOW_EMPTY=(' + '|'.join(macros) + ')"'] if len(macros) > 0 else [])
+        ['ABSTRACT_SOURCE=' + abstract_source] if mock_abstract else [])
 
 
     base_args = ["WORK_HOME=$(RULEDIR)/build",
