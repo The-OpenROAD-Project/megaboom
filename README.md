@@ -13,7 +13,7 @@ Why Bazel on top of OpenROAD-flow-scripts(ORFS)?
 
 ORFS and OpenROAD is work in progress and one should expect for
 large designs to get involved with the community or need a
-support contract with, for instance, Precision Innovation (https://www.linkedin.com/in/tomspyrou/).
+support contract with, for instance, Precision Innovations (https://www.linkedin.com/in/tomspyrou/).
 
 Using ORFS directly, instead of modifying it or creating an alternative flow,
 makes it easy
