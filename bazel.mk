@@ -1,7 +1,3 @@
-# Yikes! $(UNSET_AND_MAKE) doesn't work recursively as the variables
-# set on the command line becomes environment variables upon the
-# first invocation.
-
 .PHONY: bazel-%-print
 bazel-%-print:
 	mkdir -p $(LOG_DIR)
