@@ -149,11 +149,19 @@ def build_openroad(
             map(lambda log: "build/logs/asap7/%s/base/%s.log" %(output_folder_name, log), reports[stage]))
 
     [run_binary(
+        name = name + "_" + stage + "_print",
+        tool = ":orfs",
+        srcs = all_sources,
+        args = ["make"] + base_args + stage_args.get(stage, []) + ["bazel-" + stage + "-print"],
+        outs = ["build/logs/asap7/%s/base/%s.txt" %(output_folder_name, stage)],
+    ) for (i, stage) in stages]
+
+    [run_binary(
         name = name + "_" + stage,
         tool = ":orfs",
-        srcs = macro_targets + all_sources + ([name + "_" + previous] if i > 1 else [])+
+        srcs = [name + "_" + stage + "_print"] + macro_targets + all_sources + ([name + "_" + previous] if i > 1 else [])+
         stage_sources.get(stage, []),
         args = ["make"] + base_args + ["bazel-" + stage, "elapsed"] +
         stage_args.get(stage, []),
-        outs = outs.get(stage, []) + ["build/logs/asap7/%s/base/%s.txt" %(output_folder_name, stage)],
+        outs = outs.get(stage, []),
     ) for ((j, previous), (i, stage)) in zip([(0, 'n/a')] + stages, stages)]
