@@ -71,7 +71,8 @@ def build_openroad(
     stage_args['floorplan'] = stage_args.get('floorplan', []) + lefs_args + libs_args + (
             [] if len(macros) == 0 else [
         '"PDN_TCL=\\$$(PLATFORM_DIR)/openRoad/pdn/BLOCKS_grid_strategy.tcl"']
-        ) + io_constraints_args
+        ) + io_constraints_args + (["'MACROS=" + ' '.join(set(macros)) + "'"] if len(macros) > 0 else [])
+
     stage_args['place'] = stage_args.get('place', []) + libs_args + io_constraints_args
 
     stage_args['final'] = stage_args.get('final', []) + gds_args + lefs_args + (
