@@ -12,3 +12,4 @@ megaboom.qsf
 megaboom.qws
 tmp-clearbox/
 MODULE.*
+.bazelrc
