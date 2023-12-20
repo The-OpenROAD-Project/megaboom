@@ -54,9 +54,9 @@ def build_openroad(
     stage_sources['place'] = stage_sources.get('place', []) + io_constraints_source
 
     stage_args = dict(stage_args)
-    ADDITIONAL_LEFS = ' '.join(map(lambda m: '$(RULEDIR)/build/results/asap7/%s/base/%s.lef' % (m, m), macros))
-    ADDITIONAL_LIBS = ' '.join(map(lambda m: '$(RULEDIR)/build/results/asap7/%s/base/%s.lib' % (m, m), macros))
-    ADDITIONAL_GDS_FILES = ' '.join(map(lambda m: '$(RULEDIR)/build/results/asap7/%s/base/6_final.gds' % (m), macros))
+    ADDITIONAL_LEFS = ' '.join(map(lambda m: '$(RULEDIR)/results/asap7/%s/base/%s.lef' % (m, m), macros))
+    ADDITIONAL_LIBS = ' '.join(map(lambda m: '$(RULEDIR)/results/asap7/%s/base/%s.lib' % (m, m), macros))
+    ADDITIONAL_GDS_FILES = ' '.join(map(lambda m: '$(RULEDIR)/results/asap7/%s/base/6_final.gds' % (m), macros))
 
     io_constraints_args = ["IO_CONSTRAINTS=" + io_constraints] if io_constraints != None else []
 
@@ -88,7 +88,7 @@ def build_openroad(
         ['ABSTRACT_SOURCE=' + abstract_source] if mock_abstract else [])
 
 
-    base_args = ["WORK_HOME=$(RULEDIR)/build",
+    base_args = ["WORK_HOME=$(RULEDIR)",
     "ORFS_VERSION=" + str(orfs_version),
     "DESIGN_NAME=" + name,
     "DESIGN_CONFIG=config.mk"]
@@ -116,19 +116,19 @@ def build_openroad(
 
     outs = {
         'synth':[
-            "build/results/asap7/%s/base/1_synth.v" %(output_folder_name),
-            "build/results/asap7/%s/base/1_synth.sdc" %(output_folder_name)
+            "results/asap7/%s/base/1_synth.v" %(output_folder_name),
+            "results/asap7/%s/base/1_synth.sdc" %(output_folder_name)
         ],
         "generate_abstract": [
-            "build/results/asap7/%s/base/%s.lib" %(output_folder_name, name),
-            "build/results/asap7/%s/base/%s.lef" %(output_folder_name, name),
+            "results/asap7/%s/base/%s.lib" %(output_folder_name, name),
+            "results/asap7/%s/base/%s.lef" %(output_folder_name, name),
         ],
         'final': [
-            "build/results/asap7/%s/base/6_final.spef" %(output_folder_name),
-            "build/results/asap7/%s/base/6_final.gds" %(output_folder_name)
+            "results/asap7/%s/base/6_final.spef" %(output_folder_name),
+            "results/asap7/%s/base/6_final.gds" %(output_folder_name)
         ],
-        'route': ["build/reports/asap7/%s/base/congestion.rpt" %(output_folder_name),
-            "build/reports/asap7/%s/base/5_route_drc.rpt" %(output_folder_name)]
+        'route': ["reports/asap7/%s/base/congestion.rpt" %(output_folder_name),
+            "reports/asap7/%s/base/5_route_drc.rpt" %(output_folder_name)]
     }
 
     stages = [stage for stage in all_stages if not mock_abstract or (stage[0] <= mock_stage or stage[0] >= 7)]
@@ -137,23 +137,23 @@ def build_openroad(
 
     for stage, i in map(lambda stage: (stage, stage_num[stage]), ["floorplan", "place", "cts", "route", "final"]):
         outs[stage] = outs.get(stage, []) + [
-            "build/results/asap7/%s/base/%s.sdc" %(output_folder_name, str(i) + "_" + stage),
-            "build/results/asap7/%s/base/%s.odb" %(output_folder_name, str(i) + "_" + stage)]
+            "results/asap7/%s/base/%s.sdc" %(output_folder_name, str(i) + "_" + stage),
+            "results/asap7/%s/base/%s.odb" %(output_folder_name, str(i) + "_" + stage)]
 
     for stage in ["place", "route"]:
         outs[stage] = outs.get(stage, []) + [
-            "build/results/asap7/%s/base/%s.ok" %(output_folder_name, stage)]
+            "results/asap7/%s/base/%s.ok" %(output_folder_name, stage)]
 
     for stage in reports:
         outs[stage] = outs.get(stage, []) + list(
-            map(lambda log: "build/logs/asap7/%s/base/%s.log" %(output_folder_name, log), reports[stage]))
+            map(lambda log: "logs/asap7/%s/base/%s.log" %(output_folder_name, log), reports[stage]))
 
     [run_binary(
         name = name + "_" + stage + "_print",
         tool = ":orfs",
         srcs = all_sources,
         args = ["make"] + base_args + stage_args.get(stage, []) + ["bazel-" + stage + "-print"],
-        outs = ["build/logs/asap7/%s/base/%s.txt" %(output_folder_name, stage)],
+        outs = ["logs/asap7/%s/base/%s.txt" %(output_folder_name, stage)],
     ) for (i, stage) in stages]
 
     [run_binary(
