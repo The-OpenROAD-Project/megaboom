@@ -135,10 +135,10 @@ ORFS on the command line.
 
 Search in the output for the line for the floorplan stage:
 
-    ++ make DESIGN_NAME=ALUExeUnit WORK_HOME=bazel-out/k8-fastbuild/bin/build bazel-floorplan elapsed IO_CONSTRAINTS=io.tcl CORE_UTILIZATION=5 CORE_ASPECT_RATIO=6 RTLMP_FLOW=True
+    ++ make DESIGN_NAME=ALUExeUnit WORK_HOME=bazel-out/k8-fastbuild/bin bazel-floorplan elapsed IO_CONSTRAINTS=io.tcl CORE_UTILIZATION=5 CORE_ASPECT_RATIO=6 RTLMP_FLOW=True
 
 Here we want to copy the variables passed on the command line to the `./orfs` script,
-but deleted the `WORK_HOME` assignment as we want to artifacts in default build folder (see config.mk, `export WORK_HOME?=bazel-bin/build`).
+but deleted the `WORK_HOME` assignment as we want to artifacts in default build folder (see config.mk, `export WORK_HOME?=bazel-bin`).
 
     ./orfs make DESIGN_NAME=ALUExeUnit IO_CONSTRAINTS=io.tcl CORE_UTILIZATION=5 CORE_ASPECT_RATIO=6 RTLMP_FLOW=True floorplan_issue
 
@@ -216,7 +216,7 @@ Staring at logs
 
 If you want to "stare at logs" while Bazel is running, open the logs folder in vscode by:
 
-  code $(readlink -f /proc/$(pgrep openroad)/cwd)/bazel-out/k8-fastbuild/bin/build/logs/asap7/
+  code $(readlink -f /proc/$(pgrep openroad)/cwd)/bazel-out/k8-fastbuild/bin/logs/asap7/
 
 Downloading the immediate dependencies of a target
 --------------------------------------------------
