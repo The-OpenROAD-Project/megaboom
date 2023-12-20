@@ -13,3 +13,4 @@ megaboom.qws
 tmp-clearbox/
 MODULE.*
 .bazelrc
+.vscode/
