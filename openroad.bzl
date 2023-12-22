@@ -172,7 +172,7 @@ def build_openroad(
     [run_binary(
         name = name + "_" + stage,
         tool = ":orfs",
-        srcs = [name + "_" + stage + "_print"] + macro_targets + all_sources + ([name + "_" + previous] if i > 1 else [])+
+        srcs = macro_targets + all_sources + ([name + "_" + previous] if i > 1 else [])+
         stage_sources.get(stage, []),
         args = ["make"] + base_args + ["bazel-" + stage, "elapsed"] +
         stage_args.get(stage, []),
