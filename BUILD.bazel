@@ -152,20 +152,6 @@ exeunitsrc =  [ "rtl/ALU.sv",
         )
  for exe in execunits]
 
-[build_openroad(
-        name = exe,
-        verilog_files=["rtl/" + exe + ".sv",
-        "rtl/regfile_128x65.sv",
-        "rtl/regfile_128x64.sv"],
-        stage_sources={'synth': ["constraints.sdc"]},
-        stage_args={
-                'floorplan': ['CORE_UTILIZATION=10'],
-                'place': ['PLACE_DENSITY=0.20'],
-                'route': ['BLAH=6']
-                }
-        )
- for exe in ['RegisterFileSynthesizable_1']]
-
  #'RegisterFileSynthesizable',
 
 renamefiles = ["rtl/RenameBusyTable.sv",
@@ -174,16 +160,6 @@ renamefiles = ["rtl/RenameBusyTable.sv",
         "rtl/RenameFreeList_1.sv",
         "rtl/RenameMapTable.sv",
         "rtl/RenameMapTable_1.sv"]
-
-
-[build_openroad(
-        name = exe,
-        verilog_files=["rtl/" + exe + ".sv"] + renamefiles,
-        stage_sources={'synth': ["constraints.sdc"]},
-        stage_args={'floorplan':['CORE_UTILIZATION=10'],
-        'place': ['PLACE_DENSITY=0.20']}
-        )
- for exe in ['RenameStage', 'RenameStage_1']]
 
 fpfiles = ["rtl/FpPipeline.sv",
         "rtl/Arbiter_16.sv",
