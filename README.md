@@ -91,6 +91,9 @@ To create the .json file:
 - create a service account. Only service account can have application keys.
 - add service account to bucket and give it permissions to read/write/list as appropriate
 
+To gain access to the https://storage.googleapis.com/megaboom-bazel-artifacts bucket,
+reach out to Tom Spyrou, Precision Innovations (https://www.linkedin.com/in/tomspyrou/).
+
 Tutorial
 ========
 
