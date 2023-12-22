@@ -76,9 +76,20 @@ ORFS and OpenROAD.
 Example of using a Bazel artifact server
 ----------------------------------------
 
+If you only have a single Google account that you use for Google Cloud locally, you can use
+`--google_default_credentials`.
+
+Otherwise, Bazel appears to have some trouble picking the correct account. The workaround is to
+use `--google_credentials` where the account can be specified explicitly.
+
 Set up a Google Cloud bucket and add the following to `.bazelrc`:
 
-    build --remote_cache=https://storage.googleapis.com/my-bucket-name --google_default_credentials --experimental_remote_cache_compression=true
+    build --remote_cache=https://storage.googleapis.com/megaboom-bazel-artifacts --google_credentials=/home/oyvind/Downloads/innate-diode-408109-9c5d0543f9b3.json --remote_cache_compression=true
+
+To create the .json file:
+
+- create a service account. Only service account can have application keys.
+- add service account to bucket and give it permissions to read/write/list as appropriate
 
 Tutorial
 ========
@@ -133,22 +144,17 @@ Creating an issue report
 This is slightly tricky because we need find and use the variables Bazel passed to
 ORFS on the command line.
 
-Search in the output for the line for the floorplan stage:
+The TL;DR to create a floorplan.tcl issue is:
 
-    ++ make DESIGN_NAME=ALUExeUnit WORK_HOME=bazel-out/k8-fastbuild/bin bazel-floorplan elapsed IO_CONSTRAINTS=io.tcl CORE_UTILIZATION=5 CORE_ASPECT_RATIO=6 RTLMP_FLOW=True
+  $(cat bazel-bin/build/logs/asap7/ALUExeUnit/base/floorplan.txt) floorplan_issue
 
-Here we want to copy the variables passed on the command line to the `./orfs` script,
-but deleted the `WORK_HOME` assignment as we want to artifacts in default build folder (see config.mk, `export WORK_HOME?=bazel-bin`).
+bazel-bin/build/logs/asap7/ALUExeUnit/base/floorplan.txt contains a command where you can
+pass additional arguments to ORFS make:
 
-    ./orfs make DESIGN_NAME=ALUExeUnit IO_CONSTRAINTS=io.tcl CORE_UTILIZATION=5 CORE_ASPECT_RATIO=6 RTLMP_FLOW=True floorplan_issue
+  ./orfs make  DESIGN_NAME=ALUExeUnit  RTLMP_FLOW=True  CORE_UTILIZATION=5  ORFS_VERSION=4  DESIGN_CONFIG=config.mk
 
-Run all synth targets
----------------------
-
-    bazelisk build $(bazelisk query '...:*' | grep '_synth$')
-
-Fast floorplanning
-------------------
+Fast floorplanning and mock abstracts
+-------------------------------------
 
 Let's say we want to skip place, cts and route and create a mock abstract where
 we can at least check that there is enough place for the macros at the top level.
@@ -193,6 +199,11 @@ Tentative roadmap
 Bazel hacking
 =============
 
+Run all synth targets
+---------------------
+
+    bazelisk build $(bazelisk query '...:*' | grep '_synth$')
+
 Forcing a rebuild of a stage
 ----------------------------
 
@@ -214,9 +225,7 @@ a `PHONY` variable to that stage and bumping it:
 Staring at logs
 ---------------
 
-If you want to "stare at logs" while Bazel is running, open the logs folder in vscode by:
-
-  code $(readlink -f /proc/$(pgrep openroad)/cwd)/bazel-out/k8-fastbuild/bin/logs/asap7/
+This is surprisingly tricky, you have to go spelunking in ~/.cache/bazel/.
 
 Downloading the immediate dependencies of a target
 --------------------------------------------------
@@ -237,33 +246,3 @@ That said, the rtl/ folder was generated using latest Chipyard + some hacked
 files locally:
 
      make buildfile tutorial=sky130-openroad CONFIG=MegaBoomConfig
-
-Quartus MegaBoom statistics
-===========================
-
-ALMs per module BoomCore
-------------------------
-
-To get a sense for the size of the modules in BoomCore, these are the ALM counts for the top-level modules with Quartus.
-
-| Name                         | ALMs     | Block Memory Bits |
-|------------------------------|----------|-------|
-| BoomCore                     | 176007   | 1158  |
-| FpPipeline                   | 41203    | 768   |
-| ALUExeUnit_2                 | 1564     | 390   |
-| RegisterRead_1               | 36684    | 0     |
-| IssueUnitCollapsing_2        | 21290    | 0     |
-| RenameStage_1                | 18208    | 0     |
-| RenameStage                  | 17583    | 0     |
-| RegisterFileSynthesizable_1  | 16762    | 0     |
-| Rob                          | 7940     | 0     |
-| IssueUnitCollapsing_1        | 7728     | 0     |
-| ALUExeUnit_5                 | 1154     | 0     |
-| CSRFile                      | 1084     | 0     |
-| ALUExeUnit_4                 | 882      | 0     |
-| ALUExeUnit_3                 | 505      | 0     |
-| BranchMaskGenerationLogic    | 222      | 0     |
-| DecodeUnit                   | 187      | 0     |
-| DecodeUnit                   | 184      | 0     |
-| DecodeUnit                   | 184      | 0     |
-| DecodeUnit                   | 176      | 0     |
