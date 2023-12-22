@@ -68,7 +68,7 @@ def build_openroad(
     stage_args['synth'] = stage_args.get('synth', []) + libs_args + lefs_args + [
         "'VERILOG_FILES=" + ' '.join(set(verilog_files)) + "'",
         "SDC_FILE=" + list(filter(stage_sources.get('synth', []), lambda s: s.endswith(".sdc")))[0]
-        ]
+        ] + (['SYNTH_GUT=1'] if mock_abstract and mock_stage == 2 else [])
     stage_args['floorplan'] = stage_args.get('floorplan', []) + lefs_args + libs_args + (
             [] if len(macros) == 0 else [
         '"PDN_TCL=\\$$(PLATFORM_DIR)/openRoad/pdn/BLOCKS_grid_strategy.tcl"']
