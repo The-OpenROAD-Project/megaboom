@@ -3,10 +3,18 @@ bazel-%-print:
 	mkdir -p $(LOG_DIR)
 	$(UNSET_AND_MAKE) print-SUB_MAKE | sed 's/bazel-out\/k8-fastbuild\/bin/bazel-bin/g' | sed 's/WORK_HOME=.* //g' | sed 's/SUB_MAKE = /.\/orfs /g' | sed 's/\\/\\\\/g' >$(LOG_DIR)/$*.txt
 
+.PHONY: bazel-clock_period
+bazel-clock_period:
+	$(UNSET_AND_MAKE) $(SDC_FILE_CLOCK_PERIOD)
+
+.PHONY: bazel-synth_sdc
+bazel-synth_sdc:
+	$(UNSET_AND_MAKE) $(RESULTS_DIR)/1_synth.sdc
+
 .PHONY: bazel-synth
 bazel-synth:
 	mkdir -p $(LOG_DIR)
-	$(UNSET_AND_MAKE) synth
+	$(UNSET_AND_MAKE) do-yosys do-synth
 
 .PHONY: bazel-floorplan
 bazel-floorplan:

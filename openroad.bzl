@@ -31,8 +31,9 @@ def build_openroad(
     mock_stage=3,
     orfs_version=4
 ):
-    all_stages = ([(1, 'synth'), (2, 'floorplan'), (3, 'place'),
-    (4, 'cts'), (5, 'route'), (6, 'final'), (7, 'generate_abstract')])
+    all_stages = [(0, 'clock_period'), (1, 'synth'), (0, 'synth_sdc'), (2, 'floorplan'), (3, 'place'),
+    (4, 'cts'), (5, 'route'), (6, 'final'), (7, 'generate_abstract')]
+    stage_to_name = dict(all_stages)
 
     source_folder_name = name
 
@@ -83,7 +84,7 @@ def build_openroad(
         [] if len(macros) == 0 else ['MIN_ROUTING_LAYER=M2',
         'MAX_ROUTING_LAYER=M9'])
 
-    abstract_source = str(mock_stage) + "_" + all_stages[mock_stage - 1][1]
+    abstract_source = str(mock_stage) + "_" + stage_to_name[mock_stage]
     stage_args['generate_abstract'] = stage_args.get('generate_abstract', []) + gds_args + lefs_args + (
         ['ABSTRACT_SOURCE=' + abstract_source] if mock_abstract else [])
 
@@ -114,10 +115,22 @@ def build_openroad(
     'generate_abstract': ['generate_abstract']
     }
 
+    stage_args['clock_period'] = stage_args['synth']
+    stage_args['synth_sdc'] = stage_args['synth']
+    stage_sources['clock_period'] = list(stage_sources['synth'])
+    stage_sources['synth_sdc'] = list(stage_sources['synth'])
+    stage_sources['synth'] = list(filter(stage_sources['synth'], lambda s: not s.endswith(".sdc")))
+    stage_sources['floorplan'] = stage_sources.get('floorplan', []) + [name + '_synth']
+
     outs = {
+        'clock_period':[
+            "results/asap7/%s/base/clock_period.txt" %(output_folder_name)
+        ],
+        'synth_sdc':[
+            "results/asap7/%s/base/1_synth.sdc" %(output_folder_name)
+        ],
         'synth':[
             "results/asap7/%s/base/1_synth.v" %(output_folder_name),
-            "results/asap7/%s/base/1_synth.sdc" %(output_folder_name)
         ],
         "generate_abstract": [
             "results/asap7/%s/base/%s.lib" %(output_folder_name, name),
@@ -154,7 +167,7 @@ def build_openroad(
         srcs = all_sources,
         args = ["make"] + base_args + stage_args.get(stage, []) + ["bazel-" + stage + "-print"],
         outs = ["logs/asap7/%s/base/%s.txt" %(output_folder_name, stage)],
-    ) for (i, stage) in stages]
+    ) for (_, stage) in stages]
 
     [run_binary(
         name = name + "_" + stage,
