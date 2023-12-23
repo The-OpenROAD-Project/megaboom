@@ -41,7 +41,6 @@ def build_openroad(
 
     all_sources = [
         "orfs",
-        "bazel.mk",
         "config.mk"
     ]
 
@@ -164,7 +163,7 @@ def build_openroad(
     [run_binary(
         name = name + "_" + stage + "_print",
         tool = ":orfs",
-        srcs = all_sources,
+        srcs = ["bazel-print.mk"] + all_sources,
         args = ["make"] + base_args + stage_args.get(stage, []) + ["bazel-" + stage + "-print"],
         outs = ["logs/asap7/%s/base/%s.txt" %(output_folder_name, stage)],
     ) for (_, stage) in stages]
@@ -172,7 +171,7 @@ def build_openroad(
     [run_binary(
         name = name + "_" + stage,
         tool = ":orfs",
-        srcs = macro_targets + all_sources + ([name + "_" + previous] if i > 1 else [])+
+        srcs = ["bazel-" + stage + ".mk"] + macro_targets + all_sources + ([name + "_" + previous] if i > 1 else [])+
         stage_sources.get(stage, []),
         args = ["make"] + base_args + ["bazel-" + stage, "elapsed"] +
         stage_args.get(stage, []),
