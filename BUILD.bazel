@@ -348,30 +348,12 @@ digital_top_srams=["cc_banks_8192x64", "cc_dir_1024x16",
         'floorplan': ["util.tcl"],
         'place': ["util.tcl"]},
         stage_args={
-                'floorplan': ([] +
-                        #'CORE_UTILIZATION=200',
-                        #"'CORE_ASPECT_RATIO=4'"
-                        (["'DIE_AREA=0 0 50 50'",
-                        "'CORE_AREA=2 2 48 48'"] if ram in (
-                                "data_data_40x128",
-                        "lb_32x128",
-                        "meta_40x120"
-                                ) else
-                        ["'DIE_AREA=0 0 25 25'",
-                        "'CORE_AREA=2 2 23 23'"] if ram in (
-                        "cc_banks_8192x64",
-                        "array_256x64",
-                        "l2_tlb_ram_0_512x45",
-                        "sdq_17x64",
-                        "ghist_40x64",
-                        "data_data_32x128",
-                        "dataArrayB_256x64",
-                        "ebtb_128x40") else
-                        ["'DIE_AREA=0 0 10 10'",
-                        "'CORE_AREA=2 2 8 8'"])),
+                'floorplan': ['CORE_UTILIZATION=5',
+                        'CORE_ASPECT_RATIO=4'],
                 'place': ['PLACE_DENSITY=0.65']},
         mock_abstract=True,
-        mock_stage=2
+        mock_stage=2,
+        mock_area=1
         )
  for ram in boom_tile_rams + boom_tile_small_srams + digital_top_srams]
 
@@ -398,7 +380,8 @@ boom_regfile_rams = [
                 'place': ['PLACE_DENSITY=0.10'],
         },
         mock_abstract=True,
-        mock_stage=2
+        mock_stage=2,
+        mock_area=0.5
         )
  for ram in boom_regfile_rams]
 
