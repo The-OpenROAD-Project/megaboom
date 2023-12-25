@@ -29,11 +29,13 @@ def build_openroad(
     stage_args={},
     mock_abstract=False,
     mock_stage=3,
-    orfs_version=4
+    orfs_version=4,
+    mock_area=None
 ):
     all_stages = [(0, 'clock_period'), (1, 'synth'), (0, 'synth_sdc'), (2, 'floorplan'), (3, 'place'),
     (4, 'cts'), (5, 'route'), (6, 'final'), (7, 'generate_abstract')]
     stage_to_name = dict(all_stages)
+    name_to_stage = dict(map(lambda s: (s[1], s[0]), all_stages))
 
     source_folder_name = name
 
@@ -45,6 +47,10 @@ def build_openroad(
     ]
 
     macro_targets = map(lambda m: ":" + m + "_generate_abstract", macros)
+    macro_lef_targets =  map(lambda m: "//:" +
+    ('results/asap7/%s/base/%s.lef' % (m, m)), macros)
+    macro_lib_targets =  map(lambda m: "//:" +
+    ('results/asap7/%s/base/%s.lib' % (m, m)), macros)
 
     stage_sources = dict(stage_sources)
 
@@ -64,10 +70,10 @@ def build_openroad(
     libs_args = (["'ADDITIONAL_LIBS=" + ADDITIONAL_LIBS + "'"] if len(macros) > 0 else [])
     gds_args = (["'ADDITIONAL_GDS_FILES=" + ADDITIONAL_GDS_FILES + "'"] if len(macros) > 0 else [])
 
-    stage_args['synth'] = stage_args.get('synth', []) + libs_args + lefs_args + [
+    stage_args['synth'] = stage_args.get('synth', []) + libs_args + [
         "'VERILOG_FILES=" + ' '.join(set(verilog_files)) + "'",
         "SDC_FILE=" + list(filter(stage_sources.get('synth', []), lambda s: s.endswith(".sdc")))[0]
-        ] + (['SYNTH_GUT=1'] if mock_abstract and mock_stage == 2 else [])
+        ]
     stage_args['floorplan'] = stage_args.get('floorplan', []) + lefs_args + libs_args + (
             [] if len(macros) == 0 else [
         '"PDN_TCL=\\$$(PLATFORM_DIR)/openRoad/pdn/BLOCKS_grid_strategy.tcl"']
@@ -140,7 +146,8 @@ def build_openroad(
             "results/asap7/%s/base/6_final.gds" %(output_folder_name)
         ],
         'route': ["reports/asap7/%s/base/congestion.rpt" %(output_folder_name),
-            "reports/asap7/%s/base/5_route_drc.rpt" %(output_folder_name)]
+            "reports/asap7/%s/base/5_route_drc.rpt" %(output_folder_name)],
+        'memory': ["results/asap7/%s/base/mem.json" %(output_folder_name)]
     }
 
     stages = [stage for stage in all_stages if not mock_abstract or (stage[0] <= mock_stage or stage[0] >= 7)]
@@ -168,12 +175,51 @@ def build_openroad(
         outs = ["logs/asap7/%s/base/%s.txt" %(output_folder_name, stage)],
     ) for (_, stage) in stages]
 
+    for stage in name_to_stage:
+        stage_sources[stage] = (["bazel-" + stage + ".mk"] +
+        all_sources +
+        macro_lib_targets +
+        (macro_lef_targets if stage not in ('synth', 'clock_period', 'synth_sdc') else []) +
+        stage_sources.get(stage, []))
+        stage_args[stage] = ["make"] + base_args + stage_args.get(stage, [])
+
+    if mock_area != None:
+        mock_stages = ['clock_period', 'synth', 'synth_sdc', 'floorplan', 'generate_abstract']
+        [run_binary(
+                name = name + "_" + stage + "_mock_area",
+                tool = ":orfs",
+                srcs = stage_sources[stage] + ([name + "_" + stage, 'mock_area.tcl'] if stage == 'floorplan' else []) +
+                ([name + "_" + previous + "_mock_area"] if stage != 'clock_period' else []) +
+                ([name + "_synth_mock_area"] if stage == 'floorplan' else []),
+                args = [s for s in stage_args[stage] if not any([sub in s for sub in ('DIE_AREA', 'CORE_AREA', 'CORE_UTILIZATION')])] +
+                [
+                    "FLOW_VARIANT=mock_area",
+                    "bazel-" + stage + ("-mock_area" if stage == 'floorplan' else "")
+                ] +
+                {
+                    'floorplan': ["MOCK_AREA=" + str(mock_area)],
+                    'synth': ["SYNTH_GUT=1"],
+                    'generate_abstract': ["ABSTRACT_SOURCE=2_floorplan"]
+                    }.get(stage, []),
+                outs = [s.replace("/base/", "/mock_area/") for s in outs.get(stage, [])]
+                )
+        for (previous, stage) in zip(['n/a'] + mock_stages, mock_stages)]
+
+    run_binary(
+            name = name + "_memory",
+            tool = ":orfs",
+            srcs = stage_sources['synth'] + [name + "_clock_period"],
+            args = stage_args['synth'] + ['memory'],
+            outs = outs['memory']
+            )
+
     [run_binary(
         name = name + "_" + stage,
         tool = ":orfs",
-        srcs = ["bazel-" + stage + ".mk"] + macro_targets + all_sources + ([name + "_" + previous] if i > 1 else [])+
-        stage_sources.get(stage, []),
-        args = ["make"] + base_args + ["bazel-" + stage, "elapsed"] +
-        stage_args.get(stage, []),
+        srcs = stage_sources[stage] + ([name + "_" + previous] if i > 1 else []) +
+        ([name + "_generate_abstract_mock_area"] if mock_area != None and stage == "generate_abstract" else []),
+        args = stage_args[stage] +
+        ["bazel-" + stage + ("_mock_area" if mock_area != None and stage == "generate_abstract" else ""),
+        "elapsed"],
         outs = outs.get(stage, []),
     ) for ((j, previous), (i, stage)) in zip([(0, 'n/a')] + stages, stages)]
