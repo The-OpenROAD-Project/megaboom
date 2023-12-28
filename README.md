@@ -79,17 +79,17 @@ Example of using a Bazel artifact server
 If you only have a single Google account that you use for Google Cloud locally, you can use
 `--google_default_credentials`.
 
-Otherwise, Bazel appears to have some trouble picking the correct account. The workaround is to
-use `--google_credentials` where the account can be specified explicitly.
+If you are use multiple google accounts, using the default credentials can be cumbersome when
+switching between projects. To avoid this, you can use the `--credential_helper` option
+instead, and pass a script that fetches credentials for the account you want to use. This
+account needs to have logged in using `gcloud auth login` and have access to the bucket
+specified.
 
-Set up a Google Cloud bucket and add the following to `.bazelrc`:
-
-    build --remote_cache=https://storage.googleapis.com/megaboom-bazel-artifacts --google_credentials=/home/oyvind/Downloads/innate-diode-408109-9c5d0543f9b3.json --remote_cache_compression=true
-
-To create the .json file:
-
-- create a service account. Only service account can have application keys.
-- add service account to bucket and give it permissions to read/write/list as appropriate
+To use this feature, copy the `cred_helper_template.py` file to `cred_helper.py` and replace
+the `USER` variable with the username you would like to use. An example `.bazelrc` file for
+this scenario would look like this:
+  
+    build --credential_helper=%workspace%/cred_helper.py --remote_cache=https://storage.googleapis.com/megaboom-bazel-artifacts --remote_cache_compression=true
 
 To gain access to the https://storage.googleapis.com/megaboom-bazel-artifacts bucket,
 reach out to Tom Spyrou, Precision Innovations (https://www.linkedin.com/in/tomspyrou/).
