@@ -1617,7 +1617,7 @@ build_openroad(
         io_constraints="io.tcl",
         mock_abstract=True,
         mock_stage=2,
-        mock_area=0.10
+        mock_area=0.15
         )
 
 build_openroad(
