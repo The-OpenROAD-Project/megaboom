@@ -6,6 +6,12 @@ def map(func, iterable):
         result.append(func(item))
     return result
 
+def map2(func, iterable):
+    result = []
+    for item in iterable:
+        result.append(func(item))
+    return result
+
 def set(iterable):
     result = []
     for item in iterable:
@@ -22,9 +28,11 @@ def filter(iterable, func):
 
 def build_openroad(
     name,
+    variant="base",
     verilog_files = [],
     stage_sources = {},
     macros = [],
+    macro_variants = {},
     io_constraints=None,
     stage_args={},
     mock_abstract=False,
@@ -32,6 +40,8 @@ def build_openroad(
     orfs_version=4,
     mock_area=None
 ):
+    target_name = name + ("_" + variant if variant != "base" else "")
+    macros = set(macros + list(macro_variants.keys()))
     all_stages = [(0, 'clock_period'), (1, 'synth'), (0, 'synth_sdc'), (2, 'floorplan'), (3, 'place'),
     (4, 'cts'), (5, 'route'), (6, 'final'), (7, 'generate_abstract')]
     stage_to_name = dict(all_stages)
@@ -47,11 +57,9 @@ def build_openroad(
     ]
 
     macro_targets = map(lambda m: ":" + m + "_generate_abstract", macros)
-    macro_lef_targets =  map(lambda m: "//:" +
-    ('results/asap7/%s/base/%s.lef' % (m, m)), macros)
-    macro_lib_targets =  map(lambda m: "//:" +
-    ('results/asap7/%s/base/%s.lib' % (m, m)), macros)
-
+    x = map(lambda ext: map2(lambda m: "//:results/asap7/%s/%s/%s.%s" %(m, macro_variants.get(m, 'base'), m, ext), macros), ['lef', 'lib'])
+    macro_lef_targets, macro_lib_targets = x
+    
     stage_sources = dict(stage_sources)
 
     stage_sources['synth'] = stage_sources.get('synth', []) + set(verilog_files)
@@ -60,9 +68,10 @@ def build_openroad(
     stage_sources['place'] = stage_sources.get('place', []) + io_constraints_source
 
     stage_args = dict(stage_args)
-    ADDITIONAL_LEFS = ' '.join(map(lambda m: '$(RULEDIR)/results/asap7/%s/base/%s.lef' % (m, m), macros))
-    ADDITIONAL_LIBS = ' '.join(map(lambda m: '$(RULEDIR)/results/asap7/%s/base/%s.lib' % (m, m), macros))
-    ADDITIONAL_GDS_FILES = ' '.join(map(lambda m: '$(RULEDIR)/results/asap7/%s/base/6_final.gds' % (m), macros))
+
+    ADDITIONAL_LEFS = ' '.join(map(lambda m: '$(RULEDIR)/results/asap7/%s/%s/%s.lef' % (m, macro_variants.get(m, 'base'), m), macros))
+    ADDITIONAL_LIBS = ' '.join(map(lambda m: '$(RULEDIR)/results/asap7/%s/%s/%s.lib' % (m, macro_variants.get(m, 'base'), m), macros))
+    ADDITIONAL_GDS_FILES = ' '.join(map(lambda m: '$(RULEDIR)/results/asap7/%s/%s/6_final.gds' % (m, macro_variants.get(m, 'base')), macros))
 
     io_constraints_args = ["IO_CONSTRAINTS=" + io_constraints] if io_constraints != None else []
 
@@ -98,6 +107,7 @@ def build_openroad(
     base_args = ["WORK_HOME=$(RULEDIR)",
     "ORFS_VERSION=" + str(orfs_version),
     "DESIGN_NAME=" + name,
+    "FLOW_VARIANT=" + variant,
     "DESIGN_CONFIG=config.mk"]
 
     reports ={'synth': ['1_1_yosys'],
@@ -126,29 +136,29 @@ def build_openroad(
     stage_sources['clock_period'] = list(stage_sources['synth'])
     stage_sources['synth_sdc'] = list(stage_sources['synth'])
     stage_sources['synth'] = list(filter(stage_sources['synth'], lambda s: not s.endswith(".sdc")))
-    stage_sources['floorplan'] = stage_sources.get('floorplan', []) + [name + '_synth']
+    stage_sources['floorplan'] = stage_sources.get('floorplan', []) + [name + ("_" + variant if variant != "base" else "") + '_synth']
 
     outs = {
         'clock_period':[
-            "results/asap7/%s/base/clock_period.txt" %(output_folder_name)
+            "results/asap7/%s/%s/clock_period.txt" %(output_folder_name, variant)
         ],
         'synth_sdc':[
-            "results/asap7/%s/base/1_synth.sdc" %(output_folder_name)
+            "results/asap7/%s/%s/1_synth.sdc" %(output_folder_name, variant)
         ],
         'synth':[
-            "results/asap7/%s/base/1_synth.v" %(output_folder_name),
+            "results/asap7/%s/%s/1_synth.v" %(output_folder_name, variant),
         ],
         "generate_abstract": [
-            "results/asap7/%s/base/%s.lib" %(output_folder_name, name),
-            "results/asap7/%s/base/%s.lef" %(output_folder_name, name),
+            "results/asap7/%s/%s/%s.lib" %(output_folder_name, variant, name),
+            "results/asap7/%s/%s/%s.lef" %(output_folder_name, variant, name),
         ],
         'final': [
-            "results/asap7/%s/base/6_final.spef" %(output_folder_name),
-            "results/asap7/%s/base/6_final.gds" %(output_folder_name)
+            "results/asap7/%s/%s/6_final.spef" %(output_folder_name, variant),
+            "results/asap7/%s/%s/6_final.gds" %(output_folder_name, variant)
         ],
-        'route': ["reports/asap7/%s/base/congestion.rpt" %(output_folder_name),
-            "reports/asap7/%s/base/5_route_drc.rpt" %(output_folder_name)],
-        'memory': ["results/asap7/%s/base/mem.json" %(output_folder_name)]
+        'route': ["reports/asap7/%s/%s/congestion.rpt" %(output_folder_name, variant),
+            "reports/asap7/%s/%s/5_route_drc.rpt" %(output_folder_name, variant)],
+        'memory': ["results/asap7/%s/%s/mem.json" %(output_folder_name, variant)]
     }
 
     stages = [stage for stage in all_stages if not mock_abstract or (stage[0] <= mock_stage or stage[0] >= 7)]
@@ -157,23 +167,23 @@ def build_openroad(
 
     for stage, i in map(lambda stage: (stage, stage_num[stage]), ["floorplan", "place", "cts", "route", "final"]):
         outs[stage] = outs.get(stage, []) + [
-            "results/asap7/%s/base/%s.sdc" %(output_folder_name, str(i) + "_" + stage),
-            "results/asap7/%s/base/%s.odb" %(output_folder_name, str(i) + "_" + stage)]
+            "results/asap7/%s/%s/%s.sdc" %(output_folder_name, variant, str(i) + "_" + stage),
+            "results/asap7/%s/%s/%s.odb" %(output_folder_name, variant, str(i) + "_" + stage)]
 
     for stage in ["place", "route"]:
         outs[stage] = outs.get(stage, []) + [
-            "results/asap7/%s/base/%s.ok" %(output_folder_name, stage)]
+            "results/asap7/%s/%s/%s.ok" %(output_folder_name, variant, stage)]
 
     for stage in reports:
         outs[stage] = outs.get(stage, []) + list(
-            map(lambda log: "logs/asap7/%s/base/%s.log" %(output_folder_name, log), reports[stage]))
+            map(lambda log: "logs/asap7/%s/%s/%s.log" %(output_folder_name, variant, log), reports[stage]))
 
     [run_binary(
-        name = name + "_" + stage + "_print",
+        name = target_name + "_" + stage + "_print",
         tool = ":orfs",
         srcs = ["bazel-print.mk"] + all_sources,
         args = ["make"] + base_args + stage_args.get(stage, []) + ["bazel-" + stage + "-print"],
-        outs = ["logs/asap7/%s/base/%s.txt" %(output_folder_name, stage)],
+        outs = ["logs/asap7/%s/%s/%s.txt" %(output_folder_name, variant, stage)],
     ) for (_, stage) in stages]
 
     for stage in name_to_stage:
@@ -187,11 +197,11 @@ def build_openroad(
     if mock_area != None:
         mock_stages = ['clock_period', 'synth', 'synth_sdc', 'floorplan', 'generate_abstract']
         [run_binary(
-                name = name + "_" + stage + "_mock_area",
+                name = target_name + "_" + stage + "_mock_area",
                 tool = ":orfs",
-                srcs = stage_sources[stage] + ([name + "_" + stage, 'mock_area.tcl'] if stage == 'floorplan' else []) +
-                ([name + "_" + previous + "_mock_area"] if stage != 'clock_period' else []) +
-                ([name + "_synth_mock_area"] if stage == 'floorplan' else []),
+                srcs = stage_sources[stage] + ([name + ("_" + variant if variant != "base" else "") + "_" + stage, 'mock_area.tcl'] if stage == 'floorplan' else []) +
+                ([name + ("_" + variant if variant != "base" else "") + "_" + previous + "_mock_area"] if stage != 'clock_period' else []) +
+                ([name + ("_" + variant if variant != "base" else "") + "_synth_mock_area"] if stage == 'floorplan' else []),
                 args = [s for s in stage_args[stage] if not any([sub in s for sub in ('DIE_AREA', 'CORE_AREA', 'CORE_UTILIZATION')])] +
                 [
                     "FLOW_VARIANT=mock_area",
@@ -202,12 +212,12 @@ def build_openroad(
                     'synth': ["SYNTH_GUT=1"],
                     'generate_abstract': ["ABSTRACT_SOURCE=2_floorplan"]
                     }.get(stage, []),
-                outs = [s.replace("/base/", "/mock_area/") for s in outs.get(stage, [])]
+                outs = [s.replace("/" + variant + "/", "/mock_area/") for s in outs.get(stage, [])]
                 )
         for (previous, stage) in zip(['n/a'] + mock_stages, mock_stages)]
 
     run_binary(
-            name = name + "_memory",
+            name = target_name + "_memory",
             tool = ":orfs",
             srcs = stage_sources['synth'] + [name + "_clock_period"],
             args = stage_args['synth'] + ['memory'],
@@ -215,10 +225,10 @@ def build_openroad(
             )
 
     [run_binary(
-        name = name + "_" + stage,
+        name = target_name + "_" + stage,
         tool = ":orfs",
-        srcs = stage_sources[stage] + ([name + "_" + previous] if i > 1 else []) +
-        ([name + "_generate_abstract_mock_area"] if mock_area != None and stage == "generate_abstract" else []),
+        srcs = stage_sources[stage] + ([name + ("_" + variant if variant != "base" else "") + "_" + previous] if i > 1 else []) +
+        ([name + ("_" + variant if variant != "base" else "") + "_generate_abstract_mock_area"] if mock_area != None and stage == "generate_abstract" else []),
         args = stage_args[stage] +
         ["bazel-" + stage + ("_mock_area" if mock_area != None and stage == "generate_abstract" else ""),
         "elapsed"],
