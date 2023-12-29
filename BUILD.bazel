@@ -234,7 +234,7 @@ build_openroad(
                 'route': ['SKIP_INCREMENTAL_REPAIR=1']
                 },
         mock_abstract=True,
-        mock_stage=2,
+        mock_stage=5,
         mock_area=0.2
         )
 
@@ -374,7 +374,7 @@ build_openroad(
                         'CORE_ASPECT_RATIO=2'],
                 'place': ['PLACE_DENSITY=0.65']},
         mock_abstract=True,
-        mock_stage=2,
+        mock_stage=5,
         mock_area=0.20
         )
 
@@ -401,7 +401,7 @@ boom_regfile_rams = [
                 'place': ['PLACE_DENSITY=0.10'],
         },
         mock_abstract=True,
-        mock_stage=2,
+        mock_stage=5,
         mock_area=0.8
         )
  for ram in boom_regfile_rams]
@@ -579,7 +579,7 @@ build_openroad(
                 'place': ['PLACE_DENSITY=0.20'],
                 },
         mock_abstract=True,
-        mock_stage=2,
+        mock_stage=5,
         mock_area=0.25
         )
 
@@ -640,7 +640,7 @@ build_openroad(
                 'place': ['PLACE_DENSITY=0.30'],
                 },
         mock_abstract=True,
-        mock_stage=2,
+        mock_stage=5,
         mock_area=0.2
         )
 
@@ -1554,7 +1554,7 @@ build_openroad(
                 'route': ['SKIP_INCREMENTAL_REPAIR=1']
                 },
         mock_abstract=True,
-        mock_stage=2,
+        mock_stage=5,
         mock_area=0.2
         )
 
@@ -1616,7 +1616,7 @@ build_openroad(
                 },
         io_constraints="io.tcl",
         mock_abstract=True,
-        mock_stage=2,
+        mock_stage=5,
         mock_area=0.15
         )
 
