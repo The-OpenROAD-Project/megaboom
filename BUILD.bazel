@@ -394,15 +394,15 @@ boom_regfile_rams = [
                 'floorplan': ([] +
                         #'CORE_UTILIZATION=200',
                         #"'CORE_ASPECT_RATIO=4'"
-                        (["'DIE_AREA=0 0 200 200'",
-                        "'CORE_AREA=2 2 198 198'"] if ram in ("regfile_128x65","regfile_128x64") else
+                        (["'DIE_AREA=0 0 400 400'",
+                        "'CORE_AREA=2 2 298 298'"] if ram in ("regfile_128x65","regfile_128x64") else
                         ["'DIE_AREA=0 0 10 10'",
                         "'CORE_AREA=2 2 8 8'"])),
-                'place': ['PLACE_DENSITY=0.10'],
+                'place': ['PLACE_DENSITY=' + {'regfile_128x64':'0.3', 'regfile_128x65':'0.3'}.get(ram, '0.10')],
         },
         mock_abstract=True,
         mock_stage=5,
-        mock_area=0.8
+        mock_area={'regfile_128x64':0.4, 'regfile_128x65':0.4}.get(ram, 0.8)
         )
  for ram in boom_regfile_rams]
 
