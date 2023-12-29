@@ -110,7 +110,8 @@ def build_openroad(
     "FLOW_VARIANT=" + variant,
     "DESIGN_CONFIG=config.mk"]
 
-    reports ={'synth': ['1_1_yosys'],
+    reports ={'synth': ['1_1_yosys',
+    '1_1_yosys_hier_report'],
     'floorplan': ['2_1_floorplan',
         '2_2_floorplan_io',
         '2_3_floorplan_tdms',
