@@ -398,7 +398,8 @@ boom_regfile_rams = [
                         "'CORE_AREA=2 2 298 298'"] if ram in ("regfile_128x65","regfile_128x64") else
                         ["'DIE_AREA=0 0 10 10'",
                         "'CORE_AREA=2 2 8 8'"])),
-                'place': ['PLACE_DENSITY=' + {'regfile_128x64':'0.3', 'regfile_128x65':'0.3'}.get(ram, '0.10')],
+                'place': ['PLACE_DENSITY=' +
+                {'regfile_128x64':'0.42', 'regfile_128x65':'0.3'}.get(ram, '0.10')],
         },
         mock_abstract=True,
         mock_stage=5,
