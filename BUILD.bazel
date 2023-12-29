@@ -542,6 +542,7 @@ build_openroad(
 build_openroad(
         name = "L1MetadataArray",
         verilog_files=["rtl/L1MetadataArray.sv"],
+        variant="test",
         macros=["tag_array_64x22"],
         stage_sources={'synth': ["constraints-top.sdc"],
         'floorplan': ["util.tcl"],
