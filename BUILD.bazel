@@ -355,7 +355,7 @@ digital_top_srams=["cc_dir_1024x16",
                 'place': ['PLACE_DENSITY=0.65']},
         mock_abstract=True,
         mock_stage=5,
-        mock_area={'tag_array_64x22':0.5,
+        mock_area={'tag_array_64x22':0.12,
         'meta_40x120':1,
         'data_data_40x128':1,
         'lb_32x128':1}.get(ram, 0.5)
@@ -550,7 +550,7 @@ build_openroad(
         stage_args={
                 'synth': ['SYNTH_HIERARCHICAL=1'],
                 'floorplan': [
-                        'CORE_UTILIZATION=33',
+                        'CORE_UTILIZATION=3',
                         'RTLMP_FLOW=True',
                         'CORE_MARGIN=2',
                         ],
