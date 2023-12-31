@@ -234,7 +234,7 @@ build_openroad(
                 'route': ['SKIP_INCREMENTAL_REPAIR=1']
                 },
         mock_abstract=True,
-        mock_stage=5,
+        mock_stage=4,
         mock_area=0.2
         )
 
@@ -1555,7 +1555,7 @@ build_openroad(
                 'route': ['SKIP_INCREMENTAL_REPAIR=1']
                 },
         mock_abstract=True,
-        mock_stage=5,
+        mock_stage=4,
         mock_area=0.2
         )
 
