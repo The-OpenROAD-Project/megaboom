@@ -1610,7 +1610,7 @@ build_openroad(
                         'CORE_UTILIZATION=10',
                         'CORE_ASPECT_RATIO=4',
                         #"'DIE_AREA=0 0 500 500'", "'CORE_AREA=2 2 498 498'",
-                        'MACRO_PLACE_HALO="2 2"',
+                        'MACRO_PLACE_HALO="20 20"',
                         'RTLMP_FLOW=True'
                         ],
                 'place': ['PLACE_DENSITY=0.28',
