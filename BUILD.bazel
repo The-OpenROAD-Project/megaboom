@@ -1601,7 +1601,7 @@ build_openroad(
         'table_128x11',
         'table_256x12',
         'table_128x13'],
-        stage_sources={'synth': ["constraints.sdc"],
+        stage_sources={'synth': ["constraints-branchpredictor.sdc"],
         'floorplan': ["util.tcl"],
         'place': ["util.tcl"]},
         stage_args={
