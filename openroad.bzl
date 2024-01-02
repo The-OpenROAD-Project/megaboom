@@ -80,9 +80,7 @@ def build_openroad(
     gds_args = (["'ADDITIONAL_GDS_FILES=" + ADDITIONAL_GDS_FILES + "'"] if len(macros) > 0 else [])
 
     stage_args['synth'] = stage_args.get('synth', []) + libs_args + [
-        "'VERILOG_FILES=" + ' '.join(set(verilog_files)) + "'",
-        "SDC_FILE=" + list(filter(stage_sources.get('synth', []), lambda s: s.endswith(".sdc")))[0]
-        ]
+        "'VERILOG_FILES=" + ' '.join(set(verilog_files)) + "'"]
     stage_args['floorplan'] = stage_args.get('floorplan', []) + lefs_args + libs_args + (
             [] if len(macros) == 0 else [
                 'CORE_MARGIN=4',
@@ -132,8 +130,9 @@ def build_openroad(
     'generate_abstract': ['generate_abstract']
     }
 
-    stage_args['clock_period'] = stage_args['synth']
-    stage_args['synth_sdc'] = stage_args['synth']
+    sdc_file = ["SDC_FILE=" + list(filter(stage_sources.get('synth', []), lambda s: s.endswith(".sdc")))[0]]
+    stage_args['clock_period'] = stage_args['synth'] + sdc_file
+    stage_args['synth_sdc'] = stage_args['synth'] + sdc_file
     stage_sources['clock_period'] = list(stage_sources['synth'])
     stage_sources['synth_sdc'] = list(stage_sources['synth'])
     stage_sources['synth'] = list(filter(stage_sources['synth'], lambda s: not s.endswith(".sdc")))
