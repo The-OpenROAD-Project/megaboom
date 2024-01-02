@@ -224,8 +224,9 @@ build_openroad(
         stage_args={
                 'synth': ['SYNTH_HIERARCHICAL=1'],
                 'floorplan': [
-                        #'CORE_UTILIZATION=30',
-                        "'DIE_AREA=0 0 350 350'", "'CORE_AREA=4 4 346 346'",
+                        'CORE_UTILIZATION=30',
+                        'CORE_MARGIN=4',
+                        #"'DIE_AREA=0 0 350 350'", "'CORE_AREA=4 4 346 346'",
                         #'MACRO_PLACE_HALO="20 20"',
                         'RTLMP_FLOW=True'
                         ],
