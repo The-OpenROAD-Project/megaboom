@@ -224,8 +224,8 @@ build_openroad(
         stage_args={
                 'synth': ['SYNTH_HIERARCHICAL=1'],
                 'floorplan': [
-                        'CORE_UTILIZATION=30',
-                        #"'DIE_AREA=0 0 100 100'", "'CORE_AREA=2 2 98 98'",
+                        #'CORE_UTILIZATION=30',
+                        "'DIE_AREA=0 0 350 350'", "'CORE_AREA=4 4 346 346'",
                         #'MACRO_PLACE_HALO="20 20"',
                         'RTLMP_FLOW=True'
                         ],
@@ -234,7 +234,7 @@ build_openroad(
                 'route': ['SKIP_INCREMENTAL_REPAIR=1']
                 },
         mock_abstract=True,
-        mock_stage=4,
+        mock_stage=5,
         mock_area=0.2
         )
 
