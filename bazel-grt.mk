@@ -5,6 +5,7 @@ bazel-grt:
 	mkdir -p $(RESULTS_DIR) $(LOG_DIR) $(REPORTS_DIR)
 	echo >$(RESULTS_DIR)/grt.ok 0
 	touch $(LOG_DIR)/5_1_grt.log
+	touch $(REPORTS_DIR)/congestion.rpt
 	cp $(RESULTS_DIR)/4_cts.sdc $(RESULTS_DIR)/5_1_grt.sdc
 	@$(UNSET_VARS); \
 	$(SUB_MAKE) do-5_1_grt ; \

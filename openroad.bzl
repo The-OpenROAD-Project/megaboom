@@ -163,8 +163,8 @@ def build_openroad(
             "results/asap7/%s/%s/6_final.spef" %(output_folder_name, variant),
             "results/asap7/%s/%s/6_final.gds" %(output_folder_name, variant)
         ],
-        'route': ["reports/asap7/%s/%s/congestion.rpt" %(output_folder_name, variant),
-            "reports/asap7/%s/%s/5_route_drc.rpt" %(output_folder_name, variant)],
+        'grt':["reports/asap7/%s/%s/congestion.rpt" %(output_folder_name, variant)],
+        'route': ["reports/asap7/%s/%s/5_route_drc.rpt" %(output_folder_name, variant)],
         'memory': ["results/asap7/%s/%s/mem.json" %(output_folder_name, variant)]
     }
 
