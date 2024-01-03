@@ -1,6 +1,6 @@
 .PHONY: check-route
 check-route:
-	grep -q 1 $(RESULTS_DIR)/route.ok
+	grep -q 1 $(RESULTS_DIR)/grt.ok
 
 .PHONY: bazel-final
 bazel-final:

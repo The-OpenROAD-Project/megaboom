@@ -1,5 +1,11 @@
 load("@aspect_bazel_lib//lib:run_binary.bzl", "run_binary")
 
+def enumerate(iterable):
+    result = []
+    for i in range(len(iterable)):
+        result.append((i, iterable[i]))
+    return result
+
 def map(func, iterable):
     result = []
     for item in iterable:
@@ -36,15 +42,15 @@ def build_openroad(
     io_constraints=None,
     stage_args={},
     mock_abstract=False,
-    mock_stage=3,
+    mock_stage="place",
     orfs_version=4,
     mock_area=None
 ):
     target_name = name + ("_" + variant if variant != "base" else "")
     macros = set(macros + list(macro_variants.keys()))
-    all_stages = [(0, 'clock_period'), (1, 'synth'), (0, 'synth_sdc'), (2, 'floorplan'), (3, 'place'),
-    (4, 'cts'), (5, 'route'), (6, 'final'), (7, 'generate_abstract')]
-    stage_to_name = dict(all_stages)
+    all_stages = [("0", 'clock_period'), ("1", 'synth'), ("0", 'synth_sdc'), ("2", 'floorplan'), ("3", 'place'),
+    ("4", 'cts'), ("5_1", 'grt'), ("5", 'route'), ("6", 'final'), ("7", 'generate_abstract')]
+    all_stage_names = map(lambda s: s[1], all_stages)
     name_to_stage = dict(map(lambda s: (s[1], s[0]), all_stages))
 
     source_folder_name = name
@@ -99,7 +105,7 @@ def build_openroad(
         [] if len(macros) == 0 else ['MIN_ROUTING_LAYER=M2',
         'MAX_ROUTING_LAYER=M9'])
 
-    abstract_source = str(mock_stage) + "_" + stage_to_name[mock_stage]
+    abstract_source = str(name_to_stage[mock_stage]) + "_" + mock_stage
     stage_args['generate_abstract'] = stage_args.get('generate_abstract', []) + gds_args + lefs_args + (
         ['ABSTRACT_SOURCE=' + abstract_source] if mock_abstract else [])
 
@@ -124,8 +130,8 @@ def build_openroad(
         '3_4_place_resized',
         '3_5_place_dp'],
     'cts': ['4_1_cts'],
-    'route': ['5_1_grt',
-        '5_2_fillcell',
+    'global_route': ['5_1_grt'],
+    'route': ['5_2_fillcell',
         '5_3_route'],
     'final': ['6_1_merge',
      '6_report'],
@@ -162,16 +168,26 @@ def build_openroad(
         'memory': ["results/asap7/%s/%s/mem.json" %(output_folder_name, variant)]
     }
 
-    stages = [stage for stage in all_stages if not mock_abstract or (stage[0] <= mock_stage or stage[0] >= 7)]
+    stages = []
+    skip = False
+    for stage in all_stage_names:
+        if not mock_abstract or stage == 'generate_abstract':
+            skip = False
+        if skip:
+            continue
+        if mock_abstract and stage == mock_stage:
+            skip = True
+        stages.append(stage)
 
     stage_num = dict(map(lambda s: (s[1], s[0]), all_stages))
 
-    for stage, i in map(lambda stage: (stage, stage_num[stage]), ["floorplan", "place", "cts", "route", "final"]):
-        outs[stage] = outs.get(stage, []) + [
-            "results/asap7/%s/%s/%s.sdc" %(output_folder_name, variant, str(i) + "_" + stage),
+    for stage, i in map(lambda stage: (stage, stage_num[stage]),
+                        ["floorplan", "place", "cts", "grt", "route", "final"]):
+        outs[stage] = outs.get(stage, []) + (
+            ["results/asap7/%s/%s/%s.sdc" %(output_folder_name, variant, str(i) + "_" + stage)] if stage != 'grt' else []) + [
             "results/asap7/%s/%s/%s.odb" %(output_folder_name, variant, str(i) + "_" + stage)]
 
-    for stage in ["place", "route"]:
+    for stage in ["place", "grt"]:
         outs[stage] = outs.get(stage, []) + [
             "results/asap7/%s/%s/%s.ok" %(output_folder_name, variant, stage)]
 
@@ -179,13 +195,15 @@ def build_openroad(
         outs[stage] = outs.get(stage, []) + list(
             map(lambda log: "logs/asap7/%s/%s/%s.log" %(output_folder_name, variant, log), reports[stage]))
 
+    stage_sources['route'] = stage_sources.get('route', []) + outs['cts']
+
     [run_binary(
         name = target_name + "_" + stage + "_print",
         tool = ":orfs",
         srcs = ["bazel-print.mk"] + all_sources,
         args = ["make"] + base_args + stage_args.get(stage, []) + ["bazel-" + stage + "-print"],
         outs = ["logs/asap7/%s/%s/%s.txt" %(output_folder_name, variant, stage)],
-    ) for (_, stage) in stages]
+    ) for stage in stages]
 
     for stage in name_to_stage:
         stage_sources[stage] = (["bazel-" + stage + ".mk"] +
@@ -234,4 +252,4 @@ def build_openroad(
         ["bazel-" + stage + ("_mock_area" if mock_area != None and stage == "generate_abstract" else ""),
         "elapsed"],
         outs = outs.get(stage, []),
-    ) for ((j, previous), (i, stage)) in zip([(0, 'n/a')] + stages, stages)]
+    ) for ((_, previous), (i, stage)) in zip([(0, 'n/a')] + enumerate(stages), enumerate(stages))]

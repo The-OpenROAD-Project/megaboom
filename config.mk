@@ -11,6 +11,7 @@ export WORK_HOME_READ?=$(WORK_HOME)
 -include bazel-floorplan.mk
 -include bazel-place.mk
 -include bazel-cts.mk
+-include bazel-grt.mk
 -include bazel-route.mk
 -include bazel-final.mk
 -include bazel-generate_abstract.mk
