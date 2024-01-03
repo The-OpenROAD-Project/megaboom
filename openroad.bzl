@@ -183,8 +183,8 @@ def build_openroad(
 
     for stage, i in map(lambda stage: (stage, stage_num[stage]),
                         ["floorplan", "place", "cts", "grt", "route", "final"]):
-        outs[stage] = outs.get(stage, []) + (
-            ["results/asap7/%s/%s/%s.sdc" %(output_folder_name, variant, str(i) + "_" + stage)] if stage != 'grt' else []) + [
+        outs[stage] = outs.get(stage, []) + [
+            "results/asap7/%s/%s/%s.sdc" %(output_folder_name, variant, str(i) + "_" + stage),
             "results/asap7/%s/%s/%s.odb" %(output_folder_name, variant, str(i) + "_" + stage)]
 
     for stage in ["place", "grt"]:
