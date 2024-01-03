@@ -1,0 +1,57 @@
+#!/usr/bin/env python3
+
+# Find this path:
+#
+# /home/user/.cache/bazel/_bazel_user/7e6ad621f3f951c3ee6f5b179289b54e/sandbox/linux-sandbox/380/execroot/_main/bazel-out/k8-fastbuild/bin/
+#
+# Where:
+# _bazel_user is a folder where "user" is the username
+# 7e6ad621f3f951c3ee6f5b179289b54e is the most recent folder
+# 380 is the most recent folder
+#
+# Then print out the path
+
+import os
+import sys
+import re
+
+
+def find_path():
+    path = os.path.expanduser("~/.cache/bazel/_bazel_" + os.getlogin())
+    if not os.path.exists(path):
+        print("Path does not exist: " + path)
+        sys.exit(1)
+
+    dirs = os.listdir(path)
+    dirs.sort()
+    dirs.reverse()
+
+    for d in dirs:
+        if not re.match(r'[a-z0-9]{32}', d):
+            continue
+
+        path2 = os.path.join(path, d, "sandbox/linux-sandbox")
+        if not os.path.exists(path2):
+            continue
+
+        dirs2 = os.listdir(path2)
+        dirs2.sort()
+        dirs2.reverse()
+
+        for d2 in dirs2:
+            if not re.match(r'[0-9]+', d2):
+                continue
+
+            path3 = os.path.join(path2, d2, "execroot/_main/bazel-out/k8-fastbuild/bin")
+            if not os.path.exists(path3):
+                continue
+
+            return path3
+
+    print("Could not find path")
+    sys.exit(1)
+
+
+if __name__ == "__main__":
+    path = find_path()
+    print(path)
