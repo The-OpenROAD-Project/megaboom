@@ -130,7 +130,7 @@ def build_openroad(
         '3_4_place_resized',
         '3_5_place_dp'],
     'cts': ['4_1_cts'],
-    'global_route': ['5_1_grt'],
+    'grt': ['5_1_grt'],
     'route': ['5_2_fillcell',
         '5_3_route'],
     'final': ['6_1_merge',
