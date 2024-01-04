@@ -14,6 +14,7 @@
 import os
 import sys
 import re
+import argparse
 
 
 def find_path():
@@ -52,6 +53,36 @@ def find_path():
     sys.exit(1)
 
 
+def recurse(path):
+    files = os.listdir(path)
+    files.sort()
+    files.reverse()
+    for f in files:
+        if os.path.isdir(os.path.join(path, f)):
+            return recurse(os.path.join(path, f))
+        elif f.endswith(".tmp.log"):
+            return os.path.join(path, f)
+    return None
+
+
 if __name__ == "__main__":
     path = find_path()
-    print(path)
+    args = sys.argv[1:]
+    parser = argparse.ArgumentParser()
+    # add actions in argparser
+    # print - default action
+    # tail - print last 10 lines
+    parser.add_argument("-t", "--tail", action="store_true")
+    args = parser.parse_args(args)
+    if args.tail:
+        # scan recursively to find the most recent file ending in
+        # .tmp.log:
+        #
+        # path + '/logs/asap7/DigitalTop/2_6_floorplan_pdn.tmp.log'
+        tmpfile = recurse(path + '/logs')
+        if tmpfile is None:
+            print("Could not find tmp file")
+            sys.exit(1)
+        print(tmpfile)
+    else:
+        print(path)
