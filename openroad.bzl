@@ -47,7 +47,8 @@ def build_openroad(
     mock_abstract=False,
     mock_stage="place",
     orfs_version=4,
-    mock_area=None
+    mock_area=None,
+    platform="asap7",
 ):
     target_ext = ("_" + variant if variant != "base" else "")
     target_name = name + target_ext
@@ -67,7 +68,7 @@ def build_openroad(
     ]
 
     macro_targets = map(lambda m: ":" + m + "_generate_abstract", macros)
-    x = map(lambda ext: map2(lambda m: "//:results/asap7/%s/%s/%s.%s" %(m, macro_variants.get(m, 'base'), m, ext), macros), ['lef', 'lib'])
+    x = map(lambda ext: map2(lambda m: "//:results/" + platform + "/%s/%s/%s.%s" %(m, macro_variants.get(m, 'base'), m, ext), macros), ['lef', 'lib'])
     macro_lef_targets, macro_lib_targets = x
     
     stage_sources = dict(stage_sources)
@@ -79,9 +80,9 @@ def build_openroad(
 
     stage_args = dict(stage_args)
 
-    ADDITIONAL_LEFS = ' '.join(map(lambda m: '$(RULEDIR)/results/asap7/%s/%s/%s.lef' % (m, macro_variants.get(m, 'base'), m), macros))
-    ADDITIONAL_LIBS = ' '.join(map(lambda m: '$(RULEDIR)/results/asap7/%s/%s/%s.lib' % (m, macro_variants.get(m, 'base'), m), macros))
-    ADDITIONAL_GDS_FILES = ' '.join(map(lambda m: '$(RULEDIR)/results/asap7/%s/%s/6_final.gds' % (m, macro_variants.get(m, 'base')), macros))
+    ADDITIONAL_LEFS = ' '.join(map(lambda m: '$(RULEDIR)/results/' + platform + '/%s/%s/%s.lef' % (m, macro_variants.get(m, 'base'), m), macros))
+    ADDITIONAL_LIBS = ' '.join(map(lambda m: '$(RULEDIR)/results/' + platform + '/%s/%s/%s.lib' % (m, macro_variants.get(m, 'base'), m), macros))
+    ADDITIONAL_GDS_FILES = ' '.join(map(lambda m: '$(RULEDIR)/results/' + platform + '/%s/%s/6_final.gds' % (m, macro_variants.get(m, 'base')), macros))
 
     io_constraints_args = ["IO_CONSTRAINTS=" + io_constraints] if io_constraints != None else []
 
@@ -151,25 +152,25 @@ def build_openroad(
 
     outs = {
         'clock_period':[
-            "results/asap7/%s/%s/clock_period.txt" %(output_folder_name, variant)
+            "results/" + platform + "/%s/%s/clock_period.txt" %(output_folder_name, variant)
         ],
         'synth_sdc':[
-            "results/asap7/%s/%s/1_synth.sdc" %(output_folder_name, variant)
+            "results/" + platform + "/%s/%s/1_synth.sdc" %(output_folder_name, variant)
         ],
         'synth':[
-            "results/asap7/%s/%s/1_synth.v" %(output_folder_name, variant),
+            "results/" + platform + "/%s/%s/1_synth.v" %(output_folder_name, variant),
         ],
         "generate_abstract": [
-            "results/asap7/%s/%s/%s.lib" %(output_folder_name, variant, name),
-            "results/asap7/%s/%s/%s.lef" %(output_folder_name, variant, name),
+            "results/" + platform + "/%s/%s/%s.lib" %(output_folder_name, variant, name),
+            "results/" + platform + "/%s/%s/%s.lef" %(output_folder_name, variant, name),
         ],
         'final': [
-            "results/asap7/%s/%s/6_final.spef" %(output_folder_name, variant),
-            "results/asap7/%s/%s/6_final.gds" %(output_folder_name, variant)
+            "results/" + platform + "/%s/%s/6_final.spef" %(output_folder_name, variant),
+            "results/" + platform + "/%s/%s/6_final.gds" %(output_folder_name, variant)
         ],
-        'grt':["reports/asap7/%s/%s/congestion.rpt" %(output_folder_name, variant)],
-        'route': ["reports/asap7/%s/%s/5_route_drc.rpt" %(output_folder_name, variant)],
-        'memory': ["results/asap7/%s/%s/mem.json" %(output_folder_name, variant)]
+        'grt':["reports/" + platform + "/%s/%s/congestion.rpt" %(output_folder_name, variant)],
+        'route': ["reports/" + platform + "/%s/%s/5_route_drc.rpt" %(output_folder_name, variant)],
+        'memory': ["results/" + platform + "/%s/%s/mem.json" %(output_folder_name, variant)]
     }
 
     stages = []
@@ -188,16 +189,16 @@ def build_openroad(
     for stage, i in map(lambda stage: (stage, stage_num[stage]),
                         ["floorplan", "place", "cts", "grt", "route", "final"]):
         outs[stage] = outs.get(stage, []) + [
-            "results/asap7/%s/%s/%s.sdc" %(output_folder_name, variant, str(i) + "_" + stage),
-            "results/asap7/%s/%s/%s.odb" %(output_folder_name, variant, str(i) + "_" + stage)]
+            "results/" + platform + "/%s/%s/%s.sdc" %(output_folder_name, variant, str(i) + "_" + stage),
+            "results/" + platform + "/%s/%s/%s.odb" %(output_folder_name, variant, str(i) + "_" + stage)]
 
     for stage in ["place", "grt"]:
         outs[stage] = outs.get(stage, []) + [
-            "results/asap7/%s/%s/%s.ok" %(output_folder_name, variant, stage)]
+            "results/" + platform + "/%s/%s/%s.ok" %(output_folder_name, variant, stage)]
 
     for stage in reports:
         outs[stage] = outs.get(stage, []) + list(
-            map(lambda log: "logs/asap7/%s/%s/%s.log" %(output_folder_name, variant, log), reports[stage]))
+            map(lambda log: "logs/" + platform + "/%s/%s/%s.log" %(output_folder_name, variant, log), reports[stage]))
 
     stage_sources['route'] = stage_sources.get('route', []) + outs['cts']
 
@@ -206,7 +207,7 @@ def build_openroad(
         tool = ":orfs",
         srcs = ["bazel-print.mk"] + all_sources,
         args = ["make"] + base_args + wrap_args(stage_args.get(stage, [])) + ["bazel-" + stage + "-print"],
-        outs = ["logs/asap7/%s/%s/%s.txt" %(output_folder_name, variant, stage)],
+        outs = ["logs/" + platform + "/%s/%s/%s.txt" %(output_folder_name, variant, stage)],
     ) for stage in stages]
 
     for stage in name_to_stage:
