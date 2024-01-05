@@ -49,6 +49,7 @@ def build_openroad(
     orfs_version=4,
     mock_area=None,
     platform="asap7",
+    macro_variant='base'
 ):
     target_ext = ("_" + variant if variant != "base" else "")
     target_name = name + target_ext
@@ -68,7 +69,7 @@ def build_openroad(
     ]
 
     macro_targets = map(lambda m: ":" + m + "_generate_abstract", macros)
-    x = map(lambda ext: map2(lambda m: "//:results/" + platform + "/%s/%s/%s.%s" %(m, macro_variants.get(m, 'base'), m, ext), macros), ['lef', 'lib'])
+    x = map(lambda ext: map2(lambda m: "//:results/" + platform + "/%s/%s/%s.%s" %(m, macro_variants.get(m, macro_variant), m, ext), macros), ['lef', 'lib'])
     macro_lef_targets, macro_lib_targets = x
     
     stage_sources = dict(stage_sources)
@@ -80,9 +81,9 @@ def build_openroad(
 
     stage_args = dict(stage_args)
 
-    ADDITIONAL_LEFS = ' '.join(map(lambda m: '$(RULEDIR)/results/' + platform + '/%s/%s/%s.lef' % (m, macro_variants.get(m, 'base'), m), macros))
-    ADDITIONAL_LIBS = ' '.join(map(lambda m: '$(RULEDIR)/results/' + platform + '/%s/%s/%s.lib' % (m, macro_variants.get(m, 'base'), m), macros))
-    ADDITIONAL_GDS_FILES = ' '.join(map(lambda m: '$(RULEDIR)/results/' + platform + '/%s/%s/6_final.gds' % (m, macro_variants.get(m, 'base')), macros))
+    ADDITIONAL_LEFS = ' '.join(map(lambda m: '$(RULEDIR)/results/' + platform + '/%s/%s/%s.lef' % (m, macro_variants.get(m, macro_variant), m), macros))
+    ADDITIONAL_LIBS = ' '.join(map(lambda m: '$(RULEDIR)/results/' + platform + '/%s/%s/%s.lib' % (m, macro_variants.get(m, macro_variant), m), macros))
+    ADDITIONAL_GDS_FILES = ' '.join(map(lambda m: '$(RULEDIR)/results/' + platform + '/%s/%s/6_final.gds' % (m, macro_variants.get(m, macro_variant)), macros))
 
     io_constraints_args = ["IO_CONSTRAINTS=" + io_constraints] if io_constraints != None else []
 
