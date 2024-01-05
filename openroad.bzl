@@ -49,7 +49,8 @@ def build_openroad(
     orfs_version=4,
     mock_area=None
 ):
-    target_name = name + ("_" + variant if variant != "base" else "")
+    target_ext = ("_" + variant if variant != "base" else "")
+    target_name = name + target_ext
     macros = set(macros + list(macro_variants.keys()))
     all_stages = [("0", 'clock_period'), ("1", 'synth'), ("0", 'synth_sdc'), ("2", 'floorplan'), ("3", 'place'),
     ("4", 'cts'), ("5_1", 'grt'), ("5", 'route'), ("6", 'final'), ("7", 'generate_abstract')]
@@ -146,7 +147,7 @@ def build_openroad(
     stage_sources['clock_period'] = list(stage_sources['synth'])
     stage_sources['synth_sdc'] = list(stage_sources['synth'])
     stage_sources['synth'] = list(filter(stage_sources['synth'], lambda s: not s.endswith(".sdc")))
-    stage_sources['floorplan'] = stage_sources.get('floorplan', []) + [name + ("_" + variant if variant != "base" else "") + '_synth']
+    stage_sources['floorplan'] = stage_sources.get('floorplan', []) + [name + target_ext + '_synth']
 
     outs = {
         'clock_period':[
@@ -221,9 +222,9 @@ def build_openroad(
         [run_binary(
                 name = target_name + "_" + stage + "_mock_area",
                 tool = ":orfs",
-                srcs = stage_sources[stage] + ([name + ("_" + variant if variant != "base" else "") + "_" + stage, 'mock_area.tcl'] if stage == 'floorplan' else []) +
-                ([name + ("_" + variant if variant != "base" else "") + "_" + previous + "_mock_area"] if stage != 'clock_period' else []) +
-                ([name + ("_" + variant if variant != "base" else "") + "_synth_mock_area"] if stage == 'floorplan' else []),
+                srcs = stage_sources[stage] + ([name + target_ext + "_" + stage, 'mock_area.tcl'] if stage == 'floorplan' else []) +
+                ([name + target_ext + "_" + previous + "_mock_area"] if stage != 'clock_period' else []) +
+                ([name + target_ext + "_synth_mock_area"] if stage == 'floorplan' else []),
                 args = wrap_args([s for s in stage_args[stage] if not any([sub in s for sub in ('DIE_AREA', 'CORE_AREA', 'CORE_UTILIZATION')])] +
                 [
                     "FLOW_VARIANT=mock_area",
@@ -249,8 +250,8 @@ def build_openroad(
     [run_binary(
         name = target_name + "_" + stage,
         tool = ":orfs",
-        srcs = stage_sources[stage] + ([name + ("_" + variant if variant != "base" else "") + "_" + previous] if i > 1 else []) +
-        ([name + ("_" + variant if variant != "base" else "") + "_generate_abstract_mock_area"] if mock_area != None and stage == "generate_abstract" else []),
+        srcs = stage_sources[stage] + ([name + target_ext + "_" + previous] if i > 1 else []) +
+        ([name + target_ext + "_generate_abstract_mock_area"] if mock_area != None and stage == "generate_abstract" else []),
         args = wrap_args(stage_args[stage]) +
         ["bazel-" + stage + ("_mock_area" if mock_area != None and stage == "generate_abstract" else ""),
         "elapsed"],
