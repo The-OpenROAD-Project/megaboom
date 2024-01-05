@@ -32,6 +32,9 @@ def filter(iterable, func):
             result = result + [item]
     return result
 
+def wrap_args(args):
+    return map(lambda arg: '"' + arg + '"' if (' ' in arg or '\\$$' in arg or '=(' in arg) else arg, args)
+
 def build_openroad(
     name,
     variant="base",
@@ -81,25 +84,25 @@ def build_openroad(
 
     io_constraints_args = ["IO_CONSTRAINTS=" + io_constraints] if io_constraints != None else []
 
-    lefs_args = (["'ADDITIONAL_LEFS=" + ADDITIONAL_LEFS + "'"] if len(macros) > 0 else [])
-    libs_args = (["'ADDITIONAL_LIBS=" + ADDITIONAL_LIBS + "'"] if len(macros) > 0 else [])
-    gds_args = (["'ADDITIONAL_GDS_FILES=" + ADDITIONAL_GDS_FILES + "'"] if len(macros) > 0 else [])
+    lefs_args = (["ADDITIONAL_LEFS=" + ADDITIONAL_LEFS] if len(macros) > 0 else [])
+    libs_args = (["ADDITIONAL_LIBS=" + ADDITIONAL_LIBS] if len(macros) > 0 else [])
+    gds_args = (["ADDITIONAL_GDS_FILES=" + ADDITIONAL_GDS_FILES] if len(macros) > 0 else [])
 
     stage_args['synth'] = stage_args.get('synth', []) + libs_args + [
-        "'VERILOG_FILES=" + ' '.join(set(verilog_files)) + "'",
+        "VERILOG_FILES=" + ' '.join(set(verilog_files)),
         "SDC_FILE=" + list(filter(stage_sources.get('synth', []), lambda s: s.endswith(".sdc")))[0]
         ]
     stage_args['floorplan'] = stage_args.get('floorplan', []) + lefs_args + libs_args + (
             [] if len(macros) == 0 else [
                 'CORE_MARGIN=4',
-                '"PDN_TCL=\\$$(PLATFORM_DIR)/openRoad/pdn/BLOCKS_grid_strategy.tcl"']
-        ) + io_constraints_args + (["'MACROS=" + ' '.join(set(macros)) + "'"] if len(macros) > 0 else [])
+                "PDN_TCL=\\$$(PLATFORM_DIR)/openRoad/pdn/BLOCKS_grid_strategy.tcl"]
+        ) + io_constraints_args + (["MACROS=" + ' '.join(set(macros))] if len(macros) > 0 else [])
 
     stage_args['place'] = stage_args.get('place', []) + libs_args + io_constraints_args
 
     stage_args['final'] = stage_args.get('final', []) + gds_args + lefs_args + (
         ["GND_NETS_VOLTAGES=\"\"","PWR_NETS_VOLTAGES=\"\""]) + (
-            ['"GDS_ALLOW_EMPTY=(' + '|'.join(macros) + ')"'] if len(macros) > 0 else [])
+            ['GDS_ALLOW_EMPTY=(' + '|'.join(macros) + ')'] if len(macros) > 0 else [])
 
     stage_args['route'] = stage_args.get('route', []) + (
         [] if len(macros) == 0 else ['MIN_ROUTING_LAYER=M2',
@@ -201,7 +204,7 @@ def build_openroad(
         name = target_name + "_" + stage + "_print",
         tool = ":orfs",
         srcs = ["bazel-print.mk"] + all_sources,
-        args = ["make"] + base_args + stage_args.get(stage, []) + ["bazel-" + stage + "-print"],
+        args = ["make"] + base_args + wrap_args(stage_args.get(stage, [])) + ["bazel-" + stage + "-print"],
         outs = ["logs/asap7/%s/%s/%s.txt" %(output_folder_name, variant, stage)],
     ) for stage in stages]
 
@@ -221,7 +224,7 @@ def build_openroad(
                 srcs = stage_sources[stage] + ([name + ("_" + variant if variant != "base" else "") + "_" + stage, 'mock_area.tcl'] if stage == 'floorplan' else []) +
                 ([name + ("_" + variant if variant != "base" else "") + "_" + previous + "_mock_area"] if stage != 'clock_period' else []) +
                 ([name + ("_" + variant if variant != "base" else "") + "_synth_mock_area"] if stage == 'floorplan' else []),
-                args = [s for s in stage_args[stage] if not any([sub in s for sub in ('DIE_AREA', 'CORE_AREA', 'CORE_UTILIZATION')])] +
+                args = wrap_args([s for s in stage_args[stage] if not any([sub in s for sub in ('DIE_AREA', 'CORE_AREA', 'CORE_UTILIZATION')])] +
                 [
                     "FLOW_VARIANT=mock_area",
                     "bazel-" + stage + ("-mock_area" if stage == 'floorplan' else "")
@@ -230,7 +233,7 @@ def build_openroad(
                     'floorplan': ["MOCK_AREA=" + str(mock_area)],
                     'synth': ["SYNTH_GUT=1"],
                     'generate_abstract': ["ABSTRACT_SOURCE=2_floorplan"]
-                    }.get(stage, []),
+                    }.get(stage, [])),
                 outs = [s.replace("/" + variant + "/", "/mock_area/") for s in outs.get(stage, [])]
                 )
         for (previous, stage) in zip(['n/a'] + mock_stages, mock_stages)]
@@ -239,7 +242,7 @@ def build_openroad(
             name = target_name + "_memory",
             tool = ":orfs",
             srcs = stage_sources['synth'] + [name + "_clock_period"],
-            args = stage_args['synth'] + ['memory'],
+            args = wrap_args(stage_args['synth'] + ['memory']),
             outs = outs['memory']
             )
 
@@ -248,7 +251,7 @@ def build_openroad(
         tool = ":orfs",
         srcs = stage_sources[stage] + ([name + ("_" + variant if variant != "base" else "") + "_" + previous] if i > 1 else []) +
         ([name + ("_" + variant if variant != "base" else "") + "_generate_abstract_mock_area"] if mock_area != None and stage == "generate_abstract" else []),
-        args = stage_args[stage] +
+        args = wrap_args(stage_args[stage]) +
         ["bazel-" + stage + ("_mock_area" if mock_area != None and stage == "generate_abstract" else ""),
         "elapsed"],
         outs = outs.get(stage, []),
