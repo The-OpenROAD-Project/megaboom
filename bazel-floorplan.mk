@@ -7,6 +7,7 @@ bazel-floorplan:
 .PHONY: bazel-floorplan-mock_area
 bazel-floorplan-mock_area:
 	mkdir -p $(OBJECTS_DIR)
+	$(OPENROAD_CMD) -no_splash mock_area.tcl
 	$(OPENROAD_CMD) -no_splash mock_area.tcl >$(OBJECTS_DIR)/scaled_area.txt
 	echo `cat $(OBJECTS_DIR)/scaled_area.txt`
 	$(UNSET_VARS); source $(OBJECTS_DIR)/scaled_area.txt; $(SUB_MAKE) bazel-floorplan
