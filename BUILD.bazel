@@ -226,7 +226,7 @@ build_openroad(
                 'floorplan': [
                         'CORE_UTILIZATION=30',
                         'CORE_MARGIN=4',
-                        #"'DIE_AREA=0 0 350 350'", "'CORE_AREA=4 4 346 346'",
+                        #"DIE_AREA=0 0 350 350", "CORE_AREA=4 4 346 346",
                         #'MACRO_PLACE_HALO="20 20"',
                         'RTLMP_FLOW=True'
                         ],
@@ -402,10 +402,10 @@ boom_regfile_rams = [
                 'floorplan': ([] +
                         #'CORE_UTILIZATION=200',
                         #"'CORE_ASPECT_RATIO=4'"
-                        (["'DIE_AREA=0 0 400 400'",
-                        "'CORE_AREA=2 2 298 298'"] if ram in ("regfile_128x65","regfile_128x64") else
-                        ["'DIE_AREA=0 0 10 10'",
-                        "'CORE_AREA=2 2 8 8'"])),
+                        (["DIE_AREA=0 0 400 400",
+                        "CORE_AREA=2 2 298 298"] if ram in ("regfile_128x65","regfile_128x64") else
+                        ["DIE_AREA=0 0 10 10",
+                        "CORE_AREA=2 2 8 8"])),
                 'place': ['PLACE_DENSITY=' +
                 {'regfile_128x64':'0.42', 'regfile_128x65':'0.3'}.get(ram, '0.10')],
         },
@@ -585,8 +585,8 @@ build_openroad(
                 'floorplan': [
                         'RTLMP_FLOW=True',
                         'CORE_UTILIZATION=10',
-                        # "'DIE_AREA=0 0 200 200'",
-                        # "'CORE_AREA=2 2 198 198'"
+                        # "DIE_AREA=0 0 200 200",
+                        # "CORE_AREA=2 2 198 198"
                         ],
                 'place': ['PLACE_DENSITY=0.20'],
                 },
@@ -646,8 +646,8 @@ build_openroad(
                 'floorplan': [
                         'RTLMP_FLOW=True',
                         'CORE_UTILIZATION=50',
-                        # "'DIE_AREA=0 0 200 200'",
-                        # "'CORE_AREA=2 2 198 198'"
+                        # "DIE_AREA=0 0 200 200",
+                        # "CORE_AREA=2 2 198 198"
                         ],
                 'place': ['PLACE_DENSITY=0.30'],
                 },
@@ -1557,7 +1557,7 @@ build_openroad(
                 'synth': ['SYNTH_HIERARCHICAL=1'],
                 'floorplan': [
                         'CORE_UTILIZATION=20',
-                        # "'DIE_AREA=0 0 200 200'", "'CORE_AREA=2 2 198 198'",
+                        # "DIE_AREA=0 0 200 200", "CORE_AREA=2 2 198 198",
                         'MACRO_PLACE_HALO="20 20"',
                         'RTLMP_FLOW=True'
                         ],
@@ -1618,7 +1618,7 @@ build_openroad(
                 'floorplan': [
                         'CORE_UTILIZATION=10',
                         'CORE_ASPECT_RATIO=4',
-                        #"'DIE_AREA=0 0 500 500'", "'CORE_AREA=2 2 498 498'",
+                        #"DIE_AREA=0 0 500 500", "CORE_AREA=2 2 498 498",
                         'MACRO_PLACE_HALO="20 20"',
                         'RTLMP_FLOW=True'
                         ],
@@ -1644,7 +1644,7 @@ build_openroad(
                         #'CORE_UTILIZATION=50',
                         'MACRO_PLACE_HALO="20 20"',
                         'RTLMP_FLOW=True',
-                        "'DIE_AREA=0 0 1000 1000'", "'CORE_AREA=2 2 998 998'"
+                        "DIE_AREA=0 0 1000 1000", "CORE_AREA=2 2 998 998"
                         ],
                 'place': ['PLACE_DENSITY=0.28',
                 'PLACE_PINS_ARGS=-annealing'],
