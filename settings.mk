@@ -3,8 +3,7 @@
 
 export DESIGN_CONFIG?=config.mk
 export DESIGN_NAME?=DigitalTop
-export WORK_HOME?=bazel-bin/
-
+export WORK_HOME?=bazel-bin
 
 .PHONY: elapsed-all
 elapsed-all:

@@ -74,6 +74,7 @@ def build_openroad(
     
     stage_sources = dict(stage_sources)
 
+    SDC_FILE_CLOCK_PERIOD = "results/" + platform + "/%s/%s/clock_period.txt" %(output_folder_name, variant)
     stage_sources['synth'] = stage_sources.get('synth', []) + set(verilog_files)
     io_constraints_source = ([io_constraints] if io_constraints != None else [])
     stage_sources['floorplan'] = stage_sources.get('floorplan', []) + io_constraints_source
@@ -93,8 +94,7 @@ def build_openroad(
 
     stage_args['synth'] = stage_args.get('synth', []) + libs_args + [
         "VERILOG_FILES=" + ' '.join(set(verilog_files)),
-        "SDC_FILE=" + list(filter(stage_sources.get('synth', []), lambda s: s.endswith(".sdc")))[0]
-        ]
+        "SDC_FILE_CLOCK_PERIOD=" + SDC_FILE_CLOCK_PERIOD]
     stage_args['floorplan'] = stage_args.get('floorplan', []) + lefs_args + libs_args + (
             [] if len(macros) == 0 else [
                 'CORE_MARGIN=4',
@@ -144,16 +144,19 @@ def build_openroad(
     'generate_abstract': ['generate_abstract']
     }
 
-    stage_args['clock_period'] = stage_args['synth']
-    stage_args['synth_sdc'] = stage_args['synth']
-    stage_sources['clock_period'] = list(stage_sources['synth'])
-    stage_sources['synth_sdc'] = list(stage_sources['synth'])
+    SDC_FILE = list(filter(stage_sources.get('synth', []), lambda s: s.endswith(".sdc")))[0]
+    stage_args['clock_period'] = [
+        "SDC_FILE=" + SDC_FILE
+        ]
+    stage_args['synth_sdc'] = stage_args['clock_period']
+    stage_sources['clock_period'] = [SDC_FILE]
+    stage_sources['synth_sdc'] = [SDC_FILE]
     stage_sources['synth'] = list(filter(stage_sources['synth'], lambda s: not s.endswith(".sdc")))
     stage_sources['floorplan'] = stage_sources.get('floorplan', []) + [name + target_ext + '_synth']
 
     outs = {
         'clock_period':[
-            "results/" + platform + "/%s/%s/clock_period.txt" %(output_folder_name, variant)
+            SDC_FILE_CLOCK_PERIOD
         ],
         'synth_sdc':[
             "results/" + platform + "/%s/%s/1_synth.sdc" %(output_folder_name, variant)
@@ -214,7 +217,7 @@ def build_openroad(
     for stage in name_to_stage:
         stage_sources[stage] = (["bazel-" + stage + ".mk"] +
         all_sources +
-        macro_lib_targets +
+        (macro_lib_targets if stage not in ('clock_period', 'synth_sdc') else []) +
         (macro_lef_targets if stage not in ('synth', 'clock_period', 'synth_sdc') else []) +
         stage_sources.get(stage, []))
         stage_args[stage] = ["make"] + base_args + stage_args.get(stage, [])
@@ -252,7 +255,7 @@ def build_openroad(
     [run_binary(
         name = target_name + "_" + stage,
         tool = ":orfs",
-        srcs = stage_sources[stage] + ([name + target_ext + "_" + previous] if i > 1 else []) +
+        srcs = stage_sources[stage] + ([name + target_ext + "_" + previous] if stage not in ('clock_period', 'synth_sdc', 'synth') else []) +
         ([name + target_ext + "_generate_abstract_mock_area"] if mock_area != None and stage == "generate_abstract" else []),
         args = wrap_args(stage_args[stage]) +
         ["bazel-" + stage + ("_mock_area" if mock_area != None and stage == "generate_abstract" else ""),
