@@ -645,7 +645,7 @@ build_openroad(
                 'synth': ['SYNTH_HIERARCHICAL=1'],
                 'floorplan': [
                         'RTLMP_FLOW=True',
-                        'CORE_UTILIZATION=50',
+                        'CORE_UTILIZATION=20',
                         # "DIE_AREA=0 0 200 200",
                         # "CORE_AREA=2 2 198 198"
                         ],
@@ -653,7 +653,7 @@ build_openroad(
                 },
         mock_abstract=True,
         mock_stage='route',
-        mock_area=0.2
+        mock_area=0.33
         )
 
 
