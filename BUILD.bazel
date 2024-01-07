@@ -227,7 +227,7 @@ build_openroad(
                         'CORE_UTILIZATION=30',
                         'CORE_MARGIN=4',
                         #"DIE_AREA=0 0 350 350", "CORE_AREA=4 4 346 346",
-                        #'MACRO_PLACE_HALO="20 20"',
+                        #'MACRO_PLACE_HALO=20 20',
                         'RTLMP_FLOW=True'
                         ],
                 'place': ['PLACE_DENSITY=0.42',
@@ -314,7 +314,7 @@ build_openroad(
         execunits,
         stage_sources={'synth': ["constraints-top.sdc"]},
         stage_args={
-                'floorplan': ['CORE_UTILIZATION=10','MACRO_PLACE_HALO="50 50"'],
+                'floorplan': ['CORE_UTILIZATION=10','MACRO_PLACE_HALO=50 50'],
                 'place': ['PLACE_DENSITY=0.20']}
         )
 
@@ -538,7 +538,7 @@ build_openroad(
                 'synth': ['SYNTH_HIERARCHICAL=1'],
                 'floorplan': [
                         'CORE_UTILIZATION=40',
-                        'MACRO_PLACE_HALO="20 20"'
+                        'MACRO_PLACE_HALO=20 20'
                         # Too slow for now...
                         ,'RTLMP_FLOW=True'
                         ],
@@ -1558,7 +1558,7 @@ build_openroad(
                 'floorplan': [
                         'CORE_UTILIZATION=20',
                         # "DIE_AREA=0 0 200 200", "CORE_AREA=2 2 198 198",
-                        'MACRO_PLACE_HALO="20 20"',
+                        'MACRO_PLACE_HALO=20 20',
                         'RTLMP_FLOW=True'
                         ],
                 'place': ['PLACE_DENSITY=0.28',
@@ -1619,7 +1619,7 @@ build_openroad(
                         'CORE_UTILIZATION=10',
                         'CORE_ASPECT_RATIO=4',
                         #"DIE_AREA=0 0 500 500", "CORE_AREA=2 2 498 498",
-                        'MACRO_PLACE_HALO="20 20"',
+                        'MACRO_PLACE_HALO=20 20',
                         'RTLMP_FLOW=True'
                         ],
                 'place': ['PLACE_DENSITY=0.28',
@@ -1642,7 +1642,7 @@ build_openroad(
                 'synth': ['SYNTH_HIERARCHICAL=1'],
                 'floorplan': [
                         #'CORE_UTILIZATION=50',
-                        'MACRO_PLACE_HALO="20 20"',
+                        'MACRO_PLACE_HALO=20 20',
                         'RTLMP_FLOW=True',
                         "DIE_AREA=0 0 1000 1000", "CORE_AREA=2 2 998 998"
                         ],
@@ -1663,7 +1663,7 @@ build_openroad(
                 'synth': ['SYNTH_HIERARCHICAL=1'],
                 'floorplan': [
                         #'CORE_UTILIZATION=50',
-                        'MACRO_PLACE_HALO="20 20"',
+                        'MACRO_PLACE_HALO=20 20',
                         'RTLMP_FLOW=True',
                         "DIE_AREA=0 0 1000 1000", "CORE_AREA=2 2 998 998"
                         ],
