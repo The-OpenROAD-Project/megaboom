@@ -1556,7 +1556,7 @@ build_openroad(
         stage_args={
                 'synth': ['SYNTH_HIERARCHICAL=1'],
                 'floorplan': [
-                        'CORE_UTILIZATION=20',
+                        'CORE_UTILIZATION=10',
                         # "DIE_AREA=0 0 200 200", "CORE_AREA=2 2 198 198",
                         'MACRO_PLACE_HALO=20 20',
                         'RTLMP_FLOW=True'
@@ -1567,7 +1567,7 @@ build_openroad(
                 },
         mock_abstract=True,
         mock_stage='route',
-        mock_area=0.2
+        mock_area=0.1
         )
 
 branch_predictor_files = [
