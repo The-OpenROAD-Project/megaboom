@@ -43,7 +43,8 @@ def find_path():
             if not re.match(r'[0-9]+', d2):
                 continue
 
-            path3 = os.path.join(path2, d2, "execroot/_main/bazel-out/k8-fastbuild/bin")
+            path3 = os.path.join(path2, d2,
+                                 "execroot/_main/bazel-out/k8-fastbuild/bin")
             if not os.path.exists(path3):
                 continue
 
@@ -60,7 +61,7 @@ def recurse(path):
     for f in files:
         if os.path.isdir(os.path.join(path, f)):
             return recurse(os.path.join(path, f))
-        elif f.endswith(".tmp.log"):
+        elif f.endswith(".log"):
             return os.path.join(path, f)
     return None
 
