@@ -24,7 +24,7 @@ def find_path():
         sys.exit(1)
 
     dirs = os.listdir(path)
-    dirs.sort()
+    dirs.sort(key=lambda x: os.path.getmtime(os.path.join(path, x)), reverse=True)
     dirs.reverse()
 
     for d in dirs:
@@ -36,7 +36,7 @@ def find_path():
             continue
 
         dirs2 = os.listdir(path2)
-        dirs2.sort()
+        dirs2.sort(key=lambda x: os.path.getmtime(os.path.join(path2, x)), reverse=True)
         dirs2.reverse()
 
         for d2 in dirs2:
@@ -56,8 +56,7 @@ def find_path():
 
 def recurse(path):
     files = os.listdir(path)
-    files.sort()
-    files.reverse()
+    files.sort(key=lambda x: os.lstat(os.path.join(path, x)).st_mtime, reverse=True)
     for f in files:
         if os.path.isdir(os.path.join(path, f)):
             return recurse(os.path.join(path, f))
