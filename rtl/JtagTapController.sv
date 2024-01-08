@@ -1,4 +1,4 @@
-// Standard header to adapt well known macros to our needs.
+// Standard header to adapt well known macros for prints and assertions.
 
 // Users can define 'PRINTF_COND' to add an extra gate to prints.
 `ifndef PRINTF_COND_
@@ -9,20 +9,38 @@
   `endif // PRINTF_COND
 `endif // not def PRINTF_COND_
 
+// Users can define 'ASSERT_VERBOSE_COND' to add an extra gate to assert error printing.
+`ifndef ASSERT_VERBOSE_COND_
+  `ifdef ASSERT_VERBOSE_COND
+    `define ASSERT_VERBOSE_COND_ (`ASSERT_VERBOSE_COND)
+  `else  // ASSERT_VERBOSE_COND
+    `define ASSERT_VERBOSE_COND_ 1
+  `endif // ASSERT_VERBOSE_COND
+`endif // not def ASSERT_VERBOSE_COND_
+
+// Users can define 'STOP_COND' to add an extra gate to stop conditions.
+`ifndef STOP_COND_
+  `ifdef STOP_COND
+    `define STOP_COND_ (`STOP_COND)
+  `else  // STOP_COND
+    `define STOP_COND_ 1
+  `endif // STOP_COND
+`endif // not def STOP_COND_
+
 module JtagTapController(
   input        clock,
                reset,
                io_jtag_TMS,
                io_jtag_TDI,
-               io_control_jtag_reset,
-               io_dataChainIn_data,
   output       io_jtag_TDO_data,
+  input        io_control_jtag_reset,
   output [4:0] io_output_instruction,
   output       io_output_tapIsInTestLogicReset,
                io_dataChainOut_shift,
                io_dataChainOut_data,
                io_dataChainOut_capture,
-               io_dataChainOut_update
+               io_dataChainOut_update,
+  input        io_dataChainIn_data
 );
 
   wire       _irChain_io_chainOut_data;
@@ -39,10 +57,7 @@ module JtagTapController(
       activeInstruction <= 5'h1;
     end
     else begin
-      if (_io_dataChainOut_shift_T)
-        tdoReg <= io_dataChainIn_data;
-      else
-        tdoReg <= _irChain_io_chainOut_data;
+      tdoReg <= _io_dataChainOut_shift_T ? io_dataChainIn_data : _irChain_io_chainOut_data;
       if (&_stateMachine_io_currState)
         activeInstruction <= 5'h1;
       else if (_irChain_io_chainIn_update_T)

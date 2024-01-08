@@ -1,4 +1,4 @@
-// Standard header to adapt well known macros to our needs.
+// Standard header to adapt well known macros for prints and assertions.
 
 // Users can define 'PRINTF_COND' to add an extra gate to prints.
 `ifndef PRINTF_COND_
@@ -8,6 +8,24 @@
     `define PRINTF_COND_ 1
   `endif // PRINTF_COND
 `endif // not def PRINTF_COND_
+
+// Users can define 'ASSERT_VERBOSE_COND' to add an extra gate to assert error printing.
+`ifndef ASSERT_VERBOSE_COND_
+  `ifdef ASSERT_VERBOSE_COND
+    `define ASSERT_VERBOSE_COND_ (`ASSERT_VERBOSE_COND)
+  `else  // ASSERT_VERBOSE_COND
+    `define ASSERT_VERBOSE_COND_ 1
+  `endif // ASSERT_VERBOSE_COND
+`endif // not def ASSERT_VERBOSE_COND_
+
+// Users can define 'STOP_COND' to add an extra gate to stop conditions.
+`ifndef STOP_COND_
+  `ifdef STOP_COND
+    `define STOP_COND_ (`STOP_COND)
+  `else  // STOP_COND
+    `define STOP_COND_ 1
+  `endif // STOP_COND
+`endif // not def STOP_COND_
 
 module MulAddRecFNToRaw_preMul_1(
   input  [1:0]  io_op,
@@ -35,9 +53,9 @@ module MulAddRecFNToRaw_preMul_1(
   output        io_toPostMul_bit0AlignedSigC
 );
 
-  wire        rawA__isNaN = (&(io_a[31:30])) & io_a[29];
-  wire        rawB__isNaN = (&(io_b[31:30])) & io_b[29];
-  wire        rawC__isNaN = (&(io_c[31:30])) & io_c[29];
+  wire        rawA_isNaN = (&(io_a[31:30])) & io_a[29];
+  wire        rawB_isNaN = (&(io_b[31:30])) & io_b[29];
+  wire        rawC_isNaN = (&(io_c[31:30])) & io_c[29];
   wire        signProd = io_a[32] ^ io_b[32] ^ io_op[1];
   wire [10:0] _sExpAlignedProd_T_1 = {2'h0, io_a[31:23]} + {2'h0, io_b[31:23]} - 11'hE5;
   wire        doSubMags = signProd ^ io_c[32] ^ io_op[0];
@@ -51,14 +69,14 @@ module MulAddRecFNToRaw_preMul_1(
   assign io_mulAddA = {|(io_a[31:29]), io_a[22:0]};
   assign io_mulAddB = {|(io_b[31:29]), io_b[22:0]};
   assign io_mulAddC = mainAlignedSigC[50:3];
-  assign io_toPostMul_isSigNaNAny = rawA__isNaN & ~(io_a[22]) | rawB__isNaN & ~(io_b[22]) | rawC__isNaN & ~(io_c[22]);
-  assign io_toPostMul_isNaNAOrB = rawA__isNaN | rawB__isNaN;
+  assign io_toPostMul_isSigNaNAny = rawA_isNaN & ~(io_a[22]) | rawB_isNaN & ~(io_b[22]) | rawC_isNaN & ~(io_c[22]);
+  assign io_toPostMul_isNaNAOrB = rawA_isNaN | rawB_isNaN;
   assign io_toPostMul_isInfA = (&(io_a[31:30])) & ~(io_a[29]);
   assign io_toPostMul_isZeroA = ~(|(io_a[31:29]));
   assign io_toPostMul_isInfB = (&(io_b[31:30])) & ~(io_b[29]);
   assign io_toPostMul_isZeroB = ~(|(io_b[31:29]));
   assign io_toPostMul_signProd = signProd;
-  assign io_toPostMul_isNaNC = rawC__isNaN;
+  assign io_toPostMul_isNaNC = rawC_isNaN;
   assign io_toPostMul_isInfC = (&(io_c[31:30])) & ~(io_c[29]);
   assign io_toPostMul_isZeroC = ~(|(io_c[31:29]));
   assign io_toPostMul_sExpSum = CIsDominant ? {1'h0, io_c[31:23]} : _sExpAlignedProd_T_1[9:0] - 10'h18;

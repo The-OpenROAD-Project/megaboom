@@ -1,4 +1,4 @@
-// Standard header to adapt well known macros to our needs.
+// Standard header to adapt well known macros for prints and assertions.
 
 // Users can define 'PRINTF_COND' to add an extra gate to prints.
 `ifndef PRINTF_COND_
@@ -8,6 +8,24 @@
     `define PRINTF_COND_ 1
   `endif // PRINTF_COND
 `endif // not def PRINTF_COND_
+
+// Users can define 'ASSERT_VERBOSE_COND' to add an extra gate to assert error printing.
+`ifndef ASSERT_VERBOSE_COND_
+  `ifdef ASSERT_VERBOSE_COND
+    `define ASSERT_VERBOSE_COND_ (`ASSERT_VERBOSE_COND)
+  `else  // ASSERT_VERBOSE_COND
+    `define ASSERT_VERBOSE_COND_ 1
+  `endif // ASSERT_VERBOSE_COND
+`endif // not def ASSERT_VERBOSE_COND_
+
+// Users can define 'STOP_COND' to add an extra gate to stop conditions.
+`ifndef STOP_COND_
+  `ifdef STOP_COND
+    `define STOP_COND_ (`STOP_COND)
+  `else  // STOP_COND
+    `define STOP_COND_ 1
+  `endif // STOP_COND
+`endif // not def STOP_COND_
 
 module PipelinedMultiplier(
   input         clock,
@@ -20,39 +38,33 @@ module PipelinedMultiplier(
   output [63:0] io_resp_bits_data
 );
 
-  reg          in_valid;
-  reg  [3:0]   in_bits_fn;
-  reg          in_bits_dw;
-  reg  [63:0]  in_bits_in1;
-  reg  [63:0]  in_bits_in2;
+  reg          in_pipe_v;
+  reg  [3:0]   in_pipe_b_fn;
+  reg          in_pipe_b_dw;
+  reg  [63:0]  in_pipe_b_in1;
+  reg  [63:0]  in_pipe_b_in2;
   reg          io_resp_bits_data_pipe_v;
   reg  [63:0]  io_resp_bits_data_pipe_b;
   reg  [63:0]  io_resp_bits_data_pipe_pipe_b;
-  wire [1:0]   decoded_invInputs = ~(in_bits_fn[1:0]);
-  wire [127:0] prod = {{64{(|{decoded_invInputs[1], &{decoded_invInputs[0], in_bits_fn[1]}}) & in_bits_in1[63]}}, in_bits_in1} * {{64{decoded_invInputs[1] & in_bits_in2[63]}}, in_bits_in2};
+  wire [1:0]   decoded_invInputs = ~(in_pipe_b_fn[1:0]);
+  wire [127:0] prod = {{64{(|{decoded_invInputs[1], &{decoded_invInputs[0], in_pipe_b_fn[1]}}) & in_pipe_b_in1[63]}}, in_pipe_b_in1} * {{64{decoded_invInputs[1] & in_pipe_b_in2[63]}}, in_pipe_b_in2};
   always @(posedge clock) begin
     if (reset) begin
-      in_valid <= 1'h0;
+      in_pipe_v <= 1'h0;
       io_resp_bits_data_pipe_v <= 1'h0;
     end
     else begin
-      in_valid <= io_req_valid;
-      io_resp_bits_data_pipe_v <= in_valid;
+      in_pipe_v <= io_req_valid;
+      io_resp_bits_data_pipe_v <= in_pipe_v;
     end
     if (io_req_valid) begin
-      in_bits_fn <= io_req_bits_fn;
-      in_bits_dw <= io_req_bits_dw;
-      in_bits_in1 <= io_req_bits_in1;
-      in_bits_in2 <= io_req_bits_in2;
+      in_pipe_b_fn <= io_req_bits_fn;
+      in_pipe_b_dw <= io_req_bits_dw;
+      in_pipe_b_in1 <= io_req_bits_in1;
+      in_pipe_b_in2 <= io_req_bits_in2;
     end
-    if (in_valid) begin
-      if (|{in_bits_fn[0], in_bits_fn[1]})
-        io_resp_bits_data_pipe_b <= prod[127:64];
-      else if (in_bits_dw)
-        io_resp_bits_data_pipe_b <= prod[63:0];
-      else
-        io_resp_bits_data_pipe_b <= {{32{prod[31]}}, prod[31:0]};
-    end
+    if (in_pipe_v)
+      io_resp_bits_data_pipe_b <= (|{in_pipe_b_fn[0], in_pipe_b_fn[1]}) ? prod[127:64] : in_pipe_b_dw ? prod[63:0] : {{32{prod[31]}}, prod[31:0]};
     if (io_resp_bits_data_pipe_v)
       io_resp_bits_data_pipe_pipe_b <= io_resp_bits_data_pipe_b;
   end // always @(posedge)

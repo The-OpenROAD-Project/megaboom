@@ -1,4 +1,4 @@
-// Standard header to adapt well known macros to our needs.
+// Standard header to adapt well known macros for prints and assertions.
 
 // Users can define 'PRINTF_COND' to add an extra gate to prints.
 `ifndef PRINTF_COND_
@@ -9,10 +9,29 @@
   `endif // PRINTF_COND
 `endif // not def PRINTF_COND_
 
+// Users can define 'ASSERT_VERBOSE_COND' to add an extra gate to assert error printing.
+`ifndef ASSERT_VERBOSE_COND_
+  `ifdef ASSERT_VERBOSE_COND
+    `define ASSERT_VERBOSE_COND_ (`ASSERT_VERBOSE_COND)
+  `else  // ASSERT_VERBOSE_COND
+    `define ASSERT_VERBOSE_COND_ 1
+  `endif // ASSERT_VERBOSE_COND
+`endif // not def ASSERT_VERBOSE_COND_
+
+// Users can define 'STOP_COND' to add an extra gate to stop conditions.
+`ifndef STOP_COND_
+  `ifdef STOP_COND
+    `define STOP_COND_ (`STOP_COND)
+  `else  // STOP_COND
+    `define STOP_COND_ 1
+  `endif // STOP_COND
+`endif // not def STOP_COND_
+
 module TLFragmenter_3(
   input         clock,
                 reset,
-                auto_in_a_valid,
+  output        auto_in_a_ready,
+  input         auto_in_a_valid,
   input  [2:0]  auto_in_a_bits_opcode,
                 auto_in_a_bits_param,
                 auto_in_a_bits_size,
@@ -22,18 +41,12 @@ module TLFragmenter_3(
   input  [63:0] auto_in_a_bits_data,
   input         auto_in_a_bits_corrupt,
                 auto_in_d_ready,
-                auto_out_a_ready,
-                auto_out_d_valid,
-  input  [2:0]  auto_out_d_bits_opcode,
-  input  [1:0]  auto_out_d_bits_size,
-  input  [10:0] auto_out_d_bits_source,
-  input  [63:0] auto_out_d_bits_data,
-  output        auto_in_a_ready,
-                auto_in_d_valid,
+  output        auto_in_d_valid,
   output [2:0]  auto_in_d_bits_opcode,
                 auto_in_d_bits_size,
   output [6:0]  auto_in_d_bits_source,
   output [63:0] auto_in_d_bits_data,
+  input         auto_out_a_ready,
   output        auto_out_a_valid,
   output [2:0]  auto_out_a_bits_opcode,
                 auto_out_a_bits_param,
@@ -43,7 +56,12 @@ module TLFragmenter_3(
   output [7:0]  auto_out_a_bits_mask,
   output [63:0] auto_out_a_bits_data,
   output        auto_out_a_bits_corrupt,
-                auto_out_d_ready
+                auto_out_d_ready,
+  input         auto_out_d_valid,
+  input  [2:0]  auto_out_d_bits_opcode,
+  input  [1:0]  auto_out_d_bits_size,
+  input  [10:0] auto_out_d_bits_source,
+  input  [63:0] auto_out_d_bits_data
 );
 
   wire        _repeater_io_full;
@@ -65,14 +83,30 @@ module TLFragmenter_3(
   wire [2:0]  dFirst_size = {|dFirst_size_hi, |(_dFirst_size_T_8[2:1]), _dFirst_size_T_8[2] | _dFirst_size_T_8[0]};
   wire        drop = ~(auto_out_d_bits_opcode[0]) & (|(auto_out_d_bits_source[2:0]));
   wire        nodeOut_d_ready = auto_in_d_ready | drop;
-  wire [2:0]  nodeIn_d_bits_size = dFirst ? dFirst_size : dOrig;
   wire        nodeIn_d_valid = auto_out_d_valid & ~drop;
+  wire [2:0]  nodeIn_d_bits_size = dFirst ? dFirst_size : dOrig;
   wire [12:0] _aOrigOH1_T_1 = 13'h3F << _repeater_io_deq_bits_size;
   reg  [2:0]  gennum;
   wire        aFirst = gennum == 3'h0;
   wire [2:0]  _old_gennum1_T_1 = gennum - 3'h1;
   wire [2:0]  aFragnum = aFirst ? ~(_aOrigOH1_T_1[5:3]) : _old_gennum1_T_1;
   reg         aToggle_r;
+  `ifndef SYNTHESIS
+    always @(posedge clock) begin
+      if (~reset & ~(~_repeater_io_full | _repeater_io_deq_bits_opcode[2])) begin
+        if (`ASSERT_VERBOSE_COND_)
+          $error("Assertion failed\n    at Fragmenter.scala:311 assert (!repeater.io.full || !aHasData)\n");
+        if (`STOP_COND_)
+          $fatal;
+      end
+      if (~reset & ~(~_repeater_io_full | (&_repeater_io_deq_bits_mask))) begin
+        if (`ASSERT_VERBOSE_COND_)
+          $error("Assertion failed\n    at Fragmenter.scala:314 assert (!repeater.io.full || in_a.bits.mask === fullMask)\n");
+        if (`STOP_COND_)
+          $fatal;
+      end
+    end // always @(posedge)
+  `endif // not def SYNTHESIS
   wire        _GEN_0 = nodeOut_d_ready & auto_out_d_valid;
   wire        _GEN_1 = _GEN_0 & dFirst;
   always @(posedge clock) begin
@@ -102,10 +136,30 @@ module TLFragmenter_3(
     if (aFirst)
       aToggle_r <= dToggle;
   end // always @(posedge)
-  Repeater_5 repeater (
+  TLMonitor_24 monitor (
+    .clock                (clock),
+    .reset                (reset),
+    .io_in_a_ready        (_repeater_io_enq_ready),
+    .io_in_a_valid        (auto_in_a_valid),
+    .io_in_a_bits_opcode  (auto_in_a_bits_opcode),
+    .io_in_a_bits_param   (auto_in_a_bits_param),
+    .io_in_a_bits_size    (auto_in_a_bits_size),
+    .io_in_a_bits_source  (auto_in_a_bits_source),
+    .io_in_a_bits_address (auto_in_a_bits_address),
+    .io_in_a_bits_mask    (auto_in_a_bits_mask),
+    .io_in_a_bits_corrupt (auto_in_a_bits_corrupt),
+    .io_in_d_ready        (auto_in_d_ready),
+    .io_in_d_valid        (nodeIn_d_valid),
+    .io_in_d_bits_opcode  (auto_out_d_bits_opcode),
+    .io_in_d_bits_size    (nodeIn_d_bits_size),
+    .io_in_d_bits_source  (auto_out_d_bits_source[10:4])
+  );
+  Repeater_3 repeater (
     .clock               (clock),
     .reset               (reset),
     .io_repeat           (_repeater_io_deq_bits_opcode[2] & (|aFragnum)),
+    .io_full             (_repeater_io_full),
+    .io_enq_ready        (_repeater_io_enq_ready),
     .io_enq_valid        (auto_in_a_valid),
     .io_enq_bits_opcode  (auto_in_a_bits_opcode),
     .io_enq_bits_param   (auto_in_a_bits_param),
@@ -115,8 +169,6 @@ module TLFragmenter_3(
     .io_enq_bits_mask    (auto_in_a_bits_mask),
     .io_enq_bits_corrupt (auto_in_a_bits_corrupt),
     .io_deq_ready        (auto_out_a_ready),
-    .io_full             (_repeater_io_full),
-    .io_enq_ready        (_repeater_io_enq_ready),
     .io_deq_valid        (_repeater_io_deq_valid),
     .io_deq_bits_opcode  (_repeater_io_deq_bits_opcode),
     .io_deq_bits_param   (auto_out_a_bits_param),

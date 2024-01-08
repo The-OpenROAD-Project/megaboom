@@ -1,4 +1,4 @@
-// Standard header to adapt well known macros to our needs.
+// Standard header to adapt well known macros for prints and assertions.
 
 // Users can define 'PRINTF_COND' to add an extra gate to prints.
 `ifndef PRINTF_COND_
@@ -9,10 +9,32 @@
   `endif // PRINTF_COND
 `endif // not def PRINTF_COND_
 
+// Users can define 'ASSERT_VERBOSE_COND' to add an extra gate to assert error printing.
+`ifndef ASSERT_VERBOSE_COND_
+  `ifdef ASSERT_VERBOSE_COND
+    `define ASSERT_VERBOSE_COND_ (`ASSERT_VERBOSE_COND)
+  `else  // ASSERT_VERBOSE_COND
+    `define ASSERT_VERBOSE_COND_ 1
+  `endif // ASSERT_VERBOSE_COND
+`endif // not def ASSERT_VERBOSE_COND_
+
+// Users can define 'STOP_COND' to add an extra gate to stop conditions.
+`ifndef STOP_COND_
+  `ifdef STOP_COND
+    `define STOP_COND_ (`STOP_COND)
+  `else  // STOP_COND
+    `define STOP_COND_ 1
+  `endif // STOP_COND
+`endif // not def STOP_COND_
+
 module RenameStage_1(
   input        clock,
                reset,
-               io_kill,
+  output       io_ren_stalls_0,
+               io_ren_stalls_1,
+               io_ren_stalls_2,
+               io_ren_stalls_3,
+  input        io_kill,
                io_dec_uops_0_is_br,
                io_dec_uops_0_is_jalr,
                io_dec_uops_0_is_sfb,
@@ -65,6 +87,38 @@ module RenameStage_1(
                io_dec_uops_3_lrs1_rtype,
                io_dec_uops_3_lrs2_rtype,
   input        io_dec_uops_3_frs3_en,
+  output [6:0] io_ren2_uops_0_pdst,
+               io_ren2_uops_0_prs1,
+               io_ren2_uops_0_prs2,
+               io_ren2_uops_0_prs3,
+  output       io_ren2_uops_0_prs1_busy,
+               io_ren2_uops_0_prs2_busy,
+               io_ren2_uops_0_prs3_busy,
+  output [6:0] io_ren2_uops_0_stale_pdst,
+               io_ren2_uops_1_pdst,
+               io_ren2_uops_1_prs1,
+               io_ren2_uops_1_prs2,
+               io_ren2_uops_1_prs3,
+  output       io_ren2_uops_1_prs1_busy,
+               io_ren2_uops_1_prs2_busy,
+               io_ren2_uops_1_prs3_busy,
+  output [6:0] io_ren2_uops_1_stale_pdst,
+               io_ren2_uops_2_pdst,
+               io_ren2_uops_2_prs1,
+               io_ren2_uops_2_prs2,
+               io_ren2_uops_2_prs3,
+  output       io_ren2_uops_2_prs1_busy,
+               io_ren2_uops_2_prs2_busy,
+               io_ren2_uops_2_prs3_busy,
+  output [6:0] io_ren2_uops_2_stale_pdst,
+               io_ren2_uops_3_pdst,
+               io_ren2_uops_3_prs1,
+               io_ren2_uops_3_prs2,
+               io_ren2_uops_3_prs3,
+  output       io_ren2_uops_3_prs1_busy,
+               io_ren2_uops_3_prs2_busy,
+               io_ren2_uops_3_prs3_busy,
+  output [6:0] io_ren2_uops_3_stale_pdst,
   input  [4:0] io_brupdate_b2_uop_br_tag,
   input        io_brupdate_b2_mispredict,
                io_dis_fire_0,
@@ -113,43 +167,7 @@ module RenameStage_1(
                io_rbk_valids_2,
                io_rbk_valids_3,
                io_rollback,
-               io_debug_rob_empty,
-  output       io_ren_stalls_0,
-               io_ren_stalls_1,
-               io_ren_stalls_2,
-               io_ren_stalls_3,
-  output [6:0] io_ren2_uops_0_pdst,
-               io_ren2_uops_0_prs1,
-               io_ren2_uops_0_prs2,
-               io_ren2_uops_0_prs3,
-  output       io_ren2_uops_0_prs1_busy,
-               io_ren2_uops_0_prs2_busy,
-               io_ren2_uops_0_prs3_busy,
-  output [6:0] io_ren2_uops_0_stale_pdst,
-               io_ren2_uops_1_pdst,
-               io_ren2_uops_1_prs1,
-               io_ren2_uops_1_prs2,
-               io_ren2_uops_1_prs3,
-  output       io_ren2_uops_1_prs1_busy,
-               io_ren2_uops_1_prs2_busy,
-               io_ren2_uops_1_prs3_busy,
-  output [6:0] io_ren2_uops_1_stale_pdst,
-               io_ren2_uops_2_pdst,
-               io_ren2_uops_2_prs1,
-               io_ren2_uops_2_prs2,
-               io_ren2_uops_2_prs3,
-  output       io_ren2_uops_2_prs1_busy,
-               io_ren2_uops_2_prs2_busy,
-               io_ren2_uops_2_prs3_busy,
-  output [6:0] io_ren2_uops_2_stale_pdst,
-               io_ren2_uops_3_pdst,
-               io_ren2_uops_3_prs1,
-               io_ren2_uops_3_prs2,
-               io_ren2_uops_3_prs3,
-  output       io_ren2_uops_3_prs1_busy,
-               io_ren2_uops_3_prs2_busy,
-               io_ren2_uops_3_prs3_busy,
-  output [6:0] io_ren2_uops_3_stale_pdst
+               io_debug_rob_empty
 );
 
   wire       _busytable_io_busy_resps_0_prs1_busy;
@@ -205,23 +223,6 @@ module RenameStage_1(
   reg  [1:0] r_uop_lrs1_rtype;
   reg  [1:0] r_uop_lrs2_rtype;
   reg        r_uop_frs3_en;
-  wire       _io_ren_stalls_0_T = r_uop_dst_rtype == 2'h1;
-  wire       ren2_alloc_reqs_0 = r_uop_ldst_val & _io_ren_stalls_0_T & io_dis_fire_0;
-  reg  [5:0] r_uop_1_ldst;
-  reg        r_uop_1_ldst_val;
-  reg  [1:0] r_uop_1_dst_rtype;
-  wire       _io_ren_stalls_1_T = r_uop_1_dst_rtype == 2'h1;
-  wire       ren2_alloc_reqs_1 = r_uop_1_ldst_val & _io_ren_stalls_1_T & io_dis_fire_1;
-  reg  [5:0] r_uop_2_ldst;
-  reg        r_uop_2_ldst_val;
-  reg  [1:0] r_uop_2_dst_rtype;
-  wire       _io_ren_stalls_2_T = r_uop_2_dst_rtype == 2'h1;
-  wire       ren2_alloc_reqs_2 = r_uop_2_ldst_val & _io_ren_stalls_2_T & io_dis_fire_2;
-  reg  [5:0] r_uop_3_ldst;
-  reg        r_uop_3_ldst_val;
-  reg  [1:0] r_uop_3_dst_rtype;
-  wire       _io_ren_stalls_3_T = r_uop_3_dst_rtype == 2'h1;
-  wire       ren2_alloc_reqs_3 = r_uop_3_ldst_val & _io_ren_stalls_3_T & io_dis_fire_3;
   reg        r_uop_1_is_br;
   reg        r_uop_1_is_jalr;
   reg        r_uop_1_is_sfb;
@@ -230,9 +231,12 @@ module RenameStage_1(
   reg  [6:0] r_uop_1_prs2;
   reg  [6:0] r_uop_1_prs3;
   reg  [6:0] r_uop_1_stale_pdst;
+  reg  [5:0] r_uop_1_ldst;
   reg  [5:0] r_uop_1_lrs1;
   reg  [5:0] r_uop_1_lrs2;
   reg  [5:0] r_uop_1_lrs3;
+  reg        r_uop_1_ldst_val;
+  reg  [1:0] r_uop_1_dst_rtype;
   reg  [1:0] r_uop_1_lrs1_rtype;
   reg  [1:0] r_uop_1_lrs2_rtype;
   reg        r_uop_1_frs3_en;
@@ -244,9 +248,12 @@ module RenameStage_1(
   reg  [6:0] r_uop_2_prs2;
   reg  [6:0] r_uop_2_prs3;
   reg  [6:0] r_uop_2_stale_pdst;
+  reg  [5:0] r_uop_2_ldst;
   reg  [5:0] r_uop_2_lrs1;
   reg  [5:0] r_uop_2_lrs2;
   reg  [5:0] r_uop_2_lrs3;
+  reg        r_uop_2_ldst_val;
+  reg  [1:0] r_uop_2_dst_rtype;
   reg  [1:0] r_uop_2_lrs1_rtype;
   reg  [1:0] r_uop_2_lrs2_rtype;
   reg        r_uop_2_frs3_en;
@@ -258,24 +265,51 @@ module RenameStage_1(
   reg  [6:0] r_uop_3_prs2;
   reg  [6:0] r_uop_3_prs3;
   reg  [6:0] r_uop_3_stale_pdst;
+  reg  [5:0] r_uop_3_ldst;
   reg  [5:0] r_uop_3_lrs1;
   reg  [5:0] r_uop_3_lrs2;
   reg  [5:0] r_uop_3_lrs3;
+  reg        r_uop_3_ldst_val;
+  reg  [1:0] r_uop_3_dst_rtype;
   reg  [1:0] r_uop_3_lrs1_rtype;
   reg  [1:0] r_uop_3_lrs2_rtype;
   reg        r_uop_3_frs3_en;
+  wire       _io_ren_stalls_0_T = r_uop_dst_rtype == 2'h1;
+  wire       ren2_alloc_reqs_0 = r_uop_ldst_val & _io_ren_stalls_0_T & io_dis_fire_0;
   wire       ren2_br_tags_0_valid = io_dis_fire_0 & (r_uop_is_br & ~r_uop_is_sfb | r_uop_is_jalr);
   wire       _rbk_valids_0_T = io_com_uops_0_dst_rtype == 2'h1;
   wire       rbk_valids_0 = io_com_uops_0_ldst_val & _rbk_valids_0_T & io_rbk_valids_0;
+  wire       _io_ren_stalls_1_T = r_uop_1_dst_rtype == 2'h1;
+  wire       ren2_alloc_reqs_1 = r_uop_1_ldst_val & _io_ren_stalls_1_T & io_dis_fire_1;
   wire       ren2_br_tags_1_valid = io_dis_fire_1 & (r_uop_1_is_br & ~r_uop_1_is_sfb | r_uop_1_is_jalr);
   wire       _rbk_valids_1_T = io_com_uops_1_dst_rtype == 2'h1;
   wire       rbk_valids_1 = io_com_uops_1_ldst_val & _rbk_valids_1_T & io_rbk_valids_1;
+  wire       _io_ren_stalls_2_T = r_uop_2_dst_rtype == 2'h1;
+  wire       ren2_alloc_reqs_2 = r_uop_2_ldst_val & _io_ren_stalls_2_T & io_dis_fire_2;
   wire       ren2_br_tags_2_valid = io_dis_fire_2 & (r_uop_2_is_br & ~r_uop_2_is_sfb | r_uop_2_is_jalr);
   wire       _rbk_valids_2_T = io_com_uops_2_dst_rtype == 2'h1;
   wire       rbk_valids_2 = io_com_uops_2_ldst_val & _rbk_valids_2_T & io_rbk_valids_2;
+  wire       _io_ren_stalls_3_T = r_uop_3_dst_rtype == 2'h1;
+  wire       ren2_alloc_reqs_3 = r_uop_3_ldst_val & _io_ren_stalls_3_T & io_dis_fire_3;
   wire       ren2_br_tags_3_valid = io_dis_fire_3 & (r_uop_3_is_br & ~r_uop_3_is_sfb | r_uop_3_is_jalr);
   wire       _rbk_valids_3_T = io_com_uops_3_dst_rtype == 2'h1;
   wire       rbk_valids_3 = io_com_uops_3_ldst_val & _rbk_valids_3_T & io_rbk_valids_3;
+  `ifndef SYNTHESIS
+    always @(posedge clock) begin
+      if (~reset & ~((~ren2_alloc_reqs_0 | (|_freelist_io_alloc_pregs_0_bits)) & (~ren2_alloc_reqs_1 | (|_freelist_io_alloc_pregs_1_bits)) & (~ren2_alloc_reqs_2 | (|_freelist_io_alloc_pregs_2_bits)) & (~ren2_alloc_reqs_3 | (|_freelist_io_alloc_pregs_3_bits)))) begin
+        if (`ASSERT_VERBOSE_COND_)
+          $error("Assertion failed: [rename-stage] A uop is trying to allocate the zero physical register.\n    at rename-stage.scala:300 assert (ren2_alloc_reqs zip freelist.io.alloc_pregs map {case (r,p) => !r || p.bits =/= 0.U} reduce (_&&_),\n");
+        if (`STOP_COND_)
+          $fatal;
+      end
+      if (~reset & (io_wakeups_0_valid & io_wakeups_0_bits_uop_dst_rtype != 2'h1 | io_wakeups_1_valid & io_wakeups_1_bits_uop_dst_rtype != 2'h1 | io_wakeups_2_valid & io_wakeups_2_bits_uop_dst_rtype != 2'h1 | io_wakeups_3_valid & io_wakeups_3_bits_uop_dst_rtype != 2'h1)) begin
+        if (`ASSERT_VERBOSE_COND_)
+          $error("Assertion failed: [rename] Wakeup has wrong rtype.\n    at rename-stage.scala:317 assert (!(io.wakeups.map(x => x.valid && x.bits.uop.dst_rtype =/= rtype).reduce(_||_)),\n");
+        if (`STOP_COND_)
+          $fatal;
+      end
+    end // always @(posedge)
+  `endif // not def SYNTHESIS
   wire       bypassed_uop_bypass_sel_rs1_0 = ren2_alloc_reqs_0 & r_uop_ldst == r_uop_1_lrs1;
   wire       bypassed_uop_bypass_sel_rs2_0 = ren2_alloc_reqs_0 & r_uop_ldst == r_uop_1_lrs2;
   wire       bypassed_uop_bypass_sel_rs3_0 = ren2_alloc_reqs_0 & r_uop_ldst == r_uop_1_lrs3;
@@ -314,86 +348,86 @@ module RenameStage_1(
   wire       bypassed_uop_do_bypass_rs2_1 = bypassed_uop_bypass_hits_rs2_0_2 | bypassed_uop_bypass_hits_rs2_1_1 | bypassed_uop_bypass_hits_rs2_2;
   wire       bypassed_uop_do_bypass_rs3_1 = bypassed_uop_bypass_hits_rs3_0_2 | bypassed_uop_bypass_hits_rs3_1_1 | bypassed_uop_bypass_hits_rs3_2;
   wire       _GEN = io_kill | ~io_dis_ready;
-  wire [5:0] next_uop_ldst = _GEN ? r_uop_ldst : io_dec_uops_0_ldst;
-  wire [5:0] next_uop_lrs1 = _GEN ? r_uop_lrs1 : io_dec_uops_0_lrs1;
-  wire [5:0] next_uop_lrs2 = _GEN ? r_uop_lrs2 : io_dec_uops_0_lrs2;
-  wire [5:0] next_uop_lrs3 = _GEN ? r_uop_lrs3 : io_dec_uops_0_lrs3;
-  wire       r_uop_bypass_hits_rs1_0 = ren2_alloc_reqs_0 & r_uop_ldst == next_uop_lrs1;
-  wire       r_uop_bypass_hits_rs1_1 = ren2_alloc_reqs_1 & r_uop_1_ldst == next_uop_lrs1;
-  wire       r_uop_bypass_hits_rs1_2 = ren2_alloc_reqs_2 & r_uop_2_ldst == next_uop_lrs1;
-  wire       r_uop_bypass_hits_rs1_3 = ren2_alloc_reqs_3 & r_uop_3_ldst == next_uop_lrs1;
-  wire       r_uop_bypass_hits_rs2_0 = ren2_alloc_reqs_0 & r_uop_ldst == next_uop_lrs2;
-  wire       r_uop_bypass_hits_rs2_1 = ren2_alloc_reqs_1 & r_uop_1_ldst == next_uop_lrs2;
-  wire       r_uop_bypass_hits_rs2_2 = ren2_alloc_reqs_2 & r_uop_2_ldst == next_uop_lrs2;
-  wire       r_uop_bypass_hits_rs2_3 = ren2_alloc_reqs_3 & r_uop_3_ldst == next_uop_lrs2;
-  wire       r_uop_bypass_hits_rs3_0 = ren2_alloc_reqs_0 & r_uop_ldst == next_uop_lrs3;
-  wire       r_uop_bypass_hits_rs3_1 = ren2_alloc_reqs_1 & r_uop_1_ldst == next_uop_lrs3;
-  wire       r_uop_bypass_hits_rs3_2 = ren2_alloc_reqs_2 & r_uop_2_ldst == next_uop_lrs3;
-  wire       r_uop_bypass_hits_rs3_3 = ren2_alloc_reqs_3 & r_uop_3_ldst == next_uop_lrs3;
-  wire       r_uop_bypass_hits_dst_0 = ren2_alloc_reqs_0 & r_uop_ldst == next_uop_ldst;
-  wire       r_uop_bypass_hits_dst_1 = ren2_alloc_reqs_1 & r_uop_1_ldst == next_uop_ldst;
-  wire       r_uop_bypass_hits_dst_2 = ren2_alloc_reqs_2 & r_uop_2_ldst == next_uop_ldst;
-  wire       r_uop_bypass_hits_dst_3 = ren2_alloc_reqs_3 & r_uop_3_ldst == next_uop_ldst;
-  wire [5:0] next_uop_1_ldst = _GEN ? r_uop_1_ldst : io_dec_uops_1_ldst;
-  wire [5:0] next_uop_1_lrs1 = _GEN ? r_uop_1_lrs1 : io_dec_uops_1_lrs1;
-  wire [5:0] next_uop_1_lrs2 = _GEN ? r_uop_1_lrs2 : io_dec_uops_1_lrs2;
-  wire [5:0] next_uop_1_lrs3 = _GEN ? r_uop_1_lrs3 : io_dec_uops_1_lrs3;
-  wire       r_uop_bypass_hits_rs1_0_1 = ren2_alloc_reqs_0 & r_uop_ldst == next_uop_1_lrs1;
-  wire       r_uop_bypass_hits_rs1_1_1 = ren2_alloc_reqs_1 & r_uop_1_ldst == next_uop_1_lrs1;
-  wire       r_uop_bypass_hits_rs1_2_1 = ren2_alloc_reqs_2 & r_uop_2_ldst == next_uop_1_lrs1;
-  wire       r_uop_bypass_hits_rs1_3_1 = ren2_alloc_reqs_3 & r_uop_3_ldst == next_uop_1_lrs1;
-  wire       r_uop_bypass_hits_rs2_0_1 = ren2_alloc_reqs_0 & r_uop_ldst == next_uop_1_lrs2;
-  wire       r_uop_bypass_hits_rs2_1_1 = ren2_alloc_reqs_1 & r_uop_1_ldst == next_uop_1_lrs2;
-  wire       r_uop_bypass_hits_rs2_2_1 = ren2_alloc_reqs_2 & r_uop_2_ldst == next_uop_1_lrs2;
-  wire       r_uop_bypass_hits_rs2_3_1 = ren2_alloc_reqs_3 & r_uop_3_ldst == next_uop_1_lrs2;
-  wire       r_uop_bypass_hits_rs3_0_1 = ren2_alloc_reqs_0 & r_uop_ldst == next_uop_1_lrs3;
-  wire       r_uop_bypass_hits_rs3_1_1 = ren2_alloc_reqs_1 & r_uop_1_ldst == next_uop_1_lrs3;
-  wire       r_uop_bypass_hits_rs3_2_1 = ren2_alloc_reqs_2 & r_uop_2_ldst == next_uop_1_lrs3;
-  wire       r_uop_bypass_hits_rs3_3_1 = ren2_alloc_reqs_3 & r_uop_3_ldst == next_uop_1_lrs3;
-  wire       r_uop_bypass_hits_dst_0_1 = ren2_alloc_reqs_0 & r_uop_ldst == next_uop_1_ldst;
-  wire       r_uop_bypass_hits_dst_1_1 = ren2_alloc_reqs_1 & r_uop_1_ldst == next_uop_1_ldst;
-  wire       r_uop_bypass_hits_dst_2_1 = ren2_alloc_reqs_2 & r_uop_2_ldst == next_uop_1_ldst;
-  wire       r_uop_bypass_hits_dst_3_1 = ren2_alloc_reqs_3 & r_uop_3_ldst == next_uop_1_ldst;
-  wire [5:0] next_uop_2_ldst = _GEN ? r_uop_2_ldst : io_dec_uops_2_ldst;
-  wire [5:0] next_uop_2_lrs1 = _GEN ? r_uop_2_lrs1 : io_dec_uops_2_lrs1;
-  wire [5:0] next_uop_2_lrs2 = _GEN ? r_uop_2_lrs2 : io_dec_uops_2_lrs2;
-  wire [5:0] next_uop_2_lrs3 = _GEN ? r_uop_2_lrs3 : io_dec_uops_2_lrs3;
-  wire       r_uop_bypass_hits_rs1_0_2 = ren2_alloc_reqs_0 & r_uop_ldst == next_uop_2_lrs1;
-  wire       r_uop_bypass_hits_rs1_1_2 = ren2_alloc_reqs_1 & r_uop_1_ldst == next_uop_2_lrs1;
-  wire       r_uop_bypass_hits_rs1_2_2 = ren2_alloc_reqs_2 & r_uop_2_ldst == next_uop_2_lrs1;
-  wire       r_uop_bypass_hits_rs1_3_2 = ren2_alloc_reqs_3 & r_uop_3_ldst == next_uop_2_lrs1;
-  wire       r_uop_bypass_hits_rs2_0_2 = ren2_alloc_reqs_0 & r_uop_ldst == next_uop_2_lrs2;
-  wire       r_uop_bypass_hits_rs2_1_2 = ren2_alloc_reqs_1 & r_uop_1_ldst == next_uop_2_lrs2;
-  wire       r_uop_bypass_hits_rs2_2_2 = ren2_alloc_reqs_2 & r_uop_2_ldst == next_uop_2_lrs2;
-  wire       r_uop_bypass_hits_rs2_3_2 = ren2_alloc_reqs_3 & r_uop_3_ldst == next_uop_2_lrs2;
-  wire       r_uop_bypass_hits_rs3_0_2 = ren2_alloc_reqs_0 & r_uop_ldst == next_uop_2_lrs3;
-  wire       r_uop_bypass_hits_rs3_1_2 = ren2_alloc_reqs_1 & r_uop_1_ldst == next_uop_2_lrs3;
-  wire       r_uop_bypass_hits_rs3_2_2 = ren2_alloc_reqs_2 & r_uop_2_ldst == next_uop_2_lrs3;
-  wire       r_uop_bypass_hits_rs3_3_2 = ren2_alloc_reqs_3 & r_uop_3_ldst == next_uop_2_lrs3;
-  wire       r_uop_bypass_hits_dst_0_2 = ren2_alloc_reqs_0 & r_uop_ldst == next_uop_2_ldst;
-  wire       r_uop_bypass_hits_dst_1_2 = ren2_alloc_reqs_1 & r_uop_1_ldst == next_uop_2_ldst;
-  wire       r_uop_bypass_hits_dst_2_2 = ren2_alloc_reqs_2 & r_uop_2_ldst == next_uop_2_ldst;
-  wire       r_uop_bypass_hits_dst_3_2 = ren2_alloc_reqs_3 & r_uop_3_ldst == next_uop_2_ldst;
-  wire [5:0] next_uop_3_ldst = _GEN ? r_uop_3_ldst : io_dec_uops_3_ldst;
-  wire [5:0] next_uop_3_lrs1 = _GEN ? r_uop_3_lrs1 : io_dec_uops_3_lrs1;
-  wire [5:0] next_uop_3_lrs2 = _GEN ? r_uop_3_lrs2 : io_dec_uops_3_lrs2;
-  wire [5:0] next_uop_3_lrs3 = _GEN ? r_uop_3_lrs3 : io_dec_uops_3_lrs3;
-  wire       r_uop_bypass_hits_rs1_0_3 = ren2_alloc_reqs_0 & r_uop_ldst == next_uop_3_lrs1;
-  wire       r_uop_bypass_hits_rs1_1_3 = ren2_alloc_reqs_1 & r_uop_1_ldst == next_uop_3_lrs1;
-  wire       r_uop_bypass_hits_rs1_2_3 = ren2_alloc_reqs_2 & r_uop_2_ldst == next_uop_3_lrs1;
-  wire       r_uop_bypass_hits_rs1_3_3 = ren2_alloc_reqs_3 & r_uop_3_ldst == next_uop_3_lrs1;
-  wire       r_uop_bypass_hits_rs2_0_3 = ren2_alloc_reqs_0 & r_uop_ldst == next_uop_3_lrs2;
-  wire       r_uop_bypass_hits_rs2_1_3 = ren2_alloc_reqs_1 & r_uop_1_ldst == next_uop_3_lrs2;
-  wire       r_uop_bypass_hits_rs2_2_3 = ren2_alloc_reqs_2 & r_uop_2_ldst == next_uop_3_lrs2;
-  wire       r_uop_bypass_hits_rs2_3_3 = ren2_alloc_reqs_3 & r_uop_3_ldst == next_uop_3_lrs2;
-  wire       r_uop_bypass_hits_rs3_0_3 = ren2_alloc_reqs_0 & r_uop_ldst == next_uop_3_lrs3;
-  wire       r_uop_bypass_hits_rs3_1_3 = ren2_alloc_reqs_1 & r_uop_1_ldst == next_uop_3_lrs3;
-  wire       r_uop_bypass_hits_rs3_2_3 = ren2_alloc_reqs_2 & r_uop_2_ldst == next_uop_3_lrs3;
-  wire       r_uop_bypass_hits_rs3_3_3 = ren2_alloc_reqs_3 & r_uop_3_ldst == next_uop_3_lrs3;
-  wire       r_uop_bypass_hits_dst_0_3 = ren2_alloc_reqs_0 & r_uop_ldst == next_uop_3_ldst;
-  wire       r_uop_bypass_hits_dst_1_3 = ren2_alloc_reqs_1 & r_uop_1_ldst == next_uop_3_ldst;
-  wire       r_uop_bypass_hits_dst_2_3 = ren2_alloc_reqs_2 & r_uop_2_ldst == next_uop_3_ldst;
-  wire       r_uop_bypass_hits_dst_3_3 = ren2_alloc_reqs_3 & r_uop_3_ldst == next_uop_3_ldst;
+  wire [5:0] r_uop_newuop_ldst = _GEN ? r_uop_ldst : io_dec_uops_0_ldst;
+  wire [5:0] r_uop_newuop_lrs1 = _GEN ? r_uop_lrs1 : io_dec_uops_0_lrs1;
+  wire [5:0] r_uop_newuop_lrs2 = _GEN ? r_uop_lrs2 : io_dec_uops_0_lrs2;
+  wire [5:0] r_uop_newuop_lrs3 = _GEN ? r_uop_lrs3 : io_dec_uops_0_lrs3;
+  wire       r_uop_bypass_hits_rs1_0 = ren2_alloc_reqs_0 & r_uop_ldst == r_uop_newuop_lrs1;
+  wire       r_uop_bypass_hits_rs1_1 = ren2_alloc_reqs_1 & r_uop_1_ldst == r_uop_newuop_lrs1;
+  wire       r_uop_bypass_hits_rs1_2 = ren2_alloc_reqs_2 & r_uop_2_ldst == r_uop_newuop_lrs1;
+  wire       r_uop_bypass_hits_rs1_3 = ren2_alloc_reqs_3 & r_uop_3_ldst == r_uop_newuop_lrs1;
+  wire       r_uop_bypass_hits_rs2_0 = ren2_alloc_reqs_0 & r_uop_ldst == r_uop_newuop_lrs2;
+  wire       r_uop_bypass_hits_rs2_1 = ren2_alloc_reqs_1 & r_uop_1_ldst == r_uop_newuop_lrs2;
+  wire       r_uop_bypass_hits_rs2_2 = ren2_alloc_reqs_2 & r_uop_2_ldst == r_uop_newuop_lrs2;
+  wire       r_uop_bypass_hits_rs2_3 = ren2_alloc_reqs_3 & r_uop_3_ldst == r_uop_newuop_lrs2;
+  wire       r_uop_bypass_hits_rs3_0 = ren2_alloc_reqs_0 & r_uop_ldst == r_uop_newuop_lrs3;
+  wire       r_uop_bypass_hits_rs3_1 = ren2_alloc_reqs_1 & r_uop_1_ldst == r_uop_newuop_lrs3;
+  wire       r_uop_bypass_hits_rs3_2 = ren2_alloc_reqs_2 & r_uop_2_ldst == r_uop_newuop_lrs3;
+  wire       r_uop_bypass_hits_rs3_3 = ren2_alloc_reqs_3 & r_uop_3_ldst == r_uop_newuop_lrs3;
+  wire       r_uop_bypass_hits_dst_0 = ren2_alloc_reqs_0 & r_uop_ldst == r_uop_newuop_ldst;
+  wire       r_uop_bypass_hits_dst_1 = ren2_alloc_reqs_1 & r_uop_1_ldst == r_uop_newuop_ldst;
+  wire       r_uop_bypass_hits_dst_2 = ren2_alloc_reqs_2 & r_uop_2_ldst == r_uop_newuop_ldst;
+  wire       r_uop_bypass_hits_dst_3 = ren2_alloc_reqs_3 & r_uop_3_ldst == r_uop_newuop_ldst;
+  wire [5:0] r_uop_newuop_1_ldst = _GEN ? r_uop_1_ldst : io_dec_uops_1_ldst;
+  wire [5:0] r_uop_newuop_1_lrs1 = _GEN ? r_uop_1_lrs1 : io_dec_uops_1_lrs1;
+  wire [5:0] r_uop_newuop_1_lrs2 = _GEN ? r_uop_1_lrs2 : io_dec_uops_1_lrs2;
+  wire [5:0] r_uop_newuop_1_lrs3 = _GEN ? r_uop_1_lrs3 : io_dec_uops_1_lrs3;
+  wire       r_uop_bypass_hits_rs1_0_1 = ren2_alloc_reqs_0 & r_uop_ldst == r_uop_newuop_1_lrs1;
+  wire       r_uop_bypass_hits_rs1_1_1 = ren2_alloc_reqs_1 & r_uop_1_ldst == r_uop_newuop_1_lrs1;
+  wire       r_uop_bypass_hits_rs1_2_1 = ren2_alloc_reqs_2 & r_uop_2_ldst == r_uop_newuop_1_lrs1;
+  wire       r_uop_bypass_hits_rs1_3_1 = ren2_alloc_reqs_3 & r_uop_3_ldst == r_uop_newuop_1_lrs1;
+  wire       r_uop_bypass_hits_rs2_0_1 = ren2_alloc_reqs_0 & r_uop_ldst == r_uop_newuop_1_lrs2;
+  wire       r_uop_bypass_hits_rs2_1_1 = ren2_alloc_reqs_1 & r_uop_1_ldst == r_uop_newuop_1_lrs2;
+  wire       r_uop_bypass_hits_rs2_2_1 = ren2_alloc_reqs_2 & r_uop_2_ldst == r_uop_newuop_1_lrs2;
+  wire       r_uop_bypass_hits_rs2_3_1 = ren2_alloc_reqs_3 & r_uop_3_ldst == r_uop_newuop_1_lrs2;
+  wire       r_uop_bypass_hits_rs3_0_1 = ren2_alloc_reqs_0 & r_uop_ldst == r_uop_newuop_1_lrs3;
+  wire       r_uop_bypass_hits_rs3_1_1 = ren2_alloc_reqs_1 & r_uop_1_ldst == r_uop_newuop_1_lrs3;
+  wire       r_uop_bypass_hits_rs3_2_1 = ren2_alloc_reqs_2 & r_uop_2_ldst == r_uop_newuop_1_lrs3;
+  wire       r_uop_bypass_hits_rs3_3_1 = ren2_alloc_reqs_3 & r_uop_3_ldst == r_uop_newuop_1_lrs3;
+  wire       r_uop_bypass_hits_dst_0_1 = ren2_alloc_reqs_0 & r_uop_ldst == r_uop_newuop_1_ldst;
+  wire       r_uop_bypass_hits_dst_1_1 = ren2_alloc_reqs_1 & r_uop_1_ldst == r_uop_newuop_1_ldst;
+  wire       r_uop_bypass_hits_dst_2_1 = ren2_alloc_reqs_2 & r_uop_2_ldst == r_uop_newuop_1_ldst;
+  wire       r_uop_bypass_hits_dst_3_1 = ren2_alloc_reqs_3 & r_uop_3_ldst == r_uop_newuop_1_ldst;
+  wire [5:0] r_uop_newuop_2_ldst = _GEN ? r_uop_2_ldst : io_dec_uops_2_ldst;
+  wire [5:0] r_uop_newuop_2_lrs1 = _GEN ? r_uop_2_lrs1 : io_dec_uops_2_lrs1;
+  wire [5:0] r_uop_newuop_2_lrs2 = _GEN ? r_uop_2_lrs2 : io_dec_uops_2_lrs2;
+  wire [5:0] r_uop_newuop_2_lrs3 = _GEN ? r_uop_2_lrs3 : io_dec_uops_2_lrs3;
+  wire       r_uop_bypass_hits_rs1_0_2 = ren2_alloc_reqs_0 & r_uop_ldst == r_uop_newuop_2_lrs1;
+  wire       r_uop_bypass_hits_rs1_1_2 = ren2_alloc_reqs_1 & r_uop_1_ldst == r_uop_newuop_2_lrs1;
+  wire       r_uop_bypass_hits_rs1_2_2 = ren2_alloc_reqs_2 & r_uop_2_ldst == r_uop_newuop_2_lrs1;
+  wire       r_uop_bypass_hits_rs1_3_2 = ren2_alloc_reqs_3 & r_uop_3_ldst == r_uop_newuop_2_lrs1;
+  wire       r_uop_bypass_hits_rs2_0_2 = ren2_alloc_reqs_0 & r_uop_ldst == r_uop_newuop_2_lrs2;
+  wire       r_uop_bypass_hits_rs2_1_2 = ren2_alloc_reqs_1 & r_uop_1_ldst == r_uop_newuop_2_lrs2;
+  wire       r_uop_bypass_hits_rs2_2_2 = ren2_alloc_reqs_2 & r_uop_2_ldst == r_uop_newuop_2_lrs2;
+  wire       r_uop_bypass_hits_rs2_3_2 = ren2_alloc_reqs_3 & r_uop_3_ldst == r_uop_newuop_2_lrs2;
+  wire       r_uop_bypass_hits_rs3_0_2 = ren2_alloc_reqs_0 & r_uop_ldst == r_uop_newuop_2_lrs3;
+  wire       r_uop_bypass_hits_rs3_1_2 = ren2_alloc_reqs_1 & r_uop_1_ldst == r_uop_newuop_2_lrs3;
+  wire       r_uop_bypass_hits_rs3_2_2 = ren2_alloc_reqs_2 & r_uop_2_ldst == r_uop_newuop_2_lrs3;
+  wire       r_uop_bypass_hits_rs3_3_2 = ren2_alloc_reqs_3 & r_uop_3_ldst == r_uop_newuop_2_lrs3;
+  wire       r_uop_bypass_hits_dst_0_2 = ren2_alloc_reqs_0 & r_uop_ldst == r_uop_newuop_2_ldst;
+  wire       r_uop_bypass_hits_dst_1_2 = ren2_alloc_reqs_1 & r_uop_1_ldst == r_uop_newuop_2_ldst;
+  wire       r_uop_bypass_hits_dst_2_2 = ren2_alloc_reqs_2 & r_uop_2_ldst == r_uop_newuop_2_ldst;
+  wire       r_uop_bypass_hits_dst_3_2 = ren2_alloc_reqs_3 & r_uop_3_ldst == r_uop_newuop_2_ldst;
+  wire [5:0] r_uop_newuop_3_ldst = _GEN ? r_uop_3_ldst : io_dec_uops_3_ldst;
+  wire [5:0] r_uop_newuop_3_lrs1 = _GEN ? r_uop_3_lrs1 : io_dec_uops_3_lrs1;
+  wire [5:0] r_uop_newuop_3_lrs2 = _GEN ? r_uop_3_lrs2 : io_dec_uops_3_lrs2;
+  wire [5:0] r_uop_newuop_3_lrs3 = _GEN ? r_uop_3_lrs3 : io_dec_uops_3_lrs3;
+  wire       r_uop_bypass_hits_rs1_0_3 = ren2_alloc_reqs_0 & r_uop_ldst == r_uop_newuop_3_lrs1;
+  wire       r_uop_bypass_hits_rs1_1_3 = ren2_alloc_reqs_1 & r_uop_1_ldst == r_uop_newuop_3_lrs1;
+  wire       r_uop_bypass_hits_rs1_2_3 = ren2_alloc_reqs_2 & r_uop_2_ldst == r_uop_newuop_3_lrs1;
+  wire       r_uop_bypass_hits_rs1_3_3 = ren2_alloc_reqs_3 & r_uop_3_ldst == r_uop_newuop_3_lrs1;
+  wire       r_uop_bypass_hits_rs2_0_3 = ren2_alloc_reqs_0 & r_uop_ldst == r_uop_newuop_3_lrs2;
+  wire       r_uop_bypass_hits_rs2_1_3 = ren2_alloc_reqs_1 & r_uop_1_ldst == r_uop_newuop_3_lrs2;
+  wire       r_uop_bypass_hits_rs2_2_3 = ren2_alloc_reqs_2 & r_uop_2_ldst == r_uop_newuop_3_lrs2;
+  wire       r_uop_bypass_hits_rs2_3_3 = ren2_alloc_reqs_3 & r_uop_3_ldst == r_uop_newuop_3_lrs2;
+  wire       r_uop_bypass_hits_rs3_0_3 = ren2_alloc_reqs_0 & r_uop_ldst == r_uop_newuop_3_lrs3;
+  wire       r_uop_bypass_hits_rs3_1_3 = ren2_alloc_reqs_1 & r_uop_1_ldst == r_uop_newuop_3_lrs3;
+  wire       r_uop_bypass_hits_rs3_2_3 = ren2_alloc_reqs_2 & r_uop_2_ldst == r_uop_newuop_3_lrs3;
+  wire       r_uop_bypass_hits_rs3_3_3 = ren2_alloc_reqs_3 & r_uop_3_ldst == r_uop_newuop_3_lrs3;
+  wire       r_uop_bypass_hits_dst_0_3 = ren2_alloc_reqs_0 & r_uop_ldst == r_uop_newuop_3_ldst;
+  wire       r_uop_bypass_hits_dst_1_3 = ren2_alloc_reqs_1 & r_uop_1_ldst == r_uop_newuop_3_ldst;
+  wire       r_uop_bypass_hits_dst_2_3 = ren2_alloc_reqs_2 & r_uop_2_ldst == r_uop_newuop_3_ldst;
+  wire       r_uop_bypass_hits_dst_3_3 = ren2_alloc_reqs_3 & r_uop_3_ldst == r_uop_newuop_3_ldst;
   wire [3:0] r_uop_bypass_sel_rs1_enc = r_uop_bypass_hits_rs1_3 ? 4'h1 : r_uop_bypass_hits_rs1_2 ? 4'h2 : r_uop_bypass_hits_rs1_1 ? 4'h4 : {r_uop_bypass_hits_rs1_0, 3'h0};
   wire [3:0] r_uop_bypass_sel_rs2_enc = r_uop_bypass_hits_rs2_3 ? 4'h1 : r_uop_bypass_hits_rs2_2 ? 4'h2 : r_uop_bypass_hits_rs2_1 ? 4'h4 : {r_uop_bypass_hits_rs2_0, 3'h0};
   wire [3:0] r_uop_bypass_sel_rs3_enc = r_uop_bypass_hits_rs3_3 ? 4'h1 : r_uop_bypass_hits_rs3_2 ? 4'h2 : r_uop_bypass_hits_rs3_1 ? 4'h4 : {r_uop_bypass_hits_rs3_0, 3'h0};
@@ -455,15 +489,6 @@ module RenameStage_1(
       r_uop_lrs1_rtype <= io_dec_uops_0_lrs1_rtype;
       r_uop_lrs2_rtype <= io_dec_uops_0_lrs2_rtype;
       r_uop_frs3_en <= io_dec_uops_0_frs3_en;
-      r_uop_1_ldst <= io_dec_uops_1_ldst;
-      r_uop_1_ldst_val <= io_dec_uops_1_ldst_val;
-      r_uop_1_dst_rtype <= io_dec_uops_1_dst_rtype;
-      r_uop_2_ldst <= io_dec_uops_2_ldst;
-      r_uop_2_ldst_val <= io_dec_uops_2_ldst_val;
-      r_uop_2_dst_rtype <= io_dec_uops_2_dst_rtype;
-      r_uop_3_ldst <= io_dec_uops_3_ldst;
-      r_uop_3_ldst_val <= io_dec_uops_3_ldst_val;
-      r_uop_3_dst_rtype <= io_dec_uops_3_dst_rtype;
       r_uop_1_is_br <= io_dec_uops_1_is_br;
       r_uop_1_is_jalr <= io_dec_uops_1_is_jalr;
       r_uop_1_is_sfb <= io_dec_uops_1_is_sfb;
@@ -496,9 +521,12 @@ module RenameStage_1(
     if (_GEN) begin
     end
     else begin
+      r_uop_1_ldst <= io_dec_uops_1_ldst;
       r_uop_1_lrs1 <= io_dec_uops_1_lrs1;
       r_uop_1_lrs2 <= io_dec_uops_1_lrs2;
       r_uop_1_lrs3 <= io_dec_uops_1_lrs3;
+      r_uop_1_ldst_val <= io_dec_uops_1_ldst_val;
+      r_uop_1_dst_rtype <= io_dec_uops_1_dst_rtype;
       r_uop_1_lrs1_rtype <= io_dec_uops_1_lrs1_rtype;
       r_uop_1_lrs2_rtype <= io_dec_uops_1_lrs2_rtype;
       r_uop_1_frs3_en <= io_dec_uops_1_frs3_en;
@@ -534,9 +562,12 @@ module RenameStage_1(
     if (_GEN) begin
     end
     else begin
+      r_uop_2_ldst <= io_dec_uops_2_ldst;
       r_uop_2_lrs1 <= io_dec_uops_2_lrs1;
       r_uop_2_lrs2 <= io_dec_uops_2_lrs2;
       r_uop_2_lrs3 <= io_dec_uops_2_lrs3;
+      r_uop_2_ldst_val <= io_dec_uops_2_ldst_val;
+      r_uop_2_dst_rtype <= io_dec_uops_2_dst_rtype;
       r_uop_2_lrs1_rtype <= io_dec_uops_2_lrs1_rtype;
       r_uop_2_lrs2_rtype <= io_dec_uops_2_lrs2_rtype;
       r_uop_2_frs3_en <= io_dec_uops_2_frs3_en;
@@ -572,9 +603,12 @@ module RenameStage_1(
     if (_GEN) begin
     end
     else begin
+      r_uop_3_ldst <= io_dec_uops_3_ldst;
       r_uop_3_lrs1 <= io_dec_uops_3_lrs1;
       r_uop_3_lrs2 <= io_dec_uops_3_lrs2;
       r_uop_3_lrs3 <= io_dec_uops_3_lrs3;
+      r_uop_3_ldst_val <= io_dec_uops_3_ldst_val;
+      r_uop_3_dst_rtype <= io_dec_uops_3_dst_rtype;
       r_uop_3_lrs1_rtype <= io_dec_uops_3_lrs1_rtype;
       r_uop_3_lrs2_rtype <= io_dec_uops_3_lrs2_rtype;
       r_uop_3_frs3_en <= io_dec_uops_3_frs3_en;
@@ -599,6 +633,22 @@ module RenameStage_1(
     .io_map_reqs_3_lrs2        (io_dec_uops_3_lrs2),
     .io_map_reqs_3_lrs3        (io_dec_uops_3_lrs3),
     .io_map_reqs_3_ldst        (io_dec_uops_3_ldst),
+    .io_map_resps_0_prs1       (_maptable_io_map_resps_0_prs1),
+    .io_map_resps_0_prs2       (_maptable_io_map_resps_0_prs2),
+    .io_map_resps_0_prs3       (_maptable_io_map_resps_0_prs3),
+    .io_map_resps_0_stale_pdst (_maptable_io_map_resps_0_stale_pdst),
+    .io_map_resps_1_prs1       (_maptable_io_map_resps_1_prs1),
+    .io_map_resps_1_prs2       (_maptable_io_map_resps_1_prs2),
+    .io_map_resps_1_prs3       (_maptable_io_map_resps_1_prs3),
+    .io_map_resps_1_stale_pdst (_maptable_io_map_resps_1_stale_pdst),
+    .io_map_resps_2_prs1       (_maptable_io_map_resps_2_prs1),
+    .io_map_resps_2_prs2       (_maptable_io_map_resps_2_prs2),
+    .io_map_resps_2_prs3       (_maptable_io_map_resps_2_prs3),
+    .io_map_resps_2_stale_pdst (_maptable_io_map_resps_2_stale_pdst),
+    .io_map_resps_3_prs1       (_maptable_io_map_resps_3_prs1),
+    .io_map_resps_3_prs2       (_maptable_io_map_resps_3_prs2),
+    .io_map_resps_3_prs3       (_maptable_io_map_resps_3_prs3),
+    .io_map_resps_3_stale_pdst (_maptable_io_map_resps_3_stale_pdst),
     .io_remap_reqs_0_ldst      (io_rollback ? io_com_uops_3_ldst : r_uop_ldst),
     .io_remap_reqs_0_pdst      (io_rollback ? io_com_uops_3_stale_pdst : _freelist_io_alloc_pregs_0_bits),
     .io_remap_reqs_0_valid     (ren2_alloc_reqs_0 | rbk_valids_3),
@@ -621,23 +671,7 @@ module RenameStage_1(
     .io_ren_br_tags_3_bits     (r_uop_3_br_tag),
     .io_brupdate_b2_uop_br_tag (io_brupdate_b2_uop_br_tag),
     .io_brupdate_b2_mispredict (io_brupdate_b2_mispredict),
-    .io_rollback               (io_rollback),
-    .io_map_resps_0_prs1       (_maptable_io_map_resps_0_prs1),
-    .io_map_resps_0_prs2       (_maptable_io_map_resps_0_prs2),
-    .io_map_resps_0_prs3       (_maptable_io_map_resps_0_prs3),
-    .io_map_resps_0_stale_pdst (_maptable_io_map_resps_0_stale_pdst),
-    .io_map_resps_1_prs1       (_maptable_io_map_resps_1_prs1),
-    .io_map_resps_1_prs2       (_maptable_io_map_resps_1_prs2),
-    .io_map_resps_1_prs3       (_maptable_io_map_resps_1_prs3),
-    .io_map_resps_1_stale_pdst (_maptable_io_map_resps_1_stale_pdst),
-    .io_map_resps_2_prs1       (_maptable_io_map_resps_2_prs1),
-    .io_map_resps_2_prs2       (_maptable_io_map_resps_2_prs2),
-    .io_map_resps_2_prs3       (_maptable_io_map_resps_2_prs3),
-    .io_map_resps_2_stale_pdst (_maptable_io_map_resps_2_stale_pdst),
-    .io_map_resps_3_prs1       (_maptable_io_map_resps_3_prs1),
-    .io_map_resps_3_prs2       (_maptable_io_map_resps_3_prs2),
-    .io_map_resps_3_prs3       (_maptable_io_map_resps_3_prs3),
-    .io_map_resps_3_stale_pdst (_maptable_io_map_resps_3_stale_pdst)
+    .io_rollback               (io_rollback)
   );
   RenameFreeList_1 freelist (
     .clock                     (clock),
@@ -646,6 +680,14 @@ module RenameStage_1(
     .io_reqs_1                 (ren2_alloc_reqs_1),
     .io_reqs_2                 (ren2_alloc_reqs_2),
     .io_reqs_3                 (ren2_alloc_reqs_3),
+    .io_alloc_pregs_0_valid    (_freelist_io_alloc_pregs_0_valid),
+    .io_alloc_pregs_0_bits     (_freelist_io_alloc_pregs_0_bits),
+    .io_alloc_pregs_1_valid    (_freelist_io_alloc_pregs_1_valid),
+    .io_alloc_pregs_1_bits     (_freelist_io_alloc_pregs_1_bits),
+    .io_alloc_pregs_2_valid    (_freelist_io_alloc_pregs_2_valid),
+    .io_alloc_pregs_2_bits     (_freelist_io_alloc_pregs_2_bits),
+    .io_alloc_pregs_3_valid    (_freelist_io_alloc_pregs_3_valid),
+    .io_alloc_pregs_3_bits     (_freelist_io_alloc_pregs_3_bits),
     .io_dealloc_pregs_0_valid  (io_com_uops_0_ldst_val & _rbk_valids_0_T & io_com_valids_0 | rbk_valids_0),
     .io_dealloc_pregs_0_bits   (io_rollback ? io_com_uops_0_pdst : io_com_uops_0_stale_pdst),
     .io_dealloc_pregs_1_valid  (io_com_uops_1_ldst_val & _rbk_valids_1_T & io_com_valids_1 | rbk_valids_1),
@@ -664,15 +706,7 @@ module RenameStage_1(
     .io_ren_br_tags_3_bits     (r_uop_3_br_tag),
     .io_brupdate_b2_uop_br_tag (io_brupdate_b2_uop_br_tag),
     .io_brupdate_b2_mispredict (io_brupdate_b2_mispredict),
-    .io_debug_pipeline_empty   (io_debug_rob_empty),
-    .io_alloc_pregs_0_valid    (_freelist_io_alloc_pregs_0_valid),
-    .io_alloc_pregs_0_bits     (_freelist_io_alloc_pregs_0_bits),
-    .io_alloc_pregs_1_valid    (_freelist_io_alloc_pregs_1_valid),
-    .io_alloc_pregs_1_bits     (_freelist_io_alloc_pregs_1_bits),
-    .io_alloc_pregs_2_valid    (_freelist_io_alloc_pregs_2_valid),
-    .io_alloc_pregs_2_bits     (_freelist_io_alloc_pregs_2_bits),
-    .io_alloc_pregs_3_valid    (_freelist_io_alloc_pregs_3_valid),
-    .io_alloc_pregs_3_bits     (_freelist_io_alloc_pregs_3_bits)
+    .io_debug_pipeline_empty   (io_debug_rob_empty)
   );
   RenameBusyTable_1 busytable (
     .clock                     (clock),
@@ -693,18 +727,6 @@ module RenameStage_1(
     .io_ren_uops_3_prs1        (r_uop_3_prs1),
     .io_ren_uops_3_prs2        (r_uop_3_prs2),
     .io_ren_uops_3_prs3        (r_uop_3_prs3),
-    .io_rebusy_reqs_0          (ren2_alloc_reqs_0),
-    .io_rebusy_reqs_1          (ren2_alloc_reqs_1),
-    .io_rebusy_reqs_2          (ren2_alloc_reqs_2),
-    .io_rebusy_reqs_3          (ren2_alloc_reqs_3),
-    .io_wb_pdsts_0             (io_wakeups_0_bits_uop_pdst),
-    .io_wb_pdsts_1             (io_wakeups_1_bits_uop_pdst),
-    .io_wb_pdsts_2             (io_wakeups_2_bits_uop_pdst),
-    .io_wb_pdsts_3             (io_wakeups_3_bits_uop_pdst),
-    .io_wb_valids_0            (io_wakeups_0_valid),
-    .io_wb_valids_1            (io_wakeups_1_valid),
-    .io_wb_valids_2            (io_wakeups_2_valid),
-    .io_wb_valids_3            (io_wakeups_3_valid),
     .io_busy_resps_0_prs1_busy (_busytable_io_busy_resps_0_prs1_busy),
     .io_busy_resps_0_prs2_busy (_busytable_io_busy_resps_0_prs2_busy),
     .io_busy_resps_0_prs3_busy (_busytable_io_busy_resps_0_prs3_busy),
@@ -716,7 +738,19 @@ module RenameStage_1(
     .io_busy_resps_2_prs3_busy (_busytable_io_busy_resps_2_prs3_busy),
     .io_busy_resps_3_prs1_busy (_busytable_io_busy_resps_3_prs1_busy),
     .io_busy_resps_3_prs2_busy (_busytable_io_busy_resps_3_prs2_busy),
-    .io_busy_resps_3_prs3_busy (_busytable_io_busy_resps_3_prs3_busy)
+    .io_busy_resps_3_prs3_busy (_busytable_io_busy_resps_3_prs3_busy),
+    .io_rebusy_reqs_0          (ren2_alloc_reqs_0),
+    .io_rebusy_reqs_1          (ren2_alloc_reqs_1),
+    .io_rebusy_reqs_2          (ren2_alloc_reqs_2),
+    .io_rebusy_reqs_3          (ren2_alloc_reqs_3),
+    .io_wb_pdsts_0             (io_wakeups_0_bits_uop_pdst),
+    .io_wb_pdsts_1             (io_wakeups_1_bits_uop_pdst),
+    .io_wb_pdsts_2             (io_wakeups_2_bits_uop_pdst),
+    .io_wb_pdsts_3             (io_wakeups_3_bits_uop_pdst),
+    .io_wb_valids_0            (io_wakeups_0_valid),
+    .io_wb_valids_1            (io_wakeups_1_valid),
+    .io_wb_valids_2            (io_wakeups_2_valid),
+    .io_wb_valids_3            (io_wakeups_3_valid)
   );
   assign io_ren_stalls_0 = _io_ren_stalls_0_T & ~_freelist_io_alloc_pregs_0_valid;
   assign io_ren_stalls_1 = _io_ren_stalls_1_T & ~_freelist_io_alloc_pregs_1_valid;

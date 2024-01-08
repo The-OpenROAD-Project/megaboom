@@ -1,0 +1,17 @@
+ClockSourceAtFreqFromPlusArgpll_freq_mhz.v
+ClockSourceAtFreqMHz.v
+ClockUtil.v
+EICG_wrapper.v
+GenericDigitalInIOCell.v
+GenericDigitalOutIOCell.v
+SimJTAG.cc
+SimJTAG.v
+SimTSI.cc
+SimTSI.v
+SimUART.cc
+SimUART.v
+plusarg_reader.v
+remote_bitbang.cc
+testchip_htif.cc
+testchip_tsi.cc
+uart.cc

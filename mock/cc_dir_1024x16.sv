@@ -19,7 +19,7 @@ module cc_dir_1024x16(
   output [15:0] RW0_rdata
 );
 
-reg [15:0] Memory[0:15];  // Reduced to 16 rows
+  reg [15:0] Memory[0:15];  // Reduced to 16 rows
   reg [3:0]  _RW0_raddr_d0;  // Reduced to 4 bits
   reg        _RW0_ren_d0;
   reg        _RW0_rmode_d0;

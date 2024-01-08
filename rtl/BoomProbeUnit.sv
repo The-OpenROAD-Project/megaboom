@@ -1,4 +1,4 @@
-// Standard header to adapt well known macros to our needs.
+// Standard header to adapt well known macros for prints and assertions.
 
 // Users can define 'PRINTF_COND' to add an extra gate to prints.
 `ifndef PRINTF_COND_
@@ -9,55 +9,72 @@
   `endif // PRINTF_COND
 `endif // not def PRINTF_COND_
 
+// Users can define 'ASSERT_VERBOSE_COND' to add an extra gate to assert error printing.
+`ifndef ASSERT_VERBOSE_COND_
+  `ifdef ASSERT_VERBOSE_COND
+    `define ASSERT_VERBOSE_COND_ (`ASSERT_VERBOSE_COND)
+  `else  // ASSERT_VERBOSE_COND
+    `define ASSERT_VERBOSE_COND_ 1
+  `endif // ASSERT_VERBOSE_COND
+`endif // not def ASSERT_VERBOSE_COND_
+
+// Users can define 'STOP_COND' to add an extra gate to stop conditions.
+`ifndef STOP_COND_
+  `ifdef STOP_COND
+    `define STOP_COND_ (`STOP_COND)
+  `else  // STOP_COND
+    `define STOP_COND_ 1
+  `endif // STOP_COND
+`endif // not def STOP_COND_
+
 module BoomProbeUnit(
   input         clock,
                 reset,
-                io_req_valid,
+  output        io_req_ready,
+  input         io_req_valid,
   input  [1:0]  io_req_bits_param,
   input  [3:0]  io_req_bits_size,
                 io_req_bits_source,
-  input  [31:0] io_req_bits_address,
+  input  [32:0] io_req_bits_address,
   input         io_rep_ready,
-                io_meta_read_ready,
-                io_meta_write_ready,
-                io_wb_req_ready,
-  input  [7:0]  io_way_en,
-  input         io_wb_rdy,
-                io_mshr_rdy,
-  input  [1:0]  io_block_state_state,
-  input         io_lsu_release_ready,
-  output        io_req_ready,
-                io_rep_valid,
+  output        io_rep_valid,
   output [2:0]  io_rep_bits_param,
   output [3:0]  io_rep_bits_size,
                 io_rep_bits_source,
-  output [31:0] io_rep_bits_address,
+  output [32:0] io_rep_bits_address,
+  input         io_meta_read_ready,
   output        io_meta_read_valid,
   output [5:0]  io_meta_read_bits_idx,
-  output [19:0] io_meta_read_bits_tag,
+  output [20:0] io_meta_read_bits_tag,
+  input         io_meta_write_ready,
   output        io_meta_write_valid,
   output [5:0]  io_meta_write_bits_idx,
   output [7:0]  io_meta_write_bits_way_en,
   output [1:0]  io_meta_write_bits_data_coh_state,
-  output [19:0] io_meta_write_bits_data_tag,
+  output [20:0] io_meta_write_bits_data_tag,
+  input         io_wb_req_ready,
   output        io_wb_req_valid,
-  output [19:0] io_wb_req_bits_tag,
+  output [20:0] io_wb_req_bits_tag,
   output [5:0]  io_wb_req_bits_idx,
   output [2:0]  io_wb_req_bits_param,
   output [7:0]  io_wb_req_bits_way_en,
+  input  [7:0]  io_way_en,
+  input         io_wb_rdy,
+                io_mshr_rdy,
   output        io_mshr_wb_rdy,
-                io_lsu_release_valid,
-  output [31:0] io_lsu_release_bits_address,
+  input  [1:0]  io_block_state_state,
+  input         io_lsu_release_ready,
+  output        io_lsu_release_valid,
+  output [32:0] io_lsu_release_bits_address,
   output        io_state_valid,
   output [39:0] io_state_bits
 );
 
-  reg  [3:0]  casez_tmp;
   reg  [3:0]  state;
   reg  [1:0]  req_param;
   reg  [3:0]  req_size;
   reg  [3:0]  req_source;
-  reg  [31:0] req_address;
+  reg  [32:0] req_address;
   reg  [7:0]  way_en;
   reg  [1:0]  old_coh_state;
   wire [3:0]  _GEN = {req_param, (|way_en) ? old_coh_state : 2'h0};
@@ -71,7 +88,7 @@ module BoomProbeUnit(
   wire        _GEN_7 = _GEN == 4'h2;
   wire        _GEN_8 = _GEN == 4'h3;
   wire        _GEN_9 = _GEN_8 | _GEN_7;
-  wire [2:0]  report_param = _GEN_9 ? 3'h3 : _GEN_6 ? 3'h4 : _GEN_5 ? 3'h5 : _GEN_4 | _GEN_3 ? 3'h0 : _GEN_2 ? 3'h4 : _GEN_1 ? 3'h5 : _GEN_0 | _GEN == 4'hA ? 3'h1 : _GEN == 4'h9 ? 3'h2 : _GEN == 4'h8 ? 3'h5 : 3'h0;
+  wire [2:0]  io_rep_bits_c_param = _GEN_9 ? 3'h3 : _GEN_6 ? 3'h4 : _GEN_5 ? 3'h5 : _GEN_4 | _GEN_3 ? 3'h0 : _GEN_2 ? 3'h4 : _GEN_1 ? 3'h5 : _GEN_0 | _GEN == 4'hA ? 3'h1 : _GEN == 4'h9 ? 3'h2 : _GEN == 4'h8 ? 3'h5 : 3'h0;
   wire        _io_req_ready_output = state == 4'h0;
   wire        _io_mshr_wb_rdy_T = state == 4'h6;
   wire        _io_meta_read_valid_output = state == 4'h1;
@@ -79,6 +96,7 @@ module BoomProbeUnit(
   wire        _io_wb_req_valid_output = state == 4'h7;
   wire        _io_lsu_release_valid_output = state == 4'h5;
   wire        _GEN_10 = _io_req_ready_output & io_req_valid;
+  reg  [3:0]  casez_tmp;
   always @(*) begin
     casez (state)
       4'b0000:
@@ -135,27 +153,27 @@ module BoomProbeUnit(
   end // always @(posedge)
   assign io_req_ready = _io_req_ready_output;
   assign io_rep_valid = _io_mshr_wb_rdy_T;
-  assign io_rep_bits_param = report_param;
+  assign io_rep_bits_param = io_rep_bits_c_param;
   assign io_rep_bits_size = req_size;
   assign io_rep_bits_source = req_source;
   assign io_rep_bits_address = req_address;
   assign io_meta_read_valid = _io_meta_read_valid_output;
   assign io_meta_read_bits_idx = req_address[11:6];
-  assign io_meta_read_bits_tag = req_address[31:12];
+  assign io_meta_read_bits_tag = req_address[32:12];
   assign io_meta_write_valid = _io_meta_write_valid_output;
   assign io_meta_write_bits_idx = req_address[11:6];
   assign io_meta_write_bits_way_en = way_en;
   assign io_meta_write_bits_data_coh_state = _GEN_9 ? 2'h2 : _GEN_6 ? 2'h1 : _GEN_5 ? 2'h0 : {1'h0, _GEN_4 | _GEN_3 | _GEN_2};
-  assign io_meta_write_bits_data_tag = req_address[31:12];
+  assign io_meta_write_bits_data_tag = req_address[32:12];
   assign io_wb_req_valid = _io_wb_req_valid_output;
-  assign io_wb_req_bits_tag = req_address[31:12];
+  assign io_wb_req_bits_tag = req_address[32:12];
   assign io_wb_req_bits_idx = req_address[11:6];
-  assign io_wb_req_bits_param = report_param;
+  assign io_wb_req_bits_param = io_rep_bits_c_param;
   assign io_wb_req_bits_way_en = way_en;
   assign io_mshr_wb_rdy = ~(_io_mshr_wb_rdy_T | _io_wb_req_valid_output | state == 4'h8 | _io_meta_write_valid_output | state == 4'hA);
   assign io_lsu_release_valid = _io_lsu_release_valid_output;
   assign io_lsu_release_bits_address = req_address;
   assign io_state_valid = |state;
-  assign io_state_bits = {8'h0, req_address};
+  assign io_state_bits = {7'h0, req_address};
 endmodule
 

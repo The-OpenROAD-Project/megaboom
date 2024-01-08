@@ -1,4 +1,4 @@
-// Standard header to adapt well known macros to our needs.
+// Standard header to adapt well known macros for prints and assertions.
 
 // Users can define 'PRINTF_COND' to add an extra gate to prints.
 `ifndef PRINTF_COND_
@@ -9,6 +9,24 @@
   `endif // PRINTF_COND
 `endif // not def PRINTF_COND_
 
+// Users can define 'ASSERT_VERBOSE_COND' to add an extra gate to assert error printing.
+`ifndef ASSERT_VERBOSE_COND_
+  `ifdef ASSERT_VERBOSE_COND
+    `define ASSERT_VERBOSE_COND_ (`ASSERT_VERBOSE_COND)
+  `else  // ASSERT_VERBOSE_COND
+    `define ASSERT_VERBOSE_COND_ 1
+  `endif // ASSERT_VERBOSE_COND
+`endif // not def ASSERT_VERBOSE_COND_
+
+// Users can define 'STOP_COND' to add an extra gate to stop conditions.
+`ifndef STOP_COND_
+  `ifdef STOP_COND
+    `define STOP_COND_ (`STOP_COND)
+  `else  // STOP_COND
+    `define STOP_COND_ 1
+  `endif // STOP_COND
+`endif // not def STOP_COND_
+
 module RoundAnyRawFNToRecFN_3(
   input         io_invalidExc,
                 io_in_isNaN,
@@ -18,7 +36,6 @@ module RoundAnyRawFNToRecFN_3(
   input  [9:0]  io_in_sExp,
   input  [26:0] io_in_sig,
   input  [2:0]  io_roundingMode,
-  input         io_detectTininess,
   output [32:0] io_out,
   output [4:0]  io_exceptionFlags
 );
@@ -49,6 +66,6 @@ module RoundAnyRawFNToRecFN_3(
   wire        pegMaxFiniteMagOut = overflow & ~overflow_roundMagUp;
   wire        notNaN_isInfOut = io_in_isInf | overflow & overflow_roundMagUp;
   assign io_out = {~isNaNOut & io_in_sign, sRoundedExp[8:0] & ~(io_in_isZero | common_totalUnderflow ? 9'h1C0 : 9'h0) & ~(pegMinNonzeroMagOut ? 9'h194 : 9'h0) & {1'h1, ~pegMaxFiniteMagOut, 7'h7F} & {2'h3, ~notNaN_isInfOut, 6'h3F} | (pegMinNonzeroMagOut ? 9'h6B : 9'h0) | (pegMaxFiniteMagOut ? 9'h17F : 9'h0) | (notNaN_isInfOut ? 9'h180 : 9'h0) | (isNaNOut ? 9'h1C0 : 9'h0), (isNaNOut | io_in_isZero | common_totalUnderflow ? {isNaNOut, 22'h0} : io_in_sig[26] ? roundedSig[23:1] : roundedSig[22:0]) | {23{pegMaxFiniteMagOut}}};
-  assign io_exceptionFlags = {io_invalidExc, 1'h0, overflow, commonCase & (common_totalUnderflow | anyRound & io_in_sExp[9:8] != 2'h1 & (io_in_sig[26] ? _roundMask_T_73[1] : _common_underflow_T_4) & ~(io_detectTininess & ~(io_in_sig[26] ? _roundMask_T_73[2] : _roundMask_T_73[1]) & (io_in_sig[26] ? roundedSig[25] : roundedSig[24]) & (|_roundPosBit_T) & (_overflow_roundMagUp_T & (io_in_sig[26] ? io_in_sig[2] : io_in_sig[1]) | roundMagUp & (io_in_sig[26] & io_in_sig[2] | (|(io_in_sig[1:0])))))), overflow | commonCase & (common_totalUnderflow | anyRound)};
+  assign io_exceptionFlags = {io_invalidExc, 1'h0, overflow, commonCase & (common_totalUnderflow | anyRound & io_in_sExp[9:8] != 2'h1 & (io_in_sig[26] ? _roundMask_T_73[1] : _common_underflow_T_4) & ~(~(io_in_sig[26] ? _roundMask_T_73[2] : _roundMask_T_73[1]) & (io_in_sig[26] ? roundedSig[25] : roundedSig[24]) & (|_roundPosBit_T) & (_overflow_roundMagUp_T & (io_in_sig[26] ? io_in_sig[2] : io_in_sig[1]) | roundMagUp & (io_in_sig[26] & io_in_sig[2] | (|(io_in_sig[1:0])))))), overflow | commonCase & (common_totalUnderflow | anyRound)};
 endmodule
 

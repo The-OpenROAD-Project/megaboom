@@ -1,4 +1,4 @@
-// Standard header to adapt well known macros to our needs.
+// Standard header to adapt well known macros for prints and assertions.
 
 // Users can define 'PRINTF_COND' to add an extra gate to prints.
 `ifndef PRINTF_COND_
@@ -8,6 +8,24 @@
     `define PRINTF_COND_ 1
   `endif // PRINTF_COND
 `endif // not def PRINTF_COND_
+
+// Users can define 'ASSERT_VERBOSE_COND' to add an extra gate to assert error printing.
+`ifndef ASSERT_VERBOSE_COND_
+  `ifdef ASSERT_VERBOSE_COND
+    `define ASSERT_VERBOSE_COND_ (`ASSERT_VERBOSE_COND)
+  `else  // ASSERT_VERBOSE_COND
+    `define ASSERT_VERBOSE_COND_ 1
+  `endif // ASSERT_VERBOSE_COND
+`endif // not def ASSERT_VERBOSE_COND_
+
+// Users can define 'STOP_COND' to add an extra gate to stop conditions.
+`ifndef STOP_COND_
+  `ifdef STOP_COND
+    `define STOP_COND_ (`STOP_COND)
+  `else  // STOP_COND
+    `define STOP_COND_ 1
+  `endif // STOP_COND
+`endif // not def STOP_COND_
 
 module ALUExeUnit_3(
   input         clock,
@@ -46,8 +64,6 @@ module ALUExeUnit_3(
   input  [64:0] io_req_bits_rs1_data,
                 io_req_bits_rs2_data,
   input         io_req_bits_kill,
-  input  [19:0] io_brupdate_b1_resolve_mask,
-                io_brupdate_b1_mispredict_mask,
   output        io_iresp_valid,
   output [2:0]  io_iresp_bits_uop_ctrl_csr_cmd,
   output [11:0] io_iresp_bits_uop_csr_addr,
@@ -62,6 +78,8 @@ module ALUExeUnit_3(
   output [6:0]  io_bypass_0_bits_uop_pdst,
   output [1:0]  io_bypass_0_bits_uop_dst_rtype,
   output [64:0] io_bypass_0_bits_data,
+  input  [19:0] io_brupdate_b1_resolve_mask,
+                io_brupdate_b1_mispredict_mask,
   output        io_brinfo_uop_is_rvc,
   output [19:0] io_brinfo_uop_br_mask,
   output [4:0]  io_brinfo_uop_br_tag,
@@ -118,8 +136,6 @@ module ALUExeUnit_3(
     .io_req_bits_rs1_data           (io_req_bits_rs1_data[63:0]),
     .io_req_bits_rs2_data           (io_req_bits_rs2_data[63:0]),
     .io_req_bits_kill               (io_req_bits_kill),
-    .io_brupdate_b1_resolve_mask    (io_brupdate_b1_resolve_mask),
-    .io_brupdate_b1_mispredict_mask (io_brupdate_b1_mispredict_mask),
     .io_resp_valid                  (io_iresp_valid),
     .io_resp_bits_uop_ctrl_csr_cmd  (io_iresp_bits_uop_ctrl_csr_cmd),
     .io_resp_bits_uop_imm_packed    (_ALUUnit_io_resp_bits_uop_imm_packed),
@@ -130,6 +146,8 @@ module ALUExeUnit_3(
     .io_resp_bits_uop_uses_stq      (io_iresp_bits_uop_uses_stq),
     .io_resp_bits_uop_dst_rtype     (io_iresp_bits_uop_dst_rtype),
     .io_resp_bits_data              (_ALUUnit_io_resp_bits_data),
+    .io_brupdate_b1_resolve_mask    (io_brupdate_b1_resolve_mask),
+    .io_brupdate_b1_mispredict_mask (io_brupdate_b1_mispredict_mask),
     .io_bypass_0_valid              (io_bypass_0_valid),
     .io_bypass_0_bits_uop_pdst      (io_bypass_0_bits_uop_pdst),
     .io_bypass_0_bits_uop_dst_rtype (io_bypass_0_bits_uop_dst_rtype),

@@ -1,4 +1,4 @@
-// Standard header to adapt well known macros to our needs.
+// Standard header to adapt well known macros for prints and assertions.
 
 // Users can define 'PRINTF_COND' to add an extra gate to prints.
 `ifndef PRINTF_COND_
@@ -9,12 +9,30 @@
   `endif // PRINTF_COND
 `endif // not def PRINTF_COND_
 
+// Users can define 'ASSERT_VERBOSE_COND' to add an extra gate to assert error printing.
+`ifndef ASSERT_VERBOSE_COND_
+  `ifdef ASSERT_VERBOSE_COND
+    `define ASSERT_VERBOSE_COND_ (`ASSERT_VERBOSE_COND)
+  `else  // ASSERT_VERBOSE_COND
+    `define ASSERT_VERBOSE_COND_ 1
+  `endif // ASSERT_VERBOSE_COND
+`endif // not def ASSERT_VERBOSE_COND_
+
+// Users can define 'STOP_COND' to add an extra gate to stop conditions.
+`ifndef STOP_COND_
+  `ifdef STOP_COND
+    `define STOP_COND_ (`STOP_COND)
+  `else  // STOP_COND
+    `define STOP_COND_ 1
+  `endif // STOP_COND
+`endif // not def STOP_COND_
+
 module DecodeUnit(
   input  [31:0] io_enq_uop_inst,
+                io_enq_uop_debug_inst,
   input         io_enq_uop_is_rvc,
-                io_enq_uop_ctrl_is_load,
-                io_enq_uop_ctrl_is_sta,
-                io_enq_uop_is_sfb,
+  input  [39:0] io_enq_uop_debug_pc,
+  input         io_enq_uop_is_sfb,
   input  [5:0]  io_enq_uop_ftq_idx,
   input         io_enq_uop_edge_inst,
   input  [5:0]  io_enq_uop_pc_lob,
@@ -23,20 +41,15 @@ module DecodeUnit(
                 io_enq_uop_xcpt_ae_if,
                 io_enq_uop_bp_debug_if,
                 io_enq_uop_bp_xcpt_if,
-                io_csr_decode_fp_illegal,
-                io_csr_decode_read_illegal,
-                io_csr_decode_write_illegal,
-                io_csr_decode_write_flush,
-                io_csr_decode_system_illegal,
-                io_interrupt,
-  input  [63:0] io_interrupt_cause,
+  input  [1:0]  io_enq_uop_debug_fsrc,
   output [6:0]  io_deq_uop_uopc,
+  output [31:0] io_deq_uop_inst,
+                io_deq_uop_debug_inst,
   output        io_deq_uop_is_rvc,
+  output [39:0] io_deq_uop_debug_pc,
   output [2:0]  io_deq_uop_iq_type,
   output [9:0]  io_deq_uop_fu_code,
-  output        io_deq_uop_ctrl_is_load,
-                io_deq_uop_ctrl_is_sta,
-                io_deq_uop_is_br,
+  output        io_deq_uop_is_br,
                 io_deq_uop_is_jalr,
                 io_deq_uop_is_jal,
                 io_deq_uop_is_sfb,
@@ -69,9 +82,23 @@ module DecodeUnit(
                 io_deq_uop_lrs2_rtype,
   output        io_deq_uop_frs3_en,
                 io_deq_uop_fp_val,
-  output [31:0] io_csr_decode_inst
+                io_deq_uop_fp_single,
+                io_deq_uop_xcpt_pf_if,
+                io_deq_uop_xcpt_ae_if,
+                io_deq_uop_bp_debug_if,
+                io_deq_uop_bp_xcpt_if,
+  output [1:0]  io_deq_uop_debug_fsrc,
+  output [31:0] io_csr_decode_inst,
+  input         io_csr_decode_fp_illegal,
+                io_csr_decode_read_illegal,
+                io_csr_decode_write_illegal,
+                io_csr_decode_write_flush,
+                io_csr_decode_system_illegal,
+                io_interrupt,
+  input  [63:0] io_interrupt_cause
 );
 
+  wire [4:0]  _uop_lrs1_T;
   wire [29:0] cs_decoder_decoded_invInputs = ~(io_enq_uop_inst[31:2]);
   wire [6:0]  _cs_decoder_decoded_T = {io_enq_uop_inst[0], io_enq_uop_inst[1], cs_decoder_decoded_invInputs[0], cs_decoder_decoded_invInputs[1], cs_decoder_decoded_invInputs[3], cs_decoder_decoded_invInputs[4], cs_decoder_decoded_invInputs[10]};
   wire [7:0]  _cs_decoder_decoded_T_2 = {io_enq_uop_inst[0], io_enq_uop_inst[1], cs_decoder_decoded_invInputs[0], cs_decoder_decoded_invInputs[1], cs_decoder_decoded_invInputs[2], cs_decoder_decoded_invInputs[3], cs_decoder_decoded_invInputs[4], cs_decoder_decoded_invInputs[10]};
@@ -334,14 +361,16 @@ module DecodeUnit(
   wire [2:0]  cs_csr_cmd = {|{&_cs_decoder_decoded_T_88, &_cs_decoder_decoded_T_116, &_cs_decoder_decoded_T_146, &_cs_decoder_decoded_T_244, &_cs_decoder_decoded_T_248, &_cs_decoder_decoded_T_312}, &_cs_decoder_decoded_T_146, &_cs_decoder_decoded_T_116};
   wire        _csr_ren_T = cs_csr_cmd == 3'h6;
   wire        csr_en = _csr_ren_T | (&cs_csr_cmd) | cs_csr_cmd == 3'h5;
-  wire        csr_ren = (_csr_ren_T | (&cs_csr_cmd)) & io_enq_uop_inst[19:15] == 5'h0;
+  wire        csr_ren = (_csr_ren_T | (&cs_csr_cmd)) & _uop_lrs1_T == 5'h0;
   wire        _GEN = io_interrupt & ~io_enq_uop_is_sfb;
+  assign _uop_lrs1_T = io_enq_uop_inst[19:15];
   assign io_deq_uop_uopc = cs_uopc;
+  assign io_deq_uop_inst = io_enq_uop_inst;
+  assign io_deq_uop_debug_inst = io_enq_uop_debug_inst;
   assign io_deq_uop_is_rvc = io_enq_uop_is_rvc;
+  assign io_deq_uop_debug_pc = io_enq_uop_debug_pc;
   assign io_deq_uop_iq_type = {|{&_cs_decoder_decoded_T_50, &_cs_decoder_decoded_T_66, &_cs_decoder_decoded_T_138, &_cs_decoder_decoded_T_266, &_cs_decoder_decoded_T_268, &_cs_decoder_decoded_T_274, &_cs_decoder_decoded_T_298, &_cs_decoder_decoded_T_302, &_cs_decoder_decoded_T_306, &_cs_decoder_decoded_T_328, &_cs_decoder_decoded_T_338}, |{&_cs_decoder_decoded_T_2, &_cs_decoder_decoded_T_4, &_cs_decoder_decoded_T_6, &_cs_decoder_decoded_T_122, &_cs_decoder_decoded_T_140, &_cs_decoder_decoded_T_230, &_cs_decoder_decoded_T_242, &_cs_decoder_decoded_T_260}, {&_cs_decoder_decoded_T_2, &_cs_decoder_decoded_T_4, &_cs_decoder_decoded_T_6, &_cs_decoder_decoded_T_50, &_cs_decoder_decoded_T_66, &_cs_decoder_decoded_T_122, &_cs_decoder_decoded_T_140, &_cs_decoder_decoded_T_230, &_cs_decoder_decoded_T_242, &_cs_decoder_decoded_T_260, &_cs_decoder_decoded_T_266, &_cs_decoder_decoded_T_268, &_cs_decoder_decoded_T_274, &_cs_decoder_decoded_T_298, &_cs_decoder_decoded_T_302, &_cs_decoder_decoded_T_306, &_cs_decoder_decoded_T_328, &_cs_decoder_decoded_T_338} == 18'h0};
   assign io_deq_uop_fu_code = {|{&_cs_decoder_decoded_T_138, &_cs_decoder_decoded_T_318, &_cs_decoder_decoded_T_320, &_cs_decoder_decoded_T_328, &_cs_decoder_decoded_T_338}, |{&_cs_decoder_decoded_T_332, &_cs_decoder_decoded_T_348}, |{&_cs_decoder_decoded_T_262, &_cs_decoder_decoded_T_306}, |{&_cs_decoder_decoded_T_48, &_cs_decoder_decoded_T_70, &_cs_decoder_decoded_T_74, &_cs_decoder_decoded_T_274, &_cs_decoder_decoded_T_278, &_cs_decoder_decoded_T_300, &_cs_decoder_decoded_T_304}, |{&_cs_decoder_decoded_T_88, &_cs_decoder_decoded_T_116, &_cs_decoder_decoded_T_146, &_cs_decoder_decoded_T_244, &_cs_decoder_decoded_T_248, &_cs_decoder_decoded_T_312}, &_cs_decoder_decoded_T_212, |{&_cs_decoder_decoded_T_196, &{io_enq_uop_inst[0], io_enq_uop_inst[1], cs_decoder_decoded_invInputs[0], io_enq_uop_inst[4], io_enq_uop_inst[5], cs_decoder_decoded_invInputs[4], cs_decoder_decoded_invInputs[10], cs_decoder_decoded_invInputs[11], cs_decoder_decoded_invInputs[12], io_enq_uop_inst[25], cs_decoder_decoded_invInputs[24], cs_decoder_decoded_invInputs[25], cs_decoder_decoded_invInputs[26], cs_decoder_decoded_invInputs[27], cs_decoder_decoded_invInputs[28], cs_decoder_decoded_invInputs[29]}}, |{&_cs_decoder_decoded_T_2, &_cs_decoder_decoded_T_4, &_cs_decoder_decoded_T_6, &_cs_decoder_decoded_T_12, &_cs_decoder_decoded_T_122, &_cs_decoder_decoded_T_140, &_cs_decoder_decoded_T_230, &_cs_decoder_decoded_T_236, &_cs_decoder_decoded_T_258}, |{&_cs_decoder_decoded_T_22, &_cs_decoder_decoded_T_84, &_cs_decoder_decoded_T_86}, |{&_cs_decoder_decoded_T_14, &_cs_decoder_decoded_T_16, &_cs_decoder_decoded_T_28, &_cs_decoder_decoded_T_34, &_cs_decoder_decoded_T_42, &_cs_decoder_decoded_T_80, &_cs_decoder_decoded_T_96, &_cs_decoder_decoded_T_100, &_cs_decoder_decoded_T_132, &_cs_decoder_decoded_T_162, &_cs_decoder_decoded_T_166, &_cs_decoder_decoded_T_168, &_cs_decoder_decoded_T_172}};
-  assign io_deq_uop_ctrl_is_load = io_enq_uop_ctrl_is_load;
-  assign io_deq_uop_ctrl_is_sta = io_enq_uop_ctrl_is_sta;
   assign io_deq_uop_is_br = |{&_cs_decoder_decoded_T_80, &_cs_decoder_decoded_T_162};
   assign io_deq_uop_is_jalr = cs_uopc == 7'h26;
   assign io_deq_uop_is_jal = cs_uopc == 7'h25;
@@ -355,7 +384,7 @@ module DecodeUnit(
   assign io_deq_uop_exc_cause = _GEN ? io_interrupt_cause : {60'h0, io_enq_uop_bp_debug_if ? 4'hE : io_enq_uop_bp_xcpt_if ? 4'h3 : io_enq_uop_xcpt_pf_if ? 4'hC : {2'h0, io_enq_uop_xcpt_ae_if ? 2'h1 : 2'h2}};
   assign io_deq_uop_bypassable = |{&_cs_decoder_decoded_T_14, &_cs_decoder_decoded_T_16, &_cs_decoder_decoded_T_28, &_cs_decoder_decoded_T_34, &_cs_decoder_decoded_T_42, &_cs_decoder_decoded_T_96, &_cs_decoder_decoded_T_100, &_cs_decoder_decoded_T_132, &_cs_decoder_decoded_T_166, &_cs_decoder_decoded_T_168, &_cs_decoder_decoded_T_172};
   assign io_deq_uop_mem_cmd = cs_mem_cmd;
-  assign io_deq_uop_mem_size = cs_mem_cmd == 5'h14 | cs_mem_cmd == 5'h5 ? {|(io_enq_uop_inst[24:20]), |(io_enq_uop_inst[19:15])} : io_enq_uop_inst[13:12];
+  assign io_deq_uop_mem_size = cs_mem_cmd == 5'h14 | cs_mem_cmd == 5'h5 ? {|(io_enq_uop_inst[24:20]), |_uop_lrs1_T} : io_enq_uop_inst[13:12];
   assign io_deq_uop_mem_signed = ~(io_enq_uop_inst[14]);
   assign io_deq_uop_is_fence = &_cs_decoder_decoded_T_12;
   assign io_deq_uop_is_fencei = &{io_enq_uop_inst[0], io_enq_uop_inst[1], io_enq_uop_inst[2], io_enq_uop_inst[3], cs_decoder_decoded_invInputs[2], cs_decoder_decoded_invInputs[3], cs_decoder_decoded_invInputs[4], io_enq_uop_inst[12], cs_decoder_decoded_invInputs[11], cs_decoder_decoded_invInputs[12]};
@@ -366,7 +395,7 @@ module DecodeUnit(
   assign io_deq_uop_is_unique = |{&_cs_decoder_decoded_T_10, &_cs_decoder_decoded_T_90, &_cs_decoder_decoded_T_116, &_cs_decoder_decoded_T_140, &_cs_decoder_decoded_T_146, &_cs_decoder_decoded_T_230, &_cs_decoder_decoded_T_242, &_cs_decoder_decoded_T_246, &_cs_decoder_decoded_T_250, &_cs_decoder_decoded_T_260, &_cs_decoder_decoded_T_314};
   assign io_deq_uop_flush_on_commit = (|{&_cs_decoder_decoded_T_10, &_cs_decoder_decoded_T_88, &_cs_decoder_decoded_T_116, &_cs_decoder_decoded_T_140, &_cs_decoder_decoded_T_146, &_cs_decoder_decoded_T_230, &_cs_decoder_decoded_T_236, &_cs_decoder_decoded_T_244, &_cs_decoder_decoded_T_248, &_cs_decoder_decoded_T_254, &_cs_decoder_decoded_T_312}) | csr_en & ~csr_ren & io_csr_decode_write_flush;
   assign io_deq_uop_ldst = {1'h0, io_enq_uop_inst[11:7]};
-  assign io_deq_uop_lrs1 = {1'h0, io_enq_uop_inst[19:15]};
+  assign io_deq_uop_lrs1 = {1'h0, _uop_lrs1_T};
   assign io_deq_uop_lrs2 = {1'h0, io_enq_uop_inst[24:20]};
   assign io_deq_uop_lrs3 = {1'h0, io_enq_uop_inst[31:27]};
   assign io_deq_uop_ldst_val = cs_dst_type != 2'h2 & ~(io_enq_uop_inst[11:7] == 5'h0 & cs_dst_type == 2'h0);
@@ -375,6 +404,23 @@ module DecodeUnit(
   assign io_deq_uop_lrs2_rtype = {|{&_cs_decoder_decoded_T, &_cs_decoder_decoded_T_4, &_cs_decoder_decoded_T_10, &_cs_decoder_decoded_T_16, &_cs_decoder_decoded_T_20, &_cs_decoder_decoded_T_84, &_cs_decoder_decoded_T_86, &_cs_decoder_decoded_T_88, &_cs_decoder_decoded_T_96, &{io_enq_uop_inst[0], io_enq_uop_inst[1], cs_decoder_decoded_invInputs[0], io_enq_uop_inst[3], io_enq_uop_inst[4], cs_decoder_decoded_invInputs[3], cs_decoder_decoded_invInputs[4], io_enq_uop_inst[12], cs_decoder_decoded_invInputs[11], cs_decoder_decoded_invInputs[23], cs_decoder_decoded_invInputs[24], cs_decoder_decoded_invInputs[25], cs_decoder_decoded_invInputs[26], cs_decoder_decoded_invInputs[27], cs_decoder_decoded_invInputs[28], cs_decoder_decoded_invInputs[29]}, &_cs_decoder_decoded_T_116, &_cs_decoder_decoded_T_124, &_cs_decoder_decoded_T_132, &_cs_decoder_decoded_T_146, &_cs_decoder_decoded_T_166, &{io_enq_uop_inst[0], io_enq_uop_inst[1], cs_decoder_decoded_invInputs[0], io_enq_uop_inst[3], io_enq_uop_inst[4], cs_decoder_decoded_invInputs[3], cs_decoder_decoded_invInputs[4], io_enq_uop_inst[12], cs_decoder_decoded_invInputs[11], io_enq_uop_inst[14], cs_decoder_decoded_invInputs[23], cs_decoder_decoded_invInputs[24], cs_decoder_decoded_invInputs[25], cs_decoder_decoded_invInputs[26], cs_decoder_decoded_invInputs[27], cs_decoder_decoded_invInputs[29]}, &_cs_decoder_decoded_T_236, &_cs_decoder_decoded_T_244, &_cs_decoder_decoded_T_248, &_cs_decoder_decoded_T_298, &_cs_decoder_decoded_T_302, &_cs_decoder_decoded_T_306, &_cs_decoder_decoded_T_312, &_cs_decoder_decoded_T_322, &_cs_decoder_decoded_T_324}, |{&_cs_decoder_decoded_T_48, &_cs_decoder_decoded_T_66, &_cs_decoder_decoded_T_138, &_cs_decoder_decoded_T_266, &_cs_decoder_decoded_T_268, &_cs_decoder_decoded_T_274}};
   assign io_deq_uop_frs3_en = &_cs_decoder_decoded_T_48;
   assign io_deq_uop_fp_val = |_cs_decoder_decoded_orMatrixOutputs_T_92;
+  assign io_deq_uop_fp_single =
+    |{&{io_enq_uop_inst[0], io_enq_uop_inst[1], cs_decoder_decoded_invInputs[2], cs_decoder_decoded_invInputs[3], io_enq_uop_inst[6], cs_decoder_decoded_invInputs[23], cs_decoder_decoded_invInputs[24]},
+      &{io_enq_uop_inst[0], io_enq_uop_inst[1], cs_decoder_decoded_invInputs[0], cs_decoder_decoded_invInputs[1], io_enq_uop_inst[4], cs_decoder_decoded_invInputs[3], io_enq_uop_inst[6], cs_decoder_decoded_invInputs[23], cs_decoder_decoded_invInputs[24], cs_decoder_decoded_invInputs[27], cs_decoder_decoded_invInputs[28], cs_decoder_decoded_invInputs[29]},
+      &{io_enq_uop_inst[0], io_enq_uop_inst[1], io_enq_uop_inst[2], cs_decoder_decoded_invInputs[1], cs_decoder_decoded_invInputs[2], cs_decoder_decoded_invInputs[4], cs_decoder_decoded_invInputs[10], io_enq_uop_inst[13], cs_decoder_decoded_invInputs[12]},
+      &{io_enq_uop_inst[0], io_enq_uop_inst[1], cs_decoder_decoded_invInputs[0], cs_decoder_decoded_invInputs[1], io_enq_uop_inst[4], cs_decoder_decoded_invInputs[3], io_enq_uop_inst[6], cs_decoder_decoded_invInputs[10], cs_decoder_decoded_invInputs[12], cs_decoder_decoded_invInputs[23], cs_decoder_decoded_invInputs[24], cs_decoder_decoded_invInputs[25], cs_decoder_decoded_invInputs[26], io_enq_uop_inst[29], cs_decoder_decoded_invInputs[28]},
+      &{io_enq_uop_inst[0], io_enq_uop_inst[1], cs_decoder_decoded_invInputs[0], cs_decoder_decoded_invInputs[1], io_enq_uop_inst[4], cs_decoder_decoded_invInputs[3], io_enq_uop_inst[6], cs_decoder_decoded_invInputs[11], cs_decoder_decoded_invInputs[12], cs_decoder_decoded_invInputs[23], cs_decoder_decoded_invInputs[24], cs_decoder_decoded_invInputs[25], cs_decoder_decoded_invInputs[26], io_enq_uop_inst[29], cs_decoder_decoded_invInputs[28]},
+      &{io_enq_uop_inst[0], io_enq_uop_inst[1], cs_decoder_decoded_invInputs[0], cs_decoder_decoded_invInputs[1], io_enq_uop_inst[4], cs_decoder_decoded_invInputs[3], io_enq_uop_inst[6], cs_decoder_decoded_invInputs[11], cs_decoder_decoded_invInputs[12], cs_decoder_decoded_invInputs[23], cs_decoder_decoded_invInputs[24], cs_decoder_decoded_invInputs[26], io_enq_uop_inst[29], cs_decoder_decoded_invInputs[28], cs_decoder_decoded_invInputs[29]},
+      &_cs_decoder_decoded_T_298,
+      &_cs_decoder_decoded_T_308,
+      &{io_enq_uop_inst[0], io_enq_uop_inst[1], cs_decoder_decoded_invInputs[0], cs_decoder_decoded_invInputs[1], io_enq_uop_inst[4], cs_decoder_decoded_invInputs[3], io_enq_uop_inst[6], cs_decoder_decoded_invInputs[20], cs_decoder_decoded_invInputs[21], cs_decoder_decoded_invInputs[22], cs_decoder_decoded_invInputs[23], cs_decoder_decoded_invInputs[24], cs_decoder_decoded_invInputs[25], cs_decoder_decoded_invInputs[27], io_enq_uop_inst[30], io_enq_uop_inst[31]},
+      &{io_enq_uop_inst[0], io_enq_uop_inst[1], cs_decoder_decoded_invInputs[0], cs_decoder_decoded_invInputs[1], io_enq_uop_inst[4], cs_decoder_decoded_invInputs[3], io_enq_uop_inst[6], cs_decoder_decoded_invInputs[10], cs_decoder_decoded_invInputs[11], cs_decoder_decoded_invInputs[12], cs_decoder_decoded_invInputs[18], cs_decoder_decoded_invInputs[19], cs_decoder_decoded_invInputs[20], cs_decoder_decoded_invInputs[21], cs_decoder_decoded_invInputs[22], cs_decoder_decoded_invInputs[23], cs_decoder_decoded_invInputs[24], cs_decoder_decoded_invInputs[25], io_enq_uop_inst[29], io_enq_uop_inst[30], io_enq_uop_inst[31]},
+      &{io_enq_uop_inst[0], io_enq_uop_inst[1], cs_decoder_decoded_invInputs[0], cs_decoder_decoded_invInputs[1], io_enq_uop_inst[4], cs_decoder_decoded_invInputs[3], io_enq_uop_inst[6], cs_decoder_decoded_invInputs[11], cs_decoder_decoded_invInputs[12], cs_decoder_decoded_invInputs[18], cs_decoder_decoded_invInputs[19], cs_decoder_decoded_invInputs[20], cs_decoder_decoded_invInputs[21], cs_decoder_decoded_invInputs[22], cs_decoder_decoded_invInputs[23], cs_decoder_decoded_invInputs[24], cs_decoder_decoded_invInputs[25], cs_decoder_decoded_invInputs[26], io_enq_uop_inst[29], io_enq_uop_inst[30], io_enq_uop_inst[31]}};
+  assign io_deq_uop_xcpt_pf_if = io_enq_uop_xcpt_pf_if;
+  assign io_deq_uop_xcpt_ae_if = io_enq_uop_xcpt_ae_if;
+  assign io_deq_uop_bp_debug_if = io_enq_uop_bp_debug_if;
+  assign io_deq_uop_bp_xcpt_if = io_enq_uop_bp_xcpt_if;
+  assign io_deq_uop_debug_fsrc = io_enq_uop_debug_fsrc;
   assign io_csr_decode_inst = io_enq_uop_inst;
 endmodule
 

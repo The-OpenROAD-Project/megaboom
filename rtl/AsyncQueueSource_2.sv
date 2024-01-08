@@ -1,4 +1,4 @@
-// Standard header to adapt well known macros to our needs.
+// Standard header to adapt well known macros for prints and assertions.
 
 // Users can define 'PRINTF_COND' to add an extra gate to prints.
 `ifndef PRINTF_COND_
@@ -9,28 +9,43 @@
   `endif // PRINTF_COND
 `endif // not def PRINTF_COND_
 
+// Users can define 'ASSERT_VERBOSE_COND' to add an extra gate to assert error printing.
+`ifndef ASSERT_VERBOSE_COND_
+  `ifdef ASSERT_VERBOSE_COND
+    `define ASSERT_VERBOSE_COND_ (`ASSERT_VERBOSE_COND)
+  `else  // ASSERT_VERBOSE_COND
+    `define ASSERT_VERBOSE_COND_ 1
+  `endif // ASSERT_VERBOSE_COND
+`endif // not def ASSERT_VERBOSE_COND_
+
+// Users can define 'STOP_COND' to add an extra gate to stop conditions.
+`ifndef STOP_COND_
+  `ifdef STOP_COND
+    `define STOP_COND_ (`STOP_COND)
+  `else  // STOP_COND
+    `define STOP_COND_ 1
+  `endif // STOP_COND
+`endif // not def STOP_COND_
+
 module AsyncQueueSource_2(
   input         clock,
                 reset,
-                io_enq_valid,
-  input  [2:0]  io_enq_bits_opcode,
-  input  [8:0]  io_enq_bits_address,
-  input  [31:0] io_enq_bits_data,
-  input         io_async_ridx,
-                io_async_safe_ridx_valid,
-                io_async_safe_sink_reset_n,
   output        io_enq_ready,
+  input         io_enq_valid,
+  input  [2:0]  io_enq_bits_opcode,
+  input  [1:0]  io_enq_bits_size,
+  input         io_enq_bits_source,
+  input  [31:0] io_enq_bits_data,
   output [2:0]  io_async_mem_0_opcode,
-                io_async_mem_0_param,
   output [1:0]  io_async_mem_0_size,
   output        io_async_mem_0_source,
-  output [8:0]  io_async_mem_0_address,
-  output [3:0]  io_async_mem_0_mask,
   output [31:0] io_async_mem_0_data,
-  output        io_async_mem_0_corrupt,
-                io_async_widx,
-                io_async_safe_widx_valid,
-                io_async_safe_source_reset_n
+  input         io_async_ridx,
+  output        io_async_widx,
+  input         io_async_safe_ridx_valid,
+  output        io_async_safe_widx_valid,
+                io_async_safe_source_reset_n,
+  input         io_async_safe_sink_reset_n
 );
 
   wire        _io_enq_ready_output;
@@ -39,13 +54,9 @@ module AsyncQueueSource_2(
   wire        _source_valid_0_io_out;
   wire        _ridx_ridx_gray_io_q;
   reg  [2:0]  mem_0_opcode;
-  reg  [2:0]  mem_0_param;
   reg  [1:0]  mem_0_size;
   reg         mem_0_source;
-  reg  [8:0]  mem_0_address;
-  reg  [3:0]  mem_0_mask;
   reg  [31:0] mem_0_data;
-  reg         mem_0_corrupt;
   wire        _widx_T_1 = _io_enq_ready_output & io_enq_valid;
   reg         widx_widx_bin;
   reg         ready_reg;
@@ -54,14 +65,10 @@ module AsyncQueueSource_2(
   always @(posedge clock) begin
     if (_widx_T_1) begin
       mem_0_opcode <= io_enq_bits_opcode;
-      mem_0_param <= 3'h0;
-      mem_0_size <= 2'h2;
-      mem_0_address <= io_enq_bits_address;
-      mem_0_mask <= 4'hF;
+      mem_0_size <= io_enq_bits_size;
+      mem_0_source <= io_enq_bits_source;
       mem_0_data <= io_enq_bits_data;
     end
-    mem_0_source <= ~_widx_T_1 & mem_0_source;
-    mem_0_corrupt <= ~_widx_T_1 & mem_0_corrupt;
   end // always @(posedge)
   wire        widx = _sink_valid_io_out & widx_widx_bin + _widx_T_1;
   always @(posedge clock or posedge reset) begin
@@ -99,37 +106,33 @@ module AsyncQueueSource_2(
   );
   AsyncValidSync source_valid_0 (
     .io_in  (1'h1),
+    .io_out (_source_valid_0_io_out),
     .clock  (clock),
-    .reset  (reset | ~io_async_safe_sink_reset_n),
-    .io_out (_source_valid_0_io_out)
+    .reset  (reset | ~io_async_safe_sink_reset_n)
   );
   AsyncValidSync source_valid_1 (
     .io_in  (_source_valid_0_io_out),
+    .io_out (io_async_safe_widx_valid),
     .clock  (clock),
-    .reset  (reset | ~io_async_safe_sink_reset_n),
-    .io_out (io_async_safe_widx_valid)
+    .reset  (reset | ~io_async_safe_sink_reset_n)
   );
   AsyncValidSync sink_extend (
     .io_in  (io_async_safe_ridx_valid),
+    .io_out (_sink_extend_io_out),
     .clock  (clock),
-    .reset  (reset | ~io_async_safe_sink_reset_n),
-    .io_out (_sink_extend_io_out)
+    .reset  (reset | ~io_async_safe_sink_reset_n)
   );
   AsyncValidSync sink_valid (
     .io_in  (_sink_extend_io_out),
+    .io_out (_sink_valid_io_out),
     .clock  (clock),
-    .reset  (reset),
-    .io_out (_sink_valid_io_out)
+    .reset  (reset)
   );
   assign io_enq_ready = _io_enq_ready_output;
   assign io_async_mem_0_opcode = mem_0_opcode;
-  assign io_async_mem_0_param = mem_0_param;
   assign io_async_mem_0_size = mem_0_size;
   assign io_async_mem_0_source = mem_0_source;
-  assign io_async_mem_0_address = mem_0_address;
-  assign io_async_mem_0_mask = mem_0_mask;
   assign io_async_mem_0_data = mem_0_data;
-  assign io_async_mem_0_corrupt = mem_0_corrupt;
   assign io_async_widx = widx_gray;
   assign io_async_safe_source_reset_n = ~reset;
 endmodule

@@ -1,4 +1,4 @@
-// Standard header to adapt well known macros to our needs.
+// Standard header to adapt well known macros for prints and assertions.
 
 // Users can define 'PRINTF_COND' to add an extra gate to prints.
 `ifndef PRINTF_COND_
@@ -9,6 +9,24 @@
   `endif // PRINTF_COND
 `endif // not def PRINTF_COND_
 
+// Users can define 'ASSERT_VERBOSE_COND' to add an extra gate to assert error printing.
+`ifndef ASSERT_VERBOSE_COND_
+  `ifdef ASSERT_VERBOSE_COND
+    `define ASSERT_VERBOSE_COND_ (`ASSERT_VERBOSE_COND)
+  `else  // ASSERT_VERBOSE_COND
+    `define ASSERT_VERBOSE_COND_ 1
+  `endif // ASSERT_VERBOSE_COND
+`endif // not def ASSERT_VERBOSE_COND_
+
+// Users can define 'STOP_COND' to add an extra gate to stop conditions.
+`ifndef STOP_COND_
+  `ifdef STOP_COND
+    `define STOP_COND_ (`STOP_COND)
+  `else  // STOP_COND
+    `define STOP_COND_ 1
+  `endif // STOP_COND
+`endif // not def STOP_COND_
+
 module CaptureUpdateChain(
   input        clock,
                reset,
@@ -16,9 +34,9 @@ module CaptureUpdateChain(
                io_chainIn_data,
                io_chainIn_capture,
                io_chainIn_update,
-  input  [1:0] io_capture_bits_dmiStatus,
   output       io_chainOut_data,
-               io_update_valid,
+  input  [1:0] io_capture_bits_dmiStatus,
+  output       io_update_valid,
                io_update_bits_dmireset
 );
 
@@ -54,6 +72,16 @@ module CaptureUpdateChain(
   reg  regs_29;
   reg  regs_30;
   reg  regs_31;
+  `ifndef SYNTHESIS
+    always @(posedge clock) begin
+      if (~reset & ~(~(io_chainIn_capture & io_chainIn_update) & ~(io_chainIn_capture & io_chainIn_shift) & ~(io_chainIn_update & io_chainIn_shift))) begin
+        if (`ASSERT_VERBOSE_COND_)
+          $error("Assertion failed\n    at JtagShifter.scala:183 assert(!(io.chainIn.capture && io.chainIn.update)\n");
+        if (`STOP_COND_)
+          $fatal;
+      end
+    end // always @(posedge)
+  `endif // not def SYNTHESIS
   wire _GEN = io_chainIn_update | ~io_chainIn_shift;
   always @(posedge clock) begin
     regs_0 <= io_chainIn_capture | (_GEN ? regs_0 : regs_1);

@@ -1,4 +1,4 @@
-// Standard header to adapt well known macros to our needs.
+// Standard header to adapt well known macros for prints and assertions.
 
 // Users can define 'PRINTF_COND' to add an extra gate to prints.
 `ifndef PRINTF_COND_
@@ -9,10 +9,29 @@
   `endif // PRINTF_COND
 `endif // not def PRINTF_COND_
 
+// Users can define 'ASSERT_VERBOSE_COND' to add an extra gate to assert error printing.
+`ifndef ASSERT_VERBOSE_COND_
+  `ifdef ASSERT_VERBOSE_COND
+    `define ASSERT_VERBOSE_COND_ (`ASSERT_VERBOSE_COND)
+  `else  // ASSERT_VERBOSE_COND
+    `define ASSERT_VERBOSE_COND_ 1
+  `endif // ASSERT_VERBOSE_COND
+`endif // not def ASSERT_VERBOSE_COND_
+
+// Users can define 'STOP_COND' to add an extra gate to stop conditions.
+`ifndef STOP_COND_
+  `ifdef STOP_COND
+    `define STOP_COND_ (`STOP_COND)
+  `else  // STOP_COND
+    `define STOP_COND_ 1
+  `endif // STOP_COND
+`endif // not def STOP_COND_
+
 module FDivSqrtUnit(
   input         clock,
                 reset,
-                io_req_valid,
+  output        io_req_ready,
+  input         io_req_valid,
   input  [6:0]  io_req_bits_uop_uopc,
   input  [19:0] io_req_bits_uop_br_mask,
                 io_req_bits_uop_imm_packed,
@@ -27,11 +46,7 @@ module FDivSqrtUnit(
                 io_req_bits_rs2_data,
   input         io_req_bits_kill,
                 io_resp_ready,
-  input  [19:0] io_brupdate_b1_resolve_mask,
-                io_brupdate_b1_mispredict_mask,
-  input  [2:0]  io_fcsr_rm,
-  output        io_req_ready,
-                io_resp_valid,
+  output        io_resp_valid,
   output [6:0]  io_resp_bits_uop_rob_idx,
                 io_resp_bits_uop_pdst,
   output        io_resp_bits_uop_is_amo,
@@ -42,9 +57,13 @@ module FDivSqrtUnit(
   output [64:0] io_resp_bits_data,
   output        io_resp_bits_fflags_valid,
   output [6:0]  io_resp_bits_fflags_bits_uop_rob_idx,
-  output [4:0]  io_resp_bits_fflags_bits_flags
+  output [4:0]  io_resp_bits_fflags_bits_flags,
+  input  [19:0] io_brupdate_b1_resolve_mask,
+                io_brupdate_b1_mispredict_mask,
+  input  [2:0]  io_fcsr_rm
 );
 
+  wire        output_buffer_available;
   wire [32:0] _downvert_d2s_io_out;
   wire [4:0]  _downvert_d2s_io_exceptionFlags;
   wire        _divsqrt_io_inReady_div;
@@ -85,8 +104,8 @@ module FDivSqrtUnit(
   reg         r_divsqrt_uop_uses_stq;
   reg  [1:0]  r_divsqrt_uop_dst_rtype;
   reg         r_divsqrt_uop_fp_val;
+  wire        may_fire_input = r_buffer_val & (r_buffer_fin_div | r_buffer_fin_sqrt) & ~r_divsqrt_val & output_buffer_available;
   reg         r_out_val;
-  wire        may_fire_input = r_buffer_val & (r_buffer_fin_div | r_buffer_fin_sqrt) & ~r_divsqrt_val & ~r_out_val;
   reg  [19:0] r_out_uop_br_mask;
   reg  [6:0]  r_out_uop_rob_idx;
   reg  [6:0]  r_out_uop_pdst;
@@ -97,14 +116,38 @@ module FDivSqrtUnit(
   reg         r_out_uop_fp_val;
   reg  [4:0]  r_out_flags_double;
   reg  [64:0] r_out_wdata_double;
+  assign output_buffer_available = ~r_out_val;
   wire [19:0] _io_resp_valid_T = io_brupdate_b1_mispredict_mask & r_out_uop_br_mask;
   wire        _GEN = _divsqrt_io_outValid_div | _divsqrt_io_outValid_sqrt;
+  `ifndef SYNTHESIS
+    always @(posedge clock) begin
+      if (~reset & r_buffer_val & io_req_valid) begin
+        if (`ASSERT_VERBOSE_COND_)
+          $error("Assertion failed: [fdiv] a request is incoming while the buffer is already full.\n    at fdiv.scala:137 assert (!(r_buffer_val && io.req.valid), \"[fdiv] a request is incoming while the buffer is already full.\")\n");
+        if (`STOP_COND_)
+          $fatal;
+      end
+      if (_GEN & ~reset & ~r_divsqrt_val) begin
+        if (`ASSERT_VERBOSE_COND_)
+          $error("Assertion failed: [fdiv] a response is being generated for no request.\n    at fdiv.scala:204 assert (r_divsqrt_val, \"[fdiv] a response is being generated for no request.\")\n");
+        if (`STOP_COND_)
+          $fatal;
+      end
+      if (~reset & r_out_val & _GEN) begin
+        if (`ASSERT_VERBOSE_COND_)
+          $error("Assertion failed: [fdiv] Buffered output being overwritten by another output from the fdiv/fsqrt unit.\n    at fdiv.scala:207 assert (!(r_out_val && (divsqrt.io.outValid_div || divsqrt.io.outValid_sqrt)),\n");
+        if (`STOP_COND_)
+          $fatal;
+      end
+    end // always @(posedge)
+  `endif // not def SYNTHESIS
   wire        _io_resp_bits_data_T = r_divsqrt_fin_typeTagIn == 2'h0;
   wire        _io_resp_valid_output = r_out_val & _io_resp_valid_T == 20'h0;
+  wire        _GEN_0 = _fdiv_decoder_io_sigs_typeTagIn == 2'h0;
   wire [19:0] _r_divsqrt_killed_T_4 = io_brupdate_b1_mispredict_mask & r_buffer_req_uop_br_mask;
-  wire        _GEN_0 = io_req_valid & (io_brupdate_b1_mispredict_mask & io_req_bits_uop_br_mask) == 20'h0 & ~io_req_bits_kill;
+  wire        _GEN_1 = io_req_valid & (io_brupdate_b1_mispredict_mask & io_req_bits_uop_br_mask) == 20'h0 & ~io_req_bits_kill;
   wire [19:0] _r_out_val_T_1 = io_brupdate_b1_mispredict_mask & r_divsqrt_uop_br_mask;
-  wire        _GEN_1 = may_fire_input & (r_buffer_fin_sqrt ? _divsqrt_io_inReady_sqrt : _divsqrt_io_inReady_div);
+  wire        _GEN_2 = may_fire_input & (r_buffer_fin_sqrt ? _divsqrt_io_inReady_sqrt : _divsqrt_io_inReady_div);
   always @(posedge clock) begin
     if (reset) begin
       r_buffer_val <= 1'h0;
@@ -112,14 +155,14 @@ module FDivSqrtUnit(
       r_out_val <= 1'h0;
     end
     else begin
-      r_buffer_val <= ~_GEN_1 & (_GEN_0 | _r_divsqrt_killed_T_4 == 20'h0 & ~io_req_bits_kill & r_buffer_val);
-      r_divsqrt_val <= ~_GEN & (_GEN_1 | r_divsqrt_val);
+      r_buffer_val <= ~_GEN_2 & (_GEN_1 | _r_divsqrt_killed_T_4 == 20'h0 & ~io_req_bits_kill & r_buffer_val);
+      r_divsqrt_val <= ~_GEN & (_GEN_2 | r_divsqrt_val);
       if (_GEN)
         r_out_val <= ~r_divsqrt_killed & _r_out_val_T_1 == 20'h0 & ~io_req_bits_kill;
       else
         r_out_val <= ~(io_resp_ready | (|_io_resp_valid_T) | io_req_bits_kill) & r_out_val;
     end
-    if (_GEN_0) begin
+    if (_GEN_1) begin
       r_buffer_req_uop_br_mask <= io_req_bits_uop_br_mask & ~io_brupdate_b1_resolve_mask;
       r_buffer_req_uop_rob_idx <= io_req_bits_uop_rob_idx;
       r_buffer_req_uop_pdst <= io_req_bits_uop_pdst;
@@ -131,22 +174,13 @@ module FDivSqrtUnit(
       r_buffer_fin_typeTagIn <= _fdiv_decoder_io_sigs_typeTagIn;
       r_buffer_fin_div <= _fdiv_decoder_io_sigs_div;
       r_buffer_fin_sqrt <= _fdiv_decoder_io_sigs_sqrt;
-      if (&(io_req_bits_uop_imm_packed[2:0]))
-        r_buffer_fin_rm <= io_fcsr_rm;
-      else
-        r_buffer_fin_rm <= io_req_bits_uop_imm_packed[2:0];
-      if (_fdiv_decoder_io_sigs_typeTagIn == 2'h0) begin
-        r_buffer_fin_in1 <= _in1_upconvert_s2d_io_out;
-        r_buffer_fin_in2 <= _in2_upconvert_s2d_io_out;
-      end
-      else begin
-        r_buffer_fin_in1 <= io_req_bits_rs1_data;
-        r_buffer_fin_in2 <= io_req_bits_rs2_data;
-      end
+      r_buffer_fin_rm <= (&(io_req_bits_uop_imm_packed[2:0])) ? io_fcsr_rm : io_req_bits_uop_imm_packed[2:0];
+      r_buffer_fin_in1 <= _GEN_0 ? _in1_upconvert_s2d_io_out : io_req_bits_rs1_data;
+      r_buffer_fin_in2 <= _GEN_0 ? _in2_upconvert_s2d_io_out : io_req_bits_rs2_data;
     end
     else
       r_buffer_req_uop_br_mask <= r_buffer_req_uop_br_mask & ~io_brupdate_b1_resolve_mask;
-    if (_GEN_1) begin
+    if (_GEN_2) begin
       r_divsqrt_killed <= (|_r_divsqrt_killed_T_4) | io_req_bits_kill;
       r_divsqrt_fin_typeTagIn <= r_buffer_fin_typeTagIn;
       r_divsqrt_fin_rm <= r_buffer_fin_rm;
@@ -195,13 +229,13 @@ module FDivSqrtUnit(
   DivSqrtRecF64 divsqrt (
     .clock             (clock),
     .reset             (reset),
+    .io_inReady_div    (_divsqrt_io_inReady_div),
+    .io_inReady_sqrt   (_divsqrt_io_inReady_sqrt),
     .io_inValid        (may_fire_input),
     .io_sqrtOp         (r_buffer_fin_sqrt),
     .io_a              (r_buffer_fin_in1),
     .io_b              (r_buffer_fin_sqrt ? r_buffer_fin_in1 : r_buffer_fin_in2),
     .io_roundingMode   (r_buffer_fin_rm),
-    .io_inReady_div    (_divsqrt_io_inReady_div),
-    .io_inReady_sqrt   (_divsqrt_io_inReady_sqrt),
     .io_outValid_div   (_divsqrt_io_outValid_div),
     .io_outValid_sqrt  (_divsqrt_io_outValid_sqrt),
     .io_out            (_divsqrt_io_out),

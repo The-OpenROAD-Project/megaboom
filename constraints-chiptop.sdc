@@ -2,8 +2,8 @@ set sdc_version 2.0
 
 set clk_period 8500
 
-set clk_name  clock_uncore_clock
-set clk_port_name clock_uncore_clock
+set clk_name  clock
+set clk_port_name clock
 set clk_in_pct 0.20
 set clk_out_pct 0.2
 
@@ -20,7 +20,12 @@ set non_clock_inputs [lsearch -inline -all -not -exact [all_inputs] $clk_port]
 set_input_delay  [expr $clk_period * $clk_in_pct] -clock ${clk_name}_vir $non_clock_inputs
 set_output_delay [expr $clk_period * $clk_out_pct] -clock ${clk_name}_vir [all_outputs]
 
-set new_clk1_name serial_tl_clock
+set new_clk1_name serial_tl_0_clock
 
 create_clock -name $new_clk1_name -period $clk_period -waveform [list 0 [expr $clk_period/2]] [get_ports $new_clk1_name]
 set_clock_uncertainty 10 [get_clocks $new_clk1_name]
+
+set new_clk2_name fake_pll_clk
+
+create_clock -name $new_clk2_name -period $clk_period -waveform [list 0 [expr $clk_period/2]] [get_ports $new_clk2_name]
+set_clock_uncertainty 10 [get_clocks $new_clk2_name]

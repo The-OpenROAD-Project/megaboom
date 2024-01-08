@@ -1,4 +1,4 @@
-// Standard header to adapt well known macros to our needs.
+// Standard header to adapt well known macros for prints and assertions.
 
 // Users can define 'PRINTF_COND' to add an extra gate to prints.
 `ifndef PRINTF_COND_
@@ -8,6 +8,24 @@
     `define PRINTF_COND_ 1
   `endif // PRINTF_COND
 `endif // not def PRINTF_COND_
+
+// Users can define 'ASSERT_VERBOSE_COND' to add an extra gate to assert error printing.
+`ifndef ASSERT_VERBOSE_COND_
+  `ifdef ASSERT_VERBOSE_COND
+    `define ASSERT_VERBOSE_COND_ (`ASSERT_VERBOSE_COND)
+  `else  // ASSERT_VERBOSE_COND
+    `define ASSERT_VERBOSE_COND_ 1
+  `endif // ASSERT_VERBOSE_COND
+`endif // not def ASSERT_VERBOSE_COND_
+
+// Users can define 'STOP_COND' to add an extra gate to stop conditions.
+`ifndef STOP_COND_
+  `ifdef STOP_COND
+    `define STOP_COND_ (`STOP_COND)
+  `else  // STOP_COND
+    `define STOP_COND_ 1
+  `endif // STOP_COND
+`endif // not def STOP_COND_
 
 module MulAddRecFNPipe_1(
   input         clock,
@@ -67,8 +85,8 @@ module MulAddRecFNPipe_1(
   reg         mulAddRecFNToRaw_postMul_io_fromPreMul_pipe_b_bit0AlignedSigC;
   reg  [48:0] mulAddRecFNToRaw_postMul_io_mulAddResult_pipe_b;
   reg  [2:0]  mulAddRecFNToRaw_postMul_io_roundingMode_pipe_b;
-  reg  [2:0]  roundingMode_stage0;
-  reg         valid_stage0;
+  reg  [2:0]  roundingMode_stage0_pipe_b;
+  reg         valid_stage0_pipe_v;
   reg         roundRawFNToRecFN_io_invalidExc_pipe_b;
   reg         roundRawFNToRecFN_io_in_pipe_b_isNaN;
   reg         roundRawFNToRecFN_io_in_pipe_b_isInf;
@@ -77,7 +95,6 @@ module MulAddRecFNPipe_1(
   reg  [9:0]  roundRawFNToRecFN_io_in_pipe_b_sExp;
   reg  [26:0] roundRawFNToRecFN_io_in_pipe_b_sig;
   reg  [2:0]  roundRawFNToRecFN_io_roundingMode_pipe_b;
-  reg         roundRawFNToRecFN_io_detectTininess_pipe_b;
   reg         io_validout_pipe_v;
   always @(posedge clock) begin
     if (io_validin) begin
@@ -99,9 +116,9 @@ module MulAddRecFNPipe_1(
       mulAddRecFNToRaw_postMul_io_fromPreMul_pipe_b_bit0AlignedSigC <= _mulAddRecFNToRaw_preMul_io_toPostMul_bit0AlignedSigC;
       mulAddRecFNToRaw_postMul_io_mulAddResult_pipe_b <= {1'h0, {24'h0, _mulAddRecFNToRaw_preMul_io_mulAddA} * {24'h0, _mulAddRecFNToRaw_preMul_io_mulAddB}} + {1'h0, _mulAddRecFNToRaw_preMul_io_mulAddC};
       mulAddRecFNToRaw_postMul_io_roundingMode_pipe_b <= io_roundingMode;
-      roundingMode_stage0 <= io_roundingMode;
+      roundingMode_stage0_pipe_b <= io_roundingMode;
     end
-    if (valid_stage0) begin
+    if (valid_stage0_pipe_v) begin
       roundRawFNToRecFN_io_invalidExc_pipe_b <= _mulAddRecFNToRaw_postMul_io_invalidExc;
       roundRawFNToRecFN_io_in_pipe_b_isNaN <= _mulAddRecFNToRaw_postMul_io_rawOut_isNaN;
       roundRawFNToRecFN_io_in_pipe_b_isInf <= _mulAddRecFNToRaw_postMul_io_rawOut_isInf;
@@ -109,16 +126,15 @@ module MulAddRecFNPipe_1(
       roundRawFNToRecFN_io_in_pipe_b_sign <= _mulAddRecFNToRaw_postMul_io_rawOut_sign;
       roundRawFNToRecFN_io_in_pipe_b_sExp <= _mulAddRecFNToRaw_postMul_io_rawOut_sExp;
       roundRawFNToRecFN_io_in_pipe_b_sig <= _mulAddRecFNToRaw_postMul_io_rawOut_sig;
-      roundRawFNToRecFN_io_roundingMode_pipe_b <= roundingMode_stage0;
+      roundRawFNToRecFN_io_roundingMode_pipe_b <= roundingMode_stage0_pipe_b;
     end
-    roundRawFNToRecFN_io_detectTininess_pipe_b <= valid_stage0 | roundRawFNToRecFN_io_detectTininess_pipe_b;
     if (reset) begin
-      valid_stage0 <= 1'h0;
+      valid_stage0_pipe_v <= 1'h0;
       io_validout_pipe_v <= 1'h0;
     end
     else begin
-      valid_stage0 <= io_validin;
-      io_validout_pipe_v <= valid_stage0;
+      valid_stage0_pipe_v <= io_validin;
+      io_validout_pipe_v <= valid_stage0_pipe_v;
     end
   end // always @(posedge)
   MulAddRecFNToRaw_preMul_1 mulAddRecFNToRaw_preMul (
@@ -182,7 +198,6 @@ module MulAddRecFNPipe_1(
     .io_in_sExp        (roundRawFNToRecFN_io_in_pipe_b_sExp),
     .io_in_sig         (roundRawFNToRecFN_io_in_pipe_b_sig),
     .io_roundingMode   (roundRawFNToRecFN_io_roundingMode_pipe_b),
-    .io_detectTininess (roundRawFNToRecFN_io_detectTininess_pipe_b),
     .io_out            (io_out),
     .io_exceptionFlags (io_exceptionFlags)
   );

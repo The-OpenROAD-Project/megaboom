@@ -1,4 +1,4 @@
-// Standard header to adapt well known macros to our needs.
+// Standard header to adapt well known macros for prints and assertions.
 
 // Users can define 'PRINTF_COND' to add an extra gate to prints.
 `ifndef PRINTF_COND_
@@ -8,6 +8,24 @@
     `define PRINTF_COND_ 1
   `endif // PRINTF_COND
 `endif // not def PRINTF_COND_
+
+// Users can define 'ASSERT_VERBOSE_COND' to add an extra gate to assert error printing.
+`ifndef ASSERT_VERBOSE_COND_
+  `ifdef ASSERT_VERBOSE_COND
+    `define ASSERT_VERBOSE_COND_ (`ASSERT_VERBOSE_COND)
+  `else  // ASSERT_VERBOSE_COND
+    `define ASSERT_VERBOSE_COND_ 1
+  `endif // ASSERT_VERBOSE_COND
+`endif // not def ASSERT_VERBOSE_COND_
+
+// Users can define 'STOP_COND' to add an extra gate to stop conditions.
+`ifndef STOP_COND_
+  `ifdef STOP_COND
+    `define STOP_COND_ (`STOP_COND)
+  `else  // STOP_COND
+    `define STOP_COND_ 1
+  `endif // STOP_COND
+`endif // not def STOP_COND_
 
 module RenameBusyTable_1(
   input        clock,
@@ -28,18 +46,6 @@ module RenameBusyTable_1(
                io_ren_uops_3_prs1,
                io_ren_uops_3_prs2,
                io_ren_uops_3_prs3,
-  input        io_rebusy_reqs_0,
-               io_rebusy_reqs_1,
-               io_rebusy_reqs_2,
-               io_rebusy_reqs_3,
-  input  [6:0] io_wb_pdsts_0,
-               io_wb_pdsts_1,
-               io_wb_pdsts_2,
-               io_wb_pdsts_3,
-  input        io_wb_valids_0,
-               io_wb_valids_1,
-               io_wb_valids_2,
-               io_wb_valids_3,
   output       io_busy_resps_0_prs1_busy,
                io_busy_resps_0_prs2_busy,
                io_busy_resps_0_prs3_busy,
@@ -51,7 +57,19 @@ module RenameBusyTable_1(
                io_busy_resps_2_prs3_busy,
                io_busy_resps_3_prs1_busy,
                io_busy_resps_3_prs2_busy,
-               io_busy_resps_3_prs3_busy
+               io_busy_resps_3_prs3_busy,
+  input        io_rebusy_reqs_0,
+               io_rebusy_reqs_1,
+               io_rebusy_reqs_2,
+               io_rebusy_reqs_3,
+  input  [6:0] io_wb_pdsts_0,
+               io_wb_pdsts_1,
+               io_wb_pdsts_2,
+               io_wb_pdsts_3,
+  input        io_wb_valids_0,
+               io_wb_valids_1,
+               io_wb_valids_2,
+               io_wb_valids_3
 );
 
   reg  [127:0] busy_table;

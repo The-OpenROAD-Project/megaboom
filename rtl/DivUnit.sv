@@ -1,4 +1,4 @@
-// Standard header to adapt well known macros to our needs.
+// Standard header to adapt well known macros for prints and assertions.
 
 // Users can define 'PRINTF_COND' to add an extra gate to prints.
 `ifndef PRINTF_COND_
@@ -9,10 +9,29 @@
   `endif // PRINTF_COND
 `endif // not def PRINTF_COND_
 
+// Users can define 'ASSERT_VERBOSE_COND' to add an extra gate to assert error printing.
+`ifndef ASSERT_VERBOSE_COND_
+  `ifdef ASSERT_VERBOSE_COND
+    `define ASSERT_VERBOSE_COND_ (`ASSERT_VERBOSE_COND)
+  `else  // ASSERT_VERBOSE_COND
+    `define ASSERT_VERBOSE_COND_ 1
+  `endif // ASSERT_VERBOSE_COND
+`endif // not def ASSERT_VERBOSE_COND_
+
+// Users can define 'STOP_COND' to add an extra gate to stop conditions.
+`ifndef STOP_COND_
+  `ifdef STOP_COND
+    `define STOP_COND_ (`STOP_COND)
+  `else  // STOP_COND
+    `define STOP_COND_ 1
+  `endif // STOP_COND
+`endif // not def STOP_COND_
+
 module DivUnit(
   input         clock,
                 reset,
-                io_req_valid,
+  output        io_req_ready,
+  input         io_req_valid,
   input  [3:0]  io_req_bits_uop_ctrl_op_fcn,
   input         io_req_bits_uop_ctrl_fcn_dw,
   input  [19:0] io_req_bits_uop_br_mask,
@@ -26,17 +45,16 @@ module DivUnit(
                 io_req_bits_rs2_data,
   input         io_req_bits_kill,
                 io_resp_ready,
-  input  [19:0] io_brupdate_b1_resolve_mask,
-                io_brupdate_b1_mispredict_mask,
-  output        io_req_ready,
-                io_resp_valid,
+  output        io_resp_valid,
   output [6:0]  io_resp_bits_uop_rob_idx,
                 io_resp_bits_uop_pdst,
   output        io_resp_bits_uop_bypassable,
                 io_resp_bits_uop_is_amo,
                 io_resp_bits_uop_uses_stq,
   output [1:0]  io_resp_bits_uop_dst_rtype,
-  output [63:0] io_resp_bits_data
+  output [63:0] io_resp_bits_data,
+  input  [19:0] io_brupdate_b1_resolve_mask,
+                io_brupdate_b1_mispredict_mask
 );
 
   wire        _div_io_req_ready;
@@ -66,6 +84,7 @@ module DivUnit(
   MulDiv div (
     .clock             (clock),
     .reset             (reset),
+    .io_req_ready      (_div_io_req_ready),
     .io_req_valid      (io_req_valid & ~do_kill),
     .io_req_bits_fn    (io_req_bits_uop_ctrl_op_fcn),
     .io_req_bits_dw    (io_req_bits_uop_ctrl_fcn_dw),
@@ -73,7 +92,6 @@ module DivUnit(
     .io_req_bits_in2   (io_req_bits_rs2_data),
     .io_kill           (do_kill),
     .io_resp_ready     (io_resp_ready),
-    .io_req_ready      (_div_io_req_ready),
     .io_resp_valid     (_div_io_resp_valid),
     .io_resp_bits_data (io_resp_bits_data)
   );

@@ -1,4 +1,4 @@
-// Standard header to adapt well known macros to our needs.
+// Standard header to adapt well known macros for prints and assertions.
 
 // Users can define 'PRINTF_COND' to add an extra gate to prints.
 `ifndef PRINTF_COND_
@@ -9,6 +9,24 @@
   `endif // PRINTF_COND
 `endif // not def PRINTF_COND_
 
+// Users can define 'ASSERT_VERBOSE_COND' to add an extra gate to assert error printing.
+`ifndef ASSERT_VERBOSE_COND_
+  `ifdef ASSERT_VERBOSE_COND
+    `define ASSERT_VERBOSE_COND_ (`ASSERT_VERBOSE_COND)
+  `else  // ASSERT_VERBOSE_COND
+    `define ASSERT_VERBOSE_COND_ 1
+  `endif // ASSERT_VERBOSE_COND
+`endif // not def ASSERT_VERBOSE_COND_
+
+// Users can define 'STOP_COND' to add an extra gate to stop conditions.
+`ifndef STOP_COND_
+  `ifdef STOP_COND
+    `define STOP_COND_ (`STOP_COND)
+  `else  // STOP_COND
+    `define STOP_COND_ 1
+  `endif // STOP_COND
+`endif // not def STOP_COND_
+
 module RenameFreeList(
   input        clock,
                reset,
@@ -16,7 +34,15 @@ module RenameFreeList(
                io_reqs_1,
                io_reqs_2,
                io_reqs_3,
-               io_dealloc_pregs_0_valid,
+  output       io_alloc_pregs_0_valid,
+  output [6:0] io_alloc_pregs_0_bits,
+  output       io_alloc_pregs_1_valid,
+  output [6:0] io_alloc_pregs_1_bits,
+  output       io_alloc_pregs_2_valid,
+  output [6:0] io_alloc_pregs_2_bits,
+  output       io_alloc_pregs_3_valid,
+  output [6:0] io_alloc_pregs_3_bits,
+  input        io_dealloc_pregs_0_valid,
   input  [6:0] io_dealloc_pregs_0_bits,
   input        io_dealloc_pregs_1_valid,
   input  [6:0] io_dealloc_pregs_1_bits,
@@ -34,15 +60,7 @@ module RenameFreeList(
   input  [4:0] io_ren_br_tags_3_bits,
                io_brupdate_b2_uop_br_tag,
   input        io_brupdate_b2_mispredict,
-               io_debug_pipeline_empty,
-  output       io_alloc_pregs_0_valid,
-  output [6:0] io_alloc_pregs_0_bits,
-  output       io_alloc_pregs_1_valid,
-  output [6:0] io_alloc_pregs_1_bits,
-  output       io_alloc_pregs_2_valid,
-  output [6:0] io_alloc_pregs_2_bits,
-  output       io_alloc_pregs_3_valid,
-  output [6:0] io_alloc_pregs_3_bits
+               io_debug_pipeline_empty
 );
 
   reg  [6:0]   r_sel_3;
@@ -70,16 +88,6 @@ module RenameFreeList(
   reg  [127:0] br_alloc_lists_17;
   reg  [127:0] br_alloc_lists_18;
   reg  [127:0] br_alloc_lists_19;
-  wire [127:0] allocs_0 = 128'h1 << r_sel;
-  wire [127:0] allocs_1 = 128'h1 << r_sel_1;
-  wire [127:0] allocs_2 = 128'h1 << r_sel_2;
-  wire [127:0] allocs_3 = 128'h1 << r_sel_3;
-  reg          r_valid;
-  reg          r_valid_1;
-  reg          r_valid_2;
-  reg          r_valid_3;
-  wire [127:0] br_deallocs = (io_brupdate_b2_uop_br_tag == 5'h13 ? br_alloc_lists_19 : io_brupdate_b2_uop_br_tag == 5'h12 ? br_alloc_lists_18 : io_brupdate_b2_uop_br_tag == 5'h11 ? br_alloc_lists_17 : io_brupdate_b2_uop_br_tag == 5'h10 ? br_alloc_lists_16 : io_brupdate_b2_uop_br_tag == 5'hF ? br_alloc_lists_15 : io_brupdate_b2_uop_br_tag == 5'hE ? br_alloc_lists_14 : io_brupdate_b2_uop_br_tag == 5'hD ? br_alloc_lists_13 : io_brupdate_b2_uop_br_tag == 5'hC ? br_alloc_lists_12 : io_brupdate_b2_uop_br_tag == 5'hB ? br_alloc_lists_11 : io_brupdate_b2_uop_br_tag == 5'hA ? br_alloc_lists_10 : io_brupdate_b2_uop_br_tag == 5'h9 ? br_alloc_lists_9 : io_brupdate_b2_uop_br_tag == 5'h8 ? br_alloc_lists_8 : io_brupdate_b2_uop_br_tag == 5'h7 ? br_alloc_lists_7 : io_brupdate_b2_uop_br_tag == 5'h6 ? br_alloc_lists_6 : io_brupdate_b2_uop_br_tag == 5'h5 ? br_alloc_lists_5 : io_brupdate_b2_uop_br_tag == 5'h4 ? br_alloc_lists_4 : io_brupdate_b2_uop_br_tag == 5'h3 ? br_alloc_lists_3 : io_brupdate_b2_uop_br_tag == 5'h2 ? br_alloc_lists_2 : io_brupdate_b2_uop_br_tag == 5'h1 ? br_alloc_lists_1 : br_alloc_lists_0) & {128{io_brupdate_b2_mispredict}};
-  wire [127:0] dealloc_mask = 128'h1 << io_dealloc_pregs_0_bits & {128{io_dealloc_pregs_0_valid}} | 128'h1 << io_dealloc_pregs_1_bits & {128{io_dealloc_pregs_1_valid}} | 128'h1 << io_dealloc_pregs_2_bits & {128{io_dealloc_pregs_2_valid}} | 128'h1 << io_dealloc_pregs_3_bits & {128{io_dealloc_pregs_3_valid}} | br_deallocs;
   wire [127:0] sels_0 =
     free_list[0]
       ? 128'h1
@@ -803,18 +811,141 @@ module RenameFreeList(
                                                                                                                                   : _GEN_31 & _sels_T_2[32] & _sels_T_4[32]
                                                                                                                                       ? 128'h100000000
                                                                                                                                       : _GEN_32 & _sels_T_2[33] & _sels_T_4[33] ? 128'h200000000 : _GEN_33 & _sels_T_2[34] & _sels_T_4[34] ? 128'h400000000 : _GEN_34 & _sels_T_2[35] & _sels_T_4[35] ? 128'h800000000 : _GEN_35 & _sels_T_2[36] & _sels_T_4[36] ? 128'h1000000000 : _GEN_36 & _sels_T_2[37] & _sels_T_4[37] ? 128'h2000000000 : _GEN_37 & _sels_T_2[38] & _sels_T_4[38] ? 128'h4000000000 : _GEN_38 & _sels_T_2[39] & _sels_T_4[39] ? 128'h8000000000 : _GEN_39 & _sels_T_2[40] & _sels_T_4[40] ? 128'h10000000000 : _GEN_40 & _sels_T_2[41] & _sels_T_4[41] ? 128'h20000000000 : _GEN_41 & _sels_T_2[42] & _sels_T_4[42] ? 128'h40000000000 : _GEN_42 & _sels_T_2[43] & _sels_T_4[43] ? 128'h80000000000 : _GEN_43 & _sels_T_2[44] & _sels_T_4[44] ? 128'h100000000000 : _GEN_44 & _sels_T_2[45] & _sels_T_4[45] ? 128'h200000000000 : _GEN_45 & _sels_T_2[46] & _sels_T_4[46] ? 128'h400000000000 : _GEN_46 & _sels_T_2[47] & _sels_T_4[47] ? 128'h800000000000 : _GEN_47 & _sels_T_2[48] & _sels_T_4[48] ? 128'h1000000000000 : _GEN_48 & _sels_T_2[49] & _sels_T_4[49] ? 128'h2000000000000 : _GEN_49 & _sels_T_2[50] & _sels_T_4[50] ? 128'h4000000000000 : _GEN_50 & _sels_T_2[51] & _sels_T_4[51] ? 128'h8000000000000 : _GEN_51 & _sels_T_2[52] & _sels_T_4[52] ? 128'h10000000000000 : _GEN_52 & _sels_T_2[53] & _sels_T_4[53] ? 128'h20000000000000 : _GEN_53 & _sels_T_2[54] & _sels_T_4[54] ? 128'h40000000000000 : _GEN_54 & _sels_T_2[55] & _sels_T_4[55] ? 128'h80000000000000 : _GEN_55 & _sels_T_2[56] & _sels_T_4[56] ? 128'h100000000000000 : _GEN_56 & _sels_T_2[57] & _sels_T_4[57] ? 128'h200000000000000 : _GEN_57 & _sels_T_2[58] & _sels_T_4[58] ? 128'h400000000000000 : _GEN_58 & _sels_T_2[59] & _sels_T_4[59] ? 128'h800000000000000 : _GEN_59 & _sels_T_2[60] & _sels_T_4[60] ? 128'h1000000000000000 : _GEN_60 & _sels_T_2[61] & _sels_T_4[61] ? 128'h2000000000000000 : _GEN_61 & _sels_T_2[62] & _sels_T_4[62] ? 128'h4000000000000000 : _sels_sels_3_T_192;
+  wire [127:0] allocs_0 = 128'h1 << r_sel;
+  wire [127:0] allocs_1 = 128'h1 << r_sel_1;
+  wire [127:0] allocs_2 = 128'h1 << r_sel_2;
+  wire [127:0] allocs_3 = 128'h1 << r_sel_3;
+  reg  [127:0] casez_tmp;
+  always @(*) begin
+    casez (io_brupdate_b2_uop_br_tag)
+      5'b00000:
+        casez_tmp = br_alloc_lists_0;
+      5'b00001:
+        casez_tmp = br_alloc_lists_1;
+      5'b00010:
+        casez_tmp = br_alloc_lists_2;
+      5'b00011:
+        casez_tmp = br_alloc_lists_3;
+      5'b00100:
+        casez_tmp = br_alloc_lists_4;
+      5'b00101:
+        casez_tmp = br_alloc_lists_5;
+      5'b00110:
+        casez_tmp = br_alloc_lists_6;
+      5'b00111:
+        casez_tmp = br_alloc_lists_7;
+      5'b01000:
+        casez_tmp = br_alloc_lists_8;
+      5'b01001:
+        casez_tmp = br_alloc_lists_9;
+      5'b01010:
+        casez_tmp = br_alloc_lists_10;
+      5'b01011:
+        casez_tmp = br_alloc_lists_11;
+      5'b01100:
+        casez_tmp = br_alloc_lists_12;
+      5'b01101:
+        casez_tmp = br_alloc_lists_13;
+      5'b01110:
+        casez_tmp = br_alloc_lists_14;
+      5'b01111:
+        casez_tmp = br_alloc_lists_15;
+      5'b10000:
+        casez_tmp = br_alloc_lists_16;
+      5'b10001:
+        casez_tmp = br_alloc_lists_17;
+      5'b10010:
+        casez_tmp = br_alloc_lists_18;
+      5'b10011:
+        casez_tmp = br_alloc_lists_19;
+      5'b10100:
+        casez_tmp = br_alloc_lists_0;
+      5'b10101:
+        casez_tmp = br_alloc_lists_0;
+      5'b10110:
+        casez_tmp = br_alloc_lists_0;
+      5'b10111:
+        casez_tmp = br_alloc_lists_0;
+      5'b11000:
+        casez_tmp = br_alloc_lists_0;
+      5'b11001:
+        casez_tmp = br_alloc_lists_0;
+      5'b11010:
+        casez_tmp = br_alloc_lists_0;
+      5'b11011:
+        casez_tmp = br_alloc_lists_0;
+      5'b11100:
+        casez_tmp = br_alloc_lists_0;
+      5'b11101:
+        casez_tmp = br_alloc_lists_0;
+      5'b11110:
+        casez_tmp = br_alloc_lists_0;
+      default:
+        casez_tmp = br_alloc_lists_0;
+    endcase
+  end // always @(*)
+  wire [127:0] br_deallocs = casez_tmp & {128{io_brupdate_b2_mispredict}};
+  wire [127:0] dealloc_mask = 128'h1 << io_dealloc_pregs_0_bits & {128{io_dealloc_pregs_0_valid}} | 128'h1 << io_dealloc_pregs_1_bits & {128{io_dealloc_pregs_1_valid}} | 128'h1 << io_dealloc_pregs_2_bits & {128{io_dealloc_pregs_2_valid}} | 128'h1 << io_dealloc_pregs_3_bits & {128{io_dealloc_pregs_3_valid}} | br_deallocs;
+  reg          r_valid;
+  wire         sel_fire_0 = (~r_valid | io_reqs_0) & (|sels_0);
+  reg          r_valid_1;
+  wire         sel_fire_1 = (~r_valid_1 | io_reqs_1) & (|sels_1);
+  reg          r_valid_2;
+  wire         sel_fire_2 = (~r_valid_2 | io_reqs_2) & (|sels_2);
+  reg          r_valid_3;
+  wire         sel_fire_3 = (~r_valid_3 | io_reqs_3) & (|sels_3);
+  `ifndef SYNTHESIS
+    wire [127:0] _io_debug_freelist_T_19 = free_list | allocs_0 & {128{r_valid}} | allocs_1 & {128{r_valid_1}} | allocs_2 & {128{r_valid_2}} | allocs_3 & {128{r_valid_3}};
+    wire [7:0]   _GEN_127 =
+      {1'h0,
+       {1'h0, {1'h0, {1'h0, {1'h0, {1'h0, {1'h0, _io_debug_freelist_T_19[0]} + {1'h0, _io_debug_freelist_T_19[1]}} + {1'h0, {1'h0, _io_debug_freelist_T_19[2]} + {1'h0, _io_debug_freelist_T_19[3]}}} + {1'h0, {1'h0, {1'h0, _io_debug_freelist_T_19[4]} + {1'h0, _io_debug_freelist_T_19[5]}} + {1'h0, {1'h0, _io_debug_freelist_T_19[6]} + {1'h0, _io_debug_freelist_T_19[7]}}}} + {1'h0, {1'h0, {1'h0, {1'h0, _io_debug_freelist_T_19[8]} + {1'h0, _io_debug_freelist_T_19[9]}} + {1'h0, {1'h0, _io_debug_freelist_T_19[10]} + {1'h0, _io_debug_freelist_T_19[11]}}} + {1'h0, {1'h0, {1'h0, _io_debug_freelist_T_19[12]} + {1'h0, _io_debug_freelist_T_19[13]}} + {1'h0, {1'h0, _io_debug_freelist_T_19[14]} + {1'h0, _io_debug_freelist_T_19[15]}}}}} + {1'h0, {1'h0, {1'h0, {1'h0, {1'h0, _io_debug_freelist_T_19[16]} + {1'h0, _io_debug_freelist_T_19[17]}} + {1'h0, {1'h0, _io_debug_freelist_T_19[18]} + {1'h0, _io_debug_freelist_T_19[19]}}} + {1'h0, {1'h0, {1'h0, _io_debug_freelist_T_19[20]} + {1'h0, _io_debug_freelist_T_19[21]}} + {1'h0, {1'h0, _io_debug_freelist_T_19[22]} + {1'h0, _io_debug_freelist_T_19[23]}}}} + {1'h0, {1'h0, {1'h0, {1'h0, _io_debug_freelist_T_19[24]} + {1'h0, _io_debug_freelist_T_19[25]}} + {1'h0, {1'h0, _io_debug_freelist_T_19[26]} + {1'h0, _io_debug_freelist_T_19[27]}}} + {1'h0, {1'h0, {1'h0, _io_debug_freelist_T_19[28]} + {1'h0, _io_debug_freelist_T_19[29]}} + {1'h0, {1'h0, _io_debug_freelist_T_19[30]} + {1'h0, _io_debug_freelist_T_19[31]}}}}}}
+         + {1'h0, {1'h0, {1'h0, {1'h0, {1'h0, {1'h0, _io_debug_freelist_T_19[32]} + {1'h0, _io_debug_freelist_T_19[33]}} + {1'h0, {1'h0, _io_debug_freelist_T_19[34]} + {1'h0, _io_debug_freelist_T_19[35]}}} + {1'h0, {1'h0, {1'h0, _io_debug_freelist_T_19[36]} + {1'h0, _io_debug_freelist_T_19[37]}} + {1'h0, {1'h0, _io_debug_freelist_T_19[38]} + {1'h0, _io_debug_freelist_T_19[39]}}}} + {1'h0, {1'h0, {1'h0, {1'h0, _io_debug_freelist_T_19[40]} + {1'h0, _io_debug_freelist_T_19[41]}} + {1'h0, {1'h0, _io_debug_freelist_T_19[42]} + {1'h0, _io_debug_freelist_T_19[43]}}} + {1'h0, {1'h0, {1'h0, _io_debug_freelist_T_19[44]} + {1'h0, _io_debug_freelist_T_19[45]}} + {1'h0, {1'h0, _io_debug_freelist_T_19[46]} + {1'h0, _io_debug_freelist_T_19[47]}}}}} + {1'h0, {1'h0, {1'h0, {1'h0, {1'h0, _io_debug_freelist_T_19[48]} + {1'h0, _io_debug_freelist_T_19[49]}} + {1'h0, {1'h0, _io_debug_freelist_T_19[50]} + {1'h0, _io_debug_freelist_T_19[51]}}} + {1'h0, {1'h0, {1'h0, _io_debug_freelist_T_19[52]} + {1'h0, _io_debug_freelist_T_19[53]}} + {1'h0, {1'h0, _io_debug_freelist_T_19[54]} + {1'h0, _io_debug_freelist_T_19[55]}}}} + {1'h0, {1'h0, {1'h0, {1'h0, _io_debug_freelist_T_19[56]} + {1'h0, _io_debug_freelist_T_19[57]}} + {1'h0, {1'h0, _io_debug_freelist_T_19[58]} + {1'h0, _io_debug_freelist_T_19[59]}}} + {1'h0, {1'h0, {1'h0, _io_debug_freelist_T_19[60]} + {1'h0, _io_debug_freelist_T_19[61]}} + {1'h0, {1'h0, _io_debug_freelist_T_19[62]} + {1'h0, _io_debug_freelist_T_19[63]}}}}}}}
+      + {1'h0,
+         {1'h0, {1'h0, {1'h0, {1'h0, {1'h0, {1'h0, _io_debug_freelist_T_19[64]} + {1'h0, _io_debug_freelist_T_19[65]}} + {1'h0, {1'h0, _io_debug_freelist_T_19[66]} + {1'h0, _io_debug_freelist_T_19[67]}}} + {1'h0, {1'h0, {1'h0, _io_debug_freelist_T_19[68]} + {1'h0, _io_debug_freelist_T_19[69]}} + {1'h0, {1'h0, _io_debug_freelist_T_19[70]} + {1'h0, _io_debug_freelist_T_19[71]}}}} + {1'h0, {1'h0, {1'h0, {1'h0, _io_debug_freelist_T_19[72]} + {1'h0, _io_debug_freelist_T_19[73]}} + {1'h0, {1'h0, _io_debug_freelist_T_19[74]} + {1'h0, _io_debug_freelist_T_19[75]}}} + {1'h0, {1'h0, {1'h0, _io_debug_freelist_T_19[76]} + {1'h0, _io_debug_freelist_T_19[77]}} + {1'h0, {1'h0, _io_debug_freelist_T_19[78]} + {1'h0, _io_debug_freelist_T_19[79]}}}}} + {1'h0, {1'h0, {1'h0, {1'h0, {1'h0, _io_debug_freelist_T_19[80]} + {1'h0, _io_debug_freelist_T_19[81]}} + {1'h0, {1'h0, _io_debug_freelist_T_19[82]} + {1'h0, _io_debug_freelist_T_19[83]}}} + {1'h0, {1'h0, {1'h0, _io_debug_freelist_T_19[84]} + {1'h0, _io_debug_freelist_T_19[85]}} + {1'h0, {1'h0, _io_debug_freelist_T_19[86]} + {1'h0, _io_debug_freelist_T_19[87]}}}} + {1'h0, {1'h0, {1'h0, {1'h0, _io_debug_freelist_T_19[88]} + {1'h0, _io_debug_freelist_T_19[89]}} + {1'h0, {1'h0, _io_debug_freelist_T_19[90]} + {1'h0, _io_debug_freelist_T_19[91]}}} + {1'h0, {1'h0, {1'h0, _io_debug_freelist_T_19[92]} + {1'h0, _io_debug_freelist_T_19[93]}} + {1'h0, {1'h0, _io_debug_freelist_T_19[94]} + {1'h0, _io_debug_freelist_T_19[95]}}}}}}
+           + {1'h0, {1'h0, {1'h0, {1'h0, {1'h0, {1'h0, _io_debug_freelist_T_19[96]} + {1'h0, _io_debug_freelist_T_19[97]}} + {1'h0, {1'h0, _io_debug_freelist_T_19[98]} + {1'h0, _io_debug_freelist_T_19[99]}}} + {1'h0, {1'h0, {1'h0, _io_debug_freelist_T_19[100]} + {1'h0, _io_debug_freelist_T_19[101]}} + {1'h0, {1'h0, _io_debug_freelist_T_19[102]} + {1'h0, _io_debug_freelist_T_19[103]}}}} + {1'h0, {1'h0, {1'h0, {1'h0, _io_debug_freelist_T_19[104]} + {1'h0, _io_debug_freelist_T_19[105]}} + {1'h0, {1'h0, _io_debug_freelist_T_19[106]} + {1'h0, _io_debug_freelist_T_19[107]}}} + {1'h0, {1'h0, {1'h0, _io_debug_freelist_T_19[108]} + {1'h0, _io_debug_freelist_T_19[109]}} + {1'h0, {1'h0, _io_debug_freelist_T_19[110]} + {1'h0, _io_debug_freelist_T_19[111]}}}}} + {1'h0, {1'h0, {1'h0, {1'h0, {1'h0, _io_debug_freelist_T_19[112]} + {1'h0, _io_debug_freelist_T_19[113]}} + {1'h0, {1'h0, _io_debug_freelist_T_19[114]} + {1'h0, _io_debug_freelist_T_19[115]}}} + {1'h0, {1'h0, {1'h0, _io_debug_freelist_T_19[116]} + {1'h0, _io_debug_freelist_T_19[117]}} + {1'h0, {1'h0, _io_debug_freelist_T_19[118]} + {1'h0, _io_debug_freelist_T_19[119]}}}} + {1'h0, {1'h0, {1'h0, {1'h0, _io_debug_freelist_T_19[120]} + {1'h0, _io_debug_freelist_T_19[121]}} + {1'h0, {1'h0, _io_debug_freelist_T_19[122]} + {1'h0, _io_debug_freelist_T_19[123]}}} + {1'h0, {1'h0, {1'h0, _io_debug_freelist_T_19[124]} + {1'h0, _io_debug_freelist_T_19[125]}} + {1'h0, {1'h0, _io_debug_freelist_T_19[126]} + {1'h0, _io_debug_freelist_T_19[127]}}}}}}};
+    always @(posedge clock) begin
+      if (~reset & (|(_io_debug_freelist_T_19 & dealloc_mask))) begin
+        if (`ASSERT_VERBOSE_COND_)
+          $error("Assertion failed: [freelist] Returning a free physical register.\n    at rename-freelist.scala:94 assert (!(io.debug.freelist & dealloc_mask).orR, \"[freelist] Returning a free physical register.\")\n");
+        if (`STOP_COND_)
+          $fatal;
+      end
+      if (~reset & ~(~io_debug_pipeline_empty | _GEN_127 > 8'h5F)) begin
+        if (`ASSERT_VERBOSE_COND_)
+          $error("Assertion failed: [freelist] Leaking physical registers.\n    at rename-freelist.scala:95 assert (!io.debug.pipeline_empty || PopCount(io.debug.freelist) >= (numPregs - numLregs - 1).U,\n");
+        if (`STOP_COND_)
+          $fatal;
+      end
+    end // always @(posedge)
+  `endif // not def SYNTHESIS
+  wire [62:0]  _r_sel_T_1 = sels_0[127:65] | sels_0[63:1];
+  wire [30:0]  _r_sel_T_3 = _r_sel_T_1[62:32] | _r_sel_T_1[30:0];
+  wire [14:0]  _r_sel_T_5 = _r_sel_T_3[30:16] | _r_sel_T_3[14:0];
+  wire [6:0]   _r_sel_T_7 = _r_sel_T_5[14:8] | _r_sel_T_5[6:0];
+  wire [2:0]   _r_sel_T_9 = _r_sel_T_7[6:4] | _r_sel_T_7[2:0];
+  wire [62:0]  _r_sel_T_20 = sels_1[127:65] | sels_1[63:1];
+  wire [30:0]  _r_sel_T_22 = _r_sel_T_20[62:32] | _r_sel_T_20[30:0];
+  wire [14:0]  _r_sel_T_24 = _r_sel_T_22[30:16] | _r_sel_T_22[14:0];
+  wire [6:0]   _r_sel_T_26 = _r_sel_T_24[14:8] | _r_sel_T_24[6:0];
+  wire [2:0]   _r_sel_T_28 = _r_sel_T_26[6:4] | _r_sel_T_26[2:0];
+  wire [62:0]  _r_sel_T_39 = sels_2[127:65] | sels_2[63:1];
+  wire [30:0]  _r_sel_T_41 = _r_sel_T_39[62:32] | _r_sel_T_39[30:0];
+  wire [14:0]  _r_sel_T_43 = _r_sel_T_41[30:16] | _r_sel_T_41[14:0];
+  wire [6:0]   _r_sel_T_45 = _r_sel_T_43[14:8] | _r_sel_T_43[6:0];
+  wire [2:0]   _r_sel_T_47 = _r_sel_T_45[6:4] | _r_sel_T_45[2:0];
+  wire [62:0]  _r_sel_T_58 = sels_3[127:65] | sels_3[63:1];
+  wire [30:0]  _r_sel_T_60 = _r_sel_T_58[62:32] | _r_sel_T_58[30:0];
+  wire [14:0]  _r_sel_T_62 = _r_sel_T_60[30:16] | _r_sel_T_60[14:0];
+  wire [6:0]   _r_sel_T_64 = _r_sel_T_62[14:8] | _r_sel_T_62[6:0];
+  wire [2:0]   _r_sel_T_66 = _r_sel_T_64[6:4] | _r_sel_T_64[2:0];
   wire [127:0] alloc_masks_3 = allocs_3 & {128{io_reqs_3}};
   wire [127:0] alloc_masks_2 = alloc_masks_3 | allocs_2 & {128{io_reqs_2}};
   wire [127:0] alloc_masks_1 = alloc_masks_2 | allocs_1 & {128{io_reqs_1}};
   wire [127:0] alloc_masks_0 = alloc_masks_1 | allocs_0 & {128{io_reqs_0}};
-  wire         sel_fire_0 = (~r_valid | io_reqs_0) & (|sels_0);
-  wire         sel_fire_1 = (~r_valid_1 | io_reqs_1) & (|sels_1);
-  wire         sel_fire_2 = (~r_valid_2 | io_reqs_2) & (|sels_2);
-  wire         sel_fire_3 = (~r_valid_3 | io_reqs_3) & (|sels_3);
   wire [3:0]   br_slots = {io_ren_br_tags_3_valid, io_ren_br_tags_2_valid, io_ren_br_tags_1_valid, io_ren_br_tags_0_valid};
-  wire         _list_req_WIRE__0 = io_ren_br_tags_0_bits == 5'h0;
-  wire         _list_req_WIRE__1 = io_ren_br_tags_1_bits == 5'h0;
-  wire         _list_req_WIRE__2 = io_ren_br_tags_2_bits == 5'h0;
+  wire         _list_req_WIRE_0 = io_ren_br_tags_0_bits == 5'h0;
+  wire         _list_req_WIRE_1 = io_ren_br_tags_1_bits == 5'h0;
+  wire         _list_req_WIRE_2 = io_ren_br_tags_2_bits == 5'h0;
   wire         _list_req_WIRE_1_0 = io_ren_br_tags_0_bits == 5'h1;
   wire         _list_req_WIRE_1_1 = io_ren_br_tags_1_bits == 5'h1;
   wire         _list_req_WIRE_1_2 = io_ren_br_tags_2_bits == 5'h1;
@@ -872,26 +1003,6 @@ module RenameFreeList(
   wire         _list_req_WIRE_19_0 = io_ren_br_tags_0_bits == 5'h13;
   wire         _list_req_WIRE_19_1 = io_ren_br_tags_1_bits == 5'h13;
   wire         _list_req_WIRE_19_2 = io_ren_br_tags_2_bits == 5'h13;
-  wire [62:0]  _r_sel_T_1 = sels_0[127:65] | sels_0[63:1];
-  wire [30:0]  _r_sel_T_3 = _r_sel_T_1[62:32] | _r_sel_T_1[30:0];
-  wire [14:0]  _r_sel_T_5 = _r_sel_T_3[30:16] | _r_sel_T_3[14:0];
-  wire [6:0]   _r_sel_T_7 = _r_sel_T_5[14:8] | _r_sel_T_5[6:0];
-  wire [2:0]   _r_sel_T_9 = _r_sel_T_7[6:4] | _r_sel_T_7[2:0];
-  wire [62:0]  _r_sel_T_20 = sels_1[127:65] | sels_1[63:1];
-  wire [30:0]  _r_sel_T_22 = _r_sel_T_20[62:32] | _r_sel_T_20[30:0];
-  wire [14:0]  _r_sel_T_24 = _r_sel_T_22[30:16] | _r_sel_T_22[14:0];
-  wire [6:0]   _r_sel_T_26 = _r_sel_T_24[14:8] | _r_sel_T_24[6:0];
-  wire [2:0]   _r_sel_T_28 = _r_sel_T_26[6:4] | _r_sel_T_26[2:0];
-  wire [62:0]  _r_sel_T_39 = sels_2[127:65] | sels_2[63:1];
-  wire [30:0]  _r_sel_T_41 = _r_sel_T_39[62:32] | _r_sel_T_39[30:0];
-  wire [14:0]  _r_sel_T_43 = _r_sel_T_41[30:16] | _r_sel_T_41[14:0];
-  wire [6:0]   _r_sel_T_45 = _r_sel_T_43[14:8] | _r_sel_T_43[6:0];
-  wire [2:0]   _r_sel_T_47 = _r_sel_T_45[6:4] | _r_sel_T_45[2:0];
-  wire [62:0]  _r_sel_T_58 = sels_3[127:65] | sels_3[63:1];
-  wire [30:0]  _r_sel_T_60 = _r_sel_T_58[62:32] | _r_sel_T_58[30:0];
-  wire [14:0]  _r_sel_T_62 = _r_sel_T_60[30:16] | _r_sel_T_60[14:0];
-  wire [6:0]   _r_sel_T_64 = _r_sel_T_62[14:8] | _r_sel_T_62[6:0];
-  wire [2:0]   _r_sel_T_66 = _r_sel_T_64[6:4] | _r_sel_T_64[2:0];
   always @(posedge clock) begin
     if (reset) begin
       free_list <= 128'hFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE;
@@ -907,8 +1018,8 @@ module RenameFreeList(
       r_valid_2 <= r_valid_2 & ~io_reqs_2 | (|sels_2);
       r_valid_3 <= r_valid_3 & ~io_reqs_3 | (|sels_3);
     end
-    if (|({io_ren_br_tags_3_bits == 5'h0, _list_req_WIRE__2, _list_req_WIRE__1, _list_req_WIRE__0} & br_slots))
-      br_alloc_lists_0 <= (_list_req_WIRE__0 & io_ren_br_tags_0_valid ? alloc_masks_1 : 128'h0) | (_list_req_WIRE__1 & io_ren_br_tags_1_valid ? alloc_masks_2 : 128'h0) | (_list_req_WIRE__2 & io_ren_br_tags_2_valid ? alloc_masks_3 : 128'h0);
+    if (|({io_ren_br_tags_3_bits == 5'h0, _list_req_WIRE_2, _list_req_WIRE_1, _list_req_WIRE_0} & br_slots))
+      br_alloc_lists_0 <= (_list_req_WIRE_0 & io_ren_br_tags_0_valid ? alloc_masks_1 : 128'h0) | (_list_req_WIRE_1 & io_ren_br_tags_1_valid ? alloc_masks_2 : 128'h0) | (_list_req_WIRE_2 & io_ren_br_tags_2_valid ? alloc_masks_3 : 128'h0);
     else
       br_alloc_lists_0 <= br_alloc_lists_0 & ~br_deallocs | alloc_masks_0;
     if (|({io_ren_br_tags_3_bits == 5'h1, _list_req_WIRE_1_2, _list_req_WIRE_1_1, _list_req_WIRE_1_0} & br_slots))

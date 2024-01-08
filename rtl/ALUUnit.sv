@@ -1,4 +1,4 @@
-// Standard header to adapt well known macros to our needs.
+// Standard header to adapt well known macros for prints and assertions.
 
 // Users can define 'PRINTF_COND' to add an extra gate to prints.
 `ifndef PRINTF_COND_
@@ -8,6 +8,24 @@
     `define PRINTF_COND_ 1
   `endif // PRINTF_COND
 `endif // not def PRINTF_COND_
+
+// Users can define 'ASSERT_VERBOSE_COND' to add an extra gate to assert error printing.
+`ifndef ASSERT_VERBOSE_COND_
+  `ifdef ASSERT_VERBOSE_COND
+    `define ASSERT_VERBOSE_COND_ (`ASSERT_VERBOSE_COND)
+  `else  // ASSERT_VERBOSE_COND
+    `define ASSERT_VERBOSE_COND_ 1
+  `endif // ASSERT_VERBOSE_COND
+`endif // not def ASSERT_VERBOSE_COND_
+
+// Users can define 'STOP_COND' to add an extra gate to stop conditions.
+`ifndef STOP_COND_
+  `ifdef STOP_COND
+    `define STOP_COND_ (`STOP_COND)
+  `else  // STOP_COND
+    `define STOP_COND_ 1
+  `endif // STOP_COND
+`endif // not def STOP_COND_
 
 module ALUUnit(
   input         clock,
@@ -44,14 +62,6 @@ module ALUUnit(
   input  [63:0] io_req_bits_rs1_data,
                 io_req_bits_rs2_data,
   input         io_req_bits_kill,
-  input  [19:0] io_brupdate_b1_resolve_mask,
-                io_brupdate_b1_mispredict_mask,
-  input         io_get_ftq_pc_entry_cfi_idx_valid,
-  input  [2:0]  io_get_ftq_pc_entry_cfi_idx_bits,
-  input         io_get_ftq_pc_entry_start_bank,
-  input  [39:0] io_get_ftq_pc_pc,
-  input         io_get_ftq_pc_next_val,
-  input  [39:0] io_get_ftq_pc_next_pc,
   output        io_resp_valid,
   output [6:0]  io_resp_bits_uop_rob_idx,
                 io_resp_bits_uop_pdst,
@@ -60,6 +70,8 @@ module ALUUnit(
                 io_resp_bits_uop_uses_stq,
   output [1:0]  io_resp_bits_uop_dst_rtype,
   output [63:0] io_resp_bits_data,
+  input  [19:0] io_brupdate_b1_resolve_mask,
+                io_brupdate_b1_mispredict_mask,
   output        io_bypass_0_valid,
   output [6:0]  io_bypass_0_bits_uop_pdst,
   output [1:0]  io_bypass_0_bits_uop_dst_rtype,
@@ -79,7 +91,13 @@ module ALUUnit(
   output [2:0]  io_brinfo_cfi_type,
   output [1:0]  io_brinfo_pc_sel,
   output [39:0] io_brinfo_jalr_target,
-  output [20:0] io_brinfo_target_offset
+  output [20:0] io_brinfo_target_offset,
+  input         io_get_ftq_pc_entry_cfi_idx_valid,
+  input  [2:0]  io_get_ftq_pc_entry_cfi_idx_bits,
+  input         io_get_ftq_pc_entry_start_bank,
+  input  [39:0] io_get_ftq_pc_pc,
+  input         io_get_ftq_pc_next_val,
+  input  [39:0] io_get_ftq_pc_next_pc
 );
 
   wire [63:0] _alu_io_out;
@@ -105,14 +123,14 @@ module ALUUnit(
   wire        br_eq = io_req_bits_rs1_data == io_req_bits_rs2_data;
   wire        br_ltu = io_req_bits_rs1_data < io_req_bits_rs2_data;
   wire        br_lt = (io_req_bits_rs1_data[63] ^ ~(io_req_bits_rs2_data[63])) & br_ltu | io_req_bits_rs1_data[63] & ~(io_req_bits_rs2_data[63]);
-  wire [1:0]  pc_sel = io_req_bits_uop_ctrl_br_type == 4'h8 ? 2'h2 : io_req_bits_uop_ctrl_br_type == 4'h7 ? 2'h1 : {1'h0, io_req_bits_uop_ctrl_br_type == 4'h6 ? br_ltu : io_req_bits_uop_ctrl_br_type == 4'h5 ? br_lt : io_req_bits_uop_ctrl_br_type == 4'h4 ? ~br_ltu : io_req_bits_uop_ctrl_br_type == 4'h3 ? ~br_lt : io_req_bits_uop_ctrl_br_type == 4'h2 ? br_eq : io_req_bits_uop_ctrl_br_type == 4'h1 & ~br_eq};
+  wire [1:0]  brinfo_pc_sel = io_req_bits_uop_ctrl_br_type == 4'h8 ? 2'h2 : io_req_bits_uop_ctrl_br_type == 4'h7 ? 2'h1 : {1'h0, io_req_bits_uop_ctrl_br_type == 4'h6 ? br_ltu : io_req_bits_uop_ctrl_br_type == 4'h5 ? br_lt : io_req_bits_uop_ctrl_br_type == 4'h4 ? ~br_ltu : io_req_bits_uop_ctrl_br_type == 4'h3 ? ~br_lt : io_req_bits_uop_ctrl_br_type == 4'h2 ? br_eq : io_req_bits_uop_ctrl_br_type == 4'h1 & ~br_eq};
   wire        is_br = io_req_valid & ~killed & io_req_bits_uop_is_br & ~io_req_bits_uop_is_sfb;
   wire        is_jalr = io_req_valid & ~killed & io_req_bits_uop_is_jalr;
   wire        brinfo_valid = is_br | is_jalr;
   wire [63:0] _jalr_target_xlen_T = io_req_bits_rs1_data + {{44{imm_xprlen_i30_20[0]}}, imm_xprlen_i19_12, imm_xprlen_i11, imm_xprlen_i10_5, imm_xprlen_i4_1, imm_xprlen_i0};
-  wire [39:0] jalr_target = {_jalr_target_xlen_T[63:39] == 25'h0 | (&(_jalr_target_xlen_T[63:39])) ? _jalr_target_xlen_T[39] : ~(_jalr_target_xlen_T[38]), _jalr_target_xlen_T[38:0]} & 40'hFFFFFFFFFE;
+  wire [39:0] brinfo_jalr_target = {_jalr_target_xlen_T[63:39] == 25'h0 | (&(_jalr_target_xlen_T[63:39])) ? _jalr_target_xlen_T[39] : ~(_jalr_target_xlen_T[38]), _jalr_target_xlen_T[38:0]} & 40'hFFFFFFFFFE;
   reg  [63:0] r_data_0;
-  wire        _alu_out_T_5 = io_req_bits_uop_uopc == 7'h6D;
+  wire [63:0] alu_out = io_req_bits_uop_uopc == 7'h6D ? io_req_bits_rs2_data : _alu_io_out;
   always @(posedge clock) begin
     if (reset)
       r_valids_0 <= 1'h0;
@@ -125,10 +143,7 @@ module ALUUnit(
     r_uops_0_is_amo <= io_req_bits_uop_is_amo;
     r_uops_0_uses_stq <= io_req_bits_uop_uses_stq;
     r_uops_0_dst_rtype <= io_req_bits_uop_dst_rtype;
-    if (_alu_out_T_5)
-      r_data_0 <= io_req_bits_rs2_data;
-    else
-      r_data_0 <= _alu_io_out;
+    r_data_0 <= alu_out;
   end // always @(posedge)
   ALU alu (
     .io_dw  (io_req_bits_uop_ctrl_fcn_dw),
@@ -148,7 +163,7 @@ module ALUUnit(
   assign io_bypass_0_valid = io_req_valid;
   assign io_bypass_0_bits_uop_pdst = io_req_bits_uop_pdst;
   assign io_bypass_0_bits_uop_dst_rtype = io_req_bits_uop_dst_rtype;
-  assign io_bypass_0_bits_data = _alu_out_T_5 ? io_req_bits_rs2_data : _alu_io_out;
+  assign io_bypass_0_bits_data = alu_out;
   assign io_brinfo_uop_is_rvc = io_req_bits_uop_is_rvc;
   assign io_brinfo_uop_br_mask = io_req_bits_uop_br_mask;
   assign io_brinfo_uop_br_tag = io_req_bits_uop_br_tag;
@@ -159,11 +174,11 @@ module ALUUnit(
   assign io_brinfo_uop_ldq_idx = io_req_bits_uop_ldq_idx;
   assign io_brinfo_uop_stq_idx = io_req_bits_uop_stq_idx;
   assign io_brinfo_valid = brinfo_valid;
-  assign io_brinfo_mispredict = pc_sel == 2'h2 ? ~io_get_ftq_pc_next_val | io_get_ftq_pc_next_pc != jalr_target | ~io_get_ftq_pc_entry_cfi_idx_valid | io_get_ftq_pc_entry_cfi_idx_bits != (io_req_bits_uop_pc_lob[3:1] ^ {io_get_ftq_pc_entry_start_bank, 2'h0}) : brinfo_valid & (pc_sel == 2'h1 ? ~io_req_bits_uop_taken : pc_sel == 2'h0 & io_req_bits_uop_taken);
-  assign io_brinfo_taken = io_req_valid & ~killed & (io_req_bits_uop_is_br | io_req_bits_uop_is_jalr | io_req_bits_uop_is_jal) & (|pc_sel);
+  assign io_brinfo_mispredict = brinfo_pc_sel == 2'h2 ? ~io_get_ftq_pc_next_val | io_get_ftq_pc_next_pc != brinfo_jalr_target | ~io_get_ftq_pc_entry_cfi_idx_valid | io_get_ftq_pc_entry_cfi_idx_bits != (io_req_bits_uop_pc_lob[3:1] ^ {io_get_ftq_pc_entry_start_bank, 2'h0}) : brinfo_valid & (brinfo_pc_sel == 2'h1 ? ~io_req_bits_uop_taken : brinfo_pc_sel == 2'h0 & io_req_bits_uop_taken);
+  assign io_brinfo_taken = io_req_valid & ~killed & (io_req_bits_uop_is_br | io_req_bits_uop_is_jalr | io_req_bits_uop_is_jal) & (|brinfo_pc_sel);
   assign io_brinfo_cfi_type = is_jalr ? 3'h3 : {2'h0, is_br};
-  assign io_brinfo_pc_sel = pc_sel;
-  assign io_brinfo_jalr_target = jalr_target;
+  assign io_brinfo_pc_sel = brinfo_pc_sel;
+  assign io_brinfo_jalr_target = brinfo_jalr_target;
   assign io_brinfo_target_offset = {imm_xprlen_i30_20[0], imm_xprlen_i19_12, imm_xprlen_i11, imm_xprlen_i10_5, imm_xprlen_i4_1, imm_xprlen_i0};
 endmodule
 

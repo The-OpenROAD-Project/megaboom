@@ -1,4 +1,4 @@
-// Standard header to adapt well known macros to our needs.
+// Standard header to adapt well known macros for prints and assertions.
 
 // Users can define 'PRINTF_COND' to add an extra gate to prints.
 `ifndef PRINTF_COND_
@@ -8,6 +8,24 @@
     `define PRINTF_COND_ 1
   `endif // PRINTF_COND
 `endif // not def PRINTF_COND_
+
+// Users can define 'ASSERT_VERBOSE_COND' to add an extra gate to assert error printing.
+`ifndef ASSERT_VERBOSE_COND_
+  `ifdef ASSERT_VERBOSE_COND
+    `define ASSERT_VERBOSE_COND_ (`ASSERT_VERBOSE_COND)
+  `else  // ASSERT_VERBOSE_COND
+    `define ASSERT_VERBOSE_COND_ 1
+  `endif // ASSERT_VERBOSE_COND
+`endif // not def ASSERT_VERBOSE_COND_
+
+// Users can define 'STOP_COND' to add an extra gate to stop conditions.
+`ifndef STOP_COND_
+  `ifdef STOP_COND
+    `define STOP_COND_ (`STOP_COND)
+  `else  // STOP_COND
+    `define STOP_COND_ 1
+  `endif // STOP_COND
+`endif // not def STOP_COND_
 
 module FPU(
   input         clock,
@@ -47,7 +65,7 @@ module FPU(
   wire        _fp_decoder_io_sigs_fastpipe;
   wire        _fp_decoder_io_sigs_fma;
   wire        _fp_decoder_io_sigs_wflags;
-  wire [2:0]  fp_rm = (&(io_req_bits_uop_imm_packed[2:0])) ? io_req_bits_fcsr_rm : io_req_bits_uop_imm_packed[2:0];
+  wire [2:0]  fpiu_io_in_bits_req_rm = (&(io_req_bits_uop_imm_packed[2:0])) ? io_req_bits_fcsr_rm : io_req_bits_uop_imm_packed[2:0];
   wire        _sfma_io_in_valid_T = io_req_valid & _fp_decoder_io_sigs_fma;
   wire        _fpmu_double_T_1 = _fp_decoder_io_sigs_typeTagOut == 2'h1;
   wire [32:0] _sfma_io_in_bits_req_in2_T_1 = {io_req_bits_rs2_data[31], io_req_bits_rs2_data[52], io_req_bits_rs2_data[30:0]} | ((&(io_req_bits_rs2_data[64:60])) ? 33'h0 : 33'hE0400000);
@@ -65,9 +83,9 @@ module FPU(
   reg         fpiu_out_pipe_pipe_v;
   reg  [63:0] fpiu_out_pipe_pipe_b_toint;
   reg  [4:0]  fpiu_out_pipe_pipe_b_exc;
-  reg         fpiu_out_valid;
-  reg  [63:0] fpiu_out_bits_toint;
-  reg  [4:0]  fpiu_result_exc;
+  reg         fpiu_out_pipe_pipe_pipe_v;
+  reg  [63:0] fpiu_out_pipe_pipe_pipe_b_toint;
+  reg  [4:0]  fpiu_out_pipe_pipe_pipe_b_exc;
   wire        _fpmu_double_T = io_req_valid & _fp_decoder_io_sigs_fastpipe;
   reg         fpmu_double_pipe_v;
   reg         fpmu_double_pipe_b;
@@ -87,8 +105,8 @@ module FPU(
       fpiu_out_pipe_pipe_b_exc <= fpiu_out_pipe_b_exc;
     end
     if (fpiu_out_pipe_pipe_v) begin
-      fpiu_out_bits_toint <= fpiu_out_pipe_pipe_b_toint;
-      fpiu_result_exc <= fpiu_out_pipe_pipe_b_exc;
+      fpiu_out_pipe_pipe_pipe_b_toint <= fpiu_out_pipe_pipe_b_toint;
+      fpiu_out_pipe_pipe_pipe_b_exc <= fpiu_out_pipe_pipe_b_exc;
     end
     if (_fpmu_double_T)
       fpmu_double_pipe_b <= _fpmu_double_T_1;
@@ -101,7 +119,7 @@ module FPU(
     if (reset) begin
       fpiu_out_pipe_v <= 1'h0;
       fpiu_out_pipe_pipe_v <= 1'h0;
-      fpiu_out_valid <= 1'h0;
+      fpiu_out_pipe_pipe_pipe_v <= 1'h0;
       fpmu_double_pipe_v <= 1'h0;
       fpmu_double_pipe_pipe_v <= 1'h0;
       fpmu_double_pipe_pipe_pipe_v <= 1'h0;
@@ -109,7 +127,7 @@ module FPU(
     else begin
       fpiu_out_pipe_v <= fpiu_out_REG;
       fpiu_out_pipe_pipe_v <= fpiu_out_pipe_v;
-      fpiu_out_valid <= fpiu_out_pipe_pipe_v;
+      fpiu_out_pipe_pipe_pipe_v <= fpiu_out_pipe_pipe_v;
       fpmu_double_pipe_v <= _fpmu_double_T;
       fpmu_double_pipe_pipe_v <= fpmu_double_pipe_v;
       fpmu_double_pipe_pipe_pipe_v <= fpmu_double_pipe_pipe_v;
@@ -134,7 +152,7 @@ module FPU(
     .io_in_valid       (_sfma_io_in_valid_T & _fpmu_double_T_1),
     .io_in_bits_ren3   (_fp_decoder_io_sigs_ren3),
     .io_in_bits_swap23 (_fp_decoder_io_sigs_swap23),
-    .io_in_bits_rm     (fp_rm),
+    .io_in_bits_rm     (fpiu_io_in_bits_req_rm),
     .io_in_bits_fmaCmd (_dfma_io_in_bits_fma_decoder_io_cmd),
     .io_in_bits_in1    (io_req_bits_rs1_data),
     .io_in_bits_in2    (io_req_bits_rs2_data),
@@ -153,7 +171,7 @@ module FPU(
     .io_in_valid       (_sfma_io_in_valid_T & _fp_decoder_io_sigs_typeTagOut == 2'h0),
     .io_in_bits_ren3   (_fp_decoder_io_sigs_ren3),
     .io_in_bits_swap23 (_fp_decoder_io_sigs_swap23),
-    .io_in_bits_rm     (fp_rm),
+    .io_in_bits_rm     (fpiu_io_in_bits_req_rm),
     .io_in_bits_fmaCmd (_sfma_io_in_bits_fma_decoder_io_cmd),
     .io_in_bits_in1    ({32'h0, {io_req_bits_rs1_data[31], io_req_bits_rs1_data[52], io_req_bits_rs1_data[30:0]} | ((&(io_req_bits_rs1_data[64:60])) ? 33'h0 : 33'hE0400000)}),
     .io_in_bits_in2    ({32'h0, _sfma_io_in_bits_req_in2_T_1}),
@@ -172,9 +190,9 @@ module FPU(
     .io_in_bits_ren2       (_fp_decoder_io_sigs_ren2),
     .io_in_bits_typeTagOut (_fp_decoder_io_sigs_typeTagOut),
     .io_in_bits_wflags     (_fp_decoder_io_sigs_wflags),
-    .io_in_bits_rm         (fp_rm),
+    .io_in_bits_rm         (fpiu_io_in_bits_req_rm),
     .io_in_bits_typ        (io_req_bits_uop_imm_packed[9:8]),
-    .io_in_bits_fmt        ({1'h0, io_req_bits_uop_uopc != 7'h46 & (|_fp_decoder_io_sigs_typeTagIn)}),
+    .io_in_bits_fmt        (io_req_bits_uop_uopc == 7'h46 ? 2'h0 : {1'h0, |_fp_decoder_io_sigs_typeTagIn}),
     .io_in_bits_in1        (fpiu_io_in_bits_req_in1),
     .io_in_bits_in2        (fpiu_io_in_bits_req_in2),
     .io_out_bits_lt        (_fpiu_io_out_bits_lt),
@@ -188,16 +206,16 @@ module FPU(
     .io_in_bits_ren2       (_fp_decoder_io_sigs_ren2),
     .io_in_bits_typeTagOut (_fp_decoder_io_sigs_typeTagOut),
     .io_in_bits_wflags     (_fp_decoder_io_sigs_wflags),
-    .io_in_bits_rm         (fp_rm),
+    .io_in_bits_rm         (fpiu_io_in_bits_req_rm),
     .io_in_bits_in1        (fpiu_io_in_bits_req_in1),
     .io_in_bits_in2        (fpiu_io_in_bits_req_in2),
-    .io_lt                 (_fpiu_io_out_bits_lt),
     .io_out_valid          (_fpmu_io_out_valid),
     .io_out_bits_data      (_fpmu_io_out_bits_data),
-    .io_out_bits_exc       (_fpmu_io_out_bits_exc)
+    .io_out_bits_exc       (_fpmu_io_out_bits_exc),
+    .io_lt                 (_fpiu_io_out_bits_lt)
   );
-  assign io_resp_bits_data = _dfma_io_out_valid ? _dfma_io_out_bits_data : _sfma_io_out_valid ? {12'hFFF, _sfma_io_out_bits_data[31], 20'hFFFFF, _sfma_io_out_bits_data[32], _sfma_io_out_bits_data[30:0]} : fpiu_out_valid ? {1'h0, fpiu_out_bits_toint} : fpmu_double_pipe_pipe_pipe_pipe_b ? _fpmu_io_out_bits_data : {12'hFFF, _fpmu_io_out_bits_data[31], 20'hFFFFF, _fpmu_io_out_bits_data[32], _fpmu_io_out_bits_data[30:0]};
-  assign io_resp_bits_fflags_valid = fpiu_out_valid | _fpmu_io_out_valid | _sfma_io_out_valid | _dfma_io_out_valid;
-  assign io_resp_bits_fflags_bits_flags = _dfma_io_out_valid ? _dfma_io_out_bits_exc : _sfma_io_out_valid ? _sfma_io_out_bits_exc : fpiu_out_valid ? fpiu_result_exc : _fpmu_io_out_bits_exc;
+  assign io_resp_bits_data = _dfma_io_out_valid ? _dfma_io_out_bits_data : _sfma_io_out_valid ? {12'hFFF, _sfma_io_out_bits_data[31], 20'hFFFFF, _sfma_io_out_bits_data[32], _sfma_io_out_bits_data[30:0]} : fpiu_out_pipe_pipe_pipe_v ? {1'h0, fpiu_out_pipe_pipe_pipe_b_toint} : fpmu_double_pipe_pipe_pipe_pipe_b ? _fpmu_io_out_bits_data : {12'hFFF, _fpmu_io_out_bits_data[31], 20'hFFFFF, _fpmu_io_out_bits_data[32], _fpmu_io_out_bits_data[30:0]};
+  assign io_resp_bits_fflags_valid = fpiu_out_pipe_pipe_pipe_v | _fpmu_io_out_valid | _sfma_io_out_valid | _dfma_io_out_valid;
+  assign io_resp_bits_fflags_bits_flags = _dfma_io_out_valid ? _dfma_io_out_bits_exc : _sfma_io_out_valid ? _sfma_io_out_bits_exc : fpiu_out_pipe_pipe_pipe_v ? fpiu_out_pipe_pipe_pipe_b_exc : _fpmu_io_out_bits_exc;
 endmodule
 

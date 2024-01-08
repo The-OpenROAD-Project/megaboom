@@ -1,4 +1,4 @@
-// Standard header to adapt well known macros to our needs.
+// Standard header to adapt well known macros for prints and assertions.
 
 // Users can define 'PRINTF_COND' to add an extra gate to prints.
 `ifndef PRINTF_COND_
@@ -8,6 +8,24 @@
     `define PRINTF_COND_ 1
   `endif // PRINTF_COND
 `endif // not def PRINTF_COND_
+
+// Users can define 'ASSERT_VERBOSE_COND' to add an extra gate to assert error printing.
+`ifndef ASSERT_VERBOSE_COND_
+  `ifdef ASSERT_VERBOSE_COND
+    `define ASSERT_VERBOSE_COND_ (`ASSERT_VERBOSE_COND)
+  `else  // ASSERT_VERBOSE_COND
+    `define ASSERT_VERBOSE_COND_ 1
+  `endif // ASSERT_VERBOSE_COND
+`endif // not def ASSERT_VERBOSE_COND_
+
+// Users can define 'STOP_COND' to add an extra gate to stop conditions.
+`ifndef STOP_COND_
+  `ifdef STOP_COND
+    `define STOP_COND_ (`STOP_COND)
+  `else  // STOP_COND
+    `define STOP_COND_ 1
+  `endif // STOP_COND
+`endif // not def STOP_COND_
 
 module RenameMapTable_1(
   input        clock,
@@ -28,7 +46,23 @@ module RenameMapTable_1(
                io_map_reqs_3_lrs2,
                io_map_reqs_3_lrs3,
                io_map_reqs_3_ldst,
-               io_remap_reqs_0_ldst,
+  output [6:0] io_map_resps_0_prs1,
+               io_map_resps_0_prs2,
+               io_map_resps_0_prs3,
+               io_map_resps_0_stale_pdst,
+               io_map_resps_1_prs1,
+               io_map_resps_1_prs2,
+               io_map_resps_1_prs3,
+               io_map_resps_1_stale_pdst,
+               io_map_resps_2_prs1,
+               io_map_resps_2_prs2,
+               io_map_resps_2_prs3,
+               io_map_resps_2_stale_pdst,
+               io_map_resps_3_prs1,
+               io_map_resps_3_prs2,
+               io_map_resps_3_prs3,
+               io_map_resps_3_stale_pdst,
+  input  [5:0] io_remap_reqs_0_ldst,
   input  [6:0] io_remap_reqs_0_pdst,
   input        io_remap_reqs_0_valid,
   input  [5:0] io_remap_reqs_1_ldst,
@@ -50,41 +84,9 @@ module RenameMapTable_1(
   input  [4:0] io_ren_br_tags_3_bits,
                io_brupdate_b2_uop_br_tag,
   input        io_brupdate_b2_mispredict,
-               io_rollback,
-  output [6:0] io_map_resps_0_prs1,
-               io_map_resps_0_prs2,
-               io_map_resps_0_prs3,
-               io_map_resps_0_stale_pdst,
-               io_map_resps_1_prs1,
-               io_map_resps_1_prs2,
-               io_map_resps_1_prs3,
-               io_map_resps_1_stale_pdst,
-               io_map_resps_2_prs1,
-               io_map_resps_2_prs2,
-               io_map_resps_2_prs3,
-               io_map_resps_2_stale_pdst,
-               io_map_resps_3_prs1,
-               io_map_resps_3_prs2,
-               io_map_resps_3_prs3,
-               io_map_resps_3_stale_pdst
+               io_rollback
 );
 
-  reg  [6:0]  casez_tmp;
-  reg  [6:0]  casez_tmp_0;
-  reg  [6:0]  casez_tmp_1;
-  reg  [6:0]  casez_tmp_2;
-  reg  [6:0]  casez_tmp_3;
-  reg  [6:0]  casez_tmp_4;
-  reg  [6:0]  casez_tmp_5;
-  reg  [6:0]  casez_tmp_6;
-  reg  [6:0]  casez_tmp_7;
-  reg  [6:0]  casez_tmp_8;
-  reg  [6:0]  casez_tmp_9;
-  reg  [6:0]  casez_tmp_10;
-  reg  [6:0]  casez_tmp_11;
-  reg  [6:0]  casez_tmp_12;
-  reg  [6:0]  casez_tmp_13;
-  reg  [6:0]  casez_tmp_14;
   reg  [6:0]  map_table_0;
   reg  [6:0]  map_table_1;
   reg  [6:0]  map_table_2;
@@ -757,1094 +759,3346 @@ module RenameMapTable_1(
   reg  [6:0]  br_snapshots_19_29;
   reg  [6:0]  br_snapshots_19_30;
   reg  [6:0]  br_snapshots_19_31;
+  reg  [6:0]  casez_tmp;
+  always @(*) begin
+    casez (io_brupdate_b2_uop_br_tag)
+      5'b00000:
+        casez_tmp = br_snapshots_0_0;
+      5'b00001:
+        casez_tmp = br_snapshots_1_0;
+      5'b00010:
+        casez_tmp = br_snapshots_2_0;
+      5'b00011:
+        casez_tmp = br_snapshots_3_0;
+      5'b00100:
+        casez_tmp = br_snapshots_4_0;
+      5'b00101:
+        casez_tmp = br_snapshots_5_0;
+      5'b00110:
+        casez_tmp = br_snapshots_6_0;
+      5'b00111:
+        casez_tmp = br_snapshots_7_0;
+      5'b01000:
+        casez_tmp = br_snapshots_8_0;
+      5'b01001:
+        casez_tmp = br_snapshots_9_0;
+      5'b01010:
+        casez_tmp = br_snapshots_10_0;
+      5'b01011:
+        casez_tmp = br_snapshots_11_0;
+      5'b01100:
+        casez_tmp = br_snapshots_12_0;
+      5'b01101:
+        casez_tmp = br_snapshots_13_0;
+      5'b01110:
+        casez_tmp = br_snapshots_14_0;
+      5'b01111:
+        casez_tmp = br_snapshots_15_0;
+      5'b10000:
+        casez_tmp = br_snapshots_16_0;
+      5'b10001:
+        casez_tmp = br_snapshots_17_0;
+      5'b10010:
+        casez_tmp = br_snapshots_18_0;
+      5'b10011:
+        casez_tmp = br_snapshots_19_0;
+      5'b10100:
+        casez_tmp = br_snapshots_0_0;
+      5'b10101:
+        casez_tmp = br_snapshots_0_0;
+      5'b10110:
+        casez_tmp = br_snapshots_0_0;
+      5'b10111:
+        casez_tmp = br_snapshots_0_0;
+      5'b11000:
+        casez_tmp = br_snapshots_0_0;
+      5'b11001:
+        casez_tmp = br_snapshots_0_0;
+      5'b11010:
+        casez_tmp = br_snapshots_0_0;
+      5'b11011:
+        casez_tmp = br_snapshots_0_0;
+      5'b11100:
+        casez_tmp = br_snapshots_0_0;
+      5'b11101:
+        casez_tmp = br_snapshots_0_0;
+      5'b11110:
+        casez_tmp = br_snapshots_0_0;
+      default:
+        casez_tmp = br_snapshots_0_0;
+    endcase
+  end // always @(*)
+  reg  [6:0]  casez_tmp_0;
+  always @(*) begin
+    casez (io_brupdate_b2_uop_br_tag)
+      5'b00000:
+        casez_tmp_0 = br_snapshots_0_1;
+      5'b00001:
+        casez_tmp_0 = br_snapshots_1_1;
+      5'b00010:
+        casez_tmp_0 = br_snapshots_2_1;
+      5'b00011:
+        casez_tmp_0 = br_snapshots_3_1;
+      5'b00100:
+        casez_tmp_0 = br_snapshots_4_1;
+      5'b00101:
+        casez_tmp_0 = br_snapshots_5_1;
+      5'b00110:
+        casez_tmp_0 = br_snapshots_6_1;
+      5'b00111:
+        casez_tmp_0 = br_snapshots_7_1;
+      5'b01000:
+        casez_tmp_0 = br_snapshots_8_1;
+      5'b01001:
+        casez_tmp_0 = br_snapshots_9_1;
+      5'b01010:
+        casez_tmp_0 = br_snapshots_10_1;
+      5'b01011:
+        casez_tmp_0 = br_snapshots_11_1;
+      5'b01100:
+        casez_tmp_0 = br_snapshots_12_1;
+      5'b01101:
+        casez_tmp_0 = br_snapshots_13_1;
+      5'b01110:
+        casez_tmp_0 = br_snapshots_14_1;
+      5'b01111:
+        casez_tmp_0 = br_snapshots_15_1;
+      5'b10000:
+        casez_tmp_0 = br_snapshots_16_1;
+      5'b10001:
+        casez_tmp_0 = br_snapshots_17_1;
+      5'b10010:
+        casez_tmp_0 = br_snapshots_18_1;
+      5'b10011:
+        casez_tmp_0 = br_snapshots_19_1;
+      5'b10100:
+        casez_tmp_0 = br_snapshots_0_1;
+      5'b10101:
+        casez_tmp_0 = br_snapshots_0_1;
+      5'b10110:
+        casez_tmp_0 = br_snapshots_0_1;
+      5'b10111:
+        casez_tmp_0 = br_snapshots_0_1;
+      5'b11000:
+        casez_tmp_0 = br_snapshots_0_1;
+      5'b11001:
+        casez_tmp_0 = br_snapshots_0_1;
+      5'b11010:
+        casez_tmp_0 = br_snapshots_0_1;
+      5'b11011:
+        casez_tmp_0 = br_snapshots_0_1;
+      5'b11100:
+        casez_tmp_0 = br_snapshots_0_1;
+      5'b11101:
+        casez_tmp_0 = br_snapshots_0_1;
+      5'b11110:
+        casez_tmp_0 = br_snapshots_0_1;
+      default:
+        casez_tmp_0 = br_snapshots_0_1;
+    endcase
+  end // always @(*)
+  reg  [6:0]  casez_tmp_1;
+  always @(*) begin
+    casez (io_brupdate_b2_uop_br_tag)
+      5'b00000:
+        casez_tmp_1 = br_snapshots_0_2;
+      5'b00001:
+        casez_tmp_1 = br_snapshots_1_2;
+      5'b00010:
+        casez_tmp_1 = br_snapshots_2_2;
+      5'b00011:
+        casez_tmp_1 = br_snapshots_3_2;
+      5'b00100:
+        casez_tmp_1 = br_snapshots_4_2;
+      5'b00101:
+        casez_tmp_1 = br_snapshots_5_2;
+      5'b00110:
+        casez_tmp_1 = br_snapshots_6_2;
+      5'b00111:
+        casez_tmp_1 = br_snapshots_7_2;
+      5'b01000:
+        casez_tmp_1 = br_snapshots_8_2;
+      5'b01001:
+        casez_tmp_1 = br_snapshots_9_2;
+      5'b01010:
+        casez_tmp_1 = br_snapshots_10_2;
+      5'b01011:
+        casez_tmp_1 = br_snapshots_11_2;
+      5'b01100:
+        casez_tmp_1 = br_snapshots_12_2;
+      5'b01101:
+        casez_tmp_1 = br_snapshots_13_2;
+      5'b01110:
+        casez_tmp_1 = br_snapshots_14_2;
+      5'b01111:
+        casez_tmp_1 = br_snapshots_15_2;
+      5'b10000:
+        casez_tmp_1 = br_snapshots_16_2;
+      5'b10001:
+        casez_tmp_1 = br_snapshots_17_2;
+      5'b10010:
+        casez_tmp_1 = br_snapshots_18_2;
+      5'b10011:
+        casez_tmp_1 = br_snapshots_19_2;
+      5'b10100:
+        casez_tmp_1 = br_snapshots_0_2;
+      5'b10101:
+        casez_tmp_1 = br_snapshots_0_2;
+      5'b10110:
+        casez_tmp_1 = br_snapshots_0_2;
+      5'b10111:
+        casez_tmp_1 = br_snapshots_0_2;
+      5'b11000:
+        casez_tmp_1 = br_snapshots_0_2;
+      5'b11001:
+        casez_tmp_1 = br_snapshots_0_2;
+      5'b11010:
+        casez_tmp_1 = br_snapshots_0_2;
+      5'b11011:
+        casez_tmp_1 = br_snapshots_0_2;
+      5'b11100:
+        casez_tmp_1 = br_snapshots_0_2;
+      5'b11101:
+        casez_tmp_1 = br_snapshots_0_2;
+      5'b11110:
+        casez_tmp_1 = br_snapshots_0_2;
+      default:
+        casez_tmp_1 = br_snapshots_0_2;
+    endcase
+  end // always @(*)
+  reg  [6:0]  casez_tmp_2;
+  always @(*) begin
+    casez (io_brupdate_b2_uop_br_tag)
+      5'b00000:
+        casez_tmp_2 = br_snapshots_0_3;
+      5'b00001:
+        casez_tmp_2 = br_snapshots_1_3;
+      5'b00010:
+        casez_tmp_2 = br_snapshots_2_3;
+      5'b00011:
+        casez_tmp_2 = br_snapshots_3_3;
+      5'b00100:
+        casez_tmp_2 = br_snapshots_4_3;
+      5'b00101:
+        casez_tmp_2 = br_snapshots_5_3;
+      5'b00110:
+        casez_tmp_2 = br_snapshots_6_3;
+      5'b00111:
+        casez_tmp_2 = br_snapshots_7_3;
+      5'b01000:
+        casez_tmp_2 = br_snapshots_8_3;
+      5'b01001:
+        casez_tmp_2 = br_snapshots_9_3;
+      5'b01010:
+        casez_tmp_2 = br_snapshots_10_3;
+      5'b01011:
+        casez_tmp_2 = br_snapshots_11_3;
+      5'b01100:
+        casez_tmp_2 = br_snapshots_12_3;
+      5'b01101:
+        casez_tmp_2 = br_snapshots_13_3;
+      5'b01110:
+        casez_tmp_2 = br_snapshots_14_3;
+      5'b01111:
+        casez_tmp_2 = br_snapshots_15_3;
+      5'b10000:
+        casez_tmp_2 = br_snapshots_16_3;
+      5'b10001:
+        casez_tmp_2 = br_snapshots_17_3;
+      5'b10010:
+        casez_tmp_2 = br_snapshots_18_3;
+      5'b10011:
+        casez_tmp_2 = br_snapshots_19_3;
+      5'b10100:
+        casez_tmp_2 = br_snapshots_0_3;
+      5'b10101:
+        casez_tmp_2 = br_snapshots_0_3;
+      5'b10110:
+        casez_tmp_2 = br_snapshots_0_3;
+      5'b10111:
+        casez_tmp_2 = br_snapshots_0_3;
+      5'b11000:
+        casez_tmp_2 = br_snapshots_0_3;
+      5'b11001:
+        casez_tmp_2 = br_snapshots_0_3;
+      5'b11010:
+        casez_tmp_2 = br_snapshots_0_3;
+      5'b11011:
+        casez_tmp_2 = br_snapshots_0_3;
+      5'b11100:
+        casez_tmp_2 = br_snapshots_0_3;
+      5'b11101:
+        casez_tmp_2 = br_snapshots_0_3;
+      5'b11110:
+        casez_tmp_2 = br_snapshots_0_3;
+      default:
+        casez_tmp_2 = br_snapshots_0_3;
+    endcase
+  end // always @(*)
+  reg  [6:0]  casez_tmp_3;
+  always @(*) begin
+    casez (io_brupdate_b2_uop_br_tag)
+      5'b00000:
+        casez_tmp_3 = br_snapshots_0_4;
+      5'b00001:
+        casez_tmp_3 = br_snapshots_1_4;
+      5'b00010:
+        casez_tmp_3 = br_snapshots_2_4;
+      5'b00011:
+        casez_tmp_3 = br_snapshots_3_4;
+      5'b00100:
+        casez_tmp_3 = br_snapshots_4_4;
+      5'b00101:
+        casez_tmp_3 = br_snapshots_5_4;
+      5'b00110:
+        casez_tmp_3 = br_snapshots_6_4;
+      5'b00111:
+        casez_tmp_3 = br_snapshots_7_4;
+      5'b01000:
+        casez_tmp_3 = br_snapshots_8_4;
+      5'b01001:
+        casez_tmp_3 = br_snapshots_9_4;
+      5'b01010:
+        casez_tmp_3 = br_snapshots_10_4;
+      5'b01011:
+        casez_tmp_3 = br_snapshots_11_4;
+      5'b01100:
+        casez_tmp_3 = br_snapshots_12_4;
+      5'b01101:
+        casez_tmp_3 = br_snapshots_13_4;
+      5'b01110:
+        casez_tmp_3 = br_snapshots_14_4;
+      5'b01111:
+        casez_tmp_3 = br_snapshots_15_4;
+      5'b10000:
+        casez_tmp_3 = br_snapshots_16_4;
+      5'b10001:
+        casez_tmp_3 = br_snapshots_17_4;
+      5'b10010:
+        casez_tmp_3 = br_snapshots_18_4;
+      5'b10011:
+        casez_tmp_3 = br_snapshots_19_4;
+      5'b10100:
+        casez_tmp_3 = br_snapshots_0_4;
+      5'b10101:
+        casez_tmp_3 = br_snapshots_0_4;
+      5'b10110:
+        casez_tmp_3 = br_snapshots_0_4;
+      5'b10111:
+        casez_tmp_3 = br_snapshots_0_4;
+      5'b11000:
+        casez_tmp_3 = br_snapshots_0_4;
+      5'b11001:
+        casez_tmp_3 = br_snapshots_0_4;
+      5'b11010:
+        casez_tmp_3 = br_snapshots_0_4;
+      5'b11011:
+        casez_tmp_3 = br_snapshots_0_4;
+      5'b11100:
+        casez_tmp_3 = br_snapshots_0_4;
+      5'b11101:
+        casez_tmp_3 = br_snapshots_0_4;
+      5'b11110:
+        casez_tmp_3 = br_snapshots_0_4;
+      default:
+        casez_tmp_3 = br_snapshots_0_4;
+    endcase
+  end // always @(*)
+  reg  [6:0]  casez_tmp_4;
+  always @(*) begin
+    casez (io_brupdate_b2_uop_br_tag)
+      5'b00000:
+        casez_tmp_4 = br_snapshots_0_5;
+      5'b00001:
+        casez_tmp_4 = br_snapshots_1_5;
+      5'b00010:
+        casez_tmp_4 = br_snapshots_2_5;
+      5'b00011:
+        casez_tmp_4 = br_snapshots_3_5;
+      5'b00100:
+        casez_tmp_4 = br_snapshots_4_5;
+      5'b00101:
+        casez_tmp_4 = br_snapshots_5_5;
+      5'b00110:
+        casez_tmp_4 = br_snapshots_6_5;
+      5'b00111:
+        casez_tmp_4 = br_snapshots_7_5;
+      5'b01000:
+        casez_tmp_4 = br_snapshots_8_5;
+      5'b01001:
+        casez_tmp_4 = br_snapshots_9_5;
+      5'b01010:
+        casez_tmp_4 = br_snapshots_10_5;
+      5'b01011:
+        casez_tmp_4 = br_snapshots_11_5;
+      5'b01100:
+        casez_tmp_4 = br_snapshots_12_5;
+      5'b01101:
+        casez_tmp_4 = br_snapshots_13_5;
+      5'b01110:
+        casez_tmp_4 = br_snapshots_14_5;
+      5'b01111:
+        casez_tmp_4 = br_snapshots_15_5;
+      5'b10000:
+        casez_tmp_4 = br_snapshots_16_5;
+      5'b10001:
+        casez_tmp_4 = br_snapshots_17_5;
+      5'b10010:
+        casez_tmp_4 = br_snapshots_18_5;
+      5'b10011:
+        casez_tmp_4 = br_snapshots_19_5;
+      5'b10100:
+        casez_tmp_4 = br_snapshots_0_5;
+      5'b10101:
+        casez_tmp_4 = br_snapshots_0_5;
+      5'b10110:
+        casez_tmp_4 = br_snapshots_0_5;
+      5'b10111:
+        casez_tmp_4 = br_snapshots_0_5;
+      5'b11000:
+        casez_tmp_4 = br_snapshots_0_5;
+      5'b11001:
+        casez_tmp_4 = br_snapshots_0_5;
+      5'b11010:
+        casez_tmp_4 = br_snapshots_0_5;
+      5'b11011:
+        casez_tmp_4 = br_snapshots_0_5;
+      5'b11100:
+        casez_tmp_4 = br_snapshots_0_5;
+      5'b11101:
+        casez_tmp_4 = br_snapshots_0_5;
+      5'b11110:
+        casez_tmp_4 = br_snapshots_0_5;
+      default:
+        casez_tmp_4 = br_snapshots_0_5;
+    endcase
+  end // always @(*)
+  reg  [6:0]  casez_tmp_5;
+  always @(*) begin
+    casez (io_brupdate_b2_uop_br_tag)
+      5'b00000:
+        casez_tmp_5 = br_snapshots_0_6;
+      5'b00001:
+        casez_tmp_5 = br_snapshots_1_6;
+      5'b00010:
+        casez_tmp_5 = br_snapshots_2_6;
+      5'b00011:
+        casez_tmp_5 = br_snapshots_3_6;
+      5'b00100:
+        casez_tmp_5 = br_snapshots_4_6;
+      5'b00101:
+        casez_tmp_5 = br_snapshots_5_6;
+      5'b00110:
+        casez_tmp_5 = br_snapshots_6_6;
+      5'b00111:
+        casez_tmp_5 = br_snapshots_7_6;
+      5'b01000:
+        casez_tmp_5 = br_snapshots_8_6;
+      5'b01001:
+        casez_tmp_5 = br_snapshots_9_6;
+      5'b01010:
+        casez_tmp_5 = br_snapshots_10_6;
+      5'b01011:
+        casez_tmp_5 = br_snapshots_11_6;
+      5'b01100:
+        casez_tmp_5 = br_snapshots_12_6;
+      5'b01101:
+        casez_tmp_5 = br_snapshots_13_6;
+      5'b01110:
+        casez_tmp_5 = br_snapshots_14_6;
+      5'b01111:
+        casez_tmp_5 = br_snapshots_15_6;
+      5'b10000:
+        casez_tmp_5 = br_snapshots_16_6;
+      5'b10001:
+        casez_tmp_5 = br_snapshots_17_6;
+      5'b10010:
+        casez_tmp_5 = br_snapshots_18_6;
+      5'b10011:
+        casez_tmp_5 = br_snapshots_19_6;
+      5'b10100:
+        casez_tmp_5 = br_snapshots_0_6;
+      5'b10101:
+        casez_tmp_5 = br_snapshots_0_6;
+      5'b10110:
+        casez_tmp_5 = br_snapshots_0_6;
+      5'b10111:
+        casez_tmp_5 = br_snapshots_0_6;
+      5'b11000:
+        casez_tmp_5 = br_snapshots_0_6;
+      5'b11001:
+        casez_tmp_5 = br_snapshots_0_6;
+      5'b11010:
+        casez_tmp_5 = br_snapshots_0_6;
+      5'b11011:
+        casez_tmp_5 = br_snapshots_0_6;
+      5'b11100:
+        casez_tmp_5 = br_snapshots_0_6;
+      5'b11101:
+        casez_tmp_5 = br_snapshots_0_6;
+      5'b11110:
+        casez_tmp_5 = br_snapshots_0_6;
+      default:
+        casez_tmp_5 = br_snapshots_0_6;
+    endcase
+  end // always @(*)
+  reg  [6:0]  casez_tmp_6;
+  always @(*) begin
+    casez (io_brupdate_b2_uop_br_tag)
+      5'b00000:
+        casez_tmp_6 = br_snapshots_0_7;
+      5'b00001:
+        casez_tmp_6 = br_snapshots_1_7;
+      5'b00010:
+        casez_tmp_6 = br_snapshots_2_7;
+      5'b00011:
+        casez_tmp_6 = br_snapshots_3_7;
+      5'b00100:
+        casez_tmp_6 = br_snapshots_4_7;
+      5'b00101:
+        casez_tmp_6 = br_snapshots_5_7;
+      5'b00110:
+        casez_tmp_6 = br_snapshots_6_7;
+      5'b00111:
+        casez_tmp_6 = br_snapshots_7_7;
+      5'b01000:
+        casez_tmp_6 = br_snapshots_8_7;
+      5'b01001:
+        casez_tmp_6 = br_snapshots_9_7;
+      5'b01010:
+        casez_tmp_6 = br_snapshots_10_7;
+      5'b01011:
+        casez_tmp_6 = br_snapshots_11_7;
+      5'b01100:
+        casez_tmp_6 = br_snapshots_12_7;
+      5'b01101:
+        casez_tmp_6 = br_snapshots_13_7;
+      5'b01110:
+        casez_tmp_6 = br_snapshots_14_7;
+      5'b01111:
+        casez_tmp_6 = br_snapshots_15_7;
+      5'b10000:
+        casez_tmp_6 = br_snapshots_16_7;
+      5'b10001:
+        casez_tmp_6 = br_snapshots_17_7;
+      5'b10010:
+        casez_tmp_6 = br_snapshots_18_7;
+      5'b10011:
+        casez_tmp_6 = br_snapshots_19_7;
+      5'b10100:
+        casez_tmp_6 = br_snapshots_0_7;
+      5'b10101:
+        casez_tmp_6 = br_snapshots_0_7;
+      5'b10110:
+        casez_tmp_6 = br_snapshots_0_7;
+      5'b10111:
+        casez_tmp_6 = br_snapshots_0_7;
+      5'b11000:
+        casez_tmp_6 = br_snapshots_0_7;
+      5'b11001:
+        casez_tmp_6 = br_snapshots_0_7;
+      5'b11010:
+        casez_tmp_6 = br_snapshots_0_7;
+      5'b11011:
+        casez_tmp_6 = br_snapshots_0_7;
+      5'b11100:
+        casez_tmp_6 = br_snapshots_0_7;
+      5'b11101:
+        casez_tmp_6 = br_snapshots_0_7;
+      5'b11110:
+        casez_tmp_6 = br_snapshots_0_7;
+      default:
+        casez_tmp_6 = br_snapshots_0_7;
+    endcase
+  end // always @(*)
+  reg  [6:0]  casez_tmp_7;
+  always @(*) begin
+    casez (io_brupdate_b2_uop_br_tag)
+      5'b00000:
+        casez_tmp_7 = br_snapshots_0_8;
+      5'b00001:
+        casez_tmp_7 = br_snapshots_1_8;
+      5'b00010:
+        casez_tmp_7 = br_snapshots_2_8;
+      5'b00011:
+        casez_tmp_7 = br_snapshots_3_8;
+      5'b00100:
+        casez_tmp_7 = br_snapshots_4_8;
+      5'b00101:
+        casez_tmp_7 = br_snapshots_5_8;
+      5'b00110:
+        casez_tmp_7 = br_snapshots_6_8;
+      5'b00111:
+        casez_tmp_7 = br_snapshots_7_8;
+      5'b01000:
+        casez_tmp_7 = br_snapshots_8_8;
+      5'b01001:
+        casez_tmp_7 = br_snapshots_9_8;
+      5'b01010:
+        casez_tmp_7 = br_snapshots_10_8;
+      5'b01011:
+        casez_tmp_7 = br_snapshots_11_8;
+      5'b01100:
+        casez_tmp_7 = br_snapshots_12_8;
+      5'b01101:
+        casez_tmp_7 = br_snapshots_13_8;
+      5'b01110:
+        casez_tmp_7 = br_snapshots_14_8;
+      5'b01111:
+        casez_tmp_7 = br_snapshots_15_8;
+      5'b10000:
+        casez_tmp_7 = br_snapshots_16_8;
+      5'b10001:
+        casez_tmp_7 = br_snapshots_17_8;
+      5'b10010:
+        casez_tmp_7 = br_snapshots_18_8;
+      5'b10011:
+        casez_tmp_7 = br_snapshots_19_8;
+      5'b10100:
+        casez_tmp_7 = br_snapshots_0_8;
+      5'b10101:
+        casez_tmp_7 = br_snapshots_0_8;
+      5'b10110:
+        casez_tmp_7 = br_snapshots_0_8;
+      5'b10111:
+        casez_tmp_7 = br_snapshots_0_8;
+      5'b11000:
+        casez_tmp_7 = br_snapshots_0_8;
+      5'b11001:
+        casez_tmp_7 = br_snapshots_0_8;
+      5'b11010:
+        casez_tmp_7 = br_snapshots_0_8;
+      5'b11011:
+        casez_tmp_7 = br_snapshots_0_8;
+      5'b11100:
+        casez_tmp_7 = br_snapshots_0_8;
+      5'b11101:
+        casez_tmp_7 = br_snapshots_0_8;
+      5'b11110:
+        casez_tmp_7 = br_snapshots_0_8;
+      default:
+        casez_tmp_7 = br_snapshots_0_8;
+    endcase
+  end // always @(*)
+  reg  [6:0]  casez_tmp_8;
+  always @(*) begin
+    casez (io_brupdate_b2_uop_br_tag)
+      5'b00000:
+        casez_tmp_8 = br_snapshots_0_9;
+      5'b00001:
+        casez_tmp_8 = br_snapshots_1_9;
+      5'b00010:
+        casez_tmp_8 = br_snapshots_2_9;
+      5'b00011:
+        casez_tmp_8 = br_snapshots_3_9;
+      5'b00100:
+        casez_tmp_8 = br_snapshots_4_9;
+      5'b00101:
+        casez_tmp_8 = br_snapshots_5_9;
+      5'b00110:
+        casez_tmp_8 = br_snapshots_6_9;
+      5'b00111:
+        casez_tmp_8 = br_snapshots_7_9;
+      5'b01000:
+        casez_tmp_8 = br_snapshots_8_9;
+      5'b01001:
+        casez_tmp_8 = br_snapshots_9_9;
+      5'b01010:
+        casez_tmp_8 = br_snapshots_10_9;
+      5'b01011:
+        casez_tmp_8 = br_snapshots_11_9;
+      5'b01100:
+        casez_tmp_8 = br_snapshots_12_9;
+      5'b01101:
+        casez_tmp_8 = br_snapshots_13_9;
+      5'b01110:
+        casez_tmp_8 = br_snapshots_14_9;
+      5'b01111:
+        casez_tmp_8 = br_snapshots_15_9;
+      5'b10000:
+        casez_tmp_8 = br_snapshots_16_9;
+      5'b10001:
+        casez_tmp_8 = br_snapshots_17_9;
+      5'b10010:
+        casez_tmp_8 = br_snapshots_18_9;
+      5'b10011:
+        casez_tmp_8 = br_snapshots_19_9;
+      5'b10100:
+        casez_tmp_8 = br_snapshots_0_9;
+      5'b10101:
+        casez_tmp_8 = br_snapshots_0_9;
+      5'b10110:
+        casez_tmp_8 = br_snapshots_0_9;
+      5'b10111:
+        casez_tmp_8 = br_snapshots_0_9;
+      5'b11000:
+        casez_tmp_8 = br_snapshots_0_9;
+      5'b11001:
+        casez_tmp_8 = br_snapshots_0_9;
+      5'b11010:
+        casez_tmp_8 = br_snapshots_0_9;
+      5'b11011:
+        casez_tmp_8 = br_snapshots_0_9;
+      5'b11100:
+        casez_tmp_8 = br_snapshots_0_9;
+      5'b11101:
+        casez_tmp_8 = br_snapshots_0_9;
+      5'b11110:
+        casez_tmp_8 = br_snapshots_0_9;
+      default:
+        casez_tmp_8 = br_snapshots_0_9;
+    endcase
+  end // always @(*)
+  reg  [6:0]  casez_tmp_9;
+  always @(*) begin
+    casez (io_brupdate_b2_uop_br_tag)
+      5'b00000:
+        casez_tmp_9 = br_snapshots_0_10;
+      5'b00001:
+        casez_tmp_9 = br_snapshots_1_10;
+      5'b00010:
+        casez_tmp_9 = br_snapshots_2_10;
+      5'b00011:
+        casez_tmp_9 = br_snapshots_3_10;
+      5'b00100:
+        casez_tmp_9 = br_snapshots_4_10;
+      5'b00101:
+        casez_tmp_9 = br_snapshots_5_10;
+      5'b00110:
+        casez_tmp_9 = br_snapshots_6_10;
+      5'b00111:
+        casez_tmp_9 = br_snapshots_7_10;
+      5'b01000:
+        casez_tmp_9 = br_snapshots_8_10;
+      5'b01001:
+        casez_tmp_9 = br_snapshots_9_10;
+      5'b01010:
+        casez_tmp_9 = br_snapshots_10_10;
+      5'b01011:
+        casez_tmp_9 = br_snapshots_11_10;
+      5'b01100:
+        casez_tmp_9 = br_snapshots_12_10;
+      5'b01101:
+        casez_tmp_9 = br_snapshots_13_10;
+      5'b01110:
+        casez_tmp_9 = br_snapshots_14_10;
+      5'b01111:
+        casez_tmp_9 = br_snapshots_15_10;
+      5'b10000:
+        casez_tmp_9 = br_snapshots_16_10;
+      5'b10001:
+        casez_tmp_9 = br_snapshots_17_10;
+      5'b10010:
+        casez_tmp_9 = br_snapshots_18_10;
+      5'b10011:
+        casez_tmp_9 = br_snapshots_19_10;
+      5'b10100:
+        casez_tmp_9 = br_snapshots_0_10;
+      5'b10101:
+        casez_tmp_9 = br_snapshots_0_10;
+      5'b10110:
+        casez_tmp_9 = br_snapshots_0_10;
+      5'b10111:
+        casez_tmp_9 = br_snapshots_0_10;
+      5'b11000:
+        casez_tmp_9 = br_snapshots_0_10;
+      5'b11001:
+        casez_tmp_9 = br_snapshots_0_10;
+      5'b11010:
+        casez_tmp_9 = br_snapshots_0_10;
+      5'b11011:
+        casez_tmp_9 = br_snapshots_0_10;
+      5'b11100:
+        casez_tmp_9 = br_snapshots_0_10;
+      5'b11101:
+        casez_tmp_9 = br_snapshots_0_10;
+      5'b11110:
+        casez_tmp_9 = br_snapshots_0_10;
+      default:
+        casez_tmp_9 = br_snapshots_0_10;
+    endcase
+  end // always @(*)
+  reg  [6:0]  casez_tmp_10;
+  always @(*) begin
+    casez (io_brupdate_b2_uop_br_tag)
+      5'b00000:
+        casez_tmp_10 = br_snapshots_0_11;
+      5'b00001:
+        casez_tmp_10 = br_snapshots_1_11;
+      5'b00010:
+        casez_tmp_10 = br_snapshots_2_11;
+      5'b00011:
+        casez_tmp_10 = br_snapshots_3_11;
+      5'b00100:
+        casez_tmp_10 = br_snapshots_4_11;
+      5'b00101:
+        casez_tmp_10 = br_snapshots_5_11;
+      5'b00110:
+        casez_tmp_10 = br_snapshots_6_11;
+      5'b00111:
+        casez_tmp_10 = br_snapshots_7_11;
+      5'b01000:
+        casez_tmp_10 = br_snapshots_8_11;
+      5'b01001:
+        casez_tmp_10 = br_snapshots_9_11;
+      5'b01010:
+        casez_tmp_10 = br_snapshots_10_11;
+      5'b01011:
+        casez_tmp_10 = br_snapshots_11_11;
+      5'b01100:
+        casez_tmp_10 = br_snapshots_12_11;
+      5'b01101:
+        casez_tmp_10 = br_snapshots_13_11;
+      5'b01110:
+        casez_tmp_10 = br_snapshots_14_11;
+      5'b01111:
+        casez_tmp_10 = br_snapshots_15_11;
+      5'b10000:
+        casez_tmp_10 = br_snapshots_16_11;
+      5'b10001:
+        casez_tmp_10 = br_snapshots_17_11;
+      5'b10010:
+        casez_tmp_10 = br_snapshots_18_11;
+      5'b10011:
+        casez_tmp_10 = br_snapshots_19_11;
+      5'b10100:
+        casez_tmp_10 = br_snapshots_0_11;
+      5'b10101:
+        casez_tmp_10 = br_snapshots_0_11;
+      5'b10110:
+        casez_tmp_10 = br_snapshots_0_11;
+      5'b10111:
+        casez_tmp_10 = br_snapshots_0_11;
+      5'b11000:
+        casez_tmp_10 = br_snapshots_0_11;
+      5'b11001:
+        casez_tmp_10 = br_snapshots_0_11;
+      5'b11010:
+        casez_tmp_10 = br_snapshots_0_11;
+      5'b11011:
+        casez_tmp_10 = br_snapshots_0_11;
+      5'b11100:
+        casez_tmp_10 = br_snapshots_0_11;
+      5'b11101:
+        casez_tmp_10 = br_snapshots_0_11;
+      5'b11110:
+        casez_tmp_10 = br_snapshots_0_11;
+      default:
+        casez_tmp_10 = br_snapshots_0_11;
+    endcase
+  end // always @(*)
+  reg  [6:0]  casez_tmp_11;
+  always @(*) begin
+    casez (io_brupdate_b2_uop_br_tag)
+      5'b00000:
+        casez_tmp_11 = br_snapshots_0_12;
+      5'b00001:
+        casez_tmp_11 = br_snapshots_1_12;
+      5'b00010:
+        casez_tmp_11 = br_snapshots_2_12;
+      5'b00011:
+        casez_tmp_11 = br_snapshots_3_12;
+      5'b00100:
+        casez_tmp_11 = br_snapshots_4_12;
+      5'b00101:
+        casez_tmp_11 = br_snapshots_5_12;
+      5'b00110:
+        casez_tmp_11 = br_snapshots_6_12;
+      5'b00111:
+        casez_tmp_11 = br_snapshots_7_12;
+      5'b01000:
+        casez_tmp_11 = br_snapshots_8_12;
+      5'b01001:
+        casez_tmp_11 = br_snapshots_9_12;
+      5'b01010:
+        casez_tmp_11 = br_snapshots_10_12;
+      5'b01011:
+        casez_tmp_11 = br_snapshots_11_12;
+      5'b01100:
+        casez_tmp_11 = br_snapshots_12_12;
+      5'b01101:
+        casez_tmp_11 = br_snapshots_13_12;
+      5'b01110:
+        casez_tmp_11 = br_snapshots_14_12;
+      5'b01111:
+        casez_tmp_11 = br_snapshots_15_12;
+      5'b10000:
+        casez_tmp_11 = br_snapshots_16_12;
+      5'b10001:
+        casez_tmp_11 = br_snapshots_17_12;
+      5'b10010:
+        casez_tmp_11 = br_snapshots_18_12;
+      5'b10011:
+        casez_tmp_11 = br_snapshots_19_12;
+      5'b10100:
+        casez_tmp_11 = br_snapshots_0_12;
+      5'b10101:
+        casez_tmp_11 = br_snapshots_0_12;
+      5'b10110:
+        casez_tmp_11 = br_snapshots_0_12;
+      5'b10111:
+        casez_tmp_11 = br_snapshots_0_12;
+      5'b11000:
+        casez_tmp_11 = br_snapshots_0_12;
+      5'b11001:
+        casez_tmp_11 = br_snapshots_0_12;
+      5'b11010:
+        casez_tmp_11 = br_snapshots_0_12;
+      5'b11011:
+        casez_tmp_11 = br_snapshots_0_12;
+      5'b11100:
+        casez_tmp_11 = br_snapshots_0_12;
+      5'b11101:
+        casez_tmp_11 = br_snapshots_0_12;
+      5'b11110:
+        casez_tmp_11 = br_snapshots_0_12;
+      default:
+        casez_tmp_11 = br_snapshots_0_12;
+    endcase
+  end // always @(*)
+  reg  [6:0]  casez_tmp_12;
+  always @(*) begin
+    casez (io_brupdate_b2_uop_br_tag)
+      5'b00000:
+        casez_tmp_12 = br_snapshots_0_13;
+      5'b00001:
+        casez_tmp_12 = br_snapshots_1_13;
+      5'b00010:
+        casez_tmp_12 = br_snapshots_2_13;
+      5'b00011:
+        casez_tmp_12 = br_snapshots_3_13;
+      5'b00100:
+        casez_tmp_12 = br_snapshots_4_13;
+      5'b00101:
+        casez_tmp_12 = br_snapshots_5_13;
+      5'b00110:
+        casez_tmp_12 = br_snapshots_6_13;
+      5'b00111:
+        casez_tmp_12 = br_snapshots_7_13;
+      5'b01000:
+        casez_tmp_12 = br_snapshots_8_13;
+      5'b01001:
+        casez_tmp_12 = br_snapshots_9_13;
+      5'b01010:
+        casez_tmp_12 = br_snapshots_10_13;
+      5'b01011:
+        casez_tmp_12 = br_snapshots_11_13;
+      5'b01100:
+        casez_tmp_12 = br_snapshots_12_13;
+      5'b01101:
+        casez_tmp_12 = br_snapshots_13_13;
+      5'b01110:
+        casez_tmp_12 = br_snapshots_14_13;
+      5'b01111:
+        casez_tmp_12 = br_snapshots_15_13;
+      5'b10000:
+        casez_tmp_12 = br_snapshots_16_13;
+      5'b10001:
+        casez_tmp_12 = br_snapshots_17_13;
+      5'b10010:
+        casez_tmp_12 = br_snapshots_18_13;
+      5'b10011:
+        casez_tmp_12 = br_snapshots_19_13;
+      5'b10100:
+        casez_tmp_12 = br_snapshots_0_13;
+      5'b10101:
+        casez_tmp_12 = br_snapshots_0_13;
+      5'b10110:
+        casez_tmp_12 = br_snapshots_0_13;
+      5'b10111:
+        casez_tmp_12 = br_snapshots_0_13;
+      5'b11000:
+        casez_tmp_12 = br_snapshots_0_13;
+      5'b11001:
+        casez_tmp_12 = br_snapshots_0_13;
+      5'b11010:
+        casez_tmp_12 = br_snapshots_0_13;
+      5'b11011:
+        casez_tmp_12 = br_snapshots_0_13;
+      5'b11100:
+        casez_tmp_12 = br_snapshots_0_13;
+      5'b11101:
+        casez_tmp_12 = br_snapshots_0_13;
+      5'b11110:
+        casez_tmp_12 = br_snapshots_0_13;
+      default:
+        casez_tmp_12 = br_snapshots_0_13;
+    endcase
+  end // always @(*)
+  reg  [6:0]  casez_tmp_13;
+  always @(*) begin
+    casez (io_brupdate_b2_uop_br_tag)
+      5'b00000:
+        casez_tmp_13 = br_snapshots_0_14;
+      5'b00001:
+        casez_tmp_13 = br_snapshots_1_14;
+      5'b00010:
+        casez_tmp_13 = br_snapshots_2_14;
+      5'b00011:
+        casez_tmp_13 = br_snapshots_3_14;
+      5'b00100:
+        casez_tmp_13 = br_snapshots_4_14;
+      5'b00101:
+        casez_tmp_13 = br_snapshots_5_14;
+      5'b00110:
+        casez_tmp_13 = br_snapshots_6_14;
+      5'b00111:
+        casez_tmp_13 = br_snapshots_7_14;
+      5'b01000:
+        casez_tmp_13 = br_snapshots_8_14;
+      5'b01001:
+        casez_tmp_13 = br_snapshots_9_14;
+      5'b01010:
+        casez_tmp_13 = br_snapshots_10_14;
+      5'b01011:
+        casez_tmp_13 = br_snapshots_11_14;
+      5'b01100:
+        casez_tmp_13 = br_snapshots_12_14;
+      5'b01101:
+        casez_tmp_13 = br_snapshots_13_14;
+      5'b01110:
+        casez_tmp_13 = br_snapshots_14_14;
+      5'b01111:
+        casez_tmp_13 = br_snapshots_15_14;
+      5'b10000:
+        casez_tmp_13 = br_snapshots_16_14;
+      5'b10001:
+        casez_tmp_13 = br_snapshots_17_14;
+      5'b10010:
+        casez_tmp_13 = br_snapshots_18_14;
+      5'b10011:
+        casez_tmp_13 = br_snapshots_19_14;
+      5'b10100:
+        casez_tmp_13 = br_snapshots_0_14;
+      5'b10101:
+        casez_tmp_13 = br_snapshots_0_14;
+      5'b10110:
+        casez_tmp_13 = br_snapshots_0_14;
+      5'b10111:
+        casez_tmp_13 = br_snapshots_0_14;
+      5'b11000:
+        casez_tmp_13 = br_snapshots_0_14;
+      5'b11001:
+        casez_tmp_13 = br_snapshots_0_14;
+      5'b11010:
+        casez_tmp_13 = br_snapshots_0_14;
+      5'b11011:
+        casez_tmp_13 = br_snapshots_0_14;
+      5'b11100:
+        casez_tmp_13 = br_snapshots_0_14;
+      5'b11101:
+        casez_tmp_13 = br_snapshots_0_14;
+      5'b11110:
+        casez_tmp_13 = br_snapshots_0_14;
+      default:
+        casez_tmp_13 = br_snapshots_0_14;
+    endcase
+  end // always @(*)
+  reg  [6:0]  casez_tmp_14;
+  always @(*) begin
+    casez (io_brupdate_b2_uop_br_tag)
+      5'b00000:
+        casez_tmp_14 = br_snapshots_0_15;
+      5'b00001:
+        casez_tmp_14 = br_snapshots_1_15;
+      5'b00010:
+        casez_tmp_14 = br_snapshots_2_15;
+      5'b00011:
+        casez_tmp_14 = br_snapshots_3_15;
+      5'b00100:
+        casez_tmp_14 = br_snapshots_4_15;
+      5'b00101:
+        casez_tmp_14 = br_snapshots_5_15;
+      5'b00110:
+        casez_tmp_14 = br_snapshots_6_15;
+      5'b00111:
+        casez_tmp_14 = br_snapshots_7_15;
+      5'b01000:
+        casez_tmp_14 = br_snapshots_8_15;
+      5'b01001:
+        casez_tmp_14 = br_snapshots_9_15;
+      5'b01010:
+        casez_tmp_14 = br_snapshots_10_15;
+      5'b01011:
+        casez_tmp_14 = br_snapshots_11_15;
+      5'b01100:
+        casez_tmp_14 = br_snapshots_12_15;
+      5'b01101:
+        casez_tmp_14 = br_snapshots_13_15;
+      5'b01110:
+        casez_tmp_14 = br_snapshots_14_15;
+      5'b01111:
+        casez_tmp_14 = br_snapshots_15_15;
+      5'b10000:
+        casez_tmp_14 = br_snapshots_16_15;
+      5'b10001:
+        casez_tmp_14 = br_snapshots_17_15;
+      5'b10010:
+        casez_tmp_14 = br_snapshots_18_15;
+      5'b10011:
+        casez_tmp_14 = br_snapshots_19_15;
+      5'b10100:
+        casez_tmp_14 = br_snapshots_0_15;
+      5'b10101:
+        casez_tmp_14 = br_snapshots_0_15;
+      5'b10110:
+        casez_tmp_14 = br_snapshots_0_15;
+      5'b10111:
+        casez_tmp_14 = br_snapshots_0_15;
+      5'b11000:
+        casez_tmp_14 = br_snapshots_0_15;
+      5'b11001:
+        casez_tmp_14 = br_snapshots_0_15;
+      5'b11010:
+        casez_tmp_14 = br_snapshots_0_15;
+      5'b11011:
+        casez_tmp_14 = br_snapshots_0_15;
+      5'b11100:
+        casez_tmp_14 = br_snapshots_0_15;
+      5'b11101:
+        casez_tmp_14 = br_snapshots_0_15;
+      5'b11110:
+        casez_tmp_14 = br_snapshots_0_15;
+      default:
+        casez_tmp_14 = br_snapshots_0_15;
+    endcase
+  end // always @(*)
+  reg  [6:0]  casez_tmp_15;
+  always @(*) begin
+    casez (io_brupdate_b2_uop_br_tag)
+      5'b00000:
+        casez_tmp_15 = br_snapshots_0_16;
+      5'b00001:
+        casez_tmp_15 = br_snapshots_1_16;
+      5'b00010:
+        casez_tmp_15 = br_snapshots_2_16;
+      5'b00011:
+        casez_tmp_15 = br_snapshots_3_16;
+      5'b00100:
+        casez_tmp_15 = br_snapshots_4_16;
+      5'b00101:
+        casez_tmp_15 = br_snapshots_5_16;
+      5'b00110:
+        casez_tmp_15 = br_snapshots_6_16;
+      5'b00111:
+        casez_tmp_15 = br_snapshots_7_16;
+      5'b01000:
+        casez_tmp_15 = br_snapshots_8_16;
+      5'b01001:
+        casez_tmp_15 = br_snapshots_9_16;
+      5'b01010:
+        casez_tmp_15 = br_snapshots_10_16;
+      5'b01011:
+        casez_tmp_15 = br_snapshots_11_16;
+      5'b01100:
+        casez_tmp_15 = br_snapshots_12_16;
+      5'b01101:
+        casez_tmp_15 = br_snapshots_13_16;
+      5'b01110:
+        casez_tmp_15 = br_snapshots_14_16;
+      5'b01111:
+        casez_tmp_15 = br_snapshots_15_16;
+      5'b10000:
+        casez_tmp_15 = br_snapshots_16_16;
+      5'b10001:
+        casez_tmp_15 = br_snapshots_17_16;
+      5'b10010:
+        casez_tmp_15 = br_snapshots_18_16;
+      5'b10011:
+        casez_tmp_15 = br_snapshots_19_16;
+      5'b10100:
+        casez_tmp_15 = br_snapshots_0_16;
+      5'b10101:
+        casez_tmp_15 = br_snapshots_0_16;
+      5'b10110:
+        casez_tmp_15 = br_snapshots_0_16;
+      5'b10111:
+        casez_tmp_15 = br_snapshots_0_16;
+      5'b11000:
+        casez_tmp_15 = br_snapshots_0_16;
+      5'b11001:
+        casez_tmp_15 = br_snapshots_0_16;
+      5'b11010:
+        casez_tmp_15 = br_snapshots_0_16;
+      5'b11011:
+        casez_tmp_15 = br_snapshots_0_16;
+      5'b11100:
+        casez_tmp_15 = br_snapshots_0_16;
+      5'b11101:
+        casez_tmp_15 = br_snapshots_0_16;
+      5'b11110:
+        casez_tmp_15 = br_snapshots_0_16;
+      default:
+        casez_tmp_15 = br_snapshots_0_16;
+    endcase
+  end // always @(*)
+  reg  [6:0]  casez_tmp_16;
+  always @(*) begin
+    casez (io_brupdate_b2_uop_br_tag)
+      5'b00000:
+        casez_tmp_16 = br_snapshots_0_17;
+      5'b00001:
+        casez_tmp_16 = br_snapshots_1_17;
+      5'b00010:
+        casez_tmp_16 = br_snapshots_2_17;
+      5'b00011:
+        casez_tmp_16 = br_snapshots_3_17;
+      5'b00100:
+        casez_tmp_16 = br_snapshots_4_17;
+      5'b00101:
+        casez_tmp_16 = br_snapshots_5_17;
+      5'b00110:
+        casez_tmp_16 = br_snapshots_6_17;
+      5'b00111:
+        casez_tmp_16 = br_snapshots_7_17;
+      5'b01000:
+        casez_tmp_16 = br_snapshots_8_17;
+      5'b01001:
+        casez_tmp_16 = br_snapshots_9_17;
+      5'b01010:
+        casez_tmp_16 = br_snapshots_10_17;
+      5'b01011:
+        casez_tmp_16 = br_snapshots_11_17;
+      5'b01100:
+        casez_tmp_16 = br_snapshots_12_17;
+      5'b01101:
+        casez_tmp_16 = br_snapshots_13_17;
+      5'b01110:
+        casez_tmp_16 = br_snapshots_14_17;
+      5'b01111:
+        casez_tmp_16 = br_snapshots_15_17;
+      5'b10000:
+        casez_tmp_16 = br_snapshots_16_17;
+      5'b10001:
+        casez_tmp_16 = br_snapshots_17_17;
+      5'b10010:
+        casez_tmp_16 = br_snapshots_18_17;
+      5'b10011:
+        casez_tmp_16 = br_snapshots_19_17;
+      5'b10100:
+        casez_tmp_16 = br_snapshots_0_17;
+      5'b10101:
+        casez_tmp_16 = br_snapshots_0_17;
+      5'b10110:
+        casez_tmp_16 = br_snapshots_0_17;
+      5'b10111:
+        casez_tmp_16 = br_snapshots_0_17;
+      5'b11000:
+        casez_tmp_16 = br_snapshots_0_17;
+      5'b11001:
+        casez_tmp_16 = br_snapshots_0_17;
+      5'b11010:
+        casez_tmp_16 = br_snapshots_0_17;
+      5'b11011:
+        casez_tmp_16 = br_snapshots_0_17;
+      5'b11100:
+        casez_tmp_16 = br_snapshots_0_17;
+      5'b11101:
+        casez_tmp_16 = br_snapshots_0_17;
+      5'b11110:
+        casez_tmp_16 = br_snapshots_0_17;
+      default:
+        casez_tmp_16 = br_snapshots_0_17;
+    endcase
+  end // always @(*)
+  reg  [6:0]  casez_tmp_17;
+  always @(*) begin
+    casez (io_brupdate_b2_uop_br_tag)
+      5'b00000:
+        casez_tmp_17 = br_snapshots_0_18;
+      5'b00001:
+        casez_tmp_17 = br_snapshots_1_18;
+      5'b00010:
+        casez_tmp_17 = br_snapshots_2_18;
+      5'b00011:
+        casez_tmp_17 = br_snapshots_3_18;
+      5'b00100:
+        casez_tmp_17 = br_snapshots_4_18;
+      5'b00101:
+        casez_tmp_17 = br_snapshots_5_18;
+      5'b00110:
+        casez_tmp_17 = br_snapshots_6_18;
+      5'b00111:
+        casez_tmp_17 = br_snapshots_7_18;
+      5'b01000:
+        casez_tmp_17 = br_snapshots_8_18;
+      5'b01001:
+        casez_tmp_17 = br_snapshots_9_18;
+      5'b01010:
+        casez_tmp_17 = br_snapshots_10_18;
+      5'b01011:
+        casez_tmp_17 = br_snapshots_11_18;
+      5'b01100:
+        casez_tmp_17 = br_snapshots_12_18;
+      5'b01101:
+        casez_tmp_17 = br_snapshots_13_18;
+      5'b01110:
+        casez_tmp_17 = br_snapshots_14_18;
+      5'b01111:
+        casez_tmp_17 = br_snapshots_15_18;
+      5'b10000:
+        casez_tmp_17 = br_snapshots_16_18;
+      5'b10001:
+        casez_tmp_17 = br_snapshots_17_18;
+      5'b10010:
+        casez_tmp_17 = br_snapshots_18_18;
+      5'b10011:
+        casez_tmp_17 = br_snapshots_19_18;
+      5'b10100:
+        casez_tmp_17 = br_snapshots_0_18;
+      5'b10101:
+        casez_tmp_17 = br_snapshots_0_18;
+      5'b10110:
+        casez_tmp_17 = br_snapshots_0_18;
+      5'b10111:
+        casez_tmp_17 = br_snapshots_0_18;
+      5'b11000:
+        casez_tmp_17 = br_snapshots_0_18;
+      5'b11001:
+        casez_tmp_17 = br_snapshots_0_18;
+      5'b11010:
+        casez_tmp_17 = br_snapshots_0_18;
+      5'b11011:
+        casez_tmp_17 = br_snapshots_0_18;
+      5'b11100:
+        casez_tmp_17 = br_snapshots_0_18;
+      5'b11101:
+        casez_tmp_17 = br_snapshots_0_18;
+      5'b11110:
+        casez_tmp_17 = br_snapshots_0_18;
+      default:
+        casez_tmp_17 = br_snapshots_0_18;
+    endcase
+  end // always @(*)
+  reg  [6:0]  casez_tmp_18;
+  always @(*) begin
+    casez (io_brupdate_b2_uop_br_tag)
+      5'b00000:
+        casez_tmp_18 = br_snapshots_0_19;
+      5'b00001:
+        casez_tmp_18 = br_snapshots_1_19;
+      5'b00010:
+        casez_tmp_18 = br_snapshots_2_19;
+      5'b00011:
+        casez_tmp_18 = br_snapshots_3_19;
+      5'b00100:
+        casez_tmp_18 = br_snapshots_4_19;
+      5'b00101:
+        casez_tmp_18 = br_snapshots_5_19;
+      5'b00110:
+        casez_tmp_18 = br_snapshots_6_19;
+      5'b00111:
+        casez_tmp_18 = br_snapshots_7_19;
+      5'b01000:
+        casez_tmp_18 = br_snapshots_8_19;
+      5'b01001:
+        casez_tmp_18 = br_snapshots_9_19;
+      5'b01010:
+        casez_tmp_18 = br_snapshots_10_19;
+      5'b01011:
+        casez_tmp_18 = br_snapshots_11_19;
+      5'b01100:
+        casez_tmp_18 = br_snapshots_12_19;
+      5'b01101:
+        casez_tmp_18 = br_snapshots_13_19;
+      5'b01110:
+        casez_tmp_18 = br_snapshots_14_19;
+      5'b01111:
+        casez_tmp_18 = br_snapshots_15_19;
+      5'b10000:
+        casez_tmp_18 = br_snapshots_16_19;
+      5'b10001:
+        casez_tmp_18 = br_snapshots_17_19;
+      5'b10010:
+        casez_tmp_18 = br_snapshots_18_19;
+      5'b10011:
+        casez_tmp_18 = br_snapshots_19_19;
+      5'b10100:
+        casez_tmp_18 = br_snapshots_0_19;
+      5'b10101:
+        casez_tmp_18 = br_snapshots_0_19;
+      5'b10110:
+        casez_tmp_18 = br_snapshots_0_19;
+      5'b10111:
+        casez_tmp_18 = br_snapshots_0_19;
+      5'b11000:
+        casez_tmp_18 = br_snapshots_0_19;
+      5'b11001:
+        casez_tmp_18 = br_snapshots_0_19;
+      5'b11010:
+        casez_tmp_18 = br_snapshots_0_19;
+      5'b11011:
+        casez_tmp_18 = br_snapshots_0_19;
+      5'b11100:
+        casez_tmp_18 = br_snapshots_0_19;
+      5'b11101:
+        casez_tmp_18 = br_snapshots_0_19;
+      5'b11110:
+        casez_tmp_18 = br_snapshots_0_19;
+      default:
+        casez_tmp_18 = br_snapshots_0_19;
+    endcase
+  end // always @(*)
+  reg  [6:0]  casez_tmp_19;
+  always @(*) begin
+    casez (io_brupdate_b2_uop_br_tag)
+      5'b00000:
+        casez_tmp_19 = br_snapshots_0_20;
+      5'b00001:
+        casez_tmp_19 = br_snapshots_1_20;
+      5'b00010:
+        casez_tmp_19 = br_snapshots_2_20;
+      5'b00011:
+        casez_tmp_19 = br_snapshots_3_20;
+      5'b00100:
+        casez_tmp_19 = br_snapshots_4_20;
+      5'b00101:
+        casez_tmp_19 = br_snapshots_5_20;
+      5'b00110:
+        casez_tmp_19 = br_snapshots_6_20;
+      5'b00111:
+        casez_tmp_19 = br_snapshots_7_20;
+      5'b01000:
+        casez_tmp_19 = br_snapshots_8_20;
+      5'b01001:
+        casez_tmp_19 = br_snapshots_9_20;
+      5'b01010:
+        casez_tmp_19 = br_snapshots_10_20;
+      5'b01011:
+        casez_tmp_19 = br_snapshots_11_20;
+      5'b01100:
+        casez_tmp_19 = br_snapshots_12_20;
+      5'b01101:
+        casez_tmp_19 = br_snapshots_13_20;
+      5'b01110:
+        casez_tmp_19 = br_snapshots_14_20;
+      5'b01111:
+        casez_tmp_19 = br_snapshots_15_20;
+      5'b10000:
+        casez_tmp_19 = br_snapshots_16_20;
+      5'b10001:
+        casez_tmp_19 = br_snapshots_17_20;
+      5'b10010:
+        casez_tmp_19 = br_snapshots_18_20;
+      5'b10011:
+        casez_tmp_19 = br_snapshots_19_20;
+      5'b10100:
+        casez_tmp_19 = br_snapshots_0_20;
+      5'b10101:
+        casez_tmp_19 = br_snapshots_0_20;
+      5'b10110:
+        casez_tmp_19 = br_snapshots_0_20;
+      5'b10111:
+        casez_tmp_19 = br_snapshots_0_20;
+      5'b11000:
+        casez_tmp_19 = br_snapshots_0_20;
+      5'b11001:
+        casez_tmp_19 = br_snapshots_0_20;
+      5'b11010:
+        casez_tmp_19 = br_snapshots_0_20;
+      5'b11011:
+        casez_tmp_19 = br_snapshots_0_20;
+      5'b11100:
+        casez_tmp_19 = br_snapshots_0_20;
+      5'b11101:
+        casez_tmp_19 = br_snapshots_0_20;
+      5'b11110:
+        casez_tmp_19 = br_snapshots_0_20;
+      default:
+        casez_tmp_19 = br_snapshots_0_20;
+    endcase
+  end // always @(*)
+  reg  [6:0]  casez_tmp_20;
+  always @(*) begin
+    casez (io_brupdate_b2_uop_br_tag)
+      5'b00000:
+        casez_tmp_20 = br_snapshots_0_21;
+      5'b00001:
+        casez_tmp_20 = br_snapshots_1_21;
+      5'b00010:
+        casez_tmp_20 = br_snapshots_2_21;
+      5'b00011:
+        casez_tmp_20 = br_snapshots_3_21;
+      5'b00100:
+        casez_tmp_20 = br_snapshots_4_21;
+      5'b00101:
+        casez_tmp_20 = br_snapshots_5_21;
+      5'b00110:
+        casez_tmp_20 = br_snapshots_6_21;
+      5'b00111:
+        casez_tmp_20 = br_snapshots_7_21;
+      5'b01000:
+        casez_tmp_20 = br_snapshots_8_21;
+      5'b01001:
+        casez_tmp_20 = br_snapshots_9_21;
+      5'b01010:
+        casez_tmp_20 = br_snapshots_10_21;
+      5'b01011:
+        casez_tmp_20 = br_snapshots_11_21;
+      5'b01100:
+        casez_tmp_20 = br_snapshots_12_21;
+      5'b01101:
+        casez_tmp_20 = br_snapshots_13_21;
+      5'b01110:
+        casez_tmp_20 = br_snapshots_14_21;
+      5'b01111:
+        casez_tmp_20 = br_snapshots_15_21;
+      5'b10000:
+        casez_tmp_20 = br_snapshots_16_21;
+      5'b10001:
+        casez_tmp_20 = br_snapshots_17_21;
+      5'b10010:
+        casez_tmp_20 = br_snapshots_18_21;
+      5'b10011:
+        casez_tmp_20 = br_snapshots_19_21;
+      5'b10100:
+        casez_tmp_20 = br_snapshots_0_21;
+      5'b10101:
+        casez_tmp_20 = br_snapshots_0_21;
+      5'b10110:
+        casez_tmp_20 = br_snapshots_0_21;
+      5'b10111:
+        casez_tmp_20 = br_snapshots_0_21;
+      5'b11000:
+        casez_tmp_20 = br_snapshots_0_21;
+      5'b11001:
+        casez_tmp_20 = br_snapshots_0_21;
+      5'b11010:
+        casez_tmp_20 = br_snapshots_0_21;
+      5'b11011:
+        casez_tmp_20 = br_snapshots_0_21;
+      5'b11100:
+        casez_tmp_20 = br_snapshots_0_21;
+      5'b11101:
+        casez_tmp_20 = br_snapshots_0_21;
+      5'b11110:
+        casez_tmp_20 = br_snapshots_0_21;
+      default:
+        casez_tmp_20 = br_snapshots_0_21;
+    endcase
+  end // always @(*)
+  reg  [6:0]  casez_tmp_21;
+  always @(*) begin
+    casez (io_brupdate_b2_uop_br_tag)
+      5'b00000:
+        casez_tmp_21 = br_snapshots_0_22;
+      5'b00001:
+        casez_tmp_21 = br_snapshots_1_22;
+      5'b00010:
+        casez_tmp_21 = br_snapshots_2_22;
+      5'b00011:
+        casez_tmp_21 = br_snapshots_3_22;
+      5'b00100:
+        casez_tmp_21 = br_snapshots_4_22;
+      5'b00101:
+        casez_tmp_21 = br_snapshots_5_22;
+      5'b00110:
+        casez_tmp_21 = br_snapshots_6_22;
+      5'b00111:
+        casez_tmp_21 = br_snapshots_7_22;
+      5'b01000:
+        casez_tmp_21 = br_snapshots_8_22;
+      5'b01001:
+        casez_tmp_21 = br_snapshots_9_22;
+      5'b01010:
+        casez_tmp_21 = br_snapshots_10_22;
+      5'b01011:
+        casez_tmp_21 = br_snapshots_11_22;
+      5'b01100:
+        casez_tmp_21 = br_snapshots_12_22;
+      5'b01101:
+        casez_tmp_21 = br_snapshots_13_22;
+      5'b01110:
+        casez_tmp_21 = br_snapshots_14_22;
+      5'b01111:
+        casez_tmp_21 = br_snapshots_15_22;
+      5'b10000:
+        casez_tmp_21 = br_snapshots_16_22;
+      5'b10001:
+        casez_tmp_21 = br_snapshots_17_22;
+      5'b10010:
+        casez_tmp_21 = br_snapshots_18_22;
+      5'b10011:
+        casez_tmp_21 = br_snapshots_19_22;
+      5'b10100:
+        casez_tmp_21 = br_snapshots_0_22;
+      5'b10101:
+        casez_tmp_21 = br_snapshots_0_22;
+      5'b10110:
+        casez_tmp_21 = br_snapshots_0_22;
+      5'b10111:
+        casez_tmp_21 = br_snapshots_0_22;
+      5'b11000:
+        casez_tmp_21 = br_snapshots_0_22;
+      5'b11001:
+        casez_tmp_21 = br_snapshots_0_22;
+      5'b11010:
+        casez_tmp_21 = br_snapshots_0_22;
+      5'b11011:
+        casez_tmp_21 = br_snapshots_0_22;
+      5'b11100:
+        casez_tmp_21 = br_snapshots_0_22;
+      5'b11101:
+        casez_tmp_21 = br_snapshots_0_22;
+      5'b11110:
+        casez_tmp_21 = br_snapshots_0_22;
+      default:
+        casez_tmp_21 = br_snapshots_0_22;
+    endcase
+  end // always @(*)
+  reg  [6:0]  casez_tmp_22;
+  always @(*) begin
+    casez (io_brupdate_b2_uop_br_tag)
+      5'b00000:
+        casez_tmp_22 = br_snapshots_0_23;
+      5'b00001:
+        casez_tmp_22 = br_snapshots_1_23;
+      5'b00010:
+        casez_tmp_22 = br_snapshots_2_23;
+      5'b00011:
+        casez_tmp_22 = br_snapshots_3_23;
+      5'b00100:
+        casez_tmp_22 = br_snapshots_4_23;
+      5'b00101:
+        casez_tmp_22 = br_snapshots_5_23;
+      5'b00110:
+        casez_tmp_22 = br_snapshots_6_23;
+      5'b00111:
+        casez_tmp_22 = br_snapshots_7_23;
+      5'b01000:
+        casez_tmp_22 = br_snapshots_8_23;
+      5'b01001:
+        casez_tmp_22 = br_snapshots_9_23;
+      5'b01010:
+        casez_tmp_22 = br_snapshots_10_23;
+      5'b01011:
+        casez_tmp_22 = br_snapshots_11_23;
+      5'b01100:
+        casez_tmp_22 = br_snapshots_12_23;
+      5'b01101:
+        casez_tmp_22 = br_snapshots_13_23;
+      5'b01110:
+        casez_tmp_22 = br_snapshots_14_23;
+      5'b01111:
+        casez_tmp_22 = br_snapshots_15_23;
+      5'b10000:
+        casez_tmp_22 = br_snapshots_16_23;
+      5'b10001:
+        casez_tmp_22 = br_snapshots_17_23;
+      5'b10010:
+        casez_tmp_22 = br_snapshots_18_23;
+      5'b10011:
+        casez_tmp_22 = br_snapshots_19_23;
+      5'b10100:
+        casez_tmp_22 = br_snapshots_0_23;
+      5'b10101:
+        casez_tmp_22 = br_snapshots_0_23;
+      5'b10110:
+        casez_tmp_22 = br_snapshots_0_23;
+      5'b10111:
+        casez_tmp_22 = br_snapshots_0_23;
+      5'b11000:
+        casez_tmp_22 = br_snapshots_0_23;
+      5'b11001:
+        casez_tmp_22 = br_snapshots_0_23;
+      5'b11010:
+        casez_tmp_22 = br_snapshots_0_23;
+      5'b11011:
+        casez_tmp_22 = br_snapshots_0_23;
+      5'b11100:
+        casez_tmp_22 = br_snapshots_0_23;
+      5'b11101:
+        casez_tmp_22 = br_snapshots_0_23;
+      5'b11110:
+        casez_tmp_22 = br_snapshots_0_23;
+      default:
+        casez_tmp_22 = br_snapshots_0_23;
+    endcase
+  end // always @(*)
+  reg  [6:0]  casez_tmp_23;
+  always @(*) begin
+    casez (io_brupdate_b2_uop_br_tag)
+      5'b00000:
+        casez_tmp_23 = br_snapshots_0_24;
+      5'b00001:
+        casez_tmp_23 = br_snapshots_1_24;
+      5'b00010:
+        casez_tmp_23 = br_snapshots_2_24;
+      5'b00011:
+        casez_tmp_23 = br_snapshots_3_24;
+      5'b00100:
+        casez_tmp_23 = br_snapshots_4_24;
+      5'b00101:
+        casez_tmp_23 = br_snapshots_5_24;
+      5'b00110:
+        casez_tmp_23 = br_snapshots_6_24;
+      5'b00111:
+        casez_tmp_23 = br_snapshots_7_24;
+      5'b01000:
+        casez_tmp_23 = br_snapshots_8_24;
+      5'b01001:
+        casez_tmp_23 = br_snapshots_9_24;
+      5'b01010:
+        casez_tmp_23 = br_snapshots_10_24;
+      5'b01011:
+        casez_tmp_23 = br_snapshots_11_24;
+      5'b01100:
+        casez_tmp_23 = br_snapshots_12_24;
+      5'b01101:
+        casez_tmp_23 = br_snapshots_13_24;
+      5'b01110:
+        casez_tmp_23 = br_snapshots_14_24;
+      5'b01111:
+        casez_tmp_23 = br_snapshots_15_24;
+      5'b10000:
+        casez_tmp_23 = br_snapshots_16_24;
+      5'b10001:
+        casez_tmp_23 = br_snapshots_17_24;
+      5'b10010:
+        casez_tmp_23 = br_snapshots_18_24;
+      5'b10011:
+        casez_tmp_23 = br_snapshots_19_24;
+      5'b10100:
+        casez_tmp_23 = br_snapshots_0_24;
+      5'b10101:
+        casez_tmp_23 = br_snapshots_0_24;
+      5'b10110:
+        casez_tmp_23 = br_snapshots_0_24;
+      5'b10111:
+        casez_tmp_23 = br_snapshots_0_24;
+      5'b11000:
+        casez_tmp_23 = br_snapshots_0_24;
+      5'b11001:
+        casez_tmp_23 = br_snapshots_0_24;
+      5'b11010:
+        casez_tmp_23 = br_snapshots_0_24;
+      5'b11011:
+        casez_tmp_23 = br_snapshots_0_24;
+      5'b11100:
+        casez_tmp_23 = br_snapshots_0_24;
+      5'b11101:
+        casez_tmp_23 = br_snapshots_0_24;
+      5'b11110:
+        casez_tmp_23 = br_snapshots_0_24;
+      default:
+        casez_tmp_23 = br_snapshots_0_24;
+    endcase
+  end // always @(*)
+  reg  [6:0]  casez_tmp_24;
+  always @(*) begin
+    casez (io_brupdate_b2_uop_br_tag)
+      5'b00000:
+        casez_tmp_24 = br_snapshots_0_25;
+      5'b00001:
+        casez_tmp_24 = br_snapshots_1_25;
+      5'b00010:
+        casez_tmp_24 = br_snapshots_2_25;
+      5'b00011:
+        casez_tmp_24 = br_snapshots_3_25;
+      5'b00100:
+        casez_tmp_24 = br_snapshots_4_25;
+      5'b00101:
+        casez_tmp_24 = br_snapshots_5_25;
+      5'b00110:
+        casez_tmp_24 = br_snapshots_6_25;
+      5'b00111:
+        casez_tmp_24 = br_snapshots_7_25;
+      5'b01000:
+        casez_tmp_24 = br_snapshots_8_25;
+      5'b01001:
+        casez_tmp_24 = br_snapshots_9_25;
+      5'b01010:
+        casez_tmp_24 = br_snapshots_10_25;
+      5'b01011:
+        casez_tmp_24 = br_snapshots_11_25;
+      5'b01100:
+        casez_tmp_24 = br_snapshots_12_25;
+      5'b01101:
+        casez_tmp_24 = br_snapshots_13_25;
+      5'b01110:
+        casez_tmp_24 = br_snapshots_14_25;
+      5'b01111:
+        casez_tmp_24 = br_snapshots_15_25;
+      5'b10000:
+        casez_tmp_24 = br_snapshots_16_25;
+      5'b10001:
+        casez_tmp_24 = br_snapshots_17_25;
+      5'b10010:
+        casez_tmp_24 = br_snapshots_18_25;
+      5'b10011:
+        casez_tmp_24 = br_snapshots_19_25;
+      5'b10100:
+        casez_tmp_24 = br_snapshots_0_25;
+      5'b10101:
+        casez_tmp_24 = br_snapshots_0_25;
+      5'b10110:
+        casez_tmp_24 = br_snapshots_0_25;
+      5'b10111:
+        casez_tmp_24 = br_snapshots_0_25;
+      5'b11000:
+        casez_tmp_24 = br_snapshots_0_25;
+      5'b11001:
+        casez_tmp_24 = br_snapshots_0_25;
+      5'b11010:
+        casez_tmp_24 = br_snapshots_0_25;
+      5'b11011:
+        casez_tmp_24 = br_snapshots_0_25;
+      5'b11100:
+        casez_tmp_24 = br_snapshots_0_25;
+      5'b11101:
+        casez_tmp_24 = br_snapshots_0_25;
+      5'b11110:
+        casez_tmp_24 = br_snapshots_0_25;
+      default:
+        casez_tmp_24 = br_snapshots_0_25;
+    endcase
+  end // always @(*)
+  reg  [6:0]  casez_tmp_25;
+  always @(*) begin
+    casez (io_brupdate_b2_uop_br_tag)
+      5'b00000:
+        casez_tmp_25 = br_snapshots_0_26;
+      5'b00001:
+        casez_tmp_25 = br_snapshots_1_26;
+      5'b00010:
+        casez_tmp_25 = br_snapshots_2_26;
+      5'b00011:
+        casez_tmp_25 = br_snapshots_3_26;
+      5'b00100:
+        casez_tmp_25 = br_snapshots_4_26;
+      5'b00101:
+        casez_tmp_25 = br_snapshots_5_26;
+      5'b00110:
+        casez_tmp_25 = br_snapshots_6_26;
+      5'b00111:
+        casez_tmp_25 = br_snapshots_7_26;
+      5'b01000:
+        casez_tmp_25 = br_snapshots_8_26;
+      5'b01001:
+        casez_tmp_25 = br_snapshots_9_26;
+      5'b01010:
+        casez_tmp_25 = br_snapshots_10_26;
+      5'b01011:
+        casez_tmp_25 = br_snapshots_11_26;
+      5'b01100:
+        casez_tmp_25 = br_snapshots_12_26;
+      5'b01101:
+        casez_tmp_25 = br_snapshots_13_26;
+      5'b01110:
+        casez_tmp_25 = br_snapshots_14_26;
+      5'b01111:
+        casez_tmp_25 = br_snapshots_15_26;
+      5'b10000:
+        casez_tmp_25 = br_snapshots_16_26;
+      5'b10001:
+        casez_tmp_25 = br_snapshots_17_26;
+      5'b10010:
+        casez_tmp_25 = br_snapshots_18_26;
+      5'b10011:
+        casez_tmp_25 = br_snapshots_19_26;
+      5'b10100:
+        casez_tmp_25 = br_snapshots_0_26;
+      5'b10101:
+        casez_tmp_25 = br_snapshots_0_26;
+      5'b10110:
+        casez_tmp_25 = br_snapshots_0_26;
+      5'b10111:
+        casez_tmp_25 = br_snapshots_0_26;
+      5'b11000:
+        casez_tmp_25 = br_snapshots_0_26;
+      5'b11001:
+        casez_tmp_25 = br_snapshots_0_26;
+      5'b11010:
+        casez_tmp_25 = br_snapshots_0_26;
+      5'b11011:
+        casez_tmp_25 = br_snapshots_0_26;
+      5'b11100:
+        casez_tmp_25 = br_snapshots_0_26;
+      5'b11101:
+        casez_tmp_25 = br_snapshots_0_26;
+      5'b11110:
+        casez_tmp_25 = br_snapshots_0_26;
+      default:
+        casez_tmp_25 = br_snapshots_0_26;
+    endcase
+  end // always @(*)
+  reg  [6:0]  casez_tmp_26;
+  always @(*) begin
+    casez (io_brupdate_b2_uop_br_tag)
+      5'b00000:
+        casez_tmp_26 = br_snapshots_0_27;
+      5'b00001:
+        casez_tmp_26 = br_snapshots_1_27;
+      5'b00010:
+        casez_tmp_26 = br_snapshots_2_27;
+      5'b00011:
+        casez_tmp_26 = br_snapshots_3_27;
+      5'b00100:
+        casez_tmp_26 = br_snapshots_4_27;
+      5'b00101:
+        casez_tmp_26 = br_snapshots_5_27;
+      5'b00110:
+        casez_tmp_26 = br_snapshots_6_27;
+      5'b00111:
+        casez_tmp_26 = br_snapshots_7_27;
+      5'b01000:
+        casez_tmp_26 = br_snapshots_8_27;
+      5'b01001:
+        casez_tmp_26 = br_snapshots_9_27;
+      5'b01010:
+        casez_tmp_26 = br_snapshots_10_27;
+      5'b01011:
+        casez_tmp_26 = br_snapshots_11_27;
+      5'b01100:
+        casez_tmp_26 = br_snapshots_12_27;
+      5'b01101:
+        casez_tmp_26 = br_snapshots_13_27;
+      5'b01110:
+        casez_tmp_26 = br_snapshots_14_27;
+      5'b01111:
+        casez_tmp_26 = br_snapshots_15_27;
+      5'b10000:
+        casez_tmp_26 = br_snapshots_16_27;
+      5'b10001:
+        casez_tmp_26 = br_snapshots_17_27;
+      5'b10010:
+        casez_tmp_26 = br_snapshots_18_27;
+      5'b10011:
+        casez_tmp_26 = br_snapshots_19_27;
+      5'b10100:
+        casez_tmp_26 = br_snapshots_0_27;
+      5'b10101:
+        casez_tmp_26 = br_snapshots_0_27;
+      5'b10110:
+        casez_tmp_26 = br_snapshots_0_27;
+      5'b10111:
+        casez_tmp_26 = br_snapshots_0_27;
+      5'b11000:
+        casez_tmp_26 = br_snapshots_0_27;
+      5'b11001:
+        casez_tmp_26 = br_snapshots_0_27;
+      5'b11010:
+        casez_tmp_26 = br_snapshots_0_27;
+      5'b11011:
+        casez_tmp_26 = br_snapshots_0_27;
+      5'b11100:
+        casez_tmp_26 = br_snapshots_0_27;
+      5'b11101:
+        casez_tmp_26 = br_snapshots_0_27;
+      5'b11110:
+        casez_tmp_26 = br_snapshots_0_27;
+      default:
+        casez_tmp_26 = br_snapshots_0_27;
+    endcase
+  end // always @(*)
+  reg  [6:0]  casez_tmp_27;
+  always @(*) begin
+    casez (io_brupdate_b2_uop_br_tag)
+      5'b00000:
+        casez_tmp_27 = br_snapshots_0_28;
+      5'b00001:
+        casez_tmp_27 = br_snapshots_1_28;
+      5'b00010:
+        casez_tmp_27 = br_snapshots_2_28;
+      5'b00011:
+        casez_tmp_27 = br_snapshots_3_28;
+      5'b00100:
+        casez_tmp_27 = br_snapshots_4_28;
+      5'b00101:
+        casez_tmp_27 = br_snapshots_5_28;
+      5'b00110:
+        casez_tmp_27 = br_snapshots_6_28;
+      5'b00111:
+        casez_tmp_27 = br_snapshots_7_28;
+      5'b01000:
+        casez_tmp_27 = br_snapshots_8_28;
+      5'b01001:
+        casez_tmp_27 = br_snapshots_9_28;
+      5'b01010:
+        casez_tmp_27 = br_snapshots_10_28;
+      5'b01011:
+        casez_tmp_27 = br_snapshots_11_28;
+      5'b01100:
+        casez_tmp_27 = br_snapshots_12_28;
+      5'b01101:
+        casez_tmp_27 = br_snapshots_13_28;
+      5'b01110:
+        casez_tmp_27 = br_snapshots_14_28;
+      5'b01111:
+        casez_tmp_27 = br_snapshots_15_28;
+      5'b10000:
+        casez_tmp_27 = br_snapshots_16_28;
+      5'b10001:
+        casez_tmp_27 = br_snapshots_17_28;
+      5'b10010:
+        casez_tmp_27 = br_snapshots_18_28;
+      5'b10011:
+        casez_tmp_27 = br_snapshots_19_28;
+      5'b10100:
+        casez_tmp_27 = br_snapshots_0_28;
+      5'b10101:
+        casez_tmp_27 = br_snapshots_0_28;
+      5'b10110:
+        casez_tmp_27 = br_snapshots_0_28;
+      5'b10111:
+        casez_tmp_27 = br_snapshots_0_28;
+      5'b11000:
+        casez_tmp_27 = br_snapshots_0_28;
+      5'b11001:
+        casez_tmp_27 = br_snapshots_0_28;
+      5'b11010:
+        casez_tmp_27 = br_snapshots_0_28;
+      5'b11011:
+        casez_tmp_27 = br_snapshots_0_28;
+      5'b11100:
+        casez_tmp_27 = br_snapshots_0_28;
+      5'b11101:
+        casez_tmp_27 = br_snapshots_0_28;
+      5'b11110:
+        casez_tmp_27 = br_snapshots_0_28;
+      default:
+        casez_tmp_27 = br_snapshots_0_28;
+    endcase
+  end // always @(*)
+  reg  [6:0]  casez_tmp_28;
+  always @(*) begin
+    casez (io_brupdate_b2_uop_br_tag)
+      5'b00000:
+        casez_tmp_28 = br_snapshots_0_29;
+      5'b00001:
+        casez_tmp_28 = br_snapshots_1_29;
+      5'b00010:
+        casez_tmp_28 = br_snapshots_2_29;
+      5'b00011:
+        casez_tmp_28 = br_snapshots_3_29;
+      5'b00100:
+        casez_tmp_28 = br_snapshots_4_29;
+      5'b00101:
+        casez_tmp_28 = br_snapshots_5_29;
+      5'b00110:
+        casez_tmp_28 = br_snapshots_6_29;
+      5'b00111:
+        casez_tmp_28 = br_snapshots_7_29;
+      5'b01000:
+        casez_tmp_28 = br_snapshots_8_29;
+      5'b01001:
+        casez_tmp_28 = br_snapshots_9_29;
+      5'b01010:
+        casez_tmp_28 = br_snapshots_10_29;
+      5'b01011:
+        casez_tmp_28 = br_snapshots_11_29;
+      5'b01100:
+        casez_tmp_28 = br_snapshots_12_29;
+      5'b01101:
+        casez_tmp_28 = br_snapshots_13_29;
+      5'b01110:
+        casez_tmp_28 = br_snapshots_14_29;
+      5'b01111:
+        casez_tmp_28 = br_snapshots_15_29;
+      5'b10000:
+        casez_tmp_28 = br_snapshots_16_29;
+      5'b10001:
+        casez_tmp_28 = br_snapshots_17_29;
+      5'b10010:
+        casez_tmp_28 = br_snapshots_18_29;
+      5'b10011:
+        casez_tmp_28 = br_snapshots_19_29;
+      5'b10100:
+        casez_tmp_28 = br_snapshots_0_29;
+      5'b10101:
+        casez_tmp_28 = br_snapshots_0_29;
+      5'b10110:
+        casez_tmp_28 = br_snapshots_0_29;
+      5'b10111:
+        casez_tmp_28 = br_snapshots_0_29;
+      5'b11000:
+        casez_tmp_28 = br_snapshots_0_29;
+      5'b11001:
+        casez_tmp_28 = br_snapshots_0_29;
+      5'b11010:
+        casez_tmp_28 = br_snapshots_0_29;
+      5'b11011:
+        casez_tmp_28 = br_snapshots_0_29;
+      5'b11100:
+        casez_tmp_28 = br_snapshots_0_29;
+      5'b11101:
+        casez_tmp_28 = br_snapshots_0_29;
+      5'b11110:
+        casez_tmp_28 = br_snapshots_0_29;
+      default:
+        casez_tmp_28 = br_snapshots_0_29;
+    endcase
+  end // always @(*)
+  reg  [6:0]  casez_tmp_29;
+  always @(*) begin
+    casez (io_brupdate_b2_uop_br_tag)
+      5'b00000:
+        casez_tmp_29 = br_snapshots_0_30;
+      5'b00001:
+        casez_tmp_29 = br_snapshots_1_30;
+      5'b00010:
+        casez_tmp_29 = br_snapshots_2_30;
+      5'b00011:
+        casez_tmp_29 = br_snapshots_3_30;
+      5'b00100:
+        casez_tmp_29 = br_snapshots_4_30;
+      5'b00101:
+        casez_tmp_29 = br_snapshots_5_30;
+      5'b00110:
+        casez_tmp_29 = br_snapshots_6_30;
+      5'b00111:
+        casez_tmp_29 = br_snapshots_7_30;
+      5'b01000:
+        casez_tmp_29 = br_snapshots_8_30;
+      5'b01001:
+        casez_tmp_29 = br_snapshots_9_30;
+      5'b01010:
+        casez_tmp_29 = br_snapshots_10_30;
+      5'b01011:
+        casez_tmp_29 = br_snapshots_11_30;
+      5'b01100:
+        casez_tmp_29 = br_snapshots_12_30;
+      5'b01101:
+        casez_tmp_29 = br_snapshots_13_30;
+      5'b01110:
+        casez_tmp_29 = br_snapshots_14_30;
+      5'b01111:
+        casez_tmp_29 = br_snapshots_15_30;
+      5'b10000:
+        casez_tmp_29 = br_snapshots_16_30;
+      5'b10001:
+        casez_tmp_29 = br_snapshots_17_30;
+      5'b10010:
+        casez_tmp_29 = br_snapshots_18_30;
+      5'b10011:
+        casez_tmp_29 = br_snapshots_19_30;
+      5'b10100:
+        casez_tmp_29 = br_snapshots_0_30;
+      5'b10101:
+        casez_tmp_29 = br_snapshots_0_30;
+      5'b10110:
+        casez_tmp_29 = br_snapshots_0_30;
+      5'b10111:
+        casez_tmp_29 = br_snapshots_0_30;
+      5'b11000:
+        casez_tmp_29 = br_snapshots_0_30;
+      5'b11001:
+        casez_tmp_29 = br_snapshots_0_30;
+      5'b11010:
+        casez_tmp_29 = br_snapshots_0_30;
+      5'b11011:
+        casez_tmp_29 = br_snapshots_0_30;
+      5'b11100:
+        casez_tmp_29 = br_snapshots_0_30;
+      5'b11101:
+        casez_tmp_29 = br_snapshots_0_30;
+      5'b11110:
+        casez_tmp_29 = br_snapshots_0_30;
+      default:
+        casez_tmp_29 = br_snapshots_0_30;
+    endcase
+  end // always @(*)
+  reg  [6:0]  casez_tmp_30;
+  always @(*) begin
+    casez (io_brupdate_b2_uop_br_tag)
+      5'b00000:
+        casez_tmp_30 = br_snapshots_0_31;
+      5'b00001:
+        casez_tmp_30 = br_snapshots_1_31;
+      5'b00010:
+        casez_tmp_30 = br_snapshots_2_31;
+      5'b00011:
+        casez_tmp_30 = br_snapshots_3_31;
+      5'b00100:
+        casez_tmp_30 = br_snapshots_4_31;
+      5'b00101:
+        casez_tmp_30 = br_snapshots_5_31;
+      5'b00110:
+        casez_tmp_30 = br_snapshots_6_31;
+      5'b00111:
+        casez_tmp_30 = br_snapshots_7_31;
+      5'b01000:
+        casez_tmp_30 = br_snapshots_8_31;
+      5'b01001:
+        casez_tmp_30 = br_snapshots_9_31;
+      5'b01010:
+        casez_tmp_30 = br_snapshots_10_31;
+      5'b01011:
+        casez_tmp_30 = br_snapshots_11_31;
+      5'b01100:
+        casez_tmp_30 = br_snapshots_12_31;
+      5'b01101:
+        casez_tmp_30 = br_snapshots_13_31;
+      5'b01110:
+        casez_tmp_30 = br_snapshots_14_31;
+      5'b01111:
+        casez_tmp_30 = br_snapshots_15_31;
+      5'b10000:
+        casez_tmp_30 = br_snapshots_16_31;
+      5'b10001:
+        casez_tmp_30 = br_snapshots_17_31;
+      5'b10010:
+        casez_tmp_30 = br_snapshots_18_31;
+      5'b10011:
+        casez_tmp_30 = br_snapshots_19_31;
+      5'b10100:
+        casez_tmp_30 = br_snapshots_0_31;
+      5'b10101:
+        casez_tmp_30 = br_snapshots_0_31;
+      5'b10110:
+        casez_tmp_30 = br_snapshots_0_31;
+      5'b10111:
+        casez_tmp_30 = br_snapshots_0_31;
+      5'b11000:
+        casez_tmp_30 = br_snapshots_0_31;
+      5'b11001:
+        casez_tmp_30 = br_snapshots_0_31;
+      5'b11010:
+        casez_tmp_30 = br_snapshots_0_31;
+      5'b11011:
+        casez_tmp_30 = br_snapshots_0_31;
+      5'b11100:
+        casez_tmp_30 = br_snapshots_0_31;
+      5'b11101:
+        casez_tmp_30 = br_snapshots_0_31;
+      5'b11110:
+        casez_tmp_30 = br_snapshots_0_31;
+      default:
+        casez_tmp_30 = br_snapshots_0_31;
+    endcase
+  end // always @(*)
+  reg  [6:0]  casez_tmp_31;
   always @(*) begin
     casez (io_map_reqs_0_lrs1[4:0])
       5'b00000:
-        casez_tmp = map_table_0;
+        casez_tmp_31 = map_table_0;
       5'b00001:
-        casez_tmp = map_table_1;
+        casez_tmp_31 = map_table_1;
       5'b00010:
-        casez_tmp = map_table_2;
+        casez_tmp_31 = map_table_2;
       5'b00011:
-        casez_tmp = map_table_3;
+        casez_tmp_31 = map_table_3;
       5'b00100:
-        casez_tmp = map_table_4;
+        casez_tmp_31 = map_table_4;
       5'b00101:
-        casez_tmp = map_table_5;
+        casez_tmp_31 = map_table_5;
       5'b00110:
-        casez_tmp = map_table_6;
+        casez_tmp_31 = map_table_6;
       5'b00111:
-        casez_tmp = map_table_7;
+        casez_tmp_31 = map_table_7;
       5'b01000:
-        casez_tmp = map_table_8;
+        casez_tmp_31 = map_table_8;
       5'b01001:
-        casez_tmp = map_table_9;
+        casez_tmp_31 = map_table_9;
       5'b01010:
-        casez_tmp = map_table_10;
+        casez_tmp_31 = map_table_10;
       5'b01011:
-        casez_tmp = map_table_11;
+        casez_tmp_31 = map_table_11;
       5'b01100:
-        casez_tmp = map_table_12;
+        casez_tmp_31 = map_table_12;
       5'b01101:
-        casez_tmp = map_table_13;
+        casez_tmp_31 = map_table_13;
       5'b01110:
-        casez_tmp = map_table_14;
+        casez_tmp_31 = map_table_14;
       5'b01111:
-        casez_tmp = map_table_15;
+        casez_tmp_31 = map_table_15;
       5'b10000:
-        casez_tmp = map_table_16;
+        casez_tmp_31 = map_table_16;
       5'b10001:
-        casez_tmp = map_table_17;
+        casez_tmp_31 = map_table_17;
       5'b10010:
-        casez_tmp = map_table_18;
+        casez_tmp_31 = map_table_18;
       5'b10011:
-        casez_tmp = map_table_19;
+        casez_tmp_31 = map_table_19;
       5'b10100:
-        casez_tmp = map_table_20;
+        casez_tmp_31 = map_table_20;
       5'b10101:
-        casez_tmp = map_table_21;
+        casez_tmp_31 = map_table_21;
       5'b10110:
-        casez_tmp = map_table_22;
+        casez_tmp_31 = map_table_22;
       5'b10111:
-        casez_tmp = map_table_23;
+        casez_tmp_31 = map_table_23;
       5'b11000:
-        casez_tmp = map_table_24;
+        casez_tmp_31 = map_table_24;
       5'b11001:
-        casez_tmp = map_table_25;
+        casez_tmp_31 = map_table_25;
       5'b11010:
-        casez_tmp = map_table_26;
+        casez_tmp_31 = map_table_26;
       5'b11011:
-        casez_tmp = map_table_27;
+        casez_tmp_31 = map_table_27;
       5'b11100:
-        casez_tmp = map_table_28;
+        casez_tmp_31 = map_table_28;
       5'b11101:
-        casez_tmp = map_table_29;
+        casez_tmp_31 = map_table_29;
       5'b11110:
-        casez_tmp = map_table_30;
+        casez_tmp_31 = map_table_30;
       default:
-        casez_tmp = map_table_31;
+        casez_tmp_31 = map_table_31;
     endcase
   end // always @(*)
+  reg  [6:0]  casez_tmp_32;
   always @(*) begin
     casez (io_map_reqs_0_lrs2[4:0])
       5'b00000:
-        casez_tmp_0 = map_table_0;
+        casez_tmp_32 = map_table_0;
       5'b00001:
-        casez_tmp_0 = map_table_1;
+        casez_tmp_32 = map_table_1;
       5'b00010:
-        casez_tmp_0 = map_table_2;
+        casez_tmp_32 = map_table_2;
       5'b00011:
-        casez_tmp_0 = map_table_3;
+        casez_tmp_32 = map_table_3;
       5'b00100:
-        casez_tmp_0 = map_table_4;
+        casez_tmp_32 = map_table_4;
       5'b00101:
-        casez_tmp_0 = map_table_5;
+        casez_tmp_32 = map_table_5;
       5'b00110:
-        casez_tmp_0 = map_table_6;
+        casez_tmp_32 = map_table_6;
       5'b00111:
-        casez_tmp_0 = map_table_7;
+        casez_tmp_32 = map_table_7;
       5'b01000:
-        casez_tmp_0 = map_table_8;
+        casez_tmp_32 = map_table_8;
       5'b01001:
-        casez_tmp_0 = map_table_9;
+        casez_tmp_32 = map_table_9;
       5'b01010:
-        casez_tmp_0 = map_table_10;
+        casez_tmp_32 = map_table_10;
       5'b01011:
-        casez_tmp_0 = map_table_11;
+        casez_tmp_32 = map_table_11;
       5'b01100:
-        casez_tmp_0 = map_table_12;
+        casez_tmp_32 = map_table_12;
       5'b01101:
-        casez_tmp_0 = map_table_13;
+        casez_tmp_32 = map_table_13;
       5'b01110:
-        casez_tmp_0 = map_table_14;
+        casez_tmp_32 = map_table_14;
       5'b01111:
-        casez_tmp_0 = map_table_15;
+        casez_tmp_32 = map_table_15;
       5'b10000:
-        casez_tmp_0 = map_table_16;
+        casez_tmp_32 = map_table_16;
       5'b10001:
-        casez_tmp_0 = map_table_17;
+        casez_tmp_32 = map_table_17;
       5'b10010:
-        casez_tmp_0 = map_table_18;
+        casez_tmp_32 = map_table_18;
       5'b10011:
-        casez_tmp_0 = map_table_19;
+        casez_tmp_32 = map_table_19;
       5'b10100:
-        casez_tmp_0 = map_table_20;
+        casez_tmp_32 = map_table_20;
       5'b10101:
-        casez_tmp_0 = map_table_21;
+        casez_tmp_32 = map_table_21;
       5'b10110:
-        casez_tmp_0 = map_table_22;
+        casez_tmp_32 = map_table_22;
       5'b10111:
-        casez_tmp_0 = map_table_23;
+        casez_tmp_32 = map_table_23;
       5'b11000:
-        casez_tmp_0 = map_table_24;
+        casez_tmp_32 = map_table_24;
       5'b11001:
-        casez_tmp_0 = map_table_25;
+        casez_tmp_32 = map_table_25;
       5'b11010:
-        casez_tmp_0 = map_table_26;
+        casez_tmp_32 = map_table_26;
       5'b11011:
-        casez_tmp_0 = map_table_27;
+        casez_tmp_32 = map_table_27;
       5'b11100:
-        casez_tmp_0 = map_table_28;
+        casez_tmp_32 = map_table_28;
       5'b11101:
-        casez_tmp_0 = map_table_29;
+        casez_tmp_32 = map_table_29;
       5'b11110:
-        casez_tmp_0 = map_table_30;
+        casez_tmp_32 = map_table_30;
       default:
-        casez_tmp_0 = map_table_31;
+        casez_tmp_32 = map_table_31;
     endcase
   end // always @(*)
+  reg  [6:0]  casez_tmp_33;
   always @(*) begin
     casez (io_map_reqs_0_lrs3[4:0])
       5'b00000:
-        casez_tmp_1 = map_table_0;
+        casez_tmp_33 = map_table_0;
       5'b00001:
-        casez_tmp_1 = map_table_1;
+        casez_tmp_33 = map_table_1;
       5'b00010:
-        casez_tmp_1 = map_table_2;
+        casez_tmp_33 = map_table_2;
       5'b00011:
-        casez_tmp_1 = map_table_3;
+        casez_tmp_33 = map_table_3;
       5'b00100:
-        casez_tmp_1 = map_table_4;
+        casez_tmp_33 = map_table_4;
       5'b00101:
-        casez_tmp_1 = map_table_5;
+        casez_tmp_33 = map_table_5;
       5'b00110:
-        casez_tmp_1 = map_table_6;
+        casez_tmp_33 = map_table_6;
       5'b00111:
-        casez_tmp_1 = map_table_7;
+        casez_tmp_33 = map_table_7;
       5'b01000:
-        casez_tmp_1 = map_table_8;
+        casez_tmp_33 = map_table_8;
       5'b01001:
-        casez_tmp_1 = map_table_9;
+        casez_tmp_33 = map_table_9;
       5'b01010:
-        casez_tmp_1 = map_table_10;
+        casez_tmp_33 = map_table_10;
       5'b01011:
-        casez_tmp_1 = map_table_11;
+        casez_tmp_33 = map_table_11;
       5'b01100:
-        casez_tmp_1 = map_table_12;
+        casez_tmp_33 = map_table_12;
       5'b01101:
-        casez_tmp_1 = map_table_13;
+        casez_tmp_33 = map_table_13;
       5'b01110:
-        casez_tmp_1 = map_table_14;
+        casez_tmp_33 = map_table_14;
       5'b01111:
-        casez_tmp_1 = map_table_15;
+        casez_tmp_33 = map_table_15;
       5'b10000:
-        casez_tmp_1 = map_table_16;
+        casez_tmp_33 = map_table_16;
       5'b10001:
-        casez_tmp_1 = map_table_17;
+        casez_tmp_33 = map_table_17;
       5'b10010:
-        casez_tmp_1 = map_table_18;
+        casez_tmp_33 = map_table_18;
       5'b10011:
-        casez_tmp_1 = map_table_19;
+        casez_tmp_33 = map_table_19;
       5'b10100:
-        casez_tmp_1 = map_table_20;
+        casez_tmp_33 = map_table_20;
       5'b10101:
-        casez_tmp_1 = map_table_21;
+        casez_tmp_33 = map_table_21;
       5'b10110:
-        casez_tmp_1 = map_table_22;
+        casez_tmp_33 = map_table_22;
       5'b10111:
-        casez_tmp_1 = map_table_23;
+        casez_tmp_33 = map_table_23;
       5'b11000:
-        casez_tmp_1 = map_table_24;
+        casez_tmp_33 = map_table_24;
       5'b11001:
-        casez_tmp_1 = map_table_25;
+        casez_tmp_33 = map_table_25;
       5'b11010:
-        casez_tmp_1 = map_table_26;
+        casez_tmp_33 = map_table_26;
       5'b11011:
-        casez_tmp_1 = map_table_27;
+        casez_tmp_33 = map_table_27;
       5'b11100:
-        casez_tmp_1 = map_table_28;
+        casez_tmp_33 = map_table_28;
       5'b11101:
-        casez_tmp_1 = map_table_29;
+        casez_tmp_33 = map_table_29;
       5'b11110:
-        casez_tmp_1 = map_table_30;
+        casez_tmp_33 = map_table_30;
       default:
-        casez_tmp_1 = map_table_31;
+        casez_tmp_33 = map_table_31;
     endcase
   end // always @(*)
+  reg  [6:0]  casez_tmp_34;
   always @(*) begin
     casez (io_map_reqs_0_ldst[4:0])
       5'b00000:
-        casez_tmp_2 = map_table_0;
+        casez_tmp_34 = map_table_0;
       5'b00001:
-        casez_tmp_2 = map_table_1;
+        casez_tmp_34 = map_table_1;
       5'b00010:
-        casez_tmp_2 = map_table_2;
+        casez_tmp_34 = map_table_2;
       5'b00011:
-        casez_tmp_2 = map_table_3;
+        casez_tmp_34 = map_table_3;
       5'b00100:
-        casez_tmp_2 = map_table_4;
+        casez_tmp_34 = map_table_4;
       5'b00101:
-        casez_tmp_2 = map_table_5;
+        casez_tmp_34 = map_table_5;
       5'b00110:
-        casez_tmp_2 = map_table_6;
+        casez_tmp_34 = map_table_6;
       5'b00111:
-        casez_tmp_2 = map_table_7;
+        casez_tmp_34 = map_table_7;
       5'b01000:
-        casez_tmp_2 = map_table_8;
+        casez_tmp_34 = map_table_8;
       5'b01001:
-        casez_tmp_2 = map_table_9;
+        casez_tmp_34 = map_table_9;
       5'b01010:
-        casez_tmp_2 = map_table_10;
+        casez_tmp_34 = map_table_10;
       5'b01011:
-        casez_tmp_2 = map_table_11;
+        casez_tmp_34 = map_table_11;
       5'b01100:
-        casez_tmp_2 = map_table_12;
+        casez_tmp_34 = map_table_12;
       5'b01101:
-        casez_tmp_2 = map_table_13;
+        casez_tmp_34 = map_table_13;
       5'b01110:
-        casez_tmp_2 = map_table_14;
+        casez_tmp_34 = map_table_14;
       5'b01111:
-        casez_tmp_2 = map_table_15;
+        casez_tmp_34 = map_table_15;
       5'b10000:
-        casez_tmp_2 = map_table_16;
+        casez_tmp_34 = map_table_16;
       5'b10001:
-        casez_tmp_2 = map_table_17;
+        casez_tmp_34 = map_table_17;
       5'b10010:
-        casez_tmp_2 = map_table_18;
+        casez_tmp_34 = map_table_18;
       5'b10011:
-        casez_tmp_2 = map_table_19;
+        casez_tmp_34 = map_table_19;
       5'b10100:
-        casez_tmp_2 = map_table_20;
+        casez_tmp_34 = map_table_20;
       5'b10101:
-        casez_tmp_2 = map_table_21;
+        casez_tmp_34 = map_table_21;
       5'b10110:
-        casez_tmp_2 = map_table_22;
+        casez_tmp_34 = map_table_22;
       5'b10111:
-        casez_tmp_2 = map_table_23;
+        casez_tmp_34 = map_table_23;
       5'b11000:
-        casez_tmp_2 = map_table_24;
+        casez_tmp_34 = map_table_24;
       5'b11001:
-        casez_tmp_2 = map_table_25;
+        casez_tmp_34 = map_table_25;
       5'b11010:
-        casez_tmp_2 = map_table_26;
+        casez_tmp_34 = map_table_26;
       5'b11011:
-        casez_tmp_2 = map_table_27;
+        casez_tmp_34 = map_table_27;
       5'b11100:
-        casez_tmp_2 = map_table_28;
+        casez_tmp_34 = map_table_28;
       5'b11101:
-        casez_tmp_2 = map_table_29;
+        casez_tmp_34 = map_table_29;
       5'b11110:
-        casez_tmp_2 = map_table_30;
+        casez_tmp_34 = map_table_30;
       default:
-        casez_tmp_2 = map_table_31;
+        casez_tmp_34 = map_table_31;
     endcase
   end // always @(*)
+  reg  [6:0]  casez_tmp_35;
   always @(*) begin
     casez (io_map_reqs_1_lrs1[4:0])
       5'b00000:
-        casez_tmp_3 = map_table_0;
+        casez_tmp_35 = map_table_0;
       5'b00001:
-        casez_tmp_3 = map_table_1;
+        casez_tmp_35 = map_table_1;
       5'b00010:
-        casez_tmp_3 = map_table_2;
+        casez_tmp_35 = map_table_2;
       5'b00011:
-        casez_tmp_3 = map_table_3;
+        casez_tmp_35 = map_table_3;
       5'b00100:
-        casez_tmp_3 = map_table_4;
+        casez_tmp_35 = map_table_4;
       5'b00101:
-        casez_tmp_3 = map_table_5;
+        casez_tmp_35 = map_table_5;
       5'b00110:
-        casez_tmp_3 = map_table_6;
+        casez_tmp_35 = map_table_6;
       5'b00111:
-        casez_tmp_3 = map_table_7;
+        casez_tmp_35 = map_table_7;
       5'b01000:
-        casez_tmp_3 = map_table_8;
+        casez_tmp_35 = map_table_8;
       5'b01001:
-        casez_tmp_3 = map_table_9;
+        casez_tmp_35 = map_table_9;
       5'b01010:
-        casez_tmp_3 = map_table_10;
+        casez_tmp_35 = map_table_10;
       5'b01011:
-        casez_tmp_3 = map_table_11;
+        casez_tmp_35 = map_table_11;
       5'b01100:
-        casez_tmp_3 = map_table_12;
+        casez_tmp_35 = map_table_12;
       5'b01101:
-        casez_tmp_3 = map_table_13;
+        casez_tmp_35 = map_table_13;
       5'b01110:
-        casez_tmp_3 = map_table_14;
+        casez_tmp_35 = map_table_14;
       5'b01111:
-        casez_tmp_3 = map_table_15;
+        casez_tmp_35 = map_table_15;
       5'b10000:
-        casez_tmp_3 = map_table_16;
+        casez_tmp_35 = map_table_16;
       5'b10001:
-        casez_tmp_3 = map_table_17;
+        casez_tmp_35 = map_table_17;
       5'b10010:
-        casez_tmp_3 = map_table_18;
+        casez_tmp_35 = map_table_18;
       5'b10011:
-        casez_tmp_3 = map_table_19;
+        casez_tmp_35 = map_table_19;
       5'b10100:
-        casez_tmp_3 = map_table_20;
+        casez_tmp_35 = map_table_20;
       5'b10101:
-        casez_tmp_3 = map_table_21;
+        casez_tmp_35 = map_table_21;
       5'b10110:
-        casez_tmp_3 = map_table_22;
+        casez_tmp_35 = map_table_22;
       5'b10111:
-        casez_tmp_3 = map_table_23;
+        casez_tmp_35 = map_table_23;
       5'b11000:
-        casez_tmp_3 = map_table_24;
+        casez_tmp_35 = map_table_24;
       5'b11001:
-        casez_tmp_3 = map_table_25;
+        casez_tmp_35 = map_table_25;
       5'b11010:
-        casez_tmp_3 = map_table_26;
+        casez_tmp_35 = map_table_26;
       5'b11011:
-        casez_tmp_3 = map_table_27;
+        casez_tmp_35 = map_table_27;
       5'b11100:
-        casez_tmp_3 = map_table_28;
+        casez_tmp_35 = map_table_28;
       5'b11101:
-        casez_tmp_3 = map_table_29;
+        casez_tmp_35 = map_table_29;
       5'b11110:
-        casez_tmp_3 = map_table_30;
+        casez_tmp_35 = map_table_30;
       default:
-        casez_tmp_3 = map_table_31;
+        casez_tmp_35 = map_table_31;
     endcase
   end // always @(*)
+  reg  [6:0]  casez_tmp_36;
   always @(*) begin
     casez (io_map_reqs_1_lrs2[4:0])
       5'b00000:
-        casez_tmp_4 = map_table_0;
+        casez_tmp_36 = map_table_0;
       5'b00001:
-        casez_tmp_4 = map_table_1;
+        casez_tmp_36 = map_table_1;
       5'b00010:
-        casez_tmp_4 = map_table_2;
+        casez_tmp_36 = map_table_2;
       5'b00011:
-        casez_tmp_4 = map_table_3;
+        casez_tmp_36 = map_table_3;
       5'b00100:
-        casez_tmp_4 = map_table_4;
+        casez_tmp_36 = map_table_4;
       5'b00101:
-        casez_tmp_4 = map_table_5;
+        casez_tmp_36 = map_table_5;
       5'b00110:
-        casez_tmp_4 = map_table_6;
+        casez_tmp_36 = map_table_6;
       5'b00111:
-        casez_tmp_4 = map_table_7;
+        casez_tmp_36 = map_table_7;
       5'b01000:
-        casez_tmp_4 = map_table_8;
+        casez_tmp_36 = map_table_8;
       5'b01001:
-        casez_tmp_4 = map_table_9;
+        casez_tmp_36 = map_table_9;
       5'b01010:
-        casez_tmp_4 = map_table_10;
+        casez_tmp_36 = map_table_10;
       5'b01011:
-        casez_tmp_4 = map_table_11;
+        casez_tmp_36 = map_table_11;
       5'b01100:
-        casez_tmp_4 = map_table_12;
+        casez_tmp_36 = map_table_12;
       5'b01101:
-        casez_tmp_4 = map_table_13;
+        casez_tmp_36 = map_table_13;
       5'b01110:
-        casez_tmp_4 = map_table_14;
+        casez_tmp_36 = map_table_14;
       5'b01111:
-        casez_tmp_4 = map_table_15;
+        casez_tmp_36 = map_table_15;
       5'b10000:
-        casez_tmp_4 = map_table_16;
+        casez_tmp_36 = map_table_16;
       5'b10001:
-        casez_tmp_4 = map_table_17;
+        casez_tmp_36 = map_table_17;
       5'b10010:
-        casez_tmp_4 = map_table_18;
+        casez_tmp_36 = map_table_18;
       5'b10011:
-        casez_tmp_4 = map_table_19;
+        casez_tmp_36 = map_table_19;
       5'b10100:
-        casez_tmp_4 = map_table_20;
+        casez_tmp_36 = map_table_20;
       5'b10101:
-        casez_tmp_4 = map_table_21;
+        casez_tmp_36 = map_table_21;
       5'b10110:
-        casez_tmp_4 = map_table_22;
+        casez_tmp_36 = map_table_22;
       5'b10111:
-        casez_tmp_4 = map_table_23;
+        casez_tmp_36 = map_table_23;
       5'b11000:
-        casez_tmp_4 = map_table_24;
+        casez_tmp_36 = map_table_24;
       5'b11001:
-        casez_tmp_4 = map_table_25;
+        casez_tmp_36 = map_table_25;
       5'b11010:
-        casez_tmp_4 = map_table_26;
+        casez_tmp_36 = map_table_26;
       5'b11011:
-        casez_tmp_4 = map_table_27;
+        casez_tmp_36 = map_table_27;
       5'b11100:
-        casez_tmp_4 = map_table_28;
+        casez_tmp_36 = map_table_28;
       5'b11101:
-        casez_tmp_4 = map_table_29;
+        casez_tmp_36 = map_table_29;
       5'b11110:
-        casez_tmp_4 = map_table_30;
+        casez_tmp_36 = map_table_30;
       default:
-        casez_tmp_4 = map_table_31;
+        casez_tmp_36 = map_table_31;
     endcase
   end // always @(*)
+  reg  [6:0]  casez_tmp_37;
   always @(*) begin
     casez (io_map_reqs_1_lrs3[4:0])
       5'b00000:
-        casez_tmp_5 = map_table_0;
+        casez_tmp_37 = map_table_0;
       5'b00001:
-        casez_tmp_5 = map_table_1;
+        casez_tmp_37 = map_table_1;
       5'b00010:
-        casez_tmp_5 = map_table_2;
+        casez_tmp_37 = map_table_2;
       5'b00011:
-        casez_tmp_5 = map_table_3;
+        casez_tmp_37 = map_table_3;
       5'b00100:
-        casez_tmp_5 = map_table_4;
+        casez_tmp_37 = map_table_4;
       5'b00101:
-        casez_tmp_5 = map_table_5;
+        casez_tmp_37 = map_table_5;
       5'b00110:
-        casez_tmp_5 = map_table_6;
+        casez_tmp_37 = map_table_6;
       5'b00111:
-        casez_tmp_5 = map_table_7;
+        casez_tmp_37 = map_table_7;
       5'b01000:
-        casez_tmp_5 = map_table_8;
+        casez_tmp_37 = map_table_8;
       5'b01001:
-        casez_tmp_5 = map_table_9;
+        casez_tmp_37 = map_table_9;
       5'b01010:
-        casez_tmp_5 = map_table_10;
+        casez_tmp_37 = map_table_10;
       5'b01011:
-        casez_tmp_5 = map_table_11;
+        casez_tmp_37 = map_table_11;
       5'b01100:
-        casez_tmp_5 = map_table_12;
+        casez_tmp_37 = map_table_12;
       5'b01101:
-        casez_tmp_5 = map_table_13;
+        casez_tmp_37 = map_table_13;
       5'b01110:
-        casez_tmp_5 = map_table_14;
+        casez_tmp_37 = map_table_14;
       5'b01111:
-        casez_tmp_5 = map_table_15;
+        casez_tmp_37 = map_table_15;
       5'b10000:
-        casez_tmp_5 = map_table_16;
+        casez_tmp_37 = map_table_16;
       5'b10001:
-        casez_tmp_5 = map_table_17;
+        casez_tmp_37 = map_table_17;
       5'b10010:
-        casez_tmp_5 = map_table_18;
+        casez_tmp_37 = map_table_18;
       5'b10011:
-        casez_tmp_5 = map_table_19;
+        casez_tmp_37 = map_table_19;
       5'b10100:
-        casez_tmp_5 = map_table_20;
+        casez_tmp_37 = map_table_20;
       5'b10101:
-        casez_tmp_5 = map_table_21;
+        casez_tmp_37 = map_table_21;
       5'b10110:
-        casez_tmp_5 = map_table_22;
+        casez_tmp_37 = map_table_22;
       5'b10111:
-        casez_tmp_5 = map_table_23;
+        casez_tmp_37 = map_table_23;
       5'b11000:
-        casez_tmp_5 = map_table_24;
+        casez_tmp_37 = map_table_24;
       5'b11001:
-        casez_tmp_5 = map_table_25;
+        casez_tmp_37 = map_table_25;
       5'b11010:
-        casez_tmp_5 = map_table_26;
+        casez_tmp_37 = map_table_26;
       5'b11011:
-        casez_tmp_5 = map_table_27;
+        casez_tmp_37 = map_table_27;
       5'b11100:
-        casez_tmp_5 = map_table_28;
+        casez_tmp_37 = map_table_28;
       5'b11101:
-        casez_tmp_5 = map_table_29;
+        casez_tmp_37 = map_table_29;
       5'b11110:
-        casez_tmp_5 = map_table_30;
+        casez_tmp_37 = map_table_30;
       default:
-        casez_tmp_5 = map_table_31;
+        casez_tmp_37 = map_table_31;
     endcase
   end // always @(*)
+  reg  [6:0]  casez_tmp_38;
   always @(*) begin
     casez (io_map_reqs_1_ldst[4:0])
       5'b00000:
-        casez_tmp_6 = map_table_0;
+        casez_tmp_38 = map_table_0;
       5'b00001:
-        casez_tmp_6 = map_table_1;
+        casez_tmp_38 = map_table_1;
       5'b00010:
-        casez_tmp_6 = map_table_2;
+        casez_tmp_38 = map_table_2;
       5'b00011:
-        casez_tmp_6 = map_table_3;
+        casez_tmp_38 = map_table_3;
       5'b00100:
-        casez_tmp_6 = map_table_4;
+        casez_tmp_38 = map_table_4;
       5'b00101:
-        casez_tmp_6 = map_table_5;
+        casez_tmp_38 = map_table_5;
       5'b00110:
-        casez_tmp_6 = map_table_6;
+        casez_tmp_38 = map_table_6;
       5'b00111:
-        casez_tmp_6 = map_table_7;
+        casez_tmp_38 = map_table_7;
       5'b01000:
-        casez_tmp_6 = map_table_8;
+        casez_tmp_38 = map_table_8;
       5'b01001:
-        casez_tmp_6 = map_table_9;
+        casez_tmp_38 = map_table_9;
       5'b01010:
-        casez_tmp_6 = map_table_10;
+        casez_tmp_38 = map_table_10;
       5'b01011:
-        casez_tmp_6 = map_table_11;
+        casez_tmp_38 = map_table_11;
       5'b01100:
-        casez_tmp_6 = map_table_12;
+        casez_tmp_38 = map_table_12;
       5'b01101:
-        casez_tmp_6 = map_table_13;
+        casez_tmp_38 = map_table_13;
       5'b01110:
-        casez_tmp_6 = map_table_14;
+        casez_tmp_38 = map_table_14;
       5'b01111:
-        casez_tmp_6 = map_table_15;
+        casez_tmp_38 = map_table_15;
       5'b10000:
-        casez_tmp_6 = map_table_16;
+        casez_tmp_38 = map_table_16;
       5'b10001:
-        casez_tmp_6 = map_table_17;
+        casez_tmp_38 = map_table_17;
       5'b10010:
-        casez_tmp_6 = map_table_18;
+        casez_tmp_38 = map_table_18;
       5'b10011:
-        casez_tmp_6 = map_table_19;
+        casez_tmp_38 = map_table_19;
       5'b10100:
-        casez_tmp_6 = map_table_20;
+        casez_tmp_38 = map_table_20;
       5'b10101:
-        casez_tmp_6 = map_table_21;
+        casez_tmp_38 = map_table_21;
       5'b10110:
-        casez_tmp_6 = map_table_22;
+        casez_tmp_38 = map_table_22;
       5'b10111:
-        casez_tmp_6 = map_table_23;
+        casez_tmp_38 = map_table_23;
       5'b11000:
-        casez_tmp_6 = map_table_24;
+        casez_tmp_38 = map_table_24;
       5'b11001:
-        casez_tmp_6 = map_table_25;
+        casez_tmp_38 = map_table_25;
       5'b11010:
-        casez_tmp_6 = map_table_26;
+        casez_tmp_38 = map_table_26;
       5'b11011:
-        casez_tmp_6 = map_table_27;
+        casez_tmp_38 = map_table_27;
       5'b11100:
-        casez_tmp_6 = map_table_28;
+        casez_tmp_38 = map_table_28;
       5'b11101:
-        casez_tmp_6 = map_table_29;
+        casez_tmp_38 = map_table_29;
       5'b11110:
-        casez_tmp_6 = map_table_30;
+        casez_tmp_38 = map_table_30;
       default:
-        casez_tmp_6 = map_table_31;
+        casez_tmp_38 = map_table_31;
     endcase
   end // always @(*)
+  reg  [6:0]  casez_tmp_39;
   always @(*) begin
     casez (io_map_reqs_2_lrs1[4:0])
       5'b00000:
-        casez_tmp_7 = map_table_0;
+        casez_tmp_39 = map_table_0;
       5'b00001:
-        casez_tmp_7 = map_table_1;
+        casez_tmp_39 = map_table_1;
       5'b00010:
-        casez_tmp_7 = map_table_2;
+        casez_tmp_39 = map_table_2;
       5'b00011:
-        casez_tmp_7 = map_table_3;
+        casez_tmp_39 = map_table_3;
       5'b00100:
-        casez_tmp_7 = map_table_4;
+        casez_tmp_39 = map_table_4;
       5'b00101:
-        casez_tmp_7 = map_table_5;
+        casez_tmp_39 = map_table_5;
       5'b00110:
-        casez_tmp_7 = map_table_6;
+        casez_tmp_39 = map_table_6;
       5'b00111:
-        casez_tmp_7 = map_table_7;
+        casez_tmp_39 = map_table_7;
       5'b01000:
-        casez_tmp_7 = map_table_8;
+        casez_tmp_39 = map_table_8;
       5'b01001:
-        casez_tmp_7 = map_table_9;
+        casez_tmp_39 = map_table_9;
       5'b01010:
-        casez_tmp_7 = map_table_10;
+        casez_tmp_39 = map_table_10;
       5'b01011:
-        casez_tmp_7 = map_table_11;
+        casez_tmp_39 = map_table_11;
       5'b01100:
-        casez_tmp_7 = map_table_12;
+        casez_tmp_39 = map_table_12;
       5'b01101:
-        casez_tmp_7 = map_table_13;
+        casez_tmp_39 = map_table_13;
       5'b01110:
-        casez_tmp_7 = map_table_14;
+        casez_tmp_39 = map_table_14;
       5'b01111:
-        casez_tmp_7 = map_table_15;
+        casez_tmp_39 = map_table_15;
       5'b10000:
-        casez_tmp_7 = map_table_16;
+        casez_tmp_39 = map_table_16;
       5'b10001:
-        casez_tmp_7 = map_table_17;
+        casez_tmp_39 = map_table_17;
       5'b10010:
-        casez_tmp_7 = map_table_18;
+        casez_tmp_39 = map_table_18;
       5'b10011:
-        casez_tmp_7 = map_table_19;
+        casez_tmp_39 = map_table_19;
       5'b10100:
-        casez_tmp_7 = map_table_20;
+        casez_tmp_39 = map_table_20;
       5'b10101:
-        casez_tmp_7 = map_table_21;
+        casez_tmp_39 = map_table_21;
       5'b10110:
-        casez_tmp_7 = map_table_22;
+        casez_tmp_39 = map_table_22;
       5'b10111:
-        casez_tmp_7 = map_table_23;
+        casez_tmp_39 = map_table_23;
       5'b11000:
-        casez_tmp_7 = map_table_24;
+        casez_tmp_39 = map_table_24;
       5'b11001:
-        casez_tmp_7 = map_table_25;
+        casez_tmp_39 = map_table_25;
       5'b11010:
-        casez_tmp_7 = map_table_26;
+        casez_tmp_39 = map_table_26;
       5'b11011:
-        casez_tmp_7 = map_table_27;
+        casez_tmp_39 = map_table_27;
       5'b11100:
-        casez_tmp_7 = map_table_28;
+        casez_tmp_39 = map_table_28;
       5'b11101:
-        casez_tmp_7 = map_table_29;
+        casez_tmp_39 = map_table_29;
       5'b11110:
-        casez_tmp_7 = map_table_30;
+        casez_tmp_39 = map_table_30;
       default:
-        casez_tmp_7 = map_table_31;
+        casez_tmp_39 = map_table_31;
     endcase
   end // always @(*)
+  reg  [6:0]  casez_tmp_40;
   always @(*) begin
     casez (io_map_reqs_2_lrs2[4:0])
       5'b00000:
-        casez_tmp_8 = map_table_0;
+        casez_tmp_40 = map_table_0;
       5'b00001:
-        casez_tmp_8 = map_table_1;
+        casez_tmp_40 = map_table_1;
       5'b00010:
-        casez_tmp_8 = map_table_2;
+        casez_tmp_40 = map_table_2;
       5'b00011:
-        casez_tmp_8 = map_table_3;
+        casez_tmp_40 = map_table_3;
       5'b00100:
-        casez_tmp_8 = map_table_4;
+        casez_tmp_40 = map_table_4;
       5'b00101:
-        casez_tmp_8 = map_table_5;
+        casez_tmp_40 = map_table_5;
       5'b00110:
-        casez_tmp_8 = map_table_6;
+        casez_tmp_40 = map_table_6;
       5'b00111:
-        casez_tmp_8 = map_table_7;
+        casez_tmp_40 = map_table_7;
       5'b01000:
-        casez_tmp_8 = map_table_8;
+        casez_tmp_40 = map_table_8;
       5'b01001:
-        casez_tmp_8 = map_table_9;
+        casez_tmp_40 = map_table_9;
       5'b01010:
-        casez_tmp_8 = map_table_10;
+        casez_tmp_40 = map_table_10;
       5'b01011:
-        casez_tmp_8 = map_table_11;
+        casez_tmp_40 = map_table_11;
       5'b01100:
-        casez_tmp_8 = map_table_12;
+        casez_tmp_40 = map_table_12;
       5'b01101:
-        casez_tmp_8 = map_table_13;
+        casez_tmp_40 = map_table_13;
       5'b01110:
-        casez_tmp_8 = map_table_14;
+        casez_tmp_40 = map_table_14;
       5'b01111:
-        casez_tmp_8 = map_table_15;
+        casez_tmp_40 = map_table_15;
       5'b10000:
-        casez_tmp_8 = map_table_16;
+        casez_tmp_40 = map_table_16;
       5'b10001:
-        casez_tmp_8 = map_table_17;
+        casez_tmp_40 = map_table_17;
       5'b10010:
-        casez_tmp_8 = map_table_18;
+        casez_tmp_40 = map_table_18;
       5'b10011:
-        casez_tmp_8 = map_table_19;
+        casez_tmp_40 = map_table_19;
       5'b10100:
-        casez_tmp_8 = map_table_20;
+        casez_tmp_40 = map_table_20;
       5'b10101:
-        casez_tmp_8 = map_table_21;
+        casez_tmp_40 = map_table_21;
       5'b10110:
-        casez_tmp_8 = map_table_22;
+        casez_tmp_40 = map_table_22;
       5'b10111:
-        casez_tmp_8 = map_table_23;
+        casez_tmp_40 = map_table_23;
       5'b11000:
-        casez_tmp_8 = map_table_24;
+        casez_tmp_40 = map_table_24;
       5'b11001:
-        casez_tmp_8 = map_table_25;
+        casez_tmp_40 = map_table_25;
       5'b11010:
-        casez_tmp_8 = map_table_26;
+        casez_tmp_40 = map_table_26;
       5'b11011:
-        casez_tmp_8 = map_table_27;
+        casez_tmp_40 = map_table_27;
       5'b11100:
-        casez_tmp_8 = map_table_28;
+        casez_tmp_40 = map_table_28;
       5'b11101:
-        casez_tmp_8 = map_table_29;
+        casez_tmp_40 = map_table_29;
       5'b11110:
-        casez_tmp_8 = map_table_30;
+        casez_tmp_40 = map_table_30;
       default:
-        casez_tmp_8 = map_table_31;
+        casez_tmp_40 = map_table_31;
     endcase
   end // always @(*)
+  reg  [6:0]  casez_tmp_41;
   always @(*) begin
     casez (io_map_reqs_2_lrs3[4:0])
       5'b00000:
-        casez_tmp_9 = map_table_0;
+        casez_tmp_41 = map_table_0;
       5'b00001:
-        casez_tmp_9 = map_table_1;
+        casez_tmp_41 = map_table_1;
       5'b00010:
-        casez_tmp_9 = map_table_2;
+        casez_tmp_41 = map_table_2;
       5'b00011:
-        casez_tmp_9 = map_table_3;
+        casez_tmp_41 = map_table_3;
       5'b00100:
-        casez_tmp_9 = map_table_4;
+        casez_tmp_41 = map_table_4;
       5'b00101:
-        casez_tmp_9 = map_table_5;
+        casez_tmp_41 = map_table_5;
       5'b00110:
-        casez_tmp_9 = map_table_6;
+        casez_tmp_41 = map_table_6;
       5'b00111:
-        casez_tmp_9 = map_table_7;
+        casez_tmp_41 = map_table_7;
       5'b01000:
-        casez_tmp_9 = map_table_8;
+        casez_tmp_41 = map_table_8;
       5'b01001:
-        casez_tmp_9 = map_table_9;
+        casez_tmp_41 = map_table_9;
       5'b01010:
-        casez_tmp_9 = map_table_10;
+        casez_tmp_41 = map_table_10;
       5'b01011:
-        casez_tmp_9 = map_table_11;
+        casez_tmp_41 = map_table_11;
       5'b01100:
-        casez_tmp_9 = map_table_12;
+        casez_tmp_41 = map_table_12;
       5'b01101:
-        casez_tmp_9 = map_table_13;
+        casez_tmp_41 = map_table_13;
       5'b01110:
-        casez_tmp_9 = map_table_14;
+        casez_tmp_41 = map_table_14;
       5'b01111:
-        casez_tmp_9 = map_table_15;
+        casez_tmp_41 = map_table_15;
       5'b10000:
-        casez_tmp_9 = map_table_16;
+        casez_tmp_41 = map_table_16;
       5'b10001:
-        casez_tmp_9 = map_table_17;
+        casez_tmp_41 = map_table_17;
       5'b10010:
-        casez_tmp_9 = map_table_18;
+        casez_tmp_41 = map_table_18;
       5'b10011:
-        casez_tmp_9 = map_table_19;
+        casez_tmp_41 = map_table_19;
       5'b10100:
-        casez_tmp_9 = map_table_20;
+        casez_tmp_41 = map_table_20;
       5'b10101:
-        casez_tmp_9 = map_table_21;
+        casez_tmp_41 = map_table_21;
       5'b10110:
-        casez_tmp_9 = map_table_22;
+        casez_tmp_41 = map_table_22;
       5'b10111:
-        casez_tmp_9 = map_table_23;
+        casez_tmp_41 = map_table_23;
       5'b11000:
-        casez_tmp_9 = map_table_24;
+        casez_tmp_41 = map_table_24;
       5'b11001:
-        casez_tmp_9 = map_table_25;
+        casez_tmp_41 = map_table_25;
       5'b11010:
-        casez_tmp_9 = map_table_26;
+        casez_tmp_41 = map_table_26;
       5'b11011:
-        casez_tmp_9 = map_table_27;
+        casez_tmp_41 = map_table_27;
       5'b11100:
-        casez_tmp_9 = map_table_28;
+        casez_tmp_41 = map_table_28;
       5'b11101:
-        casez_tmp_9 = map_table_29;
+        casez_tmp_41 = map_table_29;
       5'b11110:
-        casez_tmp_9 = map_table_30;
+        casez_tmp_41 = map_table_30;
       default:
-        casez_tmp_9 = map_table_31;
+        casez_tmp_41 = map_table_31;
     endcase
   end // always @(*)
+  reg  [6:0]  casez_tmp_42;
   always @(*) begin
     casez (io_map_reqs_2_ldst[4:0])
       5'b00000:
-        casez_tmp_10 = map_table_0;
+        casez_tmp_42 = map_table_0;
       5'b00001:
-        casez_tmp_10 = map_table_1;
+        casez_tmp_42 = map_table_1;
       5'b00010:
-        casez_tmp_10 = map_table_2;
+        casez_tmp_42 = map_table_2;
       5'b00011:
-        casez_tmp_10 = map_table_3;
+        casez_tmp_42 = map_table_3;
       5'b00100:
-        casez_tmp_10 = map_table_4;
+        casez_tmp_42 = map_table_4;
       5'b00101:
-        casez_tmp_10 = map_table_5;
+        casez_tmp_42 = map_table_5;
       5'b00110:
-        casez_tmp_10 = map_table_6;
+        casez_tmp_42 = map_table_6;
       5'b00111:
-        casez_tmp_10 = map_table_7;
+        casez_tmp_42 = map_table_7;
       5'b01000:
-        casez_tmp_10 = map_table_8;
+        casez_tmp_42 = map_table_8;
       5'b01001:
-        casez_tmp_10 = map_table_9;
+        casez_tmp_42 = map_table_9;
       5'b01010:
-        casez_tmp_10 = map_table_10;
+        casez_tmp_42 = map_table_10;
       5'b01011:
-        casez_tmp_10 = map_table_11;
+        casez_tmp_42 = map_table_11;
       5'b01100:
-        casez_tmp_10 = map_table_12;
+        casez_tmp_42 = map_table_12;
       5'b01101:
-        casez_tmp_10 = map_table_13;
+        casez_tmp_42 = map_table_13;
       5'b01110:
-        casez_tmp_10 = map_table_14;
+        casez_tmp_42 = map_table_14;
       5'b01111:
-        casez_tmp_10 = map_table_15;
+        casez_tmp_42 = map_table_15;
       5'b10000:
-        casez_tmp_10 = map_table_16;
+        casez_tmp_42 = map_table_16;
       5'b10001:
-        casez_tmp_10 = map_table_17;
+        casez_tmp_42 = map_table_17;
       5'b10010:
-        casez_tmp_10 = map_table_18;
+        casez_tmp_42 = map_table_18;
       5'b10011:
-        casez_tmp_10 = map_table_19;
+        casez_tmp_42 = map_table_19;
       5'b10100:
-        casez_tmp_10 = map_table_20;
+        casez_tmp_42 = map_table_20;
       5'b10101:
-        casez_tmp_10 = map_table_21;
+        casez_tmp_42 = map_table_21;
       5'b10110:
-        casez_tmp_10 = map_table_22;
+        casez_tmp_42 = map_table_22;
       5'b10111:
-        casez_tmp_10 = map_table_23;
+        casez_tmp_42 = map_table_23;
       5'b11000:
-        casez_tmp_10 = map_table_24;
+        casez_tmp_42 = map_table_24;
       5'b11001:
-        casez_tmp_10 = map_table_25;
+        casez_tmp_42 = map_table_25;
       5'b11010:
-        casez_tmp_10 = map_table_26;
+        casez_tmp_42 = map_table_26;
       5'b11011:
-        casez_tmp_10 = map_table_27;
+        casez_tmp_42 = map_table_27;
       5'b11100:
-        casez_tmp_10 = map_table_28;
+        casez_tmp_42 = map_table_28;
       5'b11101:
-        casez_tmp_10 = map_table_29;
+        casez_tmp_42 = map_table_29;
       5'b11110:
-        casez_tmp_10 = map_table_30;
+        casez_tmp_42 = map_table_30;
       default:
-        casez_tmp_10 = map_table_31;
+        casez_tmp_42 = map_table_31;
     endcase
   end // always @(*)
+  reg  [6:0]  casez_tmp_43;
   always @(*) begin
     casez (io_map_reqs_3_lrs1[4:0])
       5'b00000:
-        casez_tmp_11 = map_table_0;
+        casez_tmp_43 = map_table_0;
       5'b00001:
-        casez_tmp_11 = map_table_1;
+        casez_tmp_43 = map_table_1;
       5'b00010:
-        casez_tmp_11 = map_table_2;
+        casez_tmp_43 = map_table_2;
       5'b00011:
-        casez_tmp_11 = map_table_3;
+        casez_tmp_43 = map_table_3;
       5'b00100:
-        casez_tmp_11 = map_table_4;
+        casez_tmp_43 = map_table_4;
       5'b00101:
-        casez_tmp_11 = map_table_5;
+        casez_tmp_43 = map_table_5;
       5'b00110:
-        casez_tmp_11 = map_table_6;
+        casez_tmp_43 = map_table_6;
       5'b00111:
-        casez_tmp_11 = map_table_7;
+        casez_tmp_43 = map_table_7;
       5'b01000:
-        casez_tmp_11 = map_table_8;
+        casez_tmp_43 = map_table_8;
       5'b01001:
-        casez_tmp_11 = map_table_9;
+        casez_tmp_43 = map_table_9;
       5'b01010:
-        casez_tmp_11 = map_table_10;
+        casez_tmp_43 = map_table_10;
       5'b01011:
-        casez_tmp_11 = map_table_11;
+        casez_tmp_43 = map_table_11;
       5'b01100:
-        casez_tmp_11 = map_table_12;
+        casez_tmp_43 = map_table_12;
       5'b01101:
-        casez_tmp_11 = map_table_13;
+        casez_tmp_43 = map_table_13;
       5'b01110:
-        casez_tmp_11 = map_table_14;
+        casez_tmp_43 = map_table_14;
       5'b01111:
-        casez_tmp_11 = map_table_15;
+        casez_tmp_43 = map_table_15;
       5'b10000:
-        casez_tmp_11 = map_table_16;
+        casez_tmp_43 = map_table_16;
       5'b10001:
-        casez_tmp_11 = map_table_17;
+        casez_tmp_43 = map_table_17;
       5'b10010:
-        casez_tmp_11 = map_table_18;
+        casez_tmp_43 = map_table_18;
       5'b10011:
-        casez_tmp_11 = map_table_19;
+        casez_tmp_43 = map_table_19;
       5'b10100:
-        casez_tmp_11 = map_table_20;
+        casez_tmp_43 = map_table_20;
       5'b10101:
-        casez_tmp_11 = map_table_21;
+        casez_tmp_43 = map_table_21;
       5'b10110:
-        casez_tmp_11 = map_table_22;
+        casez_tmp_43 = map_table_22;
       5'b10111:
-        casez_tmp_11 = map_table_23;
+        casez_tmp_43 = map_table_23;
       5'b11000:
-        casez_tmp_11 = map_table_24;
+        casez_tmp_43 = map_table_24;
       5'b11001:
-        casez_tmp_11 = map_table_25;
+        casez_tmp_43 = map_table_25;
       5'b11010:
-        casez_tmp_11 = map_table_26;
+        casez_tmp_43 = map_table_26;
       5'b11011:
-        casez_tmp_11 = map_table_27;
+        casez_tmp_43 = map_table_27;
       5'b11100:
-        casez_tmp_11 = map_table_28;
+        casez_tmp_43 = map_table_28;
       5'b11101:
-        casez_tmp_11 = map_table_29;
+        casez_tmp_43 = map_table_29;
       5'b11110:
-        casez_tmp_11 = map_table_30;
+        casez_tmp_43 = map_table_30;
       default:
-        casez_tmp_11 = map_table_31;
+        casez_tmp_43 = map_table_31;
     endcase
   end // always @(*)
+  reg  [6:0]  casez_tmp_44;
   always @(*) begin
     casez (io_map_reqs_3_lrs2[4:0])
       5'b00000:
-        casez_tmp_12 = map_table_0;
+        casez_tmp_44 = map_table_0;
       5'b00001:
-        casez_tmp_12 = map_table_1;
+        casez_tmp_44 = map_table_1;
       5'b00010:
-        casez_tmp_12 = map_table_2;
+        casez_tmp_44 = map_table_2;
       5'b00011:
-        casez_tmp_12 = map_table_3;
+        casez_tmp_44 = map_table_3;
       5'b00100:
-        casez_tmp_12 = map_table_4;
+        casez_tmp_44 = map_table_4;
       5'b00101:
-        casez_tmp_12 = map_table_5;
+        casez_tmp_44 = map_table_5;
       5'b00110:
-        casez_tmp_12 = map_table_6;
+        casez_tmp_44 = map_table_6;
       5'b00111:
-        casez_tmp_12 = map_table_7;
+        casez_tmp_44 = map_table_7;
       5'b01000:
-        casez_tmp_12 = map_table_8;
+        casez_tmp_44 = map_table_8;
       5'b01001:
-        casez_tmp_12 = map_table_9;
+        casez_tmp_44 = map_table_9;
       5'b01010:
-        casez_tmp_12 = map_table_10;
+        casez_tmp_44 = map_table_10;
       5'b01011:
-        casez_tmp_12 = map_table_11;
+        casez_tmp_44 = map_table_11;
       5'b01100:
-        casez_tmp_12 = map_table_12;
+        casez_tmp_44 = map_table_12;
       5'b01101:
-        casez_tmp_12 = map_table_13;
+        casez_tmp_44 = map_table_13;
       5'b01110:
-        casez_tmp_12 = map_table_14;
+        casez_tmp_44 = map_table_14;
       5'b01111:
-        casez_tmp_12 = map_table_15;
+        casez_tmp_44 = map_table_15;
       5'b10000:
-        casez_tmp_12 = map_table_16;
+        casez_tmp_44 = map_table_16;
       5'b10001:
-        casez_tmp_12 = map_table_17;
+        casez_tmp_44 = map_table_17;
       5'b10010:
-        casez_tmp_12 = map_table_18;
+        casez_tmp_44 = map_table_18;
       5'b10011:
-        casez_tmp_12 = map_table_19;
+        casez_tmp_44 = map_table_19;
       5'b10100:
-        casez_tmp_12 = map_table_20;
+        casez_tmp_44 = map_table_20;
       5'b10101:
-        casez_tmp_12 = map_table_21;
+        casez_tmp_44 = map_table_21;
       5'b10110:
-        casez_tmp_12 = map_table_22;
+        casez_tmp_44 = map_table_22;
       5'b10111:
-        casez_tmp_12 = map_table_23;
+        casez_tmp_44 = map_table_23;
       5'b11000:
-        casez_tmp_12 = map_table_24;
+        casez_tmp_44 = map_table_24;
       5'b11001:
-        casez_tmp_12 = map_table_25;
+        casez_tmp_44 = map_table_25;
       5'b11010:
-        casez_tmp_12 = map_table_26;
+        casez_tmp_44 = map_table_26;
       5'b11011:
-        casez_tmp_12 = map_table_27;
+        casez_tmp_44 = map_table_27;
       5'b11100:
-        casez_tmp_12 = map_table_28;
+        casez_tmp_44 = map_table_28;
       5'b11101:
-        casez_tmp_12 = map_table_29;
+        casez_tmp_44 = map_table_29;
       5'b11110:
-        casez_tmp_12 = map_table_30;
+        casez_tmp_44 = map_table_30;
       default:
-        casez_tmp_12 = map_table_31;
+        casez_tmp_44 = map_table_31;
     endcase
   end // always @(*)
+  reg  [6:0]  casez_tmp_45;
   always @(*) begin
     casez (io_map_reqs_3_lrs3[4:0])
       5'b00000:
-        casez_tmp_13 = map_table_0;
+        casez_tmp_45 = map_table_0;
       5'b00001:
-        casez_tmp_13 = map_table_1;
+        casez_tmp_45 = map_table_1;
       5'b00010:
-        casez_tmp_13 = map_table_2;
+        casez_tmp_45 = map_table_2;
       5'b00011:
-        casez_tmp_13 = map_table_3;
+        casez_tmp_45 = map_table_3;
       5'b00100:
-        casez_tmp_13 = map_table_4;
+        casez_tmp_45 = map_table_4;
       5'b00101:
-        casez_tmp_13 = map_table_5;
+        casez_tmp_45 = map_table_5;
       5'b00110:
-        casez_tmp_13 = map_table_6;
+        casez_tmp_45 = map_table_6;
       5'b00111:
-        casez_tmp_13 = map_table_7;
+        casez_tmp_45 = map_table_7;
       5'b01000:
-        casez_tmp_13 = map_table_8;
+        casez_tmp_45 = map_table_8;
       5'b01001:
-        casez_tmp_13 = map_table_9;
+        casez_tmp_45 = map_table_9;
       5'b01010:
-        casez_tmp_13 = map_table_10;
+        casez_tmp_45 = map_table_10;
       5'b01011:
-        casez_tmp_13 = map_table_11;
+        casez_tmp_45 = map_table_11;
       5'b01100:
-        casez_tmp_13 = map_table_12;
+        casez_tmp_45 = map_table_12;
       5'b01101:
-        casez_tmp_13 = map_table_13;
+        casez_tmp_45 = map_table_13;
       5'b01110:
-        casez_tmp_13 = map_table_14;
+        casez_tmp_45 = map_table_14;
       5'b01111:
-        casez_tmp_13 = map_table_15;
+        casez_tmp_45 = map_table_15;
       5'b10000:
-        casez_tmp_13 = map_table_16;
+        casez_tmp_45 = map_table_16;
       5'b10001:
-        casez_tmp_13 = map_table_17;
+        casez_tmp_45 = map_table_17;
       5'b10010:
-        casez_tmp_13 = map_table_18;
+        casez_tmp_45 = map_table_18;
       5'b10011:
-        casez_tmp_13 = map_table_19;
+        casez_tmp_45 = map_table_19;
       5'b10100:
-        casez_tmp_13 = map_table_20;
+        casez_tmp_45 = map_table_20;
       5'b10101:
-        casez_tmp_13 = map_table_21;
+        casez_tmp_45 = map_table_21;
       5'b10110:
-        casez_tmp_13 = map_table_22;
+        casez_tmp_45 = map_table_22;
       5'b10111:
-        casez_tmp_13 = map_table_23;
+        casez_tmp_45 = map_table_23;
       5'b11000:
-        casez_tmp_13 = map_table_24;
+        casez_tmp_45 = map_table_24;
       5'b11001:
-        casez_tmp_13 = map_table_25;
+        casez_tmp_45 = map_table_25;
       5'b11010:
-        casez_tmp_13 = map_table_26;
+        casez_tmp_45 = map_table_26;
       5'b11011:
-        casez_tmp_13 = map_table_27;
+        casez_tmp_45 = map_table_27;
       5'b11100:
-        casez_tmp_13 = map_table_28;
+        casez_tmp_45 = map_table_28;
       5'b11101:
-        casez_tmp_13 = map_table_29;
+        casez_tmp_45 = map_table_29;
       5'b11110:
-        casez_tmp_13 = map_table_30;
+        casez_tmp_45 = map_table_30;
       default:
-        casez_tmp_13 = map_table_31;
+        casez_tmp_45 = map_table_31;
     endcase
   end // always @(*)
+  reg  [6:0]  casez_tmp_46;
   always @(*) begin
     casez (io_map_reqs_3_ldst[4:0])
       5'b00000:
-        casez_tmp_14 = map_table_0;
+        casez_tmp_46 = map_table_0;
       5'b00001:
-        casez_tmp_14 = map_table_1;
+        casez_tmp_46 = map_table_1;
       5'b00010:
-        casez_tmp_14 = map_table_2;
+        casez_tmp_46 = map_table_2;
       5'b00011:
-        casez_tmp_14 = map_table_3;
+        casez_tmp_46 = map_table_3;
       5'b00100:
-        casez_tmp_14 = map_table_4;
+        casez_tmp_46 = map_table_4;
       5'b00101:
-        casez_tmp_14 = map_table_5;
+        casez_tmp_46 = map_table_5;
       5'b00110:
-        casez_tmp_14 = map_table_6;
+        casez_tmp_46 = map_table_6;
       5'b00111:
-        casez_tmp_14 = map_table_7;
+        casez_tmp_46 = map_table_7;
       5'b01000:
-        casez_tmp_14 = map_table_8;
+        casez_tmp_46 = map_table_8;
       5'b01001:
-        casez_tmp_14 = map_table_9;
+        casez_tmp_46 = map_table_9;
       5'b01010:
-        casez_tmp_14 = map_table_10;
+        casez_tmp_46 = map_table_10;
       5'b01011:
-        casez_tmp_14 = map_table_11;
+        casez_tmp_46 = map_table_11;
       5'b01100:
-        casez_tmp_14 = map_table_12;
+        casez_tmp_46 = map_table_12;
       5'b01101:
-        casez_tmp_14 = map_table_13;
+        casez_tmp_46 = map_table_13;
       5'b01110:
-        casez_tmp_14 = map_table_14;
+        casez_tmp_46 = map_table_14;
       5'b01111:
-        casez_tmp_14 = map_table_15;
+        casez_tmp_46 = map_table_15;
       5'b10000:
-        casez_tmp_14 = map_table_16;
+        casez_tmp_46 = map_table_16;
       5'b10001:
-        casez_tmp_14 = map_table_17;
+        casez_tmp_46 = map_table_17;
       5'b10010:
-        casez_tmp_14 = map_table_18;
+        casez_tmp_46 = map_table_18;
       5'b10011:
-        casez_tmp_14 = map_table_19;
+        casez_tmp_46 = map_table_19;
       5'b10100:
-        casez_tmp_14 = map_table_20;
+        casez_tmp_46 = map_table_20;
       5'b10101:
-        casez_tmp_14 = map_table_21;
+        casez_tmp_46 = map_table_21;
       5'b10110:
-        casez_tmp_14 = map_table_22;
+        casez_tmp_46 = map_table_22;
       5'b10111:
-        casez_tmp_14 = map_table_23;
+        casez_tmp_46 = map_table_23;
       5'b11000:
-        casez_tmp_14 = map_table_24;
+        casez_tmp_46 = map_table_24;
       5'b11001:
-        casez_tmp_14 = map_table_25;
+        casez_tmp_46 = map_table_25;
       5'b11010:
-        casez_tmp_14 = map_table_26;
+        casez_tmp_46 = map_table_26;
       5'b11011:
-        casez_tmp_14 = map_table_27;
+        casez_tmp_46 = map_table_27;
       5'b11100:
-        casez_tmp_14 = map_table_28;
+        casez_tmp_46 = map_table_28;
       5'b11101:
-        casez_tmp_14 = map_table_29;
+        casez_tmp_46 = map_table_29;
       5'b11110:
-        casez_tmp_14 = map_table_30;
+        casez_tmp_46 = map_table_30;
       default:
-        casez_tmp_14 = map_table_31;
+        casez_tmp_46 = map_table_31;
     endcase
   end // always @(*)
+  `ifndef SYNTHESIS
+    always @(posedge clock) begin
+      if (~reset & ~(~io_remap_reqs_0_valid | ~(map_table_0 == io_remap_reqs_0_pdst | map_table_1 == io_remap_reqs_0_pdst | map_table_2 == io_remap_reqs_0_pdst | map_table_3 == io_remap_reqs_0_pdst | map_table_4 == io_remap_reqs_0_pdst | map_table_5 == io_remap_reqs_0_pdst | map_table_6 == io_remap_reqs_0_pdst | map_table_7 == io_remap_reqs_0_pdst | map_table_8 == io_remap_reqs_0_pdst | map_table_9 == io_remap_reqs_0_pdst | map_table_10 == io_remap_reqs_0_pdst | map_table_11 == io_remap_reqs_0_pdst | map_table_12 == io_remap_reqs_0_pdst | map_table_13 == io_remap_reqs_0_pdst | map_table_14 == io_remap_reqs_0_pdst | map_table_15 == io_remap_reqs_0_pdst | map_table_16 == io_remap_reqs_0_pdst | map_table_17 == io_remap_reqs_0_pdst | map_table_18 == io_remap_reqs_0_pdst | map_table_19 == io_remap_reqs_0_pdst | map_table_20 == io_remap_reqs_0_pdst | map_table_21 == io_remap_reqs_0_pdst | map_table_22 == io_remap_reqs_0_pdst | map_table_23 == io_remap_reqs_0_pdst | map_table_24 == io_remap_reqs_0_pdst | map_table_25 == io_remap_reqs_0_pdst | map_table_26 == io_remap_reqs_0_pdst | map_table_27 == io_remap_reqs_0_pdst | map_table_28 == io_remap_reqs_0_pdst | map_table_29 == io_remap_reqs_0_pdst | map_table_30 == io_remap_reqs_0_pdst | map_table_31 == io_remap_reqs_0_pdst) | io_remap_reqs_0_pdst == 7'h0 & io_rollback)) begin
+        if (`ASSERT_VERBOSE_COND_)
+          $error("Assertion failed: [maptable] Trying to write a duplicate mapping.\n    at rename-maptable.scala:128 assert (!r || !map_table.contains(p) || p === 0.U && io.rollback, \"[maptable] Trying to write a duplicate mapping.\")}\n");
+        if (`STOP_COND_)
+          $fatal;
+      end
+      if (~reset & ~(~io_remap_reqs_1_valid | ~(map_table_0 == io_remap_reqs_1_pdst | map_table_1 == io_remap_reqs_1_pdst | map_table_2 == io_remap_reqs_1_pdst | map_table_3 == io_remap_reqs_1_pdst | map_table_4 == io_remap_reqs_1_pdst | map_table_5 == io_remap_reqs_1_pdst | map_table_6 == io_remap_reqs_1_pdst | map_table_7 == io_remap_reqs_1_pdst | map_table_8 == io_remap_reqs_1_pdst | map_table_9 == io_remap_reqs_1_pdst | map_table_10 == io_remap_reqs_1_pdst | map_table_11 == io_remap_reqs_1_pdst | map_table_12 == io_remap_reqs_1_pdst | map_table_13 == io_remap_reqs_1_pdst | map_table_14 == io_remap_reqs_1_pdst | map_table_15 == io_remap_reqs_1_pdst | map_table_16 == io_remap_reqs_1_pdst | map_table_17 == io_remap_reqs_1_pdst | map_table_18 == io_remap_reqs_1_pdst | map_table_19 == io_remap_reqs_1_pdst | map_table_20 == io_remap_reqs_1_pdst | map_table_21 == io_remap_reqs_1_pdst | map_table_22 == io_remap_reqs_1_pdst | map_table_23 == io_remap_reqs_1_pdst | map_table_24 == io_remap_reqs_1_pdst | map_table_25 == io_remap_reqs_1_pdst | map_table_26 == io_remap_reqs_1_pdst | map_table_27 == io_remap_reqs_1_pdst | map_table_28 == io_remap_reqs_1_pdst | map_table_29 == io_remap_reqs_1_pdst | map_table_30 == io_remap_reqs_1_pdst | map_table_31 == io_remap_reqs_1_pdst) | io_remap_reqs_1_pdst == 7'h0 & io_rollback)) begin
+        if (`ASSERT_VERBOSE_COND_)
+          $error("Assertion failed: [maptable] Trying to write a duplicate mapping.\n    at rename-maptable.scala:128 assert (!r || !map_table.contains(p) || p === 0.U && io.rollback, \"[maptable] Trying to write a duplicate mapping.\")}\n");
+        if (`STOP_COND_)
+          $fatal;
+      end
+      if (~reset & ~(~io_remap_reqs_2_valid | ~(map_table_0 == io_remap_reqs_2_pdst | map_table_1 == io_remap_reqs_2_pdst | map_table_2 == io_remap_reqs_2_pdst | map_table_3 == io_remap_reqs_2_pdst | map_table_4 == io_remap_reqs_2_pdst | map_table_5 == io_remap_reqs_2_pdst | map_table_6 == io_remap_reqs_2_pdst | map_table_7 == io_remap_reqs_2_pdst | map_table_8 == io_remap_reqs_2_pdst | map_table_9 == io_remap_reqs_2_pdst | map_table_10 == io_remap_reqs_2_pdst | map_table_11 == io_remap_reqs_2_pdst | map_table_12 == io_remap_reqs_2_pdst | map_table_13 == io_remap_reqs_2_pdst | map_table_14 == io_remap_reqs_2_pdst | map_table_15 == io_remap_reqs_2_pdst | map_table_16 == io_remap_reqs_2_pdst | map_table_17 == io_remap_reqs_2_pdst | map_table_18 == io_remap_reqs_2_pdst | map_table_19 == io_remap_reqs_2_pdst | map_table_20 == io_remap_reqs_2_pdst | map_table_21 == io_remap_reqs_2_pdst | map_table_22 == io_remap_reqs_2_pdst | map_table_23 == io_remap_reqs_2_pdst | map_table_24 == io_remap_reqs_2_pdst | map_table_25 == io_remap_reqs_2_pdst | map_table_26 == io_remap_reqs_2_pdst | map_table_27 == io_remap_reqs_2_pdst | map_table_28 == io_remap_reqs_2_pdst | map_table_29 == io_remap_reqs_2_pdst | map_table_30 == io_remap_reqs_2_pdst | map_table_31 == io_remap_reqs_2_pdst) | io_remap_reqs_2_pdst == 7'h0 & io_rollback)) begin
+        if (`ASSERT_VERBOSE_COND_)
+          $error("Assertion failed: [maptable] Trying to write a duplicate mapping.\n    at rename-maptable.scala:128 assert (!r || !map_table.contains(p) || p === 0.U && io.rollback, \"[maptable] Trying to write a duplicate mapping.\")}\n");
+        if (`STOP_COND_)
+          $fatal;
+      end
+      if (~reset & ~(~io_remap_reqs_3_valid | ~(map_table_0 == io_remap_reqs_3_pdst | map_table_1 == io_remap_reqs_3_pdst | map_table_2 == io_remap_reqs_3_pdst | map_table_3 == io_remap_reqs_3_pdst | map_table_4 == io_remap_reqs_3_pdst | map_table_5 == io_remap_reqs_3_pdst | map_table_6 == io_remap_reqs_3_pdst | map_table_7 == io_remap_reqs_3_pdst | map_table_8 == io_remap_reqs_3_pdst | map_table_9 == io_remap_reqs_3_pdst | map_table_10 == io_remap_reqs_3_pdst | map_table_11 == io_remap_reqs_3_pdst | map_table_12 == io_remap_reqs_3_pdst | map_table_13 == io_remap_reqs_3_pdst | map_table_14 == io_remap_reqs_3_pdst | map_table_15 == io_remap_reqs_3_pdst | map_table_16 == io_remap_reqs_3_pdst | map_table_17 == io_remap_reqs_3_pdst | map_table_18 == io_remap_reqs_3_pdst | map_table_19 == io_remap_reqs_3_pdst | map_table_20 == io_remap_reqs_3_pdst | map_table_21 == io_remap_reqs_3_pdst | map_table_22 == io_remap_reqs_3_pdst | map_table_23 == io_remap_reqs_3_pdst | map_table_24 == io_remap_reqs_3_pdst | map_table_25 == io_remap_reqs_3_pdst | map_table_26 == io_remap_reqs_3_pdst | map_table_27 == io_remap_reqs_3_pdst | map_table_28 == io_remap_reqs_3_pdst | map_table_29 == io_remap_reqs_3_pdst | map_table_30 == io_remap_reqs_3_pdst | map_table_31 == io_remap_reqs_3_pdst) | io_remap_reqs_3_pdst == 7'h0 & io_rollback)) begin
+        if (`ASSERT_VERBOSE_COND_)
+          $error("Assertion failed: [maptable] Trying to write a duplicate mapping.\n    at rename-maptable.scala:128 assert (!r || !map_table.contains(p) || p === 0.U && io.rollback, \"[maptable] Trying to write a duplicate mapping.\")}\n");
+        if (`STOP_COND_)
+          $fatal;
+      end
+    end // always @(posedge)
+  `endif // not def SYNTHESIS
   wire [63:0] _remap_ldsts_oh_T = 64'h1 << io_remap_reqs_0_ldst;
   wire [31:0] _GEN = _remap_ldsts_oh_T[31:0] & {32{io_remap_reqs_0_valid}};
   wire [63:0] _remap_ldsts_oh_T_3 = 64'h1 << io_remap_reqs_1_ldst;
@@ -1853,6 +4107,134 @@ module RenameMapTable_1(
   wire [31:0] _GEN_1 = _remap_ldsts_oh_T_6[31:0] & {32{io_remap_reqs_2_valid}};
   wire [63:0] _remap_ldsts_oh_T_9 = 64'h1 << io_remap_reqs_3_ldst;
   wire [31:0] _GEN_2 = _remap_ldsts_oh_T_9[31:0] & {32{io_remap_reqs_3_valid}};
+  wire [6:0]  remap_table_1_0 = _GEN[0] ? io_remap_reqs_0_pdst : map_table_0;
+  wire [6:0]  remap_table_2_0 = _GEN_0[0] ? io_remap_reqs_1_pdst : remap_table_1_0;
+  wire [6:0]  remap_table_3_0 = _GEN_1[0] ? io_remap_reqs_2_pdst : remap_table_2_0;
+  wire [6:0]  remap_table_4_0 = _GEN_2[0] ? io_remap_reqs_3_pdst : remap_table_3_0;
+  wire [6:0]  remap_table_1_1 = _GEN[1] ? io_remap_reqs_0_pdst : map_table_1;
+  wire [6:0]  remap_table_2_1 = _GEN_0[1] ? io_remap_reqs_1_pdst : remap_table_1_1;
+  wire [6:0]  remap_table_3_1 = _GEN_1[1] ? io_remap_reqs_2_pdst : remap_table_2_1;
+  wire [6:0]  remap_table_4_1 = _GEN_2[1] ? io_remap_reqs_3_pdst : remap_table_3_1;
+  wire [6:0]  remap_table_1_2 = _GEN[2] ? io_remap_reqs_0_pdst : map_table_2;
+  wire [6:0]  remap_table_2_2 = _GEN_0[2] ? io_remap_reqs_1_pdst : remap_table_1_2;
+  wire [6:0]  remap_table_3_2 = _GEN_1[2] ? io_remap_reqs_2_pdst : remap_table_2_2;
+  wire [6:0]  remap_table_4_2 = _GEN_2[2] ? io_remap_reqs_3_pdst : remap_table_3_2;
+  wire [6:0]  remap_table_1_3 = _GEN[3] ? io_remap_reqs_0_pdst : map_table_3;
+  wire [6:0]  remap_table_2_3 = _GEN_0[3] ? io_remap_reqs_1_pdst : remap_table_1_3;
+  wire [6:0]  remap_table_3_3 = _GEN_1[3] ? io_remap_reqs_2_pdst : remap_table_2_3;
+  wire [6:0]  remap_table_4_3 = _GEN_2[3] ? io_remap_reqs_3_pdst : remap_table_3_3;
+  wire [6:0]  remap_table_1_4 = _GEN[4] ? io_remap_reqs_0_pdst : map_table_4;
+  wire [6:0]  remap_table_2_4 = _GEN_0[4] ? io_remap_reqs_1_pdst : remap_table_1_4;
+  wire [6:0]  remap_table_3_4 = _GEN_1[4] ? io_remap_reqs_2_pdst : remap_table_2_4;
+  wire [6:0]  remap_table_4_4 = _GEN_2[4] ? io_remap_reqs_3_pdst : remap_table_3_4;
+  wire [6:0]  remap_table_1_5 = _GEN[5] ? io_remap_reqs_0_pdst : map_table_5;
+  wire [6:0]  remap_table_2_5 = _GEN_0[5] ? io_remap_reqs_1_pdst : remap_table_1_5;
+  wire [6:0]  remap_table_3_5 = _GEN_1[5] ? io_remap_reqs_2_pdst : remap_table_2_5;
+  wire [6:0]  remap_table_4_5 = _GEN_2[5] ? io_remap_reqs_3_pdst : remap_table_3_5;
+  wire [6:0]  remap_table_1_6 = _GEN[6] ? io_remap_reqs_0_pdst : map_table_6;
+  wire [6:0]  remap_table_2_6 = _GEN_0[6] ? io_remap_reqs_1_pdst : remap_table_1_6;
+  wire [6:0]  remap_table_3_6 = _GEN_1[6] ? io_remap_reqs_2_pdst : remap_table_2_6;
+  wire [6:0]  remap_table_4_6 = _GEN_2[6] ? io_remap_reqs_3_pdst : remap_table_3_6;
+  wire [6:0]  remap_table_1_7 = _GEN[7] ? io_remap_reqs_0_pdst : map_table_7;
+  wire [6:0]  remap_table_2_7 = _GEN_0[7] ? io_remap_reqs_1_pdst : remap_table_1_7;
+  wire [6:0]  remap_table_3_7 = _GEN_1[7] ? io_remap_reqs_2_pdst : remap_table_2_7;
+  wire [6:0]  remap_table_4_7 = _GEN_2[7] ? io_remap_reqs_3_pdst : remap_table_3_7;
+  wire [6:0]  remap_table_1_8 = _GEN[8] ? io_remap_reqs_0_pdst : map_table_8;
+  wire [6:0]  remap_table_2_8 = _GEN_0[8] ? io_remap_reqs_1_pdst : remap_table_1_8;
+  wire [6:0]  remap_table_3_8 = _GEN_1[8] ? io_remap_reqs_2_pdst : remap_table_2_8;
+  wire [6:0]  remap_table_4_8 = _GEN_2[8] ? io_remap_reqs_3_pdst : remap_table_3_8;
+  wire [6:0]  remap_table_1_9 = _GEN[9] ? io_remap_reqs_0_pdst : map_table_9;
+  wire [6:0]  remap_table_2_9 = _GEN_0[9] ? io_remap_reqs_1_pdst : remap_table_1_9;
+  wire [6:0]  remap_table_3_9 = _GEN_1[9] ? io_remap_reqs_2_pdst : remap_table_2_9;
+  wire [6:0]  remap_table_4_9 = _GEN_2[9] ? io_remap_reqs_3_pdst : remap_table_3_9;
+  wire [6:0]  remap_table_1_10 = _GEN[10] ? io_remap_reqs_0_pdst : map_table_10;
+  wire [6:0]  remap_table_2_10 = _GEN_0[10] ? io_remap_reqs_1_pdst : remap_table_1_10;
+  wire [6:0]  remap_table_3_10 = _GEN_1[10] ? io_remap_reqs_2_pdst : remap_table_2_10;
+  wire [6:0]  remap_table_4_10 = _GEN_2[10] ? io_remap_reqs_3_pdst : remap_table_3_10;
+  wire [6:0]  remap_table_1_11 = _GEN[11] ? io_remap_reqs_0_pdst : map_table_11;
+  wire [6:0]  remap_table_2_11 = _GEN_0[11] ? io_remap_reqs_1_pdst : remap_table_1_11;
+  wire [6:0]  remap_table_3_11 = _GEN_1[11] ? io_remap_reqs_2_pdst : remap_table_2_11;
+  wire [6:0]  remap_table_4_11 = _GEN_2[11] ? io_remap_reqs_3_pdst : remap_table_3_11;
+  wire [6:0]  remap_table_1_12 = _GEN[12] ? io_remap_reqs_0_pdst : map_table_12;
+  wire [6:0]  remap_table_2_12 = _GEN_0[12] ? io_remap_reqs_1_pdst : remap_table_1_12;
+  wire [6:0]  remap_table_3_12 = _GEN_1[12] ? io_remap_reqs_2_pdst : remap_table_2_12;
+  wire [6:0]  remap_table_4_12 = _GEN_2[12] ? io_remap_reqs_3_pdst : remap_table_3_12;
+  wire [6:0]  remap_table_1_13 = _GEN[13] ? io_remap_reqs_0_pdst : map_table_13;
+  wire [6:0]  remap_table_2_13 = _GEN_0[13] ? io_remap_reqs_1_pdst : remap_table_1_13;
+  wire [6:0]  remap_table_3_13 = _GEN_1[13] ? io_remap_reqs_2_pdst : remap_table_2_13;
+  wire [6:0]  remap_table_4_13 = _GEN_2[13] ? io_remap_reqs_3_pdst : remap_table_3_13;
+  wire [6:0]  remap_table_1_14 = _GEN[14] ? io_remap_reqs_0_pdst : map_table_14;
+  wire [6:0]  remap_table_2_14 = _GEN_0[14] ? io_remap_reqs_1_pdst : remap_table_1_14;
+  wire [6:0]  remap_table_3_14 = _GEN_1[14] ? io_remap_reqs_2_pdst : remap_table_2_14;
+  wire [6:0]  remap_table_4_14 = _GEN_2[14] ? io_remap_reqs_3_pdst : remap_table_3_14;
+  wire [6:0]  remap_table_1_15 = _GEN[15] ? io_remap_reqs_0_pdst : map_table_15;
+  wire [6:0]  remap_table_2_15 = _GEN_0[15] ? io_remap_reqs_1_pdst : remap_table_1_15;
+  wire [6:0]  remap_table_3_15 = _GEN_1[15] ? io_remap_reqs_2_pdst : remap_table_2_15;
+  wire [6:0]  remap_table_4_15 = _GEN_2[15] ? io_remap_reqs_3_pdst : remap_table_3_15;
+  wire [6:0]  remap_table_1_16 = _GEN[16] ? io_remap_reqs_0_pdst : map_table_16;
+  wire [6:0]  remap_table_2_16 = _GEN_0[16] ? io_remap_reqs_1_pdst : remap_table_1_16;
+  wire [6:0]  remap_table_3_16 = _GEN_1[16] ? io_remap_reqs_2_pdst : remap_table_2_16;
+  wire [6:0]  remap_table_4_16 = _GEN_2[16] ? io_remap_reqs_3_pdst : remap_table_3_16;
+  wire [6:0]  remap_table_1_17 = _GEN[17] ? io_remap_reqs_0_pdst : map_table_17;
+  wire [6:0]  remap_table_2_17 = _GEN_0[17] ? io_remap_reqs_1_pdst : remap_table_1_17;
+  wire [6:0]  remap_table_3_17 = _GEN_1[17] ? io_remap_reqs_2_pdst : remap_table_2_17;
+  wire [6:0]  remap_table_4_17 = _GEN_2[17] ? io_remap_reqs_3_pdst : remap_table_3_17;
+  wire [6:0]  remap_table_1_18 = _GEN[18] ? io_remap_reqs_0_pdst : map_table_18;
+  wire [6:0]  remap_table_2_18 = _GEN_0[18] ? io_remap_reqs_1_pdst : remap_table_1_18;
+  wire [6:0]  remap_table_3_18 = _GEN_1[18] ? io_remap_reqs_2_pdst : remap_table_2_18;
+  wire [6:0]  remap_table_4_18 = _GEN_2[18] ? io_remap_reqs_3_pdst : remap_table_3_18;
+  wire [6:0]  remap_table_1_19 = _GEN[19] ? io_remap_reqs_0_pdst : map_table_19;
+  wire [6:0]  remap_table_2_19 = _GEN_0[19] ? io_remap_reqs_1_pdst : remap_table_1_19;
+  wire [6:0]  remap_table_3_19 = _GEN_1[19] ? io_remap_reqs_2_pdst : remap_table_2_19;
+  wire [6:0]  remap_table_4_19 = _GEN_2[19] ? io_remap_reqs_3_pdst : remap_table_3_19;
+  wire [6:0]  remap_table_1_20 = _GEN[20] ? io_remap_reqs_0_pdst : map_table_20;
+  wire [6:0]  remap_table_2_20 = _GEN_0[20] ? io_remap_reqs_1_pdst : remap_table_1_20;
+  wire [6:0]  remap_table_3_20 = _GEN_1[20] ? io_remap_reqs_2_pdst : remap_table_2_20;
+  wire [6:0]  remap_table_4_20 = _GEN_2[20] ? io_remap_reqs_3_pdst : remap_table_3_20;
+  wire [6:0]  remap_table_1_21 = _GEN[21] ? io_remap_reqs_0_pdst : map_table_21;
+  wire [6:0]  remap_table_2_21 = _GEN_0[21] ? io_remap_reqs_1_pdst : remap_table_1_21;
+  wire [6:0]  remap_table_3_21 = _GEN_1[21] ? io_remap_reqs_2_pdst : remap_table_2_21;
+  wire [6:0]  remap_table_4_21 = _GEN_2[21] ? io_remap_reqs_3_pdst : remap_table_3_21;
+  wire [6:0]  remap_table_1_22 = _GEN[22] ? io_remap_reqs_0_pdst : map_table_22;
+  wire [6:0]  remap_table_2_22 = _GEN_0[22] ? io_remap_reqs_1_pdst : remap_table_1_22;
+  wire [6:0]  remap_table_3_22 = _GEN_1[22] ? io_remap_reqs_2_pdst : remap_table_2_22;
+  wire [6:0]  remap_table_4_22 = _GEN_2[22] ? io_remap_reqs_3_pdst : remap_table_3_22;
+  wire [6:0]  remap_table_1_23 = _GEN[23] ? io_remap_reqs_0_pdst : map_table_23;
+  wire [6:0]  remap_table_2_23 = _GEN_0[23] ? io_remap_reqs_1_pdst : remap_table_1_23;
+  wire [6:0]  remap_table_3_23 = _GEN_1[23] ? io_remap_reqs_2_pdst : remap_table_2_23;
+  wire [6:0]  remap_table_4_23 = _GEN_2[23] ? io_remap_reqs_3_pdst : remap_table_3_23;
+  wire [6:0]  remap_table_1_24 = _GEN[24] ? io_remap_reqs_0_pdst : map_table_24;
+  wire [6:0]  remap_table_2_24 = _GEN_0[24] ? io_remap_reqs_1_pdst : remap_table_1_24;
+  wire [6:0]  remap_table_3_24 = _GEN_1[24] ? io_remap_reqs_2_pdst : remap_table_2_24;
+  wire [6:0]  remap_table_4_24 = _GEN_2[24] ? io_remap_reqs_3_pdst : remap_table_3_24;
+  wire [6:0]  remap_table_1_25 = _GEN[25] ? io_remap_reqs_0_pdst : map_table_25;
+  wire [6:0]  remap_table_2_25 = _GEN_0[25] ? io_remap_reqs_1_pdst : remap_table_1_25;
+  wire [6:0]  remap_table_3_25 = _GEN_1[25] ? io_remap_reqs_2_pdst : remap_table_2_25;
+  wire [6:0]  remap_table_4_25 = _GEN_2[25] ? io_remap_reqs_3_pdst : remap_table_3_25;
+  wire [6:0]  remap_table_1_26 = _GEN[26] ? io_remap_reqs_0_pdst : map_table_26;
+  wire [6:0]  remap_table_2_26 = _GEN_0[26] ? io_remap_reqs_1_pdst : remap_table_1_26;
+  wire [6:0]  remap_table_3_26 = _GEN_1[26] ? io_remap_reqs_2_pdst : remap_table_2_26;
+  wire [6:0]  remap_table_4_26 = _GEN_2[26] ? io_remap_reqs_3_pdst : remap_table_3_26;
+  wire [6:0]  remap_table_1_27 = _GEN[27] ? io_remap_reqs_0_pdst : map_table_27;
+  wire [6:0]  remap_table_2_27 = _GEN_0[27] ? io_remap_reqs_1_pdst : remap_table_1_27;
+  wire [6:0]  remap_table_3_27 = _GEN_1[27] ? io_remap_reqs_2_pdst : remap_table_2_27;
+  wire [6:0]  remap_table_4_27 = _GEN_2[27] ? io_remap_reqs_3_pdst : remap_table_3_27;
+  wire [6:0]  remap_table_1_28 = _GEN[28] ? io_remap_reqs_0_pdst : map_table_28;
+  wire [6:0]  remap_table_2_28 = _GEN_0[28] ? io_remap_reqs_1_pdst : remap_table_1_28;
+  wire [6:0]  remap_table_3_28 = _GEN_1[28] ? io_remap_reqs_2_pdst : remap_table_2_28;
+  wire [6:0]  remap_table_4_28 = _GEN_2[28] ? io_remap_reqs_3_pdst : remap_table_3_28;
+  wire [6:0]  remap_table_1_29 = _GEN[29] ? io_remap_reqs_0_pdst : map_table_29;
+  wire [6:0]  remap_table_2_29 = _GEN_0[29] ? io_remap_reqs_1_pdst : remap_table_1_29;
+  wire [6:0]  remap_table_3_29 = _GEN_1[29] ? io_remap_reqs_2_pdst : remap_table_2_29;
+  wire [6:0]  remap_table_4_29 = _GEN_2[29] ? io_remap_reqs_3_pdst : remap_table_3_29;
+  wire [6:0]  remap_table_1_30 = _GEN[30] ? io_remap_reqs_0_pdst : map_table_30;
+  wire [6:0]  remap_table_2_30 = _GEN_0[30] ? io_remap_reqs_1_pdst : remap_table_1_30;
+  wire [6:0]  remap_table_3_30 = _GEN_1[30] ? io_remap_reqs_2_pdst : remap_table_2_30;
+  wire [6:0]  remap_table_4_30 = _GEN_2[30] ? io_remap_reqs_3_pdst : remap_table_3_30;
+  wire [6:0]  remap_table_1_31 = _GEN[31] ? io_remap_reqs_0_pdst : map_table_31;
+  wire [6:0]  remap_table_2_31 = _GEN_0[31] ? io_remap_reqs_1_pdst : remap_table_1_31;
+  wire [6:0]  remap_table_3_31 = _GEN_1[31] ? io_remap_reqs_2_pdst : remap_table_2_31;
+  wire [6:0]  remap_table_4_31 = _GEN_2[31] ? io_remap_reqs_3_pdst : remap_table_3_31;
   always @(posedge clock) begin
     if (reset) begin
       map_table_0 <= 7'h0;
@@ -1889,686 +4271,38 @@ module RenameMapTable_1(
       map_table_31 <= 7'h0;
     end
     else if (io_brupdate_b2_mispredict) begin
-      if (io_brupdate_b2_uop_br_tag == 5'h13) begin
-        map_table_0 <= br_snapshots_19_0;
-        map_table_1 <= br_snapshots_19_1;
-        map_table_2 <= br_snapshots_19_2;
-        map_table_3 <= br_snapshots_19_3;
-        map_table_4 <= br_snapshots_19_4;
-        map_table_5 <= br_snapshots_19_5;
-        map_table_6 <= br_snapshots_19_6;
-        map_table_7 <= br_snapshots_19_7;
-        map_table_8 <= br_snapshots_19_8;
-        map_table_9 <= br_snapshots_19_9;
-        map_table_10 <= br_snapshots_19_10;
-        map_table_11 <= br_snapshots_19_11;
-        map_table_12 <= br_snapshots_19_12;
-        map_table_13 <= br_snapshots_19_13;
-        map_table_14 <= br_snapshots_19_14;
-        map_table_15 <= br_snapshots_19_15;
-        map_table_16 <= br_snapshots_19_16;
-        map_table_17 <= br_snapshots_19_17;
-        map_table_18 <= br_snapshots_19_18;
-        map_table_19 <= br_snapshots_19_19;
-        map_table_20 <= br_snapshots_19_20;
-        map_table_21 <= br_snapshots_19_21;
-        map_table_22 <= br_snapshots_19_22;
-        map_table_23 <= br_snapshots_19_23;
-        map_table_24 <= br_snapshots_19_24;
-        map_table_25 <= br_snapshots_19_25;
-        map_table_26 <= br_snapshots_19_26;
-        map_table_27 <= br_snapshots_19_27;
-        map_table_28 <= br_snapshots_19_28;
-        map_table_29 <= br_snapshots_19_29;
-        map_table_30 <= br_snapshots_19_30;
-        map_table_31 <= br_snapshots_19_31;
-      end
-      else if (io_brupdate_b2_uop_br_tag == 5'h12) begin
-        map_table_0 <= br_snapshots_18_0;
-        map_table_1 <= br_snapshots_18_1;
-        map_table_2 <= br_snapshots_18_2;
-        map_table_3 <= br_snapshots_18_3;
-        map_table_4 <= br_snapshots_18_4;
-        map_table_5 <= br_snapshots_18_5;
-        map_table_6 <= br_snapshots_18_6;
-        map_table_7 <= br_snapshots_18_7;
-        map_table_8 <= br_snapshots_18_8;
-        map_table_9 <= br_snapshots_18_9;
-        map_table_10 <= br_snapshots_18_10;
-        map_table_11 <= br_snapshots_18_11;
-        map_table_12 <= br_snapshots_18_12;
-        map_table_13 <= br_snapshots_18_13;
-        map_table_14 <= br_snapshots_18_14;
-        map_table_15 <= br_snapshots_18_15;
-        map_table_16 <= br_snapshots_18_16;
-        map_table_17 <= br_snapshots_18_17;
-        map_table_18 <= br_snapshots_18_18;
-        map_table_19 <= br_snapshots_18_19;
-        map_table_20 <= br_snapshots_18_20;
-        map_table_21 <= br_snapshots_18_21;
-        map_table_22 <= br_snapshots_18_22;
-        map_table_23 <= br_snapshots_18_23;
-        map_table_24 <= br_snapshots_18_24;
-        map_table_25 <= br_snapshots_18_25;
-        map_table_26 <= br_snapshots_18_26;
-        map_table_27 <= br_snapshots_18_27;
-        map_table_28 <= br_snapshots_18_28;
-        map_table_29 <= br_snapshots_18_29;
-        map_table_30 <= br_snapshots_18_30;
-        map_table_31 <= br_snapshots_18_31;
-      end
-      else if (io_brupdate_b2_uop_br_tag == 5'h11) begin
-        map_table_0 <= br_snapshots_17_0;
-        map_table_1 <= br_snapshots_17_1;
-        map_table_2 <= br_snapshots_17_2;
-        map_table_3 <= br_snapshots_17_3;
-        map_table_4 <= br_snapshots_17_4;
-        map_table_5 <= br_snapshots_17_5;
-        map_table_6 <= br_snapshots_17_6;
-        map_table_7 <= br_snapshots_17_7;
-        map_table_8 <= br_snapshots_17_8;
-        map_table_9 <= br_snapshots_17_9;
-        map_table_10 <= br_snapshots_17_10;
-        map_table_11 <= br_snapshots_17_11;
-        map_table_12 <= br_snapshots_17_12;
-        map_table_13 <= br_snapshots_17_13;
-        map_table_14 <= br_snapshots_17_14;
-        map_table_15 <= br_snapshots_17_15;
-        map_table_16 <= br_snapshots_17_16;
-        map_table_17 <= br_snapshots_17_17;
-        map_table_18 <= br_snapshots_17_18;
-        map_table_19 <= br_snapshots_17_19;
-        map_table_20 <= br_snapshots_17_20;
-        map_table_21 <= br_snapshots_17_21;
-        map_table_22 <= br_snapshots_17_22;
-        map_table_23 <= br_snapshots_17_23;
-        map_table_24 <= br_snapshots_17_24;
-        map_table_25 <= br_snapshots_17_25;
-        map_table_26 <= br_snapshots_17_26;
-        map_table_27 <= br_snapshots_17_27;
-        map_table_28 <= br_snapshots_17_28;
-        map_table_29 <= br_snapshots_17_29;
-        map_table_30 <= br_snapshots_17_30;
-        map_table_31 <= br_snapshots_17_31;
-      end
-      else if (io_brupdate_b2_uop_br_tag == 5'h10) begin
-        map_table_0 <= br_snapshots_16_0;
-        map_table_1 <= br_snapshots_16_1;
-        map_table_2 <= br_snapshots_16_2;
-        map_table_3 <= br_snapshots_16_3;
-        map_table_4 <= br_snapshots_16_4;
-        map_table_5 <= br_snapshots_16_5;
-        map_table_6 <= br_snapshots_16_6;
-        map_table_7 <= br_snapshots_16_7;
-        map_table_8 <= br_snapshots_16_8;
-        map_table_9 <= br_snapshots_16_9;
-        map_table_10 <= br_snapshots_16_10;
-        map_table_11 <= br_snapshots_16_11;
-        map_table_12 <= br_snapshots_16_12;
-        map_table_13 <= br_snapshots_16_13;
-        map_table_14 <= br_snapshots_16_14;
-        map_table_15 <= br_snapshots_16_15;
-        map_table_16 <= br_snapshots_16_16;
-        map_table_17 <= br_snapshots_16_17;
-        map_table_18 <= br_snapshots_16_18;
-        map_table_19 <= br_snapshots_16_19;
-        map_table_20 <= br_snapshots_16_20;
-        map_table_21 <= br_snapshots_16_21;
-        map_table_22 <= br_snapshots_16_22;
-        map_table_23 <= br_snapshots_16_23;
-        map_table_24 <= br_snapshots_16_24;
-        map_table_25 <= br_snapshots_16_25;
-        map_table_26 <= br_snapshots_16_26;
-        map_table_27 <= br_snapshots_16_27;
-        map_table_28 <= br_snapshots_16_28;
-        map_table_29 <= br_snapshots_16_29;
-        map_table_30 <= br_snapshots_16_30;
-        map_table_31 <= br_snapshots_16_31;
-      end
-      else if (io_brupdate_b2_uop_br_tag == 5'hF) begin
-        map_table_0 <= br_snapshots_15_0;
-        map_table_1 <= br_snapshots_15_1;
-        map_table_2 <= br_snapshots_15_2;
-        map_table_3 <= br_snapshots_15_3;
-        map_table_4 <= br_snapshots_15_4;
-        map_table_5 <= br_snapshots_15_5;
-        map_table_6 <= br_snapshots_15_6;
-        map_table_7 <= br_snapshots_15_7;
-        map_table_8 <= br_snapshots_15_8;
-        map_table_9 <= br_snapshots_15_9;
-        map_table_10 <= br_snapshots_15_10;
-        map_table_11 <= br_snapshots_15_11;
-        map_table_12 <= br_snapshots_15_12;
-        map_table_13 <= br_snapshots_15_13;
-        map_table_14 <= br_snapshots_15_14;
-        map_table_15 <= br_snapshots_15_15;
-        map_table_16 <= br_snapshots_15_16;
-        map_table_17 <= br_snapshots_15_17;
-        map_table_18 <= br_snapshots_15_18;
-        map_table_19 <= br_snapshots_15_19;
-        map_table_20 <= br_snapshots_15_20;
-        map_table_21 <= br_snapshots_15_21;
-        map_table_22 <= br_snapshots_15_22;
-        map_table_23 <= br_snapshots_15_23;
-        map_table_24 <= br_snapshots_15_24;
-        map_table_25 <= br_snapshots_15_25;
-        map_table_26 <= br_snapshots_15_26;
-        map_table_27 <= br_snapshots_15_27;
-        map_table_28 <= br_snapshots_15_28;
-        map_table_29 <= br_snapshots_15_29;
-        map_table_30 <= br_snapshots_15_30;
-        map_table_31 <= br_snapshots_15_31;
-      end
-      else if (io_brupdate_b2_uop_br_tag == 5'hE) begin
-        map_table_0 <= br_snapshots_14_0;
-        map_table_1 <= br_snapshots_14_1;
-        map_table_2 <= br_snapshots_14_2;
-        map_table_3 <= br_snapshots_14_3;
-        map_table_4 <= br_snapshots_14_4;
-        map_table_5 <= br_snapshots_14_5;
-        map_table_6 <= br_snapshots_14_6;
-        map_table_7 <= br_snapshots_14_7;
-        map_table_8 <= br_snapshots_14_8;
-        map_table_9 <= br_snapshots_14_9;
-        map_table_10 <= br_snapshots_14_10;
-        map_table_11 <= br_snapshots_14_11;
-        map_table_12 <= br_snapshots_14_12;
-        map_table_13 <= br_snapshots_14_13;
-        map_table_14 <= br_snapshots_14_14;
-        map_table_15 <= br_snapshots_14_15;
-        map_table_16 <= br_snapshots_14_16;
-        map_table_17 <= br_snapshots_14_17;
-        map_table_18 <= br_snapshots_14_18;
-        map_table_19 <= br_snapshots_14_19;
-        map_table_20 <= br_snapshots_14_20;
-        map_table_21 <= br_snapshots_14_21;
-        map_table_22 <= br_snapshots_14_22;
-        map_table_23 <= br_snapshots_14_23;
-        map_table_24 <= br_snapshots_14_24;
-        map_table_25 <= br_snapshots_14_25;
-        map_table_26 <= br_snapshots_14_26;
-        map_table_27 <= br_snapshots_14_27;
-        map_table_28 <= br_snapshots_14_28;
-        map_table_29 <= br_snapshots_14_29;
-        map_table_30 <= br_snapshots_14_30;
-        map_table_31 <= br_snapshots_14_31;
-      end
-      else if (io_brupdate_b2_uop_br_tag == 5'hD) begin
-        map_table_0 <= br_snapshots_13_0;
-        map_table_1 <= br_snapshots_13_1;
-        map_table_2 <= br_snapshots_13_2;
-        map_table_3 <= br_snapshots_13_3;
-        map_table_4 <= br_snapshots_13_4;
-        map_table_5 <= br_snapshots_13_5;
-        map_table_6 <= br_snapshots_13_6;
-        map_table_7 <= br_snapshots_13_7;
-        map_table_8 <= br_snapshots_13_8;
-        map_table_9 <= br_snapshots_13_9;
-        map_table_10 <= br_snapshots_13_10;
-        map_table_11 <= br_snapshots_13_11;
-        map_table_12 <= br_snapshots_13_12;
-        map_table_13 <= br_snapshots_13_13;
-        map_table_14 <= br_snapshots_13_14;
-        map_table_15 <= br_snapshots_13_15;
-        map_table_16 <= br_snapshots_13_16;
-        map_table_17 <= br_snapshots_13_17;
-        map_table_18 <= br_snapshots_13_18;
-        map_table_19 <= br_snapshots_13_19;
-        map_table_20 <= br_snapshots_13_20;
-        map_table_21 <= br_snapshots_13_21;
-        map_table_22 <= br_snapshots_13_22;
-        map_table_23 <= br_snapshots_13_23;
-        map_table_24 <= br_snapshots_13_24;
-        map_table_25 <= br_snapshots_13_25;
-        map_table_26 <= br_snapshots_13_26;
-        map_table_27 <= br_snapshots_13_27;
-        map_table_28 <= br_snapshots_13_28;
-        map_table_29 <= br_snapshots_13_29;
-        map_table_30 <= br_snapshots_13_30;
-        map_table_31 <= br_snapshots_13_31;
-      end
-      else if (io_brupdate_b2_uop_br_tag == 5'hC) begin
-        map_table_0 <= br_snapshots_12_0;
-        map_table_1 <= br_snapshots_12_1;
-        map_table_2 <= br_snapshots_12_2;
-        map_table_3 <= br_snapshots_12_3;
-        map_table_4 <= br_snapshots_12_4;
-        map_table_5 <= br_snapshots_12_5;
-        map_table_6 <= br_snapshots_12_6;
-        map_table_7 <= br_snapshots_12_7;
-        map_table_8 <= br_snapshots_12_8;
-        map_table_9 <= br_snapshots_12_9;
-        map_table_10 <= br_snapshots_12_10;
-        map_table_11 <= br_snapshots_12_11;
-        map_table_12 <= br_snapshots_12_12;
-        map_table_13 <= br_snapshots_12_13;
-        map_table_14 <= br_snapshots_12_14;
-        map_table_15 <= br_snapshots_12_15;
-        map_table_16 <= br_snapshots_12_16;
-        map_table_17 <= br_snapshots_12_17;
-        map_table_18 <= br_snapshots_12_18;
-        map_table_19 <= br_snapshots_12_19;
-        map_table_20 <= br_snapshots_12_20;
-        map_table_21 <= br_snapshots_12_21;
-        map_table_22 <= br_snapshots_12_22;
-        map_table_23 <= br_snapshots_12_23;
-        map_table_24 <= br_snapshots_12_24;
-        map_table_25 <= br_snapshots_12_25;
-        map_table_26 <= br_snapshots_12_26;
-        map_table_27 <= br_snapshots_12_27;
-        map_table_28 <= br_snapshots_12_28;
-        map_table_29 <= br_snapshots_12_29;
-        map_table_30 <= br_snapshots_12_30;
-        map_table_31 <= br_snapshots_12_31;
-      end
-      else if (io_brupdate_b2_uop_br_tag == 5'hB) begin
-        map_table_0 <= br_snapshots_11_0;
-        map_table_1 <= br_snapshots_11_1;
-        map_table_2 <= br_snapshots_11_2;
-        map_table_3 <= br_snapshots_11_3;
-        map_table_4 <= br_snapshots_11_4;
-        map_table_5 <= br_snapshots_11_5;
-        map_table_6 <= br_snapshots_11_6;
-        map_table_7 <= br_snapshots_11_7;
-        map_table_8 <= br_snapshots_11_8;
-        map_table_9 <= br_snapshots_11_9;
-        map_table_10 <= br_snapshots_11_10;
-        map_table_11 <= br_snapshots_11_11;
-        map_table_12 <= br_snapshots_11_12;
-        map_table_13 <= br_snapshots_11_13;
-        map_table_14 <= br_snapshots_11_14;
-        map_table_15 <= br_snapshots_11_15;
-        map_table_16 <= br_snapshots_11_16;
-        map_table_17 <= br_snapshots_11_17;
-        map_table_18 <= br_snapshots_11_18;
-        map_table_19 <= br_snapshots_11_19;
-        map_table_20 <= br_snapshots_11_20;
-        map_table_21 <= br_snapshots_11_21;
-        map_table_22 <= br_snapshots_11_22;
-        map_table_23 <= br_snapshots_11_23;
-        map_table_24 <= br_snapshots_11_24;
-        map_table_25 <= br_snapshots_11_25;
-        map_table_26 <= br_snapshots_11_26;
-        map_table_27 <= br_snapshots_11_27;
-        map_table_28 <= br_snapshots_11_28;
-        map_table_29 <= br_snapshots_11_29;
-        map_table_30 <= br_snapshots_11_30;
-        map_table_31 <= br_snapshots_11_31;
-      end
-      else if (io_brupdate_b2_uop_br_tag == 5'hA) begin
-        map_table_0 <= br_snapshots_10_0;
-        map_table_1 <= br_snapshots_10_1;
-        map_table_2 <= br_snapshots_10_2;
-        map_table_3 <= br_snapshots_10_3;
-        map_table_4 <= br_snapshots_10_4;
-        map_table_5 <= br_snapshots_10_5;
-        map_table_6 <= br_snapshots_10_6;
-        map_table_7 <= br_snapshots_10_7;
-        map_table_8 <= br_snapshots_10_8;
-        map_table_9 <= br_snapshots_10_9;
-        map_table_10 <= br_snapshots_10_10;
-        map_table_11 <= br_snapshots_10_11;
-        map_table_12 <= br_snapshots_10_12;
-        map_table_13 <= br_snapshots_10_13;
-        map_table_14 <= br_snapshots_10_14;
-        map_table_15 <= br_snapshots_10_15;
-        map_table_16 <= br_snapshots_10_16;
-        map_table_17 <= br_snapshots_10_17;
-        map_table_18 <= br_snapshots_10_18;
-        map_table_19 <= br_snapshots_10_19;
-        map_table_20 <= br_snapshots_10_20;
-        map_table_21 <= br_snapshots_10_21;
-        map_table_22 <= br_snapshots_10_22;
-        map_table_23 <= br_snapshots_10_23;
-        map_table_24 <= br_snapshots_10_24;
-        map_table_25 <= br_snapshots_10_25;
-        map_table_26 <= br_snapshots_10_26;
-        map_table_27 <= br_snapshots_10_27;
-        map_table_28 <= br_snapshots_10_28;
-        map_table_29 <= br_snapshots_10_29;
-        map_table_30 <= br_snapshots_10_30;
-        map_table_31 <= br_snapshots_10_31;
-      end
-      else if (io_brupdate_b2_uop_br_tag == 5'h9) begin
-        map_table_0 <= br_snapshots_9_0;
-        map_table_1 <= br_snapshots_9_1;
-        map_table_2 <= br_snapshots_9_2;
-        map_table_3 <= br_snapshots_9_3;
-        map_table_4 <= br_snapshots_9_4;
-        map_table_5 <= br_snapshots_9_5;
-        map_table_6 <= br_snapshots_9_6;
-        map_table_7 <= br_snapshots_9_7;
-        map_table_8 <= br_snapshots_9_8;
-        map_table_9 <= br_snapshots_9_9;
-        map_table_10 <= br_snapshots_9_10;
-        map_table_11 <= br_snapshots_9_11;
-        map_table_12 <= br_snapshots_9_12;
-        map_table_13 <= br_snapshots_9_13;
-        map_table_14 <= br_snapshots_9_14;
-        map_table_15 <= br_snapshots_9_15;
-        map_table_16 <= br_snapshots_9_16;
-        map_table_17 <= br_snapshots_9_17;
-        map_table_18 <= br_snapshots_9_18;
-        map_table_19 <= br_snapshots_9_19;
-        map_table_20 <= br_snapshots_9_20;
-        map_table_21 <= br_snapshots_9_21;
-        map_table_22 <= br_snapshots_9_22;
-        map_table_23 <= br_snapshots_9_23;
-        map_table_24 <= br_snapshots_9_24;
-        map_table_25 <= br_snapshots_9_25;
-        map_table_26 <= br_snapshots_9_26;
-        map_table_27 <= br_snapshots_9_27;
-        map_table_28 <= br_snapshots_9_28;
-        map_table_29 <= br_snapshots_9_29;
-        map_table_30 <= br_snapshots_9_30;
-        map_table_31 <= br_snapshots_9_31;
-      end
-      else if (io_brupdate_b2_uop_br_tag == 5'h8) begin
-        map_table_0 <= br_snapshots_8_0;
-        map_table_1 <= br_snapshots_8_1;
-        map_table_2 <= br_snapshots_8_2;
-        map_table_3 <= br_snapshots_8_3;
-        map_table_4 <= br_snapshots_8_4;
-        map_table_5 <= br_snapshots_8_5;
-        map_table_6 <= br_snapshots_8_6;
-        map_table_7 <= br_snapshots_8_7;
-        map_table_8 <= br_snapshots_8_8;
-        map_table_9 <= br_snapshots_8_9;
-        map_table_10 <= br_snapshots_8_10;
-        map_table_11 <= br_snapshots_8_11;
-        map_table_12 <= br_snapshots_8_12;
-        map_table_13 <= br_snapshots_8_13;
-        map_table_14 <= br_snapshots_8_14;
-        map_table_15 <= br_snapshots_8_15;
-        map_table_16 <= br_snapshots_8_16;
-        map_table_17 <= br_snapshots_8_17;
-        map_table_18 <= br_snapshots_8_18;
-        map_table_19 <= br_snapshots_8_19;
-        map_table_20 <= br_snapshots_8_20;
-        map_table_21 <= br_snapshots_8_21;
-        map_table_22 <= br_snapshots_8_22;
-        map_table_23 <= br_snapshots_8_23;
-        map_table_24 <= br_snapshots_8_24;
-        map_table_25 <= br_snapshots_8_25;
-        map_table_26 <= br_snapshots_8_26;
-        map_table_27 <= br_snapshots_8_27;
-        map_table_28 <= br_snapshots_8_28;
-        map_table_29 <= br_snapshots_8_29;
-        map_table_30 <= br_snapshots_8_30;
-        map_table_31 <= br_snapshots_8_31;
-      end
-      else if (io_brupdate_b2_uop_br_tag == 5'h7) begin
-        map_table_0 <= br_snapshots_7_0;
-        map_table_1 <= br_snapshots_7_1;
-        map_table_2 <= br_snapshots_7_2;
-        map_table_3 <= br_snapshots_7_3;
-        map_table_4 <= br_snapshots_7_4;
-        map_table_5 <= br_snapshots_7_5;
-        map_table_6 <= br_snapshots_7_6;
-        map_table_7 <= br_snapshots_7_7;
-        map_table_8 <= br_snapshots_7_8;
-        map_table_9 <= br_snapshots_7_9;
-        map_table_10 <= br_snapshots_7_10;
-        map_table_11 <= br_snapshots_7_11;
-        map_table_12 <= br_snapshots_7_12;
-        map_table_13 <= br_snapshots_7_13;
-        map_table_14 <= br_snapshots_7_14;
-        map_table_15 <= br_snapshots_7_15;
-        map_table_16 <= br_snapshots_7_16;
-        map_table_17 <= br_snapshots_7_17;
-        map_table_18 <= br_snapshots_7_18;
-        map_table_19 <= br_snapshots_7_19;
-        map_table_20 <= br_snapshots_7_20;
-        map_table_21 <= br_snapshots_7_21;
-        map_table_22 <= br_snapshots_7_22;
-        map_table_23 <= br_snapshots_7_23;
-        map_table_24 <= br_snapshots_7_24;
-        map_table_25 <= br_snapshots_7_25;
-        map_table_26 <= br_snapshots_7_26;
-        map_table_27 <= br_snapshots_7_27;
-        map_table_28 <= br_snapshots_7_28;
-        map_table_29 <= br_snapshots_7_29;
-        map_table_30 <= br_snapshots_7_30;
-        map_table_31 <= br_snapshots_7_31;
-      end
-      else if (io_brupdate_b2_uop_br_tag == 5'h6) begin
-        map_table_0 <= br_snapshots_6_0;
-        map_table_1 <= br_snapshots_6_1;
-        map_table_2 <= br_snapshots_6_2;
-        map_table_3 <= br_snapshots_6_3;
-        map_table_4 <= br_snapshots_6_4;
-        map_table_5 <= br_snapshots_6_5;
-        map_table_6 <= br_snapshots_6_6;
-        map_table_7 <= br_snapshots_6_7;
-        map_table_8 <= br_snapshots_6_8;
-        map_table_9 <= br_snapshots_6_9;
-        map_table_10 <= br_snapshots_6_10;
-        map_table_11 <= br_snapshots_6_11;
-        map_table_12 <= br_snapshots_6_12;
-        map_table_13 <= br_snapshots_6_13;
-        map_table_14 <= br_snapshots_6_14;
-        map_table_15 <= br_snapshots_6_15;
-        map_table_16 <= br_snapshots_6_16;
-        map_table_17 <= br_snapshots_6_17;
-        map_table_18 <= br_snapshots_6_18;
-        map_table_19 <= br_snapshots_6_19;
-        map_table_20 <= br_snapshots_6_20;
-        map_table_21 <= br_snapshots_6_21;
-        map_table_22 <= br_snapshots_6_22;
-        map_table_23 <= br_snapshots_6_23;
-        map_table_24 <= br_snapshots_6_24;
-        map_table_25 <= br_snapshots_6_25;
-        map_table_26 <= br_snapshots_6_26;
-        map_table_27 <= br_snapshots_6_27;
-        map_table_28 <= br_snapshots_6_28;
-        map_table_29 <= br_snapshots_6_29;
-        map_table_30 <= br_snapshots_6_30;
-        map_table_31 <= br_snapshots_6_31;
-      end
-      else if (io_brupdate_b2_uop_br_tag == 5'h5) begin
-        map_table_0 <= br_snapshots_5_0;
-        map_table_1 <= br_snapshots_5_1;
-        map_table_2 <= br_snapshots_5_2;
-        map_table_3 <= br_snapshots_5_3;
-        map_table_4 <= br_snapshots_5_4;
-        map_table_5 <= br_snapshots_5_5;
-        map_table_6 <= br_snapshots_5_6;
-        map_table_7 <= br_snapshots_5_7;
-        map_table_8 <= br_snapshots_5_8;
-        map_table_9 <= br_snapshots_5_9;
-        map_table_10 <= br_snapshots_5_10;
-        map_table_11 <= br_snapshots_5_11;
-        map_table_12 <= br_snapshots_5_12;
-        map_table_13 <= br_snapshots_5_13;
-        map_table_14 <= br_snapshots_5_14;
-        map_table_15 <= br_snapshots_5_15;
-        map_table_16 <= br_snapshots_5_16;
-        map_table_17 <= br_snapshots_5_17;
-        map_table_18 <= br_snapshots_5_18;
-        map_table_19 <= br_snapshots_5_19;
-        map_table_20 <= br_snapshots_5_20;
-        map_table_21 <= br_snapshots_5_21;
-        map_table_22 <= br_snapshots_5_22;
-        map_table_23 <= br_snapshots_5_23;
-        map_table_24 <= br_snapshots_5_24;
-        map_table_25 <= br_snapshots_5_25;
-        map_table_26 <= br_snapshots_5_26;
-        map_table_27 <= br_snapshots_5_27;
-        map_table_28 <= br_snapshots_5_28;
-        map_table_29 <= br_snapshots_5_29;
-        map_table_30 <= br_snapshots_5_30;
-        map_table_31 <= br_snapshots_5_31;
-      end
-      else if (io_brupdate_b2_uop_br_tag == 5'h4) begin
-        map_table_0 <= br_snapshots_4_0;
-        map_table_1 <= br_snapshots_4_1;
-        map_table_2 <= br_snapshots_4_2;
-        map_table_3 <= br_snapshots_4_3;
-        map_table_4 <= br_snapshots_4_4;
-        map_table_5 <= br_snapshots_4_5;
-        map_table_6 <= br_snapshots_4_6;
-        map_table_7 <= br_snapshots_4_7;
-        map_table_8 <= br_snapshots_4_8;
-        map_table_9 <= br_snapshots_4_9;
-        map_table_10 <= br_snapshots_4_10;
-        map_table_11 <= br_snapshots_4_11;
-        map_table_12 <= br_snapshots_4_12;
-        map_table_13 <= br_snapshots_4_13;
-        map_table_14 <= br_snapshots_4_14;
-        map_table_15 <= br_snapshots_4_15;
-        map_table_16 <= br_snapshots_4_16;
-        map_table_17 <= br_snapshots_4_17;
-        map_table_18 <= br_snapshots_4_18;
-        map_table_19 <= br_snapshots_4_19;
-        map_table_20 <= br_snapshots_4_20;
-        map_table_21 <= br_snapshots_4_21;
-        map_table_22 <= br_snapshots_4_22;
-        map_table_23 <= br_snapshots_4_23;
-        map_table_24 <= br_snapshots_4_24;
-        map_table_25 <= br_snapshots_4_25;
-        map_table_26 <= br_snapshots_4_26;
-        map_table_27 <= br_snapshots_4_27;
-        map_table_28 <= br_snapshots_4_28;
-        map_table_29 <= br_snapshots_4_29;
-        map_table_30 <= br_snapshots_4_30;
-        map_table_31 <= br_snapshots_4_31;
-      end
-      else if (io_brupdate_b2_uop_br_tag == 5'h3) begin
-        map_table_0 <= br_snapshots_3_0;
-        map_table_1 <= br_snapshots_3_1;
-        map_table_2 <= br_snapshots_3_2;
-        map_table_3 <= br_snapshots_3_3;
-        map_table_4 <= br_snapshots_3_4;
-        map_table_5 <= br_snapshots_3_5;
-        map_table_6 <= br_snapshots_3_6;
-        map_table_7 <= br_snapshots_3_7;
-        map_table_8 <= br_snapshots_3_8;
-        map_table_9 <= br_snapshots_3_9;
-        map_table_10 <= br_snapshots_3_10;
-        map_table_11 <= br_snapshots_3_11;
-        map_table_12 <= br_snapshots_3_12;
-        map_table_13 <= br_snapshots_3_13;
-        map_table_14 <= br_snapshots_3_14;
-        map_table_15 <= br_snapshots_3_15;
-        map_table_16 <= br_snapshots_3_16;
-        map_table_17 <= br_snapshots_3_17;
-        map_table_18 <= br_snapshots_3_18;
-        map_table_19 <= br_snapshots_3_19;
-        map_table_20 <= br_snapshots_3_20;
-        map_table_21 <= br_snapshots_3_21;
-        map_table_22 <= br_snapshots_3_22;
-        map_table_23 <= br_snapshots_3_23;
-        map_table_24 <= br_snapshots_3_24;
-        map_table_25 <= br_snapshots_3_25;
-        map_table_26 <= br_snapshots_3_26;
-        map_table_27 <= br_snapshots_3_27;
-        map_table_28 <= br_snapshots_3_28;
-        map_table_29 <= br_snapshots_3_29;
-        map_table_30 <= br_snapshots_3_30;
-        map_table_31 <= br_snapshots_3_31;
-      end
-      else if (io_brupdate_b2_uop_br_tag == 5'h2) begin
-        map_table_0 <= br_snapshots_2_0;
-        map_table_1 <= br_snapshots_2_1;
-        map_table_2 <= br_snapshots_2_2;
-        map_table_3 <= br_snapshots_2_3;
-        map_table_4 <= br_snapshots_2_4;
-        map_table_5 <= br_snapshots_2_5;
-        map_table_6 <= br_snapshots_2_6;
-        map_table_7 <= br_snapshots_2_7;
-        map_table_8 <= br_snapshots_2_8;
-        map_table_9 <= br_snapshots_2_9;
-        map_table_10 <= br_snapshots_2_10;
-        map_table_11 <= br_snapshots_2_11;
-        map_table_12 <= br_snapshots_2_12;
-        map_table_13 <= br_snapshots_2_13;
-        map_table_14 <= br_snapshots_2_14;
-        map_table_15 <= br_snapshots_2_15;
-        map_table_16 <= br_snapshots_2_16;
-        map_table_17 <= br_snapshots_2_17;
-        map_table_18 <= br_snapshots_2_18;
-        map_table_19 <= br_snapshots_2_19;
-        map_table_20 <= br_snapshots_2_20;
-        map_table_21 <= br_snapshots_2_21;
-        map_table_22 <= br_snapshots_2_22;
-        map_table_23 <= br_snapshots_2_23;
-        map_table_24 <= br_snapshots_2_24;
-        map_table_25 <= br_snapshots_2_25;
-        map_table_26 <= br_snapshots_2_26;
-        map_table_27 <= br_snapshots_2_27;
-        map_table_28 <= br_snapshots_2_28;
-        map_table_29 <= br_snapshots_2_29;
-        map_table_30 <= br_snapshots_2_30;
-        map_table_31 <= br_snapshots_2_31;
-      end
-      else if (io_brupdate_b2_uop_br_tag == 5'h1) begin
-        map_table_0 <= br_snapshots_1_0;
-        map_table_1 <= br_snapshots_1_1;
-        map_table_2 <= br_snapshots_1_2;
-        map_table_3 <= br_snapshots_1_3;
-        map_table_4 <= br_snapshots_1_4;
-        map_table_5 <= br_snapshots_1_5;
-        map_table_6 <= br_snapshots_1_6;
-        map_table_7 <= br_snapshots_1_7;
-        map_table_8 <= br_snapshots_1_8;
-        map_table_9 <= br_snapshots_1_9;
-        map_table_10 <= br_snapshots_1_10;
-        map_table_11 <= br_snapshots_1_11;
-        map_table_12 <= br_snapshots_1_12;
-        map_table_13 <= br_snapshots_1_13;
-        map_table_14 <= br_snapshots_1_14;
-        map_table_15 <= br_snapshots_1_15;
-        map_table_16 <= br_snapshots_1_16;
-        map_table_17 <= br_snapshots_1_17;
-        map_table_18 <= br_snapshots_1_18;
-        map_table_19 <= br_snapshots_1_19;
-        map_table_20 <= br_snapshots_1_20;
-        map_table_21 <= br_snapshots_1_21;
-        map_table_22 <= br_snapshots_1_22;
-        map_table_23 <= br_snapshots_1_23;
-        map_table_24 <= br_snapshots_1_24;
-        map_table_25 <= br_snapshots_1_25;
-        map_table_26 <= br_snapshots_1_26;
-        map_table_27 <= br_snapshots_1_27;
-        map_table_28 <= br_snapshots_1_28;
-        map_table_29 <= br_snapshots_1_29;
-        map_table_30 <= br_snapshots_1_30;
-        map_table_31 <= br_snapshots_1_31;
-      end
-      else begin
-        map_table_0 <= br_snapshots_0_0;
-        map_table_1 <= br_snapshots_0_1;
-        map_table_2 <= br_snapshots_0_2;
-        map_table_3 <= br_snapshots_0_3;
-        map_table_4 <= br_snapshots_0_4;
-        map_table_5 <= br_snapshots_0_5;
-        map_table_6 <= br_snapshots_0_6;
-        map_table_7 <= br_snapshots_0_7;
-        map_table_8 <= br_snapshots_0_8;
-        map_table_9 <= br_snapshots_0_9;
-        map_table_10 <= br_snapshots_0_10;
-        map_table_11 <= br_snapshots_0_11;
-        map_table_12 <= br_snapshots_0_12;
-        map_table_13 <= br_snapshots_0_13;
-        map_table_14 <= br_snapshots_0_14;
-        map_table_15 <= br_snapshots_0_15;
-        map_table_16 <= br_snapshots_0_16;
-        map_table_17 <= br_snapshots_0_17;
-        map_table_18 <= br_snapshots_0_18;
-        map_table_19 <= br_snapshots_0_19;
-        map_table_20 <= br_snapshots_0_20;
-        map_table_21 <= br_snapshots_0_21;
-        map_table_22 <= br_snapshots_0_22;
-        map_table_23 <= br_snapshots_0_23;
-        map_table_24 <= br_snapshots_0_24;
-        map_table_25 <= br_snapshots_0_25;
-        map_table_26 <= br_snapshots_0_26;
-        map_table_27 <= br_snapshots_0_27;
-        map_table_28 <= br_snapshots_0_28;
-        map_table_29 <= br_snapshots_0_29;
-        map_table_30 <= br_snapshots_0_30;
-        map_table_31 <= br_snapshots_0_31;
-      end
+      map_table_0 <= casez_tmp;
+      map_table_1 <= casez_tmp_0;
+      map_table_2 <= casez_tmp_1;
+      map_table_3 <= casez_tmp_2;
+      map_table_4 <= casez_tmp_3;
+      map_table_5 <= casez_tmp_4;
+      map_table_6 <= casez_tmp_5;
+      map_table_7 <= casez_tmp_6;
+      map_table_8 <= casez_tmp_7;
+      map_table_9 <= casez_tmp_8;
+      map_table_10 <= casez_tmp_9;
+      map_table_11 <= casez_tmp_10;
+      map_table_12 <= casez_tmp_11;
+      map_table_13 <= casez_tmp_12;
+      map_table_14 <= casez_tmp_13;
+      map_table_15 <= casez_tmp_14;
+      map_table_16 <= casez_tmp_15;
+      map_table_17 <= casez_tmp_16;
+      map_table_18 <= casez_tmp_17;
+      map_table_19 <= casez_tmp_18;
+      map_table_20 <= casez_tmp_19;
+      map_table_21 <= casez_tmp_20;
+      map_table_22 <= casez_tmp_21;
+      map_table_23 <= casez_tmp_22;
+      map_table_24 <= casez_tmp_23;
+      map_table_25 <= casez_tmp_24;
+      map_table_26 <= casez_tmp_25;
+      map_table_27 <= casez_tmp_26;
+      map_table_28 <= casez_tmp_27;
+      map_table_29 <= casez_tmp_28;
+      map_table_30 <= casez_tmp_29;
+      map_table_31 <= casez_tmp_30;
     end
     else begin
       if (_GEN_2[0])
@@ -2829,18101 +4563,2741 @@ module RenameMapTable_1(
         map_table_31 <= io_remap_reqs_0_pdst;
     end
     if (io_ren_br_tags_3_valid & io_ren_br_tags_3_bits == 5'h0) begin
-      if (_GEN_2[0])
-        br_snapshots_0_0 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[0])
-        br_snapshots_0_0 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[0])
-        br_snapshots_0_0 <= io_remap_reqs_1_pdst;
-      else if (_GEN[0])
-        br_snapshots_0_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_0 <= map_table_0;
-      if (_GEN_2[1])
-        br_snapshots_0_1 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[1])
-        br_snapshots_0_1 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[1])
-        br_snapshots_0_1 <= io_remap_reqs_1_pdst;
-      else if (_GEN[1])
-        br_snapshots_0_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_1 <= map_table_1;
-      if (_GEN_2[2])
-        br_snapshots_0_2 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[2])
-        br_snapshots_0_2 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[2])
-        br_snapshots_0_2 <= io_remap_reqs_1_pdst;
-      else if (_GEN[2])
-        br_snapshots_0_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_2 <= map_table_2;
-      if (_GEN_2[3])
-        br_snapshots_0_3 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[3])
-        br_snapshots_0_3 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[3])
-        br_snapshots_0_3 <= io_remap_reqs_1_pdst;
-      else if (_GEN[3])
-        br_snapshots_0_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_3 <= map_table_3;
-      if (_GEN_2[4])
-        br_snapshots_0_4 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[4])
-        br_snapshots_0_4 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[4])
-        br_snapshots_0_4 <= io_remap_reqs_1_pdst;
-      else if (_GEN[4])
-        br_snapshots_0_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_4 <= map_table_4;
-      if (_GEN_2[5])
-        br_snapshots_0_5 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[5])
-        br_snapshots_0_5 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[5])
-        br_snapshots_0_5 <= io_remap_reqs_1_pdst;
-      else if (_GEN[5])
-        br_snapshots_0_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_5 <= map_table_5;
-      if (_GEN_2[6])
-        br_snapshots_0_6 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[6])
-        br_snapshots_0_6 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[6])
-        br_snapshots_0_6 <= io_remap_reqs_1_pdst;
-      else if (_GEN[6])
-        br_snapshots_0_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_6 <= map_table_6;
-      if (_GEN_2[7])
-        br_snapshots_0_7 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[7])
-        br_snapshots_0_7 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[7])
-        br_snapshots_0_7 <= io_remap_reqs_1_pdst;
-      else if (_GEN[7])
-        br_snapshots_0_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_7 <= map_table_7;
-      if (_GEN_2[8])
-        br_snapshots_0_8 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[8])
-        br_snapshots_0_8 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[8])
-        br_snapshots_0_8 <= io_remap_reqs_1_pdst;
-      else if (_GEN[8])
-        br_snapshots_0_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_8 <= map_table_8;
-      if (_GEN_2[9])
-        br_snapshots_0_9 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[9])
-        br_snapshots_0_9 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[9])
-        br_snapshots_0_9 <= io_remap_reqs_1_pdst;
-      else if (_GEN[9])
-        br_snapshots_0_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_9 <= map_table_9;
-      if (_GEN_2[10])
-        br_snapshots_0_10 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[10])
-        br_snapshots_0_10 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[10])
-        br_snapshots_0_10 <= io_remap_reqs_1_pdst;
-      else if (_GEN[10])
-        br_snapshots_0_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_10 <= map_table_10;
-      if (_GEN_2[11])
-        br_snapshots_0_11 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[11])
-        br_snapshots_0_11 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[11])
-        br_snapshots_0_11 <= io_remap_reqs_1_pdst;
-      else if (_GEN[11])
-        br_snapshots_0_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_11 <= map_table_11;
-      if (_GEN_2[12])
-        br_snapshots_0_12 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[12])
-        br_snapshots_0_12 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[12])
-        br_snapshots_0_12 <= io_remap_reqs_1_pdst;
-      else if (_GEN[12])
-        br_snapshots_0_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_12 <= map_table_12;
-      if (_GEN_2[13])
-        br_snapshots_0_13 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[13])
-        br_snapshots_0_13 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[13])
-        br_snapshots_0_13 <= io_remap_reqs_1_pdst;
-      else if (_GEN[13])
-        br_snapshots_0_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_13 <= map_table_13;
-      if (_GEN_2[14])
-        br_snapshots_0_14 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[14])
-        br_snapshots_0_14 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[14])
-        br_snapshots_0_14 <= io_remap_reqs_1_pdst;
-      else if (_GEN[14])
-        br_snapshots_0_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_14 <= map_table_14;
-      if (_GEN_2[15])
-        br_snapshots_0_15 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[15])
-        br_snapshots_0_15 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[15])
-        br_snapshots_0_15 <= io_remap_reqs_1_pdst;
-      else if (_GEN[15])
-        br_snapshots_0_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_15 <= map_table_15;
-      if (_GEN_2[16])
-        br_snapshots_0_16 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[16])
-        br_snapshots_0_16 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[16])
-        br_snapshots_0_16 <= io_remap_reqs_1_pdst;
-      else if (_GEN[16])
-        br_snapshots_0_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_16 <= map_table_16;
-      if (_GEN_2[17])
-        br_snapshots_0_17 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[17])
-        br_snapshots_0_17 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[17])
-        br_snapshots_0_17 <= io_remap_reqs_1_pdst;
-      else if (_GEN[17])
-        br_snapshots_0_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_17 <= map_table_17;
-      if (_GEN_2[18])
-        br_snapshots_0_18 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[18])
-        br_snapshots_0_18 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[18])
-        br_snapshots_0_18 <= io_remap_reqs_1_pdst;
-      else if (_GEN[18])
-        br_snapshots_0_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_18 <= map_table_18;
-      if (_GEN_2[19])
-        br_snapshots_0_19 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[19])
-        br_snapshots_0_19 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[19])
-        br_snapshots_0_19 <= io_remap_reqs_1_pdst;
-      else if (_GEN[19])
-        br_snapshots_0_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_19 <= map_table_19;
-      if (_GEN_2[20])
-        br_snapshots_0_20 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[20])
-        br_snapshots_0_20 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[20])
-        br_snapshots_0_20 <= io_remap_reqs_1_pdst;
-      else if (_GEN[20])
-        br_snapshots_0_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_20 <= map_table_20;
-      if (_GEN_2[21])
-        br_snapshots_0_21 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[21])
-        br_snapshots_0_21 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[21])
-        br_snapshots_0_21 <= io_remap_reqs_1_pdst;
-      else if (_GEN[21])
-        br_snapshots_0_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_21 <= map_table_21;
-      if (_GEN_2[22])
-        br_snapshots_0_22 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[22])
-        br_snapshots_0_22 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[22])
-        br_snapshots_0_22 <= io_remap_reqs_1_pdst;
-      else if (_GEN[22])
-        br_snapshots_0_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_22 <= map_table_22;
-      if (_GEN_2[23])
-        br_snapshots_0_23 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[23])
-        br_snapshots_0_23 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[23])
-        br_snapshots_0_23 <= io_remap_reqs_1_pdst;
-      else if (_GEN[23])
-        br_snapshots_0_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_23 <= map_table_23;
-      if (_GEN_2[24])
-        br_snapshots_0_24 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[24])
-        br_snapshots_0_24 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[24])
-        br_snapshots_0_24 <= io_remap_reqs_1_pdst;
-      else if (_GEN[24])
-        br_snapshots_0_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_24 <= map_table_24;
-      if (_GEN_2[25])
-        br_snapshots_0_25 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[25])
-        br_snapshots_0_25 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[25])
-        br_snapshots_0_25 <= io_remap_reqs_1_pdst;
-      else if (_GEN[25])
-        br_snapshots_0_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_25 <= map_table_25;
-      if (_GEN_2[26])
-        br_snapshots_0_26 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[26])
-        br_snapshots_0_26 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[26])
-        br_snapshots_0_26 <= io_remap_reqs_1_pdst;
-      else if (_GEN[26])
-        br_snapshots_0_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_26 <= map_table_26;
-      if (_GEN_2[27])
-        br_snapshots_0_27 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[27])
-        br_snapshots_0_27 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[27])
-        br_snapshots_0_27 <= io_remap_reqs_1_pdst;
-      else if (_GEN[27])
-        br_snapshots_0_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_27 <= map_table_27;
-      if (_GEN_2[28])
-        br_snapshots_0_28 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[28])
-        br_snapshots_0_28 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[28])
-        br_snapshots_0_28 <= io_remap_reqs_1_pdst;
-      else if (_GEN[28])
-        br_snapshots_0_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_28 <= map_table_28;
-      if (_GEN_2[29])
-        br_snapshots_0_29 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[29])
-        br_snapshots_0_29 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[29])
-        br_snapshots_0_29 <= io_remap_reqs_1_pdst;
-      else if (_GEN[29])
-        br_snapshots_0_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_29 <= map_table_29;
-      if (_GEN_2[30])
-        br_snapshots_0_30 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[30])
-        br_snapshots_0_30 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[30])
-        br_snapshots_0_30 <= io_remap_reqs_1_pdst;
-      else if (_GEN[30])
-        br_snapshots_0_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_30 <= map_table_30;
-      if (_GEN_2[31])
-        br_snapshots_0_31 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[31])
-        br_snapshots_0_31 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[31])
-        br_snapshots_0_31 <= io_remap_reqs_1_pdst;
-      else if (_GEN[31])
-        br_snapshots_0_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_31 <= map_table_31;
+      br_snapshots_0_0 <= remap_table_4_0;
+      br_snapshots_0_1 <= remap_table_4_1;
+      br_snapshots_0_2 <= remap_table_4_2;
+      br_snapshots_0_3 <= remap_table_4_3;
+      br_snapshots_0_4 <= remap_table_4_4;
+      br_snapshots_0_5 <= remap_table_4_5;
+      br_snapshots_0_6 <= remap_table_4_6;
+      br_snapshots_0_7 <= remap_table_4_7;
+      br_snapshots_0_8 <= remap_table_4_8;
+      br_snapshots_0_9 <= remap_table_4_9;
+      br_snapshots_0_10 <= remap_table_4_10;
+      br_snapshots_0_11 <= remap_table_4_11;
+      br_snapshots_0_12 <= remap_table_4_12;
+      br_snapshots_0_13 <= remap_table_4_13;
+      br_snapshots_0_14 <= remap_table_4_14;
+      br_snapshots_0_15 <= remap_table_4_15;
+      br_snapshots_0_16 <= remap_table_4_16;
+      br_snapshots_0_17 <= remap_table_4_17;
+      br_snapshots_0_18 <= remap_table_4_18;
+      br_snapshots_0_19 <= remap_table_4_19;
+      br_snapshots_0_20 <= remap_table_4_20;
+      br_snapshots_0_21 <= remap_table_4_21;
+      br_snapshots_0_22 <= remap_table_4_22;
+      br_snapshots_0_23 <= remap_table_4_23;
+      br_snapshots_0_24 <= remap_table_4_24;
+      br_snapshots_0_25 <= remap_table_4_25;
+      br_snapshots_0_26 <= remap_table_4_26;
+      br_snapshots_0_27 <= remap_table_4_27;
+      br_snapshots_0_28 <= remap_table_4_28;
+      br_snapshots_0_29 <= remap_table_4_29;
+      br_snapshots_0_30 <= remap_table_4_30;
+      br_snapshots_0_31 <= remap_table_4_31;
     end
     else if (io_ren_br_tags_2_valid & io_ren_br_tags_2_bits == 5'h0) begin
-      if (_GEN_1[0])
-        br_snapshots_0_0 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[0])
-        br_snapshots_0_0 <= io_remap_reqs_1_pdst;
-      else if (_GEN[0])
-        br_snapshots_0_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_0 <= map_table_0;
-      if (_GEN_1[1])
-        br_snapshots_0_1 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[1])
-        br_snapshots_0_1 <= io_remap_reqs_1_pdst;
-      else if (_GEN[1])
-        br_snapshots_0_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_1 <= map_table_1;
-      if (_GEN_1[2])
-        br_snapshots_0_2 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[2])
-        br_snapshots_0_2 <= io_remap_reqs_1_pdst;
-      else if (_GEN[2])
-        br_snapshots_0_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_2 <= map_table_2;
-      if (_GEN_1[3])
-        br_snapshots_0_3 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[3])
-        br_snapshots_0_3 <= io_remap_reqs_1_pdst;
-      else if (_GEN[3])
-        br_snapshots_0_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_3 <= map_table_3;
-      if (_GEN_1[4])
-        br_snapshots_0_4 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[4])
-        br_snapshots_0_4 <= io_remap_reqs_1_pdst;
-      else if (_GEN[4])
-        br_snapshots_0_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_4 <= map_table_4;
-      if (_GEN_1[5])
-        br_snapshots_0_5 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[5])
-        br_snapshots_0_5 <= io_remap_reqs_1_pdst;
-      else if (_GEN[5])
-        br_snapshots_0_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_5 <= map_table_5;
-      if (_GEN_1[6])
-        br_snapshots_0_6 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[6])
-        br_snapshots_0_6 <= io_remap_reqs_1_pdst;
-      else if (_GEN[6])
-        br_snapshots_0_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_6 <= map_table_6;
-      if (_GEN_1[7])
-        br_snapshots_0_7 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[7])
-        br_snapshots_0_7 <= io_remap_reqs_1_pdst;
-      else if (_GEN[7])
-        br_snapshots_0_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_7 <= map_table_7;
-      if (_GEN_1[8])
-        br_snapshots_0_8 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[8])
-        br_snapshots_0_8 <= io_remap_reqs_1_pdst;
-      else if (_GEN[8])
-        br_snapshots_0_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_8 <= map_table_8;
-      if (_GEN_1[9])
-        br_snapshots_0_9 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[9])
-        br_snapshots_0_9 <= io_remap_reqs_1_pdst;
-      else if (_GEN[9])
-        br_snapshots_0_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_9 <= map_table_9;
-      if (_GEN_1[10])
-        br_snapshots_0_10 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[10])
-        br_snapshots_0_10 <= io_remap_reqs_1_pdst;
-      else if (_GEN[10])
-        br_snapshots_0_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_10 <= map_table_10;
-      if (_GEN_1[11])
-        br_snapshots_0_11 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[11])
-        br_snapshots_0_11 <= io_remap_reqs_1_pdst;
-      else if (_GEN[11])
-        br_snapshots_0_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_11 <= map_table_11;
-      if (_GEN_1[12])
-        br_snapshots_0_12 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[12])
-        br_snapshots_0_12 <= io_remap_reqs_1_pdst;
-      else if (_GEN[12])
-        br_snapshots_0_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_12 <= map_table_12;
-      if (_GEN_1[13])
-        br_snapshots_0_13 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[13])
-        br_snapshots_0_13 <= io_remap_reqs_1_pdst;
-      else if (_GEN[13])
-        br_snapshots_0_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_13 <= map_table_13;
-      if (_GEN_1[14])
-        br_snapshots_0_14 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[14])
-        br_snapshots_0_14 <= io_remap_reqs_1_pdst;
-      else if (_GEN[14])
-        br_snapshots_0_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_14 <= map_table_14;
-      if (_GEN_1[15])
-        br_snapshots_0_15 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[15])
-        br_snapshots_0_15 <= io_remap_reqs_1_pdst;
-      else if (_GEN[15])
-        br_snapshots_0_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_15 <= map_table_15;
-      if (_GEN_1[16])
-        br_snapshots_0_16 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[16])
-        br_snapshots_0_16 <= io_remap_reqs_1_pdst;
-      else if (_GEN[16])
-        br_snapshots_0_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_16 <= map_table_16;
-      if (_GEN_1[17])
-        br_snapshots_0_17 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[17])
-        br_snapshots_0_17 <= io_remap_reqs_1_pdst;
-      else if (_GEN[17])
-        br_snapshots_0_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_17 <= map_table_17;
-      if (_GEN_1[18])
-        br_snapshots_0_18 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[18])
-        br_snapshots_0_18 <= io_remap_reqs_1_pdst;
-      else if (_GEN[18])
-        br_snapshots_0_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_18 <= map_table_18;
-      if (_GEN_1[19])
-        br_snapshots_0_19 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[19])
-        br_snapshots_0_19 <= io_remap_reqs_1_pdst;
-      else if (_GEN[19])
-        br_snapshots_0_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_19 <= map_table_19;
-      if (_GEN_1[20])
-        br_snapshots_0_20 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[20])
-        br_snapshots_0_20 <= io_remap_reqs_1_pdst;
-      else if (_GEN[20])
-        br_snapshots_0_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_20 <= map_table_20;
-      if (_GEN_1[21])
-        br_snapshots_0_21 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[21])
-        br_snapshots_0_21 <= io_remap_reqs_1_pdst;
-      else if (_GEN[21])
-        br_snapshots_0_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_21 <= map_table_21;
-      if (_GEN_1[22])
-        br_snapshots_0_22 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[22])
-        br_snapshots_0_22 <= io_remap_reqs_1_pdst;
-      else if (_GEN[22])
-        br_snapshots_0_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_22 <= map_table_22;
-      if (_GEN_1[23])
-        br_snapshots_0_23 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[23])
-        br_snapshots_0_23 <= io_remap_reqs_1_pdst;
-      else if (_GEN[23])
-        br_snapshots_0_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_23 <= map_table_23;
-      if (_GEN_1[24])
-        br_snapshots_0_24 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[24])
-        br_snapshots_0_24 <= io_remap_reqs_1_pdst;
-      else if (_GEN[24])
-        br_snapshots_0_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_24 <= map_table_24;
-      if (_GEN_1[25])
-        br_snapshots_0_25 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[25])
-        br_snapshots_0_25 <= io_remap_reqs_1_pdst;
-      else if (_GEN[25])
-        br_snapshots_0_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_25 <= map_table_25;
-      if (_GEN_1[26])
-        br_snapshots_0_26 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[26])
-        br_snapshots_0_26 <= io_remap_reqs_1_pdst;
-      else if (_GEN[26])
-        br_snapshots_0_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_26 <= map_table_26;
-      if (_GEN_1[27])
-        br_snapshots_0_27 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[27])
-        br_snapshots_0_27 <= io_remap_reqs_1_pdst;
-      else if (_GEN[27])
-        br_snapshots_0_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_27 <= map_table_27;
-      if (_GEN_1[28])
-        br_snapshots_0_28 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[28])
-        br_snapshots_0_28 <= io_remap_reqs_1_pdst;
-      else if (_GEN[28])
-        br_snapshots_0_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_28 <= map_table_28;
-      if (_GEN_1[29])
-        br_snapshots_0_29 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[29])
-        br_snapshots_0_29 <= io_remap_reqs_1_pdst;
-      else if (_GEN[29])
-        br_snapshots_0_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_29 <= map_table_29;
-      if (_GEN_1[30])
-        br_snapshots_0_30 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[30])
-        br_snapshots_0_30 <= io_remap_reqs_1_pdst;
-      else if (_GEN[30])
-        br_snapshots_0_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_30 <= map_table_30;
-      if (_GEN_1[31])
-        br_snapshots_0_31 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[31])
-        br_snapshots_0_31 <= io_remap_reqs_1_pdst;
-      else if (_GEN[31])
-        br_snapshots_0_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_31 <= map_table_31;
+      br_snapshots_0_0 <= remap_table_3_0;
+      br_snapshots_0_1 <= remap_table_3_1;
+      br_snapshots_0_2 <= remap_table_3_2;
+      br_snapshots_0_3 <= remap_table_3_3;
+      br_snapshots_0_4 <= remap_table_3_4;
+      br_snapshots_0_5 <= remap_table_3_5;
+      br_snapshots_0_6 <= remap_table_3_6;
+      br_snapshots_0_7 <= remap_table_3_7;
+      br_snapshots_0_8 <= remap_table_3_8;
+      br_snapshots_0_9 <= remap_table_3_9;
+      br_snapshots_0_10 <= remap_table_3_10;
+      br_snapshots_0_11 <= remap_table_3_11;
+      br_snapshots_0_12 <= remap_table_3_12;
+      br_snapshots_0_13 <= remap_table_3_13;
+      br_snapshots_0_14 <= remap_table_3_14;
+      br_snapshots_0_15 <= remap_table_3_15;
+      br_snapshots_0_16 <= remap_table_3_16;
+      br_snapshots_0_17 <= remap_table_3_17;
+      br_snapshots_0_18 <= remap_table_3_18;
+      br_snapshots_0_19 <= remap_table_3_19;
+      br_snapshots_0_20 <= remap_table_3_20;
+      br_snapshots_0_21 <= remap_table_3_21;
+      br_snapshots_0_22 <= remap_table_3_22;
+      br_snapshots_0_23 <= remap_table_3_23;
+      br_snapshots_0_24 <= remap_table_3_24;
+      br_snapshots_0_25 <= remap_table_3_25;
+      br_snapshots_0_26 <= remap_table_3_26;
+      br_snapshots_0_27 <= remap_table_3_27;
+      br_snapshots_0_28 <= remap_table_3_28;
+      br_snapshots_0_29 <= remap_table_3_29;
+      br_snapshots_0_30 <= remap_table_3_30;
+      br_snapshots_0_31 <= remap_table_3_31;
     end
     else if (io_ren_br_tags_1_valid & io_ren_br_tags_1_bits == 5'h0) begin
-      if (_GEN_0[0])
-        br_snapshots_0_0 <= io_remap_reqs_1_pdst;
-      else if (_GEN[0])
-        br_snapshots_0_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_0 <= map_table_0;
-      if (_GEN_0[1])
-        br_snapshots_0_1 <= io_remap_reqs_1_pdst;
-      else if (_GEN[1])
-        br_snapshots_0_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_1 <= map_table_1;
-      if (_GEN_0[2])
-        br_snapshots_0_2 <= io_remap_reqs_1_pdst;
-      else if (_GEN[2])
-        br_snapshots_0_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_2 <= map_table_2;
-      if (_GEN_0[3])
-        br_snapshots_0_3 <= io_remap_reqs_1_pdst;
-      else if (_GEN[3])
-        br_snapshots_0_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_3 <= map_table_3;
-      if (_GEN_0[4])
-        br_snapshots_0_4 <= io_remap_reqs_1_pdst;
-      else if (_GEN[4])
-        br_snapshots_0_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_4 <= map_table_4;
-      if (_GEN_0[5])
-        br_snapshots_0_5 <= io_remap_reqs_1_pdst;
-      else if (_GEN[5])
-        br_snapshots_0_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_5 <= map_table_5;
-      if (_GEN_0[6])
-        br_snapshots_0_6 <= io_remap_reqs_1_pdst;
-      else if (_GEN[6])
-        br_snapshots_0_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_6 <= map_table_6;
-      if (_GEN_0[7])
-        br_snapshots_0_7 <= io_remap_reqs_1_pdst;
-      else if (_GEN[7])
-        br_snapshots_0_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_7 <= map_table_7;
-      if (_GEN_0[8])
-        br_snapshots_0_8 <= io_remap_reqs_1_pdst;
-      else if (_GEN[8])
-        br_snapshots_0_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_8 <= map_table_8;
-      if (_GEN_0[9])
-        br_snapshots_0_9 <= io_remap_reqs_1_pdst;
-      else if (_GEN[9])
-        br_snapshots_0_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_9 <= map_table_9;
-      if (_GEN_0[10])
-        br_snapshots_0_10 <= io_remap_reqs_1_pdst;
-      else if (_GEN[10])
-        br_snapshots_0_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_10 <= map_table_10;
-      if (_GEN_0[11])
-        br_snapshots_0_11 <= io_remap_reqs_1_pdst;
-      else if (_GEN[11])
-        br_snapshots_0_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_11 <= map_table_11;
-      if (_GEN_0[12])
-        br_snapshots_0_12 <= io_remap_reqs_1_pdst;
-      else if (_GEN[12])
-        br_snapshots_0_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_12 <= map_table_12;
-      if (_GEN_0[13])
-        br_snapshots_0_13 <= io_remap_reqs_1_pdst;
-      else if (_GEN[13])
-        br_snapshots_0_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_13 <= map_table_13;
-      if (_GEN_0[14])
-        br_snapshots_0_14 <= io_remap_reqs_1_pdst;
-      else if (_GEN[14])
-        br_snapshots_0_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_14 <= map_table_14;
-      if (_GEN_0[15])
-        br_snapshots_0_15 <= io_remap_reqs_1_pdst;
-      else if (_GEN[15])
-        br_snapshots_0_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_15 <= map_table_15;
-      if (_GEN_0[16])
-        br_snapshots_0_16 <= io_remap_reqs_1_pdst;
-      else if (_GEN[16])
-        br_snapshots_0_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_16 <= map_table_16;
-      if (_GEN_0[17])
-        br_snapshots_0_17 <= io_remap_reqs_1_pdst;
-      else if (_GEN[17])
-        br_snapshots_0_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_17 <= map_table_17;
-      if (_GEN_0[18])
-        br_snapshots_0_18 <= io_remap_reqs_1_pdst;
-      else if (_GEN[18])
-        br_snapshots_0_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_18 <= map_table_18;
-      if (_GEN_0[19])
-        br_snapshots_0_19 <= io_remap_reqs_1_pdst;
-      else if (_GEN[19])
-        br_snapshots_0_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_19 <= map_table_19;
-      if (_GEN_0[20])
-        br_snapshots_0_20 <= io_remap_reqs_1_pdst;
-      else if (_GEN[20])
-        br_snapshots_0_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_20 <= map_table_20;
-      if (_GEN_0[21])
-        br_snapshots_0_21 <= io_remap_reqs_1_pdst;
-      else if (_GEN[21])
-        br_snapshots_0_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_21 <= map_table_21;
-      if (_GEN_0[22])
-        br_snapshots_0_22 <= io_remap_reqs_1_pdst;
-      else if (_GEN[22])
-        br_snapshots_0_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_22 <= map_table_22;
-      if (_GEN_0[23])
-        br_snapshots_0_23 <= io_remap_reqs_1_pdst;
-      else if (_GEN[23])
-        br_snapshots_0_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_23 <= map_table_23;
-      if (_GEN_0[24])
-        br_snapshots_0_24 <= io_remap_reqs_1_pdst;
-      else if (_GEN[24])
-        br_snapshots_0_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_24 <= map_table_24;
-      if (_GEN_0[25])
-        br_snapshots_0_25 <= io_remap_reqs_1_pdst;
-      else if (_GEN[25])
-        br_snapshots_0_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_25 <= map_table_25;
-      if (_GEN_0[26])
-        br_snapshots_0_26 <= io_remap_reqs_1_pdst;
-      else if (_GEN[26])
-        br_snapshots_0_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_26 <= map_table_26;
-      if (_GEN_0[27])
-        br_snapshots_0_27 <= io_remap_reqs_1_pdst;
-      else if (_GEN[27])
-        br_snapshots_0_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_27 <= map_table_27;
-      if (_GEN_0[28])
-        br_snapshots_0_28 <= io_remap_reqs_1_pdst;
-      else if (_GEN[28])
-        br_snapshots_0_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_28 <= map_table_28;
-      if (_GEN_0[29])
-        br_snapshots_0_29 <= io_remap_reqs_1_pdst;
-      else if (_GEN[29])
-        br_snapshots_0_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_29 <= map_table_29;
-      if (_GEN_0[30])
-        br_snapshots_0_30 <= io_remap_reqs_1_pdst;
-      else if (_GEN[30])
-        br_snapshots_0_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_30 <= map_table_30;
-      if (_GEN_0[31])
-        br_snapshots_0_31 <= io_remap_reqs_1_pdst;
-      else if (_GEN[31])
-        br_snapshots_0_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_31 <= map_table_31;
+      br_snapshots_0_0 <= remap_table_2_0;
+      br_snapshots_0_1 <= remap_table_2_1;
+      br_snapshots_0_2 <= remap_table_2_2;
+      br_snapshots_0_3 <= remap_table_2_3;
+      br_snapshots_0_4 <= remap_table_2_4;
+      br_snapshots_0_5 <= remap_table_2_5;
+      br_snapshots_0_6 <= remap_table_2_6;
+      br_snapshots_0_7 <= remap_table_2_7;
+      br_snapshots_0_8 <= remap_table_2_8;
+      br_snapshots_0_9 <= remap_table_2_9;
+      br_snapshots_0_10 <= remap_table_2_10;
+      br_snapshots_0_11 <= remap_table_2_11;
+      br_snapshots_0_12 <= remap_table_2_12;
+      br_snapshots_0_13 <= remap_table_2_13;
+      br_snapshots_0_14 <= remap_table_2_14;
+      br_snapshots_0_15 <= remap_table_2_15;
+      br_snapshots_0_16 <= remap_table_2_16;
+      br_snapshots_0_17 <= remap_table_2_17;
+      br_snapshots_0_18 <= remap_table_2_18;
+      br_snapshots_0_19 <= remap_table_2_19;
+      br_snapshots_0_20 <= remap_table_2_20;
+      br_snapshots_0_21 <= remap_table_2_21;
+      br_snapshots_0_22 <= remap_table_2_22;
+      br_snapshots_0_23 <= remap_table_2_23;
+      br_snapshots_0_24 <= remap_table_2_24;
+      br_snapshots_0_25 <= remap_table_2_25;
+      br_snapshots_0_26 <= remap_table_2_26;
+      br_snapshots_0_27 <= remap_table_2_27;
+      br_snapshots_0_28 <= remap_table_2_28;
+      br_snapshots_0_29 <= remap_table_2_29;
+      br_snapshots_0_30 <= remap_table_2_30;
+      br_snapshots_0_31 <= remap_table_2_31;
     end
     else if (io_ren_br_tags_0_valid & io_ren_br_tags_0_bits == 5'h0) begin
-      if (_GEN[0])
-        br_snapshots_0_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_0 <= map_table_0;
-      if (_GEN[1])
-        br_snapshots_0_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_1 <= map_table_1;
-      if (_GEN[2])
-        br_snapshots_0_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_2 <= map_table_2;
-      if (_GEN[3])
-        br_snapshots_0_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_3 <= map_table_3;
-      if (_GEN[4])
-        br_snapshots_0_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_4 <= map_table_4;
-      if (_GEN[5])
-        br_snapshots_0_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_5 <= map_table_5;
-      if (_GEN[6])
-        br_snapshots_0_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_6 <= map_table_6;
-      if (_GEN[7])
-        br_snapshots_0_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_7 <= map_table_7;
-      if (_GEN[8])
-        br_snapshots_0_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_8 <= map_table_8;
-      if (_GEN[9])
-        br_snapshots_0_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_9 <= map_table_9;
-      if (_GEN[10])
-        br_snapshots_0_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_10 <= map_table_10;
-      if (_GEN[11])
-        br_snapshots_0_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_11 <= map_table_11;
-      if (_GEN[12])
-        br_snapshots_0_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_12 <= map_table_12;
-      if (_GEN[13])
-        br_snapshots_0_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_13 <= map_table_13;
-      if (_GEN[14])
-        br_snapshots_0_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_14 <= map_table_14;
-      if (_GEN[15])
-        br_snapshots_0_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_15 <= map_table_15;
-      if (_GEN[16])
-        br_snapshots_0_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_16 <= map_table_16;
-      if (_GEN[17])
-        br_snapshots_0_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_17 <= map_table_17;
-      if (_GEN[18])
-        br_snapshots_0_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_18 <= map_table_18;
-      if (_GEN[19])
-        br_snapshots_0_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_19 <= map_table_19;
-      if (_GEN[20])
-        br_snapshots_0_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_20 <= map_table_20;
-      if (_GEN[21])
-        br_snapshots_0_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_21 <= map_table_21;
-      if (_GEN[22])
-        br_snapshots_0_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_22 <= map_table_22;
-      if (_GEN[23])
-        br_snapshots_0_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_23 <= map_table_23;
-      if (_GEN[24])
-        br_snapshots_0_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_24 <= map_table_24;
-      if (_GEN[25])
-        br_snapshots_0_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_25 <= map_table_25;
-      if (_GEN[26])
-        br_snapshots_0_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_26 <= map_table_26;
-      if (_GEN[27])
-        br_snapshots_0_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_27 <= map_table_27;
-      if (_GEN[28])
-        br_snapshots_0_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_28 <= map_table_28;
-      if (_GEN[29])
-        br_snapshots_0_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_29 <= map_table_29;
-      if (_GEN[30])
-        br_snapshots_0_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_30 <= map_table_30;
-      if (_GEN[31])
-        br_snapshots_0_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_0_31 <= map_table_31;
+      br_snapshots_0_0 <= remap_table_1_0;
+      br_snapshots_0_1 <= remap_table_1_1;
+      br_snapshots_0_2 <= remap_table_1_2;
+      br_snapshots_0_3 <= remap_table_1_3;
+      br_snapshots_0_4 <= remap_table_1_4;
+      br_snapshots_0_5 <= remap_table_1_5;
+      br_snapshots_0_6 <= remap_table_1_6;
+      br_snapshots_0_7 <= remap_table_1_7;
+      br_snapshots_0_8 <= remap_table_1_8;
+      br_snapshots_0_9 <= remap_table_1_9;
+      br_snapshots_0_10 <= remap_table_1_10;
+      br_snapshots_0_11 <= remap_table_1_11;
+      br_snapshots_0_12 <= remap_table_1_12;
+      br_snapshots_0_13 <= remap_table_1_13;
+      br_snapshots_0_14 <= remap_table_1_14;
+      br_snapshots_0_15 <= remap_table_1_15;
+      br_snapshots_0_16 <= remap_table_1_16;
+      br_snapshots_0_17 <= remap_table_1_17;
+      br_snapshots_0_18 <= remap_table_1_18;
+      br_snapshots_0_19 <= remap_table_1_19;
+      br_snapshots_0_20 <= remap_table_1_20;
+      br_snapshots_0_21 <= remap_table_1_21;
+      br_snapshots_0_22 <= remap_table_1_22;
+      br_snapshots_0_23 <= remap_table_1_23;
+      br_snapshots_0_24 <= remap_table_1_24;
+      br_snapshots_0_25 <= remap_table_1_25;
+      br_snapshots_0_26 <= remap_table_1_26;
+      br_snapshots_0_27 <= remap_table_1_27;
+      br_snapshots_0_28 <= remap_table_1_28;
+      br_snapshots_0_29 <= remap_table_1_29;
+      br_snapshots_0_30 <= remap_table_1_30;
+      br_snapshots_0_31 <= remap_table_1_31;
     end
     if (io_ren_br_tags_3_valid & io_ren_br_tags_3_bits == 5'h1) begin
-      if (_GEN_2[0])
-        br_snapshots_1_0 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[0])
-        br_snapshots_1_0 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[0])
-        br_snapshots_1_0 <= io_remap_reqs_1_pdst;
-      else if (_GEN[0])
-        br_snapshots_1_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_0 <= map_table_0;
-      if (_GEN_2[1])
-        br_snapshots_1_1 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[1])
-        br_snapshots_1_1 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[1])
-        br_snapshots_1_1 <= io_remap_reqs_1_pdst;
-      else if (_GEN[1])
-        br_snapshots_1_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_1 <= map_table_1;
-      if (_GEN_2[2])
-        br_snapshots_1_2 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[2])
-        br_snapshots_1_2 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[2])
-        br_snapshots_1_2 <= io_remap_reqs_1_pdst;
-      else if (_GEN[2])
-        br_snapshots_1_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_2 <= map_table_2;
-      if (_GEN_2[3])
-        br_snapshots_1_3 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[3])
-        br_snapshots_1_3 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[3])
-        br_snapshots_1_3 <= io_remap_reqs_1_pdst;
-      else if (_GEN[3])
-        br_snapshots_1_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_3 <= map_table_3;
-      if (_GEN_2[4])
-        br_snapshots_1_4 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[4])
-        br_snapshots_1_4 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[4])
-        br_snapshots_1_4 <= io_remap_reqs_1_pdst;
-      else if (_GEN[4])
-        br_snapshots_1_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_4 <= map_table_4;
-      if (_GEN_2[5])
-        br_snapshots_1_5 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[5])
-        br_snapshots_1_5 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[5])
-        br_snapshots_1_5 <= io_remap_reqs_1_pdst;
-      else if (_GEN[5])
-        br_snapshots_1_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_5 <= map_table_5;
-      if (_GEN_2[6])
-        br_snapshots_1_6 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[6])
-        br_snapshots_1_6 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[6])
-        br_snapshots_1_6 <= io_remap_reqs_1_pdst;
-      else if (_GEN[6])
-        br_snapshots_1_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_6 <= map_table_6;
-      if (_GEN_2[7])
-        br_snapshots_1_7 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[7])
-        br_snapshots_1_7 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[7])
-        br_snapshots_1_7 <= io_remap_reqs_1_pdst;
-      else if (_GEN[7])
-        br_snapshots_1_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_7 <= map_table_7;
-      if (_GEN_2[8])
-        br_snapshots_1_8 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[8])
-        br_snapshots_1_8 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[8])
-        br_snapshots_1_8 <= io_remap_reqs_1_pdst;
-      else if (_GEN[8])
-        br_snapshots_1_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_8 <= map_table_8;
-      if (_GEN_2[9])
-        br_snapshots_1_9 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[9])
-        br_snapshots_1_9 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[9])
-        br_snapshots_1_9 <= io_remap_reqs_1_pdst;
-      else if (_GEN[9])
-        br_snapshots_1_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_9 <= map_table_9;
-      if (_GEN_2[10])
-        br_snapshots_1_10 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[10])
-        br_snapshots_1_10 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[10])
-        br_snapshots_1_10 <= io_remap_reqs_1_pdst;
-      else if (_GEN[10])
-        br_snapshots_1_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_10 <= map_table_10;
-      if (_GEN_2[11])
-        br_snapshots_1_11 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[11])
-        br_snapshots_1_11 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[11])
-        br_snapshots_1_11 <= io_remap_reqs_1_pdst;
-      else if (_GEN[11])
-        br_snapshots_1_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_11 <= map_table_11;
-      if (_GEN_2[12])
-        br_snapshots_1_12 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[12])
-        br_snapshots_1_12 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[12])
-        br_snapshots_1_12 <= io_remap_reqs_1_pdst;
-      else if (_GEN[12])
-        br_snapshots_1_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_12 <= map_table_12;
-      if (_GEN_2[13])
-        br_snapshots_1_13 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[13])
-        br_snapshots_1_13 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[13])
-        br_snapshots_1_13 <= io_remap_reqs_1_pdst;
-      else if (_GEN[13])
-        br_snapshots_1_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_13 <= map_table_13;
-      if (_GEN_2[14])
-        br_snapshots_1_14 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[14])
-        br_snapshots_1_14 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[14])
-        br_snapshots_1_14 <= io_remap_reqs_1_pdst;
-      else if (_GEN[14])
-        br_snapshots_1_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_14 <= map_table_14;
-      if (_GEN_2[15])
-        br_snapshots_1_15 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[15])
-        br_snapshots_1_15 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[15])
-        br_snapshots_1_15 <= io_remap_reqs_1_pdst;
-      else if (_GEN[15])
-        br_snapshots_1_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_15 <= map_table_15;
-      if (_GEN_2[16])
-        br_snapshots_1_16 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[16])
-        br_snapshots_1_16 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[16])
-        br_snapshots_1_16 <= io_remap_reqs_1_pdst;
-      else if (_GEN[16])
-        br_snapshots_1_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_16 <= map_table_16;
-      if (_GEN_2[17])
-        br_snapshots_1_17 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[17])
-        br_snapshots_1_17 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[17])
-        br_snapshots_1_17 <= io_remap_reqs_1_pdst;
-      else if (_GEN[17])
-        br_snapshots_1_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_17 <= map_table_17;
-      if (_GEN_2[18])
-        br_snapshots_1_18 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[18])
-        br_snapshots_1_18 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[18])
-        br_snapshots_1_18 <= io_remap_reqs_1_pdst;
-      else if (_GEN[18])
-        br_snapshots_1_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_18 <= map_table_18;
-      if (_GEN_2[19])
-        br_snapshots_1_19 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[19])
-        br_snapshots_1_19 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[19])
-        br_snapshots_1_19 <= io_remap_reqs_1_pdst;
-      else if (_GEN[19])
-        br_snapshots_1_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_19 <= map_table_19;
-      if (_GEN_2[20])
-        br_snapshots_1_20 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[20])
-        br_snapshots_1_20 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[20])
-        br_snapshots_1_20 <= io_remap_reqs_1_pdst;
-      else if (_GEN[20])
-        br_snapshots_1_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_20 <= map_table_20;
-      if (_GEN_2[21])
-        br_snapshots_1_21 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[21])
-        br_snapshots_1_21 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[21])
-        br_snapshots_1_21 <= io_remap_reqs_1_pdst;
-      else if (_GEN[21])
-        br_snapshots_1_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_21 <= map_table_21;
-      if (_GEN_2[22])
-        br_snapshots_1_22 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[22])
-        br_snapshots_1_22 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[22])
-        br_snapshots_1_22 <= io_remap_reqs_1_pdst;
-      else if (_GEN[22])
-        br_snapshots_1_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_22 <= map_table_22;
-      if (_GEN_2[23])
-        br_snapshots_1_23 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[23])
-        br_snapshots_1_23 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[23])
-        br_snapshots_1_23 <= io_remap_reqs_1_pdst;
-      else if (_GEN[23])
-        br_snapshots_1_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_23 <= map_table_23;
-      if (_GEN_2[24])
-        br_snapshots_1_24 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[24])
-        br_snapshots_1_24 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[24])
-        br_snapshots_1_24 <= io_remap_reqs_1_pdst;
-      else if (_GEN[24])
-        br_snapshots_1_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_24 <= map_table_24;
-      if (_GEN_2[25])
-        br_snapshots_1_25 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[25])
-        br_snapshots_1_25 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[25])
-        br_snapshots_1_25 <= io_remap_reqs_1_pdst;
-      else if (_GEN[25])
-        br_snapshots_1_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_25 <= map_table_25;
-      if (_GEN_2[26])
-        br_snapshots_1_26 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[26])
-        br_snapshots_1_26 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[26])
-        br_snapshots_1_26 <= io_remap_reqs_1_pdst;
-      else if (_GEN[26])
-        br_snapshots_1_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_26 <= map_table_26;
-      if (_GEN_2[27])
-        br_snapshots_1_27 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[27])
-        br_snapshots_1_27 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[27])
-        br_snapshots_1_27 <= io_remap_reqs_1_pdst;
-      else if (_GEN[27])
-        br_snapshots_1_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_27 <= map_table_27;
-      if (_GEN_2[28])
-        br_snapshots_1_28 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[28])
-        br_snapshots_1_28 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[28])
-        br_snapshots_1_28 <= io_remap_reqs_1_pdst;
-      else if (_GEN[28])
-        br_snapshots_1_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_28 <= map_table_28;
-      if (_GEN_2[29])
-        br_snapshots_1_29 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[29])
-        br_snapshots_1_29 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[29])
-        br_snapshots_1_29 <= io_remap_reqs_1_pdst;
-      else if (_GEN[29])
-        br_snapshots_1_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_29 <= map_table_29;
-      if (_GEN_2[30])
-        br_snapshots_1_30 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[30])
-        br_snapshots_1_30 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[30])
-        br_snapshots_1_30 <= io_remap_reqs_1_pdst;
-      else if (_GEN[30])
-        br_snapshots_1_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_30 <= map_table_30;
-      if (_GEN_2[31])
-        br_snapshots_1_31 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[31])
-        br_snapshots_1_31 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[31])
-        br_snapshots_1_31 <= io_remap_reqs_1_pdst;
-      else if (_GEN[31])
-        br_snapshots_1_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_31 <= map_table_31;
+      br_snapshots_1_0 <= remap_table_4_0;
+      br_snapshots_1_1 <= remap_table_4_1;
+      br_snapshots_1_2 <= remap_table_4_2;
+      br_snapshots_1_3 <= remap_table_4_3;
+      br_snapshots_1_4 <= remap_table_4_4;
+      br_snapshots_1_5 <= remap_table_4_5;
+      br_snapshots_1_6 <= remap_table_4_6;
+      br_snapshots_1_7 <= remap_table_4_7;
+      br_snapshots_1_8 <= remap_table_4_8;
+      br_snapshots_1_9 <= remap_table_4_9;
+      br_snapshots_1_10 <= remap_table_4_10;
+      br_snapshots_1_11 <= remap_table_4_11;
+      br_snapshots_1_12 <= remap_table_4_12;
+      br_snapshots_1_13 <= remap_table_4_13;
+      br_snapshots_1_14 <= remap_table_4_14;
+      br_snapshots_1_15 <= remap_table_4_15;
+      br_snapshots_1_16 <= remap_table_4_16;
+      br_snapshots_1_17 <= remap_table_4_17;
+      br_snapshots_1_18 <= remap_table_4_18;
+      br_snapshots_1_19 <= remap_table_4_19;
+      br_snapshots_1_20 <= remap_table_4_20;
+      br_snapshots_1_21 <= remap_table_4_21;
+      br_snapshots_1_22 <= remap_table_4_22;
+      br_snapshots_1_23 <= remap_table_4_23;
+      br_snapshots_1_24 <= remap_table_4_24;
+      br_snapshots_1_25 <= remap_table_4_25;
+      br_snapshots_1_26 <= remap_table_4_26;
+      br_snapshots_1_27 <= remap_table_4_27;
+      br_snapshots_1_28 <= remap_table_4_28;
+      br_snapshots_1_29 <= remap_table_4_29;
+      br_snapshots_1_30 <= remap_table_4_30;
+      br_snapshots_1_31 <= remap_table_4_31;
     end
     else if (io_ren_br_tags_2_valid & io_ren_br_tags_2_bits == 5'h1) begin
-      if (_GEN_1[0])
-        br_snapshots_1_0 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[0])
-        br_snapshots_1_0 <= io_remap_reqs_1_pdst;
-      else if (_GEN[0])
-        br_snapshots_1_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_0 <= map_table_0;
-      if (_GEN_1[1])
-        br_snapshots_1_1 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[1])
-        br_snapshots_1_1 <= io_remap_reqs_1_pdst;
-      else if (_GEN[1])
-        br_snapshots_1_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_1 <= map_table_1;
-      if (_GEN_1[2])
-        br_snapshots_1_2 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[2])
-        br_snapshots_1_2 <= io_remap_reqs_1_pdst;
-      else if (_GEN[2])
-        br_snapshots_1_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_2 <= map_table_2;
-      if (_GEN_1[3])
-        br_snapshots_1_3 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[3])
-        br_snapshots_1_3 <= io_remap_reqs_1_pdst;
-      else if (_GEN[3])
-        br_snapshots_1_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_3 <= map_table_3;
-      if (_GEN_1[4])
-        br_snapshots_1_4 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[4])
-        br_snapshots_1_4 <= io_remap_reqs_1_pdst;
-      else if (_GEN[4])
-        br_snapshots_1_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_4 <= map_table_4;
-      if (_GEN_1[5])
-        br_snapshots_1_5 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[5])
-        br_snapshots_1_5 <= io_remap_reqs_1_pdst;
-      else if (_GEN[5])
-        br_snapshots_1_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_5 <= map_table_5;
-      if (_GEN_1[6])
-        br_snapshots_1_6 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[6])
-        br_snapshots_1_6 <= io_remap_reqs_1_pdst;
-      else if (_GEN[6])
-        br_snapshots_1_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_6 <= map_table_6;
-      if (_GEN_1[7])
-        br_snapshots_1_7 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[7])
-        br_snapshots_1_7 <= io_remap_reqs_1_pdst;
-      else if (_GEN[7])
-        br_snapshots_1_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_7 <= map_table_7;
-      if (_GEN_1[8])
-        br_snapshots_1_8 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[8])
-        br_snapshots_1_8 <= io_remap_reqs_1_pdst;
-      else if (_GEN[8])
-        br_snapshots_1_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_8 <= map_table_8;
-      if (_GEN_1[9])
-        br_snapshots_1_9 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[9])
-        br_snapshots_1_9 <= io_remap_reqs_1_pdst;
-      else if (_GEN[9])
-        br_snapshots_1_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_9 <= map_table_9;
-      if (_GEN_1[10])
-        br_snapshots_1_10 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[10])
-        br_snapshots_1_10 <= io_remap_reqs_1_pdst;
-      else if (_GEN[10])
-        br_snapshots_1_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_10 <= map_table_10;
-      if (_GEN_1[11])
-        br_snapshots_1_11 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[11])
-        br_snapshots_1_11 <= io_remap_reqs_1_pdst;
-      else if (_GEN[11])
-        br_snapshots_1_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_11 <= map_table_11;
-      if (_GEN_1[12])
-        br_snapshots_1_12 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[12])
-        br_snapshots_1_12 <= io_remap_reqs_1_pdst;
-      else if (_GEN[12])
-        br_snapshots_1_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_12 <= map_table_12;
-      if (_GEN_1[13])
-        br_snapshots_1_13 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[13])
-        br_snapshots_1_13 <= io_remap_reqs_1_pdst;
-      else if (_GEN[13])
-        br_snapshots_1_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_13 <= map_table_13;
-      if (_GEN_1[14])
-        br_snapshots_1_14 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[14])
-        br_snapshots_1_14 <= io_remap_reqs_1_pdst;
-      else if (_GEN[14])
-        br_snapshots_1_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_14 <= map_table_14;
-      if (_GEN_1[15])
-        br_snapshots_1_15 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[15])
-        br_snapshots_1_15 <= io_remap_reqs_1_pdst;
-      else if (_GEN[15])
-        br_snapshots_1_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_15 <= map_table_15;
-      if (_GEN_1[16])
-        br_snapshots_1_16 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[16])
-        br_snapshots_1_16 <= io_remap_reqs_1_pdst;
-      else if (_GEN[16])
-        br_snapshots_1_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_16 <= map_table_16;
-      if (_GEN_1[17])
-        br_snapshots_1_17 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[17])
-        br_snapshots_1_17 <= io_remap_reqs_1_pdst;
-      else if (_GEN[17])
-        br_snapshots_1_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_17 <= map_table_17;
-      if (_GEN_1[18])
-        br_snapshots_1_18 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[18])
-        br_snapshots_1_18 <= io_remap_reqs_1_pdst;
-      else if (_GEN[18])
-        br_snapshots_1_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_18 <= map_table_18;
-      if (_GEN_1[19])
-        br_snapshots_1_19 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[19])
-        br_snapshots_1_19 <= io_remap_reqs_1_pdst;
-      else if (_GEN[19])
-        br_snapshots_1_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_19 <= map_table_19;
-      if (_GEN_1[20])
-        br_snapshots_1_20 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[20])
-        br_snapshots_1_20 <= io_remap_reqs_1_pdst;
-      else if (_GEN[20])
-        br_snapshots_1_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_20 <= map_table_20;
-      if (_GEN_1[21])
-        br_snapshots_1_21 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[21])
-        br_snapshots_1_21 <= io_remap_reqs_1_pdst;
-      else if (_GEN[21])
-        br_snapshots_1_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_21 <= map_table_21;
-      if (_GEN_1[22])
-        br_snapshots_1_22 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[22])
-        br_snapshots_1_22 <= io_remap_reqs_1_pdst;
-      else if (_GEN[22])
-        br_snapshots_1_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_22 <= map_table_22;
-      if (_GEN_1[23])
-        br_snapshots_1_23 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[23])
-        br_snapshots_1_23 <= io_remap_reqs_1_pdst;
-      else if (_GEN[23])
-        br_snapshots_1_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_23 <= map_table_23;
-      if (_GEN_1[24])
-        br_snapshots_1_24 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[24])
-        br_snapshots_1_24 <= io_remap_reqs_1_pdst;
-      else if (_GEN[24])
-        br_snapshots_1_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_24 <= map_table_24;
-      if (_GEN_1[25])
-        br_snapshots_1_25 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[25])
-        br_snapshots_1_25 <= io_remap_reqs_1_pdst;
-      else if (_GEN[25])
-        br_snapshots_1_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_25 <= map_table_25;
-      if (_GEN_1[26])
-        br_snapshots_1_26 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[26])
-        br_snapshots_1_26 <= io_remap_reqs_1_pdst;
-      else if (_GEN[26])
-        br_snapshots_1_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_26 <= map_table_26;
-      if (_GEN_1[27])
-        br_snapshots_1_27 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[27])
-        br_snapshots_1_27 <= io_remap_reqs_1_pdst;
-      else if (_GEN[27])
-        br_snapshots_1_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_27 <= map_table_27;
-      if (_GEN_1[28])
-        br_snapshots_1_28 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[28])
-        br_snapshots_1_28 <= io_remap_reqs_1_pdst;
-      else if (_GEN[28])
-        br_snapshots_1_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_28 <= map_table_28;
-      if (_GEN_1[29])
-        br_snapshots_1_29 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[29])
-        br_snapshots_1_29 <= io_remap_reqs_1_pdst;
-      else if (_GEN[29])
-        br_snapshots_1_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_29 <= map_table_29;
-      if (_GEN_1[30])
-        br_snapshots_1_30 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[30])
-        br_snapshots_1_30 <= io_remap_reqs_1_pdst;
-      else if (_GEN[30])
-        br_snapshots_1_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_30 <= map_table_30;
-      if (_GEN_1[31])
-        br_snapshots_1_31 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[31])
-        br_snapshots_1_31 <= io_remap_reqs_1_pdst;
-      else if (_GEN[31])
-        br_snapshots_1_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_31 <= map_table_31;
+      br_snapshots_1_0 <= remap_table_3_0;
+      br_snapshots_1_1 <= remap_table_3_1;
+      br_snapshots_1_2 <= remap_table_3_2;
+      br_snapshots_1_3 <= remap_table_3_3;
+      br_snapshots_1_4 <= remap_table_3_4;
+      br_snapshots_1_5 <= remap_table_3_5;
+      br_snapshots_1_6 <= remap_table_3_6;
+      br_snapshots_1_7 <= remap_table_3_7;
+      br_snapshots_1_8 <= remap_table_3_8;
+      br_snapshots_1_9 <= remap_table_3_9;
+      br_snapshots_1_10 <= remap_table_3_10;
+      br_snapshots_1_11 <= remap_table_3_11;
+      br_snapshots_1_12 <= remap_table_3_12;
+      br_snapshots_1_13 <= remap_table_3_13;
+      br_snapshots_1_14 <= remap_table_3_14;
+      br_snapshots_1_15 <= remap_table_3_15;
+      br_snapshots_1_16 <= remap_table_3_16;
+      br_snapshots_1_17 <= remap_table_3_17;
+      br_snapshots_1_18 <= remap_table_3_18;
+      br_snapshots_1_19 <= remap_table_3_19;
+      br_snapshots_1_20 <= remap_table_3_20;
+      br_snapshots_1_21 <= remap_table_3_21;
+      br_snapshots_1_22 <= remap_table_3_22;
+      br_snapshots_1_23 <= remap_table_3_23;
+      br_snapshots_1_24 <= remap_table_3_24;
+      br_snapshots_1_25 <= remap_table_3_25;
+      br_snapshots_1_26 <= remap_table_3_26;
+      br_snapshots_1_27 <= remap_table_3_27;
+      br_snapshots_1_28 <= remap_table_3_28;
+      br_snapshots_1_29 <= remap_table_3_29;
+      br_snapshots_1_30 <= remap_table_3_30;
+      br_snapshots_1_31 <= remap_table_3_31;
     end
     else if (io_ren_br_tags_1_valid & io_ren_br_tags_1_bits == 5'h1) begin
-      if (_GEN_0[0])
-        br_snapshots_1_0 <= io_remap_reqs_1_pdst;
-      else if (_GEN[0])
-        br_snapshots_1_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_0 <= map_table_0;
-      if (_GEN_0[1])
-        br_snapshots_1_1 <= io_remap_reqs_1_pdst;
-      else if (_GEN[1])
-        br_snapshots_1_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_1 <= map_table_1;
-      if (_GEN_0[2])
-        br_snapshots_1_2 <= io_remap_reqs_1_pdst;
-      else if (_GEN[2])
-        br_snapshots_1_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_2 <= map_table_2;
-      if (_GEN_0[3])
-        br_snapshots_1_3 <= io_remap_reqs_1_pdst;
-      else if (_GEN[3])
-        br_snapshots_1_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_3 <= map_table_3;
-      if (_GEN_0[4])
-        br_snapshots_1_4 <= io_remap_reqs_1_pdst;
-      else if (_GEN[4])
-        br_snapshots_1_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_4 <= map_table_4;
-      if (_GEN_0[5])
-        br_snapshots_1_5 <= io_remap_reqs_1_pdst;
-      else if (_GEN[5])
-        br_snapshots_1_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_5 <= map_table_5;
-      if (_GEN_0[6])
-        br_snapshots_1_6 <= io_remap_reqs_1_pdst;
-      else if (_GEN[6])
-        br_snapshots_1_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_6 <= map_table_6;
-      if (_GEN_0[7])
-        br_snapshots_1_7 <= io_remap_reqs_1_pdst;
-      else if (_GEN[7])
-        br_snapshots_1_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_7 <= map_table_7;
-      if (_GEN_0[8])
-        br_snapshots_1_8 <= io_remap_reqs_1_pdst;
-      else if (_GEN[8])
-        br_snapshots_1_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_8 <= map_table_8;
-      if (_GEN_0[9])
-        br_snapshots_1_9 <= io_remap_reqs_1_pdst;
-      else if (_GEN[9])
-        br_snapshots_1_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_9 <= map_table_9;
-      if (_GEN_0[10])
-        br_snapshots_1_10 <= io_remap_reqs_1_pdst;
-      else if (_GEN[10])
-        br_snapshots_1_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_10 <= map_table_10;
-      if (_GEN_0[11])
-        br_snapshots_1_11 <= io_remap_reqs_1_pdst;
-      else if (_GEN[11])
-        br_snapshots_1_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_11 <= map_table_11;
-      if (_GEN_0[12])
-        br_snapshots_1_12 <= io_remap_reqs_1_pdst;
-      else if (_GEN[12])
-        br_snapshots_1_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_12 <= map_table_12;
-      if (_GEN_0[13])
-        br_snapshots_1_13 <= io_remap_reqs_1_pdst;
-      else if (_GEN[13])
-        br_snapshots_1_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_13 <= map_table_13;
-      if (_GEN_0[14])
-        br_snapshots_1_14 <= io_remap_reqs_1_pdst;
-      else if (_GEN[14])
-        br_snapshots_1_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_14 <= map_table_14;
-      if (_GEN_0[15])
-        br_snapshots_1_15 <= io_remap_reqs_1_pdst;
-      else if (_GEN[15])
-        br_snapshots_1_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_15 <= map_table_15;
-      if (_GEN_0[16])
-        br_snapshots_1_16 <= io_remap_reqs_1_pdst;
-      else if (_GEN[16])
-        br_snapshots_1_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_16 <= map_table_16;
-      if (_GEN_0[17])
-        br_snapshots_1_17 <= io_remap_reqs_1_pdst;
-      else if (_GEN[17])
-        br_snapshots_1_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_17 <= map_table_17;
-      if (_GEN_0[18])
-        br_snapshots_1_18 <= io_remap_reqs_1_pdst;
-      else if (_GEN[18])
-        br_snapshots_1_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_18 <= map_table_18;
-      if (_GEN_0[19])
-        br_snapshots_1_19 <= io_remap_reqs_1_pdst;
-      else if (_GEN[19])
-        br_snapshots_1_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_19 <= map_table_19;
-      if (_GEN_0[20])
-        br_snapshots_1_20 <= io_remap_reqs_1_pdst;
-      else if (_GEN[20])
-        br_snapshots_1_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_20 <= map_table_20;
-      if (_GEN_0[21])
-        br_snapshots_1_21 <= io_remap_reqs_1_pdst;
-      else if (_GEN[21])
-        br_snapshots_1_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_21 <= map_table_21;
-      if (_GEN_0[22])
-        br_snapshots_1_22 <= io_remap_reqs_1_pdst;
-      else if (_GEN[22])
-        br_snapshots_1_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_22 <= map_table_22;
-      if (_GEN_0[23])
-        br_snapshots_1_23 <= io_remap_reqs_1_pdst;
-      else if (_GEN[23])
-        br_snapshots_1_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_23 <= map_table_23;
-      if (_GEN_0[24])
-        br_snapshots_1_24 <= io_remap_reqs_1_pdst;
-      else if (_GEN[24])
-        br_snapshots_1_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_24 <= map_table_24;
-      if (_GEN_0[25])
-        br_snapshots_1_25 <= io_remap_reqs_1_pdst;
-      else if (_GEN[25])
-        br_snapshots_1_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_25 <= map_table_25;
-      if (_GEN_0[26])
-        br_snapshots_1_26 <= io_remap_reqs_1_pdst;
-      else if (_GEN[26])
-        br_snapshots_1_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_26 <= map_table_26;
-      if (_GEN_0[27])
-        br_snapshots_1_27 <= io_remap_reqs_1_pdst;
-      else if (_GEN[27])
-        br_snapshots_1_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_27 <= map_table_27;
-      if (_GEN_0[28])
-        br_snapshots_1_28 <= io_remap_reqs_1_pdst;
-      else if (_GEN[28])
-        br_snapshots_1_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_28 <= map_table_28;
-      if (_GEN_0[29])
-        br_snapshots_1_29 <= io_remap_reqs_1_pdst;
-      else if (_GEN[29])
-        br_snapshots_1_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_29 <= map_table_29;
-      if (_GEN_0[30])
-        br_snapshots_1_30 <= io_remap_reqs_1_pdst;
-      else if (_GEN[30])
-        br_snapshots_1_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_30 <= map_table_30;
-      if (_GEN_0[31])
-        br_snapshots_1_31 <= io_remap_reqs_1_pdst;
-      else if (_GEN[31])
-        br_snapshots_1_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_31 <= map_table_31;
+      br_snapshots_1_0 <= remap_table_2_0;
+      br_snapshots_1_1 <= remap_table_2_1;
+      br_snapshots_1_2 <= remap_table_2_2;
+      br_snapshots_1_3 <= remap_table_2_3;
+      br_snapshots_1_4 <= remap_table_2_4;
+      br_snapshots_1_5 <= remap_table_2_5;
+      br_snapshots_1_6 <= remap_table_2_6;
+      br_snapshots_1_7 <= remap_table_2_7;
+      br_snapshots_1_8 <= remap_table_2_8;
+      br_snapshots_1_9 <= remap_table_2_9;
+      br_snapshots_1_10 <= remap_table_2_10;
+      br_snapshots_1_11 <= remap_table_2_11;
+      br_snapshots_1_12 <= remap_table_2_12;
+      br_snapshots_1_13 <= remap_table_2_13;
+      br_snapshots_1_14 <= remap_table_2_14;
+      br_snapshots_1_15 <= remap_table_2_15;
+      br_snapshots_1_16 <= remap_table_2_16;
+      br_snapshots_1_17 <= remap_table_2_17;
+      br_snapshots_1_18 <= remap_table_2_18;
+      br_snapshots_1_19 <= remap_table_2_19;
+      br_snapshots_1_20 <= remap_table_2_20;
+      br_snapshots_1_21 <= remap_table_2_21;
+      br_snapshots_1_22 <= remap_table_2_22;
+      br_snapshots_1_23 <= remap_table_2_23;
+      br_snapshots_1_24 <= remap_table_2_24;
+      br_snapshots_1_25 <= remap_table_2_25;
+      br_snapshots_1_26 <= remap_table_2_26;
+      br_snapshots_1_27 <= remap_table_2_27;
+      br_snapshots_1_28 <= remap_table_2_28;
+      br_snapshots_1_29 <= remap_table_2_29;
+      br_snapshots_1_30 <= remap_table_2_30;
+      br_snapshots_1_31 <= remap_table_2_31;
     end
     else if (io_ren_br_tags_0_valid & io_ren_br_tags_0_bits == 5'h1) begin
-      if (_GEN[0])
-        br_snapshots_1_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_0 <= map_table_0;
-      if (_GEN[1])
-        br_snapshots_1_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_1 <= map_table_1;
-      if (_GEN[2])
-        br_snapshots_1_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_2 <= map_table_2;
-      if (_GEN[3])
-        br_snapshots_1_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_3 <= map_table_3;
-      if (_GEN[4])
-        br_snapshots_1_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_4 <= map_table_4;
-      if (_GEN[5])
-        br_snapshots_1_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_5 <= map_table_5;
-      if (_GEN[6])
-        br_snapshots_1_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_6 <= map_table_6;
-      if (_GEN[7])
-        br_snapshots_1_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_7 <= map_table_7;
-      if (_GEN[8])
-        br_snapshots_1_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_8 <= map_table_8;
-      if (_GEN[9])
-        br_snapshots_1_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_9 <= map_table_9;
-      if (_GEN[10])
-        br_snapshots_1_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_10 <= map_table_10;
-      if (_GEN[11])
-        br_snapshots_1_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_11 <= map_table_11;
-      if (_GEN[12])
-        br_snapshots_1_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_12 <= map_table_12;
-      if (_GEN[13])
-        br_snapshots_1_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_13 <= map_table_13;
-      if (_GEN[14])
-        br_snapshots_1_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_14 <= map_table_14;
-      if (_GEN[15])
-        br_snapshots_1_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_15 <= map_table_15;
-      if (_GEN[16])
-        br_snapshots_1_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_16 <= map_table_16;
-      if (_GEN[17])
-        br_snapshots_1_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_17 <= map_table_17;
-      if (_GEN[18])
-        br_snapshots_1_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_18 <= map_table_18;
-      if (_GEN[19])
-        br_snapshots_1_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_19 <= map_table_19;
-      if (_GEN[20])
-        br_snapshots_1_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_20 <= map_table_20;
-      if (_GEN[21])
-        br_snapshots_1_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_21 <= map_table_21;
-      if (_GEN[22])
-        br_snapshots_1_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_22 <= map_table_22;
-      if (_GEN[23])
-        br_snapshots_1_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_23 <= map_table_23;
-      if (_GEN[24])
-        br_snapshots_1_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_24 <= map_table_24;
-      if (_GEN[25])
-        br_snapshots_1_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_25 <= map_table_25;
-      if (_GEN[26])
-        br_snapshots_1_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_26 <= map_table_26;
-      if (_GEN[27])
-        br_snapshots_1_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_27 <= map_table_27;
-      if (_GEN[28])
-        br_snapshots_1_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_28 <= map_table_28;
-      if (_GEN[29])
-        br_snapshots_1_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_29 <= map_table_29;
-      if (_GEN[30])
-        br_snapshots_1_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_30 <= map_table_30;
-      if (_GEN[31])
-        br_snapshots_1_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_1_31 <= map_table_31;
+      br_snapshots_1_0 <= remap_table_1_0;
+      br_snapshots_1_1 <= remap_table_1_1;
+      br_snapshots_1_2 <= remap_table_1_2;
+      br_snapshots_1_3 <= remap_table_1_3;
+      br_snapshots_1_4 <= remap_table_1_4;
+      br_snapshots_1_5 <= remap_table_1_5;
+      br_snapshots_1_6 <= remap_table_1_6;
+      br_snapshots_1_7 <= remap_table_1_7;
+      br_snapshots_1_8 <= remap_table_1_8;
+      br_snapshots_1_9 <= remap_table_1_9;
+      br_snapshots_1_10 <= remap_table_1_10;
+      br_snapshots_1_11 <= remap_table_1_11;
+      br_snapshots_1_12 <= remap_table_1_12;
+      br_snapshots_1_13 <= remap_table_1_13;
+      br_snapshots_1_14 <= remap_table_1_14;
+      br_snapshots_1_15 <= remap_table_1_15;
+      br_snapshots_1_16 <= remap_table_1_16;
+      br_snapshots_1_17 <= remap_table_1_17;
+      br_snapshots_1_18 <= remap_table_1_18;
+      br_snapshots_1_19 <= remap_table_1_19;
+      br_snapshots_1_20 <= remap_table_1_20;
+      br_snapshots_1_21 <= remap_table_1_21;
+      br_snapshots_1_22 <= remap_table_1_22;
+      br_snapshots_1_23 <= remap_table_1_23;
+      br_snapshots_1_24 <= remap_table_1_24;
+      br_snapshots_1_25 <= remap_table_1_25;
+      br_snapshots_1_26 <= remap_table_1_26;
+      br_snapshots_1_27 <= remap_table_1_27;
+      br_snapshots_1_28 <= remap_table_1_28;
+      br_snapshots_1_29 <= remap_table_1_29;
+      br_snapshots_1_30 <= remap_table_1_30;
+      br_snapshots_1_31 <= remap_table_1_31;
     end
     if (io_ren_br_tags_3_valid & io_ren_br_tags_3_bits == 5'h2) begin
-      if (_GEN_2[0])
-        br_snapshots_2_0 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[0])
-        br_snapshots_2_0 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[0])
-        br_snapshots_2_0 <= io_remap_reqs_1_pdst;
-      else if (_GEN[0])
-        br_snapshots_2_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_0 <= map_table_0;
-      if (_GEN_2[1])
-        br_snapshots_2_1 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[1])
-        br_snapshots_2_1 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[1])
-        br_snapshots_2_1 <= io_remap_reqs_1_pdst;
-      else if (_GEN[1])
-        br_snapshots_2_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_1 <= map_table_1;
-      if (_GEN_2[2])
-        br_snapshots_2_2 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[2])
-        br_snapshots_2_2 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[2])
-        br_snapshots_2_2 <= io_remap_reqs_1_pdst;
-      else if (_GEN[2])
-        br_snapshots_2_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_2 <= map_table_2;
-      if (_GEN_2[3])
-        br_snapshots_2_3 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[3])
-        br_snapshots_2_3 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[3])
-        br_snapshots_2_3 <= io_remap_reqs_1_pdst;
-      else if (_GEN[3])
-        br_snapshots_2_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_3 <= map_table_3;
-      if (_GEN_2[4])
-        br_snapshots_2_4 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[4])
-        br_snapshots_2_4 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[4])
-        br_snapshots_2_4 <= io_remap_reqs_1_pdst;
-      else if (_GEN[4])
-        br_snapshots_2_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_4 <= map_table_4;
-      if (_GEN_2[5])
-        br_snapshots_2_5 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[5])
-        br_snapshots_2_5 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[5])
-        br_snapshots_2_5 <= io_remap_reqs_1_pdst;
-      else if (_GEN[5])
-        br_snapshots_2_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_5 <= map_table_5;
-      if (_GEN_2[6])
-        br_snapshots_2_6 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[6])
-        br_snapshots_2_6 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[6])
-        br_snapshots_2_6 <= io_remap_reqs_1_pdst;
-      else if (_GEN[6])
-        br_snapshots_2_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_6 <= map_table_6;
-      if (_GEN_2[7])
-        br_snapshots_2_7 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[7])
-        br_snapshots_2_7 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[7])
-        br_snapshots_2_7 <= io_remap_reqs_1_pdst;
-      else if (_GEN[7])
-        br_snapshots_2_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_7 <= map_table_7;
-      if (_GEN_2[8])
-        br_snapshots_2_8 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[8])
-        br_snapshots_2_8 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[8])
-        br_snapshots_2_8 <= io_remap_reqs_1_pdst;
-      else if (_GEN[8])
-        br_snapshots_2_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_8 <= map_table_8;
-      if (_GEN_2[9])
-        br_snapshots_2_9 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[9])
-        br_snapshots_2_9 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[9])
-        br_snapshots_2_9 <= io_remap_reqs_1_pdst;
-      else if (_GEN[9])
-        br_snapshots_2_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_9 <= map_table_9;
-      if (_GEN_2[10])
-        br_snapshots_2_10 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[10])
-        br_snapshots_2_10 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[10])
-        br_snapshots_2_10 <= io_remap_reqs_1_pdst;
-      else if (_GEN[10])
-        br_snapshots_2_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_10 <= map_table_10;
-      if (_GEN_2[11])
-        br_snapshots_2_11 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[11])
-        br_snapshots_2_11 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[11])
-        br_snapshots_2_11 <= io_remap_reqs_1_pdst;
-      else if (_GEN[11])
-        br_snapshots_2_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_11 <= map_table_11;
-      if (_GEN_2[12])
-        br_snapshots_2_12 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[12])
-        br_snapshots_2_12 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[12])
-        br_snapshots_2_12 <= io_remap_reqs_1_pdst;
-      else if (_GEN[12])
-        br_snapshots_2_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_12 <= map_table_12;
-      if (_GEN_2[13])
-        br_snapshots_2_13 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[13])
-        br_snapshots_2_13 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[13])
-        br_snapshots_2_13 <= io_remap_reqs_1_pdst;
-      else if (_GEN[13])
-        br_snapshots_2_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_13 <= map_table_13;
-      if (_GEN_2[14])
-        br_snapshots_2_14 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[14])
-        br_snapshots_2_14 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[14])
-        br_snapshots_2_14 <= io_remap_reqs_1_pdst;
-      else if (_GEN[14])
-        br_snapshots_2_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_14 <= map_table_14;
-      if (_GEN_2[15])
-        br_snapshots_2_15 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[15])
-        br_snapshots_2_15 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[15])
-        br_snapshots_2_15 <= io_remap_reqs_1_pdst;
-      else if (_GEN[15])
-        br_snapshots_2_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_15 <= map_table_15;
-      if (_GEN_2[16])
-        br_snapshots_2_16 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[16])
-        br_snapshots_2_16 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[16])
-        br_snapshots_2_16 <= io_remap_reqs_1_pdst;
-      else if (_GEN[16])
-        br_snapshots_2_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_16 <= map_table_16;
-      if (_GEN_2[17])
-        br_snapshots_2_17 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[17])
-        br_snapshots_2_17 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[17])
-        br_snapshots_2_17 <= io_remap_reqs_1_pdst;
-      else if (_GEN[17])
-        br_snapshots_2_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_17 <= map_table_17;
-      if (_GEN_2[18])
-        br_snapshots_2_18 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[18])
-        br_snapshots_2_18 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[18])
-        br_snapshots_2_18 <= io_remap_reqs_1_pdst;
-      else if (_GEN[18])
-        br_snapshots_2_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_18 <= map_table_18;
-      if (_GEN_2[19])
-        br_snapshots_2_19 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[19])
-        br_snapshots_2_19 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[19])
-        br_snapshots_2_19 <= io_remap_reqs_1_pdst;
-      else if (_GEN[19])
-        br_snapshots_2_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_19 <= map_table_19;
-      if (_GEN_2[20])
-        br_snapshots_2_20 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[20])
-        br_snapshots_2_20 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[20])
-        br_snapshots_2_20 <= io_remap_reqs_1_pdst;
-      else if (_GEN[20])
-        br_snapshots_2_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_20 <= map_table_20;
-      if (_GEN_2[21])
-        br_snapshots_2_21 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[21])
-        br_snapshots_2_21 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[21])
-        br_snapshots_2_21 <= io_remap_reqs_1_pdst;
-      else if (_GEN[21])
-        br_snapshots_2_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_21 <= map_table_21;
-      if (_GEN_2[22])
-        br_snapshots_2_22 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[22])
-        br_snapshots_2_22 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[22])
-        br_snapshots_2_22 <= io_remap_reqs_1_pdst;
-      else if (_GEN[22])
-        br_snapshots_2_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_22 <= map_table_22;
-      if (_GEN_2[23])
-        br_snapshots_2_23 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[23])
-        br_snapshots_2_23 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[23])
-        br_snapshots_2_23 <= io_remap_reqs_1_pdst;
-      else if (_GEN[23])
-        br_snapshots_2_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_23 <= map_table_23;
-      if (_GEN_2[24])
-        br_snapshots_2_24 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[24])
-        br_snapshots_2_24 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[24])
-        br_snapshots_2_24 <= io_remap_reqs_1_pdst;
-      else if (_GEN[24])
-        br_snapshots_2_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_24 <= map_table_24;
-      if (_GEN_2[25])
-        br_snapshots_2_25 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[25])
-        br_snapshots_2_25 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[25])
-        br_snapshots_2_25 <= io_remap_reqs_1_pdst;
-      else if (_GEN[25])
-        br_snapshots_2_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_25 <= map_table_25;
-      if (_GEN_2[26])
-        br_snapshots_2_26 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[26])
-        br_snapshots_2_26 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[26])
-        br_snapshots_2_26 <= io_remap_reqs_1_pdst;
-      else if (_GEN[26])
-        br_snapshots_2_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_26 <= map_table_26;
-      if (_GEN_2[27])
-        br_snapshots_2_27 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[27])
-        br_snapshots_2_27 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[27])
-        br_snapshots_2_27 <= io_remap_reqs_1_pdst;
-      else if (_GEN[27])
-        br_snapshots_2_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_27 <= map_table_27;
-      if (_GEN_2[28])
-        br_snapshots_2_28 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[28])
-        br_snapshots_2_28 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[28])
-        br_snapshots_2_28 <= io_remap_reqs_1_pdst;
-      else if (_GEN[28])
-        br_snapshots_2_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_28 <= map_table_28;
-      if (_GEN_2[29])
-        br_snapshots_2_29 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[29])
-        br_snapshots_2_29 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[29])
-        br_snapshots_2_29 <= io_remap_reqs_1_pdst;
-      else if (_GEN[29])
-        br_snapshots_2_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_29 <= map_table_29;
-      if (_GEN_2[30])
-        br_snapshots_2_30 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[30])
-        br_snapshots_2_30 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[30])
-        br_snapshots_2_30 <= io_remap_reqs_1_pdst;
-      else if (_GEN[30])
-        br_snapshots_2_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_30 <= map_table_30;
-      if (_GEN_2[31])
-        br_snapshots_2_31 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[31])
-        br_snapshots_2_31 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[31])
-        br_snapshots_2_31 <= io_remap_reqs_1_pdst;
-      else if (_GEN[31])
-        br_snapshots_2_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_31 <= map_table_31;
+      br_snapshots_2_0 <= remap_table_4_0;
+      br_snapshots_2_1 <= remap_table_4_1;
+      br_snapshots_2_2 <= remap_table_4_2;
+      br_snapshots_2_3 <= remap_table_4_3;
+      br_snapshots_2_4 <= remap_table_4_4;
+      br_snapshots_2_5 <= remap_table_4_5;
+      br_snapshots_2_6 <= remap_table_4_6;
+      br_snapshots_2_7 <= remap_table_4_7;
+      br_snapshots_2_8 <= remap_table_4_8;
+      br_snapshots_2_9 <= remap_table_4_9;
+      br_snapshots_2_10 <= remap_table_4_10;
+      br_snapshots_2_11 <= remap_table_4_11;
+      br_snapshots_2_12 <= remap_table_4_12;
+      br_snapshots_2_13 <= remap_table_4_13;
+      br_snapshots_2_14 <= remap_table_4_14;
+      br_snapshots_2_15 <= remap_table_4_15;
+      br_snapshots_2_16 <= remap_table_4_16;
+      br_snapshots_2_17 <= remap_table_4_17;
+      br_snapshots_2_18 <= remap_table_4_18;
+      br_snapshots_2_19 <= remap_table_4_19;
+      br_snapshots_2_20 <= remap_table_4_20;
+      br_snapshots_2_21 <= remap_table_4_21;
+      br_snapshots_2_22 <= remap_table_4_22;
+      br_snapshots_2_23 <= remap_table_4_23;
+      br_snapshots_2_24 <= remap_table_4_24;
+      br_snapshots_2_25 <= remap_table_4_25;
+      br_snapshots_2_26 <= remap_table_4_26;
+      br_snapshots_2_27 <= remap_table_4_27;
+      br_snapshots_2_28 <= remap_table_4_28;
+      br_snapshots_2_29 <= remap_table_4_29;
+      br_snapshots_2_30 <= remap_table_4_30;
+      br_snapshots_2_31 <= remap_table_4_31;
     end
     else if (io_ren_br_tags_2_valid & io_ren_br_tags_2_bits == 5'h2) begin
-      if (_GEN_1[0])
-        br_snapshots_2_0 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[0])
-        br_snapshots_2_0 <= io_remap_reqs_1_pdst;
-      else if (_GEN[0])
-        br_snapshots_2_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_0 <= map_table_0;
-      if (_GEN_1[1])
-        br_snapshots_2_1 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[1])
-        br_snapshots_2_1 <= io_remap_reqs_1_pdst;
-      else if (_GEN[1])
-        br_snapshots_2_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_1 <= map_table_1;
-      if (_GEN_1[2])
-        br_snapshots_2_2 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[2])
-        br_snapshots_2_2 <= io_remap_reqs_1_pdst;
-      else if (_GEN[2])
-        br_snapshots_2_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_2 <= map_table_2;
-      if (_GEN_1[3])
-        br_snapshots_2_3 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[3])
-        br_snapshots_2_3 <= io_remap_reqs_1_pdst;
-      else if (_GEN[3])
-        br_snapshots_2_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_3 <= map_table_3;
-      if (_GEN_1[4])
-        br_snapshots_2_4 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[4])
-        br_snapshots_2_4 <= io_remap_reqs_1_pdst;
-      else if (_GEN[4])
-        br_snapshots_2_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_4 <= map_table_4;
-      if (_GEN_1[5])
-        br_snapshots_2_5 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[5])
-        br_snapshots_2_5 <= io_remap_reqs_1_pdst;
-      else if (_GEN[5])
-        br_snapshots_2_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_5 <= map_table_5;
-      if (_GEN_1[6])
-        br_snapshots_2_6 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[6])
-        br_snapshots_2_6 <= io_remap_reqs_1_pdst;
-      else if (_GEN[6])
-        br_snapshots_2_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_6 <= map_table_6;
-      if (_GEN_1[7])
-        br_snapshots_2_7 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[7])
-        br_snapshots_2_7 <= io_remap_reqs_1_pdst;
-      else if (_GEN[7])
-        br_snapshots_2_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_7 <= map_table_7;
-      if (_GEN_1[8])
-        br_snapshots_2_8 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[8])
-        br_snapshots_2_8 <= io_remap_reqs_1_pdst;
-      else if (_GEN[8])
-        br_snapshots_2_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_8 <= map_table_8;
-      if (_GEN_1[9])
-        br_snapshots_2_9 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[9])
-        br_snapshots_2_9 <= io_remap_reqs_1_pdst;
-      else if (_GEN[9])
-        br_snapshots_2_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_9 <= map_table_9;
-      if (_GEN_1[10])
-        br_snapshots_2_10 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[10])
-        br_snapshots_2_10 <= io_remap_reqs_1_pdst;
-      else if (_GEN[10])
-        br_snapshots_2_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_10 <= map_table_10;
-      if (_GEN_1[11])
-        br_snapshots_2_11 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[11])
-        br_snapshots_2_11 <= io_remap_reqs_1_pdst;
-      else if (_GEN[11])
-        br_snapshots_2_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_11 <= map_table_11;
-      if (_GEN_1[12])
-        br_snapshots_2_12 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[12])
-        br_snapshots_2_12 <= io_remap_reqs_1_pdst;
-      else if (_GEN[12])
-        br_snapshots_2_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_12 <= map_table_12;
-      if (_GEN_1[13])
-        br_snapshots_2_13 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[13])
-        br_snapshots_2_13 <= io_remap_reqs_1_pdst;
-      else if (_GEN[13])
-        br_snapshots_2_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_13 <= map_table_13;
-      if (_GEN_1[14])
-        br_snapshots_2_14 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[14])
-        br_snapshots_2_14 <= io_remap_reqs_1_pdst;
-      else if (_GEN[14])
-        br_snapshots_2_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_14 <= map_table_14;
-      if (_GEN_1[15])
-        br_snapshots_2_15 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[15])
-        br_snapshots_2_15 <= io_remap_reqs_1_pdst;
-      else if (_GEN[15])
-        br_snapshots_2_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_15 <= map_table_15;
-      if (_GEN_1[16])
-        br_snapshots_2_16 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[16])
-        br_snapshots_2_16 <= io_remap_reqs_1_pdst;
-      else if (_GEN[16])
-        br_snapshots_2_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_16 <= map_table_16;
-      if (_GEN_1[17])
-        br_snapshots_2_17 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[17])
-        br_snapshots_2_17 <= io_remap_reqs_1_pdst;
-      else if (_GEN[17])
-        br_snapshots_2_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_17 <= map_table_17;
-      if (_GEN_1[18])
-        br_snapshots_2_18 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[18])
-        br_snapshots_2_18 <= io_remap_reqs_1_pdst;
-      else if (_GEN[18])
-        br_snapshots_2_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_18 <= map_table_18;
-      if (_GEN_1[19])
-        br_snapshots_2_19 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[19])
-        br_snapshots_2_19 <= io_remap_reqs_1_pdst;
-      else if (_GEN[19])
-        br_snapshots_2_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_19 <= map_table_19;
-      if (_GEN_1[20])
-        br_snapshots_2_20 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[20])
-        br_snapshots_2_20 <= io_remap_reqs_1_pdst;
-      else if (_GEN[20])
-        br_snapshots_2_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_20 <= map_table_20;
-      if (_GEN_1[21])
-        br_snapshots_2_21 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[21])
-        br_snapshots_2_21 <= io_remap_reqs_1_pdst;
-      else if (_GEN[21])
-        br_snapshots_2_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_21 <= map_table_21;
-      if (_GEN_1[22])
-        br_snapshots_2_22 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[22])
-        br_snapshots_2_22 <= io_remap_reqs_1_pdst;
-      else if (_GEN[22])
-        br_snapshots_2_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_22 <= map_table_22;
-      if (_GEN_1[23])
-        br_snapshots_2_23 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[23])
-        br_snapshots_2_23 <= io_remap_reqs_1_pdst;
-      else if (_GEN[23])
-        br_snapshots_2_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_23 <= map_table_23;
-      if (_GEN_1[24])
-        br_snapshots_2_24 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[24])
-        br_snapshots_2_24 <= io_remap_reqs_1_pdst;
-      else if (_GEN[24])
-        br_snapshots_2_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_24 <= map_table_24;
-      if (_GEN_1[25])
-        br_snapshots_2_25 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[25])
-        br_snapshots_2_25 <= io_remap_reqs_1_pdst;
-      else if (_GEN[25])
-        br_snapshots_2_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_25 <= map_table_25;
-      if (_GEN_1[26])
-        br_snapshots_2_26 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[26])
-        br_snapshots_2_26 <= io_remap_reqs_1_pdst;
-      else if (_GEN[26])
-        br_snapshots_2_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_26 <= map_table_26;
-      if (_GEN_1[27])
-        br_snapshots_2_27 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[27])
-        br_snapshots_2_27 <= io_remap_reqs_1_pdst;
-      else if (_GEN[27])
-        br_snapshots_2_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_27 <= map_table_27;
-      if (_GEN_1[28])
-        br_snapshots_2_28 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[28])
-        br_snapshots_2_28 <= io_remap_reqs_1_pdst;
-      else if (_GEN[28])
-        br_snapshots_2_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_28 <= map_table_28;
-      if (_GEN_1[29])
-        br_snapshots_2_29 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[29])
-        br_snapshots_2_29 <= io_remap_reqs_1_pdst;
-      else if (_GEN[29])
-        br_snapshots_2_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_29 <= map_table_29;
-      if (_GEN_1[30])
-        br_snapshots_2_30 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[30])
-        br_snapshots_2_30 <= io_remap_reqs_1_pdst;
-      else if (_GEN[30])
-        br_snapshots_2_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_30 <= map_table_30;
-      if (_GEN_1[31])
-        br_snapshots_2_31 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[31])
-        br_snapshots_2_31 <= io_remap_reqs_1_pdst;
-      else if (_GEN[31])
-        br_snapshots_2_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_31 <= map_table_31;
+      br_snapshots_2_0 <= remap_table_3_0;
+      br_snapshots_2_1 <= remap_table_3_1;
+      br_snapshots_2_2 <= remap_table_3_2;
+      br_snapshots_2_3 <= remap_table_3_3;
+      br_snapshots_2_4 <= remap_table_3_4;
+      br_snapshots_2_5 <= remap_table_3_5;
+      br_snapshots_2_6 <= remap_table_3_6;
+      br_snapshots_2_7 <= remap_table_3_7;
+      br_snapshots_2_8 <= remap_table_3_8;
+      br_snapshots_2_9 <= remap_table_3_9;
+      br_snapshots_2_10 <= remap_table_3_10;
+      br_snapshots_2_11 <= remap_table_3_11;
+      br_snapshots_2_12 <= remap_table_3_12;
+      br_snapshots_2_13 <= remap_table_3_13;
+      br_snapshots_2_14 <= remap_table_3_14;
+      br_snapshots_2_15 <= remap_table_3_15;
+      br_snapshots_2_16 <= remap_table_3_16;
+      br_snapshots_2_17 <= remap_table_3_17;
+      br_snapshots_2_18 <= remap_table_3_18;
+      br_snapshots_2_19 <= remap_table_3_19;
+      br_snapshots_2_20 <= remap_table_3_20;
+      br_snapshots_2_21 <= remap_table_3_21;
+      br_snapshots_2_22 <= remap_table_3_22;
+      br_snapshots_2_23 <= remap_table_3_23;
+      br_snapshots_2_24 <= remap_table_3_24;
+      br_snapshots_2_25 <= remap_table_3_25;
+      br_snapshots_2_26 <= remap_table_3_26;
+      br_snapshots_2_27 <= remap_table_3_27;
+      br_snapshots_2_28 <= remap_table_3_28;
+      br_snapshots_2_29 <= remap_table_3_29;
+      br_snapshots_2_30 <= remap_table_3_30;
+      br_snapshots_2_31 <= remap_table_3_31;
     end
     else if (io_ren_br_tags_1_valid & io_ren_br_tags_1_bits == 5'h2) begin
-      if (_GEN_0[0])
-        br_snapshots_2_0 <= io_remap_reqs_1_pdst;
-      else if (_GEN[0])
-        br_snapshots_2_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_0 <= map_table_0;
-      if (_GEN_0[1])
-        br_snapshots_2_1 <= io_remap_reqs_1_pdst;
-      else if (_GEN[1])
-        br_snapshots_2_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_1 <= map_table_1;
-      if (_GEN_0[2])
-        br_snapshots_2_2 <= io_remap_reqs_1_pdst;
-      else if (_GEN[2])
-        br_snapshots_2_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_2 <= map_table_2;
-      if (_GEN_0[3])
-        br_snapshots_2_3 <= io_remap_reqs_1_pdst;
-      else if (_GEN[3])
-        br_snapshots_2_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_3 <= map_table_3;
-      if (_GEN_0[4])
-        br_snapshots_2_4 <= io_remap_reqs_1_pdst;
-      else if (_GEN[4])
-        br_snapshots_2_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_4 <= map_table_4;
-      if (_GEN_0[5])
-        br_snapshots_2_5 <= io_remap_reqs_1_pdst;
-      else if (_GEN[5])
-        br_snapshots_2_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_5 <= map_table_5;
-      if (_GEN_0[6])
-        br_snapshots_2_6 <= io_remap_reqs_1_pdst;
-      else if (_GEN[6])
-        br_snapshots_2_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_6 <= map_table_6;
-      if (_GEN_0[7])
-        br_snapshots_2_7 <= io_remap_reqs_1_pdst;
-      else if (_GEN[7])
-        br_snapshots_2_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_7 <= map_table_7;
-      if (_GEN_0[8])
-        br_snapshots_2_8 <= io_remap_reqs_1_pdst;
-      else if (_GEN[8])
-        br_snapshots_2_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_8 <= map_table_8;
-      if (_GEN_0[9])
-        br_snapshots_2_9 <= io_remap_reqs_1_pdst;
-      else if (_GEN[9])
-        br_snapshots_2_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_9 <= map_table_9;
-      if (_GEN_0[10])
-        br_snapshots_2_10 <= io_remap_reqs_1_pdst;
-      else if (_GEN[10])
-        br_snapshots_2_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_10 <= map_table_10;
-      if (_GEN_0[11])
-        br_snapshots_2_11 <= io_remap_reqs_1_pdst;
-      else if (_GEN[11])
-        br_snapshots_2_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_11 <= map_table_11;
-      if (_GEN_0[12])
-        br_snapshots_2_12 <= io_remap_reqs_1_pdst;
-      else if (_GEN[12])
-        br_snapshots_2_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_12 <= map_table_12;
-      if (_GEN_0[13])
-        br_snapshots_2_13 <= io_remap_reqs_1_pdst;
-      else if (_GEN[13])
-        br_snapshots_2_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_13 <= map_table_13;
-      if (_GEN_0[14])
-        br_snapshots_2_14 <= io_remap_reqs_1_pdst;
-      else if (_GEN[14])
-        br_snapshots_2_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_14 <= map_table_14;
-      if (_GEN_0[15])
-        br_snapshots_2_15 <= io_remap_reqs_1_pdst;
-      else if (_GEN[15])
-        br_snapshots_2_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_15 <= map_table_15;
-      if (_GEN_0[16])
-        br_snapshots_2_16 <= io_remap_reqs_1_pdst;
-      else if (_GEN[16])
-        br_snapshots_2_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_16 <= map_table_16;
-      if (_GEN_0[17])
-        br_snapshots_2_17 <= io_remap_reqs_1_pdst;
-      else if (_GEN[17])
-        br_snapshots_2_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_17 <= map_table_17;
-      if (_GEN_0[18])
-        br_snapshots_2_18 <= io_remap_reqs_1_pdst;
-      else if (_GEN[18])
-        br_snapshots_2_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_18 <= map_table_18;
-      if (_GEN_0[19])
-        br_snapshots_2_19 <= io_remap_reqs_1_pdst;
-      else if (_GEN[19])
-        br_snapshots_2_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_19 <= map_table_19;
-      if (_GEN_0[20])
-        br_snapshots_2_20 <= io_remap_reqs_1_pdst;
-      else if (_GEN[20])
-        br_snapshots_2_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_20 <= map_table_20;
-      if (_GEN_0[21])
-        br_snapshots_2_21 <= io_remap_reqs_1_pdst;
-      else if (_GEN[21])
-        br_snapshots_2_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_21 <= map_table_21;
-      if (_GEN_0[22])
-        br_snapshots_2_22 <= io_remap_reqs_1_pdst;
-      else if (_GEN[22])
-        br_snapshots_2_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_22 <= map_table_22;
-      if (_GEN_0[23])
-        br_snapshots_2_23 <= io_remap_reqs_1_pdst;
-      else if (_GEN[23])
-        br_snapshots_2_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_23 <= map_table_23;
-      if (_GEN_0[24])
-        br_snapshots_2_24 <= io_remap_reqs_1_pdst;
-      else if (_GEN[24])
-        br_snapshots_2_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_24 <= map_table_24;
-      if (_GEN_0[25])
-        br_snapshots_2_25 <= io_remap_reqs_1_pdst;
-      else if (_GEN[25])
-        br_snapshots_2_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_25 <= map_table_25;
-      if (_GEN_0[26])
-        br_snapshots_2_26 <= io_remap_reqs_1_pdst;
-      else if (_GEN[26])
-        br_snapshots_2_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_26 <= map_table_26;
-      if (_GEN_0[27])
-        br_snapshots_2_27 <= io_remap_reqs_1_pdst;
-      else if (_GEN[27])
-        br_snapshots_2_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_27 <= map_table_27;
-      if (_GEN_0[28])
-        br_snapshots_2_28 <= io_remap_reqs_1_pdst;
-      else if (_GEN[28])
-        br_snapshots_2_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_28 <= map_table_28;
-      if (_GEN_0[29])
-        br_snapshots_2_29 <= io_remap_reqs_1_pdst;
-      else if (_GEN[29])
-        br_snapshots_2_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_29 <= map_table_29;
-      if (_GEN_0[30])
-        br_snapshots_2_30 <= io_remap_reqs_1_pdst;
-      else if (_GEN[30])
-        br_snapshots_2_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_30 <= map_table_30;
-      if (_GEN_0[31])
-        br_snapshots_2_31 <= io_remap_reqs_1_pdst;
-      else if (_GEN[31])
-        br_snapshots_2_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_31 <= map_table_31;
+      br_snapshots_2_0 <= remap_table_2_0;
+      br_snapshots_2_1 <= remap_table_2_1;
+      br_snapshots_2_2 <= remap_table_2_2;
+      br_snapshots_2_3 <= remap_table_2_3;
+      br_snapshots_2_4 <= remap_table_2_4;
+      br_snapshots_2_5 <= remap_table_2_5;
+      br_snapshots_2_6 <= remap_table_2_6;
+      br_snapshots_2_7 <= remap_table_2_7;
+      br_snapshots_2_8 <= remap_table_2_8;
+      br_snapshots_2_9 <= remap_table_2_9;
+      br_snapshots_2_10 <= remap_table_2_10;
+      br_snapshots_2_11 <= remap_table_2_11;
+      br_snapshots_2_12 <= remap_table_2_12;
+      br_snapshots_2_13 <= remap_table_2_13;
+      br_snapshots_2_14 <= remap_table_2_14;
+      br_snapshots_2_15 <= remap_table_2_15;
+      br_snapshots_2_16 <= remap_table_2_16;
+      br_snapshots_2_17 <= remap_table_2_17;
+      br_snapshots_2_18 <= remap_table_2_18;
+      br_snapshots_2_19 <= remap_table_2_19;
+      br_snapshots_2_20 <= remap_table_2_20;
+      br_snapshots_2_21 <= remap_table_2_21;
+      br_snapshots_2_22 <= remap_table_2_22;
+      br_snapshots_2_23 <= remap_table_2_23;
+      br_snapshots_2_24 <= remap_table_2_24;
+      br_snapshots_2_25 <= remap_table_2_25;
+      br_snapshots_2_26 <= remap_table_2_26;
+      br_snapshots_2_27 <= remap_table_2_27;
+      br_snapshots_2_28 <= remap_table_2_28;
+      br_snapshots_2_29 <= remap_table_2_29;
+      br_snapshots_2_30 <= remap_table_2_30;
+      br_snapshots_2_31 <= remap_table_2_31;
     end
     else if (io_ren_br_tags_0_valid & io_ren_br_tags_0_bits == 5'h2) begin
-      if (_GEN[0])
-        br_snapshots_2_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_0 <= map_table_0;
-      if (_GEN[1])
-        br_snapshots_2_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_1 <= map_table_1;
-      if (_GEN[2])
-        br_snapshots_2_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_2 <= map_table_2;
-      if (_GEN[3])
-        br_snapshots_2_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_3 <= map_table_3;
-      if (_GEN[4])
-        br_snapshots_2_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_4 <= map_table_4;
-      if (_GEN[5])
-        br_snapshots_2_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_5 <= map_table_5;
-      if (_GEN[6])
-        br_snapshots_2_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_6 <= map_table_6;
-      if (_GEN[7])
-        br_snapshots_2_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_7 <= map_table_7;
-      if (_GEN[8])
-        br_snapshots_2_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_8 <= map_table_8;
-      if (_GEN[9])
-        br_snapshots_2_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_9 <= map_table_9;
-      if (_GEN[10])
-        br_snapshots_2_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_10 <= map_table_10;
-      if (_GEN[11])
-        br_snapshots_2_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_11 <= map_table_11;
-      if (_GEN[12])
-        br_snapshots_2_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_12 <= map_table_12;
-      if (_GEN[13])
-        br_snapshots_2_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_13 <= map_table_13;
-      if (_GEN[14])
-        br_snapshots_2_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_14 <= map_table_14;
-      if (_GEN[15])
-        br_snapshots_2_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_15 <= map_table_15;
-      if (_GEN[16])
-        br_snapshots_2_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_16 <= map_table_16;
-      if (_GEN[17])
-        br_snapshots_2_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_17 <= map_table_17;
-      if (_GEN[18])
-        br_snapshots_2_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_18 <= map_table_18;
-      if (_GEN[19])
-        br_snapshots_2_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_19 <= map_table_19;
-      if (_GEN[20])
-        br_snapshots_2_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_20 <= map_table_20;
-      if (_GEN[21])
-        br_snapshots_2_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_21 <= map_table_21;
-      if (_GEN[22])
-        br_snapshots_2_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_22 <= map_table_22;
-      if (_GEN[23])
-        br_snapshots_2_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_23 <= map_table_23;
-      if (_GEN[24])
-        br_snapshots_2_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_24 <= map_table_24;
-      if (_GEN[25])
-        br_snapshots_2_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_25 <= map_table_25;
-      if (_GEN[26])
-        br_snapshots_2_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_26 <= map_table_26;
-      if (_GEN[27])
-        br_snapshots_2_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_27 <= map_table_27;
-      if (_GEN[28])
-        br_snapshots_2_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_28 <= map_table_28;
-      if (_GEN[29])
-        br_snapshots_2_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_29 <= map_table_29;
-      if (_GEN[30])
-        br_snapshots_2_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_30 <= map_table_30;
-      if (_GEN[31])
-        br_snapshots_2_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_2_31 <= map_table_31;
+      br_snapshots_2_0 <= remap_table_1_0;
+      br_snapshots_2_1 <= remap_table_1_1;
+      br_snapshots_2_2 <= remap_table_1_2;
+      br_snapshots_2_3 <= remap_table_1_3;
+      br_snapshots_2_4 <= remap_table_1_4;
+      br_snapshots_2_5 <= remap_table_1_5;
+      br_snapshots_2_6 <= remap_table_1_6;
+      br_snapshots_2_7 <= remap_table_1_7;
+      br_snapshots_2_8 <= remap_table_1_8;
+      br_snapshots_2_9 <= remap_table_1_9;
+      br_snapshots_2_10 <= remap_table_1_10;
+      br_snapshots_2_11 <= remap_table_1_11;
+      br_snapshots_2_12 <= remap_table_1_12;
+      br_snapshots_2_13 <= remap_table_1_13;
+      br_snapshots_2_14 <= remap_table_1_14;
+      br_snapshots_2_15 <= remap_table_1_15;
+      br_snapshots_2_16 <= remap_table_1_16;
+      br_snapshots_2_17 <= remap_table_1_17;
+      br_snapshots_2_18 <= remap_table_1_18;
+      br_snapshots_2_19 <= remap_table_1_19;
+      br_snapshots_2_20 <= remap_table_1_20;
+      br_snapshots_2_21 <= remap_table_1_21;
+      br_snapshots_2_22 <= remap_table_1_22;
+      br_snapshots_2_23 <= remap_table_1_23;
+      br_snapshots_2_24 <= remap_table_1_24;
+      br_snapshots_2_25 <= remap_table_1_25;
+      br_snapshots_2_26 <= remap_table_1_26;
+      br_snapshots_2_27 <= remap_table_1_27;
+      br_snapshots_2_28 <= remap_table_1_28;
+      br_snapshots_2_29 <= remap_table_1_29;
+      br_snapshots_2_30 <= remap_table_1_30;
+      br_snapshots_2_31 <= remap_table_1_31;
     end
     if (io_ren_br_tags_3_valid & io_ren_br_tags_3_bits == 5'h3) begin
-      if (_GEN_2[0])
-        br_snapshots_3_0 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[0])
-        br_snapshots_3_0 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[0])
-        br_snapshots_3_0 <= io_remap_reqs_1_pdst;
-      else if (_GEN[0])
-        br_snapshots_3_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_0 <= map_table_0;
-      if (_GEN_2[1])
-        br_snapshots_3_1 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[1])
-        br_snapshots_3_1 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[1])
-        br_snapshots_3_1 <= io_remap_reqs_1_pdst;
-      else if (_GEN[1])
-        br_snapshots_3_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_1 <= map_table_1;
-      if (_GEN_2[2])
-        br_snapshots_3_2 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[2])
-        br_snapshots_3_2 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[2])
-        br_snapshots_3_2 <= io_remap_reqs_1_pdst;
-      else if (_GEN[2])
-        br_snapshots_3_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_2 <= map_table_2;
-      if (_GEN_2[3])
-        br_snapshots_3_3 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[3])
-        br_snapshots_3_3 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[3])
-        br_snapshots_3_3 <= io_remap_reqs_1_pdst;
-      else if (_GEN[3])
-        br_snapshots_3_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_3 <= map_table_3;
-      if (_GEN_2[4])
-        br_snapshots_3_4 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[4])
-        br_snapshots_3_4 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[4])
-        br_snapshots_3_4 <= io_remap_reqs_1_pdst;
-      else if (_GEN[4])
-        br_snapshots_3_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_4 <= map_table_4;
-      if (_GEN_2[5])
-        br_snapshots_3_5 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[5])
-        br_snapshots_3_5 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[5])
-        br_snapshots_3_5 <= io_remap_reqs_1_pdst;
-      else if (_GEN[5])
-        br_snapshots_3_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_5 <= map_table_5;
-      if (_GEN_2[6])
-        br_snapshots_3_6 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[6])
-        br_snapshots_3_6 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[6])
-        br_snapshots_3_6 <= io_remap_reqs_1_pdst;
-      else if (_GEN[6])
-        br_snapshots_3_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_6 <= map_table_6;
-      if (_GEN_2[7])
-        br_snapshots_3_7 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[7])
-        br_snapshots_3_7 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[7])
-        br_snapshots_3_7 <= io_remap_reqs_1_pdst;
-      else if (_GEN[7])
-        br_snapshots_3_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_7 <= map_table_7;
-      if (_GEN_2[8])
-        br_snapshots_3_8 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[8])
-        br_snapshots_3_8 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[8])
-        br_snapshots_3_8 <= io_remap_reqs_1_pdst;
-      else if (_GEN[8])
-        br_snapshots_3_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_8 <= map_table_8;
-      if (_GEN_2[9])
-        br_snapshots_3_9 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[9])
-        br_snapshots_3_9 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[9])
-        br_snapshots_3_9 <= io_remap_reqs_1_pdst;
-      else if (_GEN[9])
-        br_snapshots_3_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_9 <= map_table_9;
-      if (_GEN_2[10])
-        br_snapshots_3_10 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[10])
-        br_snapshots_3_10 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[10])
-        br_snapshots_3_10 <= io_remap_reqs_1_pdst;
-      else if (_GEN[10])
-        br_snapshots_3_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_10 <= map_table_10;
-      if (_GEN_2[11])
-        br_snapshots_3_11 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[11])
-        br_snapshots_3_11 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[11])
-        br_snapshots_3_11 <= io_remap_reqs_1_pdst;
-      else if (_GEN[11])
-        br_snapshots_3_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_11 <= map_table_11;
-      if (_GEN_2[12])
-        br_snapshots_3_12 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[12])
-        br_snapshots_3_12 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[12])
-        br_snapshots_3_12 <= io_remap_reqs_1_pdst;
-      else if (_GEN[12])
-        br_snapshots_3_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_12 <= map_table_12;
-      if (_GEN_2[13])
-        br_snapshots_3_13 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[13])
-        br_snapshots_3_13 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[13])
-        br_snapshots_3_13 <= io_remap_reqs_1_pdst;
-      else if (_GEN[13])
-        br_snapshots_3_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_13 <= map_table_13;
-      if (_GEN_2[14])
-        br_snapshots_3_14 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[14])
-        br_snapshots_3_14 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[14])
-        br_snapshots_3_14 <= io_remap_reqs_1_pdst;
-      else if (_GEN[14])
-        br_snapshots_3_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_14 <= map_table_14;
-      if (_GEN_2[15])
-        br_snapshots_3_15 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[15])
-        br_snapshots_3_15 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[15])
-        br_snapshots_3_15 <= io_remap_reqs_1_pdst;
-      else if (_GEN[15])
-        br_snapshots_3_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_15 <= map_table_15;
-      if (_GEN_2[16])
-        br_snapshots_3_16 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[16])
-        br_snapshots_3_16 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[16])
-        br_snapshots_3_16 <= io_remap_reqs_1_pdst;
-      else if (_GEN[16])
-        br_snapshots_3_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_16 <= map_table_16;
-      if (_GEN_2[17])
-        br_snapshots_3_17 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[17])
-        br_snapshots_3_17 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[17])
-        br_snapshots_3_17 <= io_remap_reqs_1_pdst;
-      else if (_GEN[17])
-        br_snapshots_3_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_17 <= map_table_17;
-      if (_GEN_2[18])
-        br_snapshots_3_18 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[18])
-        br_snapshots_3_18 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[18])
-        br_snapshots_3_18 <= io_remap_reqs_1_pdst;
-      else if (_GEN[18])
-        br_snapshots_3_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_18 <= map_table_18;
-      if (_GEN_2[19])
-        br_snapshots_3_19 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[19])
-        br_snapshots_3_19 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[19])
-        br_snapshots_3_19 <= io_remap_reqs_1_pdst;
-      else if (_GEN[19])
-        br_snapshots_3_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_19 <= map_table_19;
-      if (_GEN_2[20])
-        br_snapshots_3_20 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[20])
-        br_snapshots_3_20 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[20])
-        br_snapshots_3_20 <= io_remap_reqs_1_pdst;
-      else if (_GEN[20])
-        br_snapshots_3_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_20 <= map_table_20;
-      if (_GEN_2[21])
-        br_snapshots_3_21 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[21])
-        br_snapshots_3_21 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[21])
-        br_snapshots_3_21 <= io_remap_reqs_1_pdst;
-      else if (_GEN[21])
-        br_snapshots_3_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_21 <= map_table_21;
-      if (_GEN_2[22])
-        br_snapshots_3_22 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[22])
-        br_snapshots_3_22 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[22])
-        br_snapshots_3_22 <= io_remap_reqs_1_pdst;
-      else if (_GEN[22])
-        br_snapshots_3_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_22 <= map_table_22;
-      if (_GEN_2[23])
-        br_snapshots_3_23 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[23])
-        br_snapshots_3_23 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[23])
-        br_snapshots_3_23 <= io_remap_reqs_1_pdst;
-      else if (_GEN[23])
-        br_snapshots_3_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_23 <= map_table_23;
-      if (_GEN_2[24])
-        br_snapshots_3_24 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[24])
-        br_snapshots_3_24 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[24])
-        br_snapshots_3_24 <= io_remap_reqs_1_pdst;
-      else if (_GEN[24])
-        br_snapshots_3_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_24 <= map_table_24;
-      if (_GEN_2[25])
-        br_snapshots_3_25 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[25])
-        br_snapshots_3_25 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[25])
-        br_snapshots_3_25 <= io_remap_reqs_1_pdst;
-      else if (_GEN[25])
-        br_snapshots_3_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_25 <= map_table_25;
-      if (_GEN_2[26])
-        br_snapshots_3_26 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[26])
-        br_snapshots_3_26 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[26])
-        br_snapshots_3_26 <= io_remap_reqs_1_pdst;
-      else if (_GEN[26])
-        br_snapshots_3_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_26 <= map_table_26;
-      if (_GEN_2[27])
-        br_snapshots_3_27 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[27])
-        br_snapshots_3_27 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[27])
-        br_snapshots_3_27 <= io_remap_reqs_1_pdst;
-      else if (_GEN[27])
-        br_snapshots_3_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_27 <= map_table_27;
-      if (_GEN_2[28])
-        br_snapshots_3_28 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[28])
-        br_snapshots_3_28 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[28])
-        br_snapshots_3_28 <= io_remap_reqs_1_pdst;
-      else if (_GEN[28])
-        br_snapshots_3_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_28 <= map_table_28;
-      if (_GEN_2[29])
-        br_snapshots_3_29 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[29])
-        br_snapshots_3_29 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[29])
-        br_snapshots_3_29 <= io_remap_reqs_1_pdst;
-      else if (_GEN[29])
-        br_snapshots_3_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_29 <= map_table_29;
-      if (_GEN_2[30])
-        br_snapshots_3_30 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[30])
-        br_snapshots_3_30 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[30])
-        br_snapshots_3_30 <= io_remap_reqs_1_pdst;
-      else if (_GEN[30])
-        br_snapshots_3_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_30 <= map_table_30;
-      if (_GEN_2[31])
-        br_snapshots_3_31 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[31])
-        br_snapshots_3_31 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[31])
-        br_snapshots_3_31 <= io_remap_reqs_1_pdst;
-      else if (_GEN[31])
-        br_snapshots_3_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_31 <= map_table_31;
+      br_snapshots_3_0 <= remap_table_4_0;
+      br_snapshots_3_1 <= remap_table_4_1;
+      br_snapshots_3_2 <= remap_table_4_2;
+      br_snapshots_3_3 <= remap_table_4_3;
+      br_snapshots_3_4 <= remap_table_4_4;
+      br_snapshots_3_5 <= remap_table_4_5;
+      br_snapshots_3_6 <= remap_table_4_6;
+      br_snapshots_3_7 <= remap_table_4_7;
+      br_snapshots_3_8 <= remap_table_4_8;
+      br_snapshots_3_9 <= remap_table_4_9;
+      br_snapshots_3_10 <= remap_table_4_10;
+      br_snapshots_3_11 <= remap_table_4_11;
+      br_snapshots_3_12 <= remap_table_4_12;
+      br_snapshots_3_13 <= remap_table_4_13;
+      br_snapshots_3_14 <= remap_table_4_14;
+      br_snapshots_3_15 <= remap_table_4_15;
+      br_snapshots_3_16 <= remap_table_4_16;
+      br_snapshots_3_17 <= remap_table_4_17;
+      br_snapshots_3_18 <= remap_table_4_18;
+      br_snapshots_3_19 <= remap_table_4_19;
+      br_snapshots_3_20 <= remap_table_4_20;
+      br_snapshots_3_21 <= remap_table_4_21;
+      br_snapshots_3_22 <= remap_table_4_22;
+      br_snapshots_3_23 <= remap_table_4_23;
+      br_snapshots_3_24 <= remap_table_4_24;
+      br_snapshots_3_25 <= remap_table_4_25;
+      br_snapshots_3_26 <= remap_table_4_26;
+      br_snapshots_3_27 <= remap_table_4_27;
+      br_snapshots_3_28 <= remap_table_4_28;
+      br_snapshots_3_29 <= remap_table_4_29;
+      br_snapshots_3_30 <= remap_table_4_30;
+      br_snapshots_3_31 <= remap_table_4_31;
     end
     else if (io_ren_br_tags_2_valid & io_ren_br_tags_2_bits == 5'h3) begin
-      if (_GEN_1[0])
-        br_snapshots_3_0 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[0])
-        br_snapshots_3_0 <= io_remap_reqs_1_pdst;
-      else if (_GEN[0])
-        br_snapshots_3_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_0 <= map_table_0;
-      if (_GEN_1[1])
-        br_snapshots_3_1 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[1])
-        br_snapshots_3_1 <= io_remap_reqs_1_pdst;
-      else if (_GEN[1])
-        br_snapshots_3_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_1 <= map_table_1;
-      if (_GEN_1[2])
-        br_snapshots_3_2 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[2])
-        br_snapshots_3_2 <= io_remap_reqs_1_pdst;
-      else if (_GEN[2])
-        br_snapshots_3_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_2 <= map_table_2;
-      if (_GEN_1[3])
-        br_snapshots_3_3 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[3])
-        br_snapshots_3_3 <= io_remap_reqs_1_pdst;
-      else if (_GEN[3])
-        br_snapshots_3_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_3 <= map_table_3;
-      if (_GEN_1[4])
-        br_snapshots_3_4 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[4])
-        br_snapshots_3_4 <= io_remap_reqs_1_pdst;
-      else if (_GEN[4])
-        br_snapshots_3_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_4 <= map_table_4;
-      if (_GEN_1[5])
-        br_snapshots_3_5 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[5])
-        br_snapshots_3_5 <= io_remap_reqs_1_pdst;
-      else if (_GEN[5])
-        br_snapshots_3_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_5 <= map_table_5;
-      if (_GEN_1[6])
-        br_snapshots_3_6 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[6])
-        br_snapshots_3_6 <= io_remap_reqs_1_pdst;
-      else if (_GEN[6])
-        br_snapshots_3_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_6 <= map_table_6;
-      if (_GEN_1[7])
-        br_snapshots_3_7 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[7])
-        br_snapshots_3_7 <= io_remap_reqs_1_pdst;
-      else if (_GEN[7])
-        br_snapshots_3_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_7 <= map_table_7;
-      if (_GEN_1[8])
-        br_snapshots_3_8 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[8])
-        br_snapshots_3_8 <= io_remap_reqs_1_pdst;
-      else if (_GEN[8])
-        br_snapshots_3_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_8 <= map_table_8;
-      if (_GEN_1[9])
-        br_snapshots_3_9 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[9])
-        br_snapshots_3_9 <= io_remap_reqs_1_pdst;
-      else if (_GEN[9])
-        br_snapshots_3_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_9 <= map_table_9;
-      if (_GEN_1[10])
-        br_snapshots_3_10 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[10])
-        br_snapshots_3_10 <= io_remap_reqs_1_pdst;
-      else if (_GEN[10])
-        br_snapshots_3_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_10 <= map_table_10;
-      if (_GEN_1[11])
-        br_snapshots_3_11 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[11])
-        br_snapshots_3_11 <= io_remap_reqs_1_pdst;
-      else if (_GEN[11])
-        br_snapshots_3_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_11 <= map_table_11;
-      if (_GEN_1[12])
-        br_snapshots_3_12 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[12])
-        br_snapshots_3_12 <= io_remap_reqs_1_pdst;
-      else if (_GEN[12])
-        br_snapshots_3_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_12 <= map_table_12;
-      if (_GEN_1[13])
-        br_snapshots_3_13 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[13])
-        br_snapshots_3_13 <= io_remap_reqs_1_pdst;
-      else if (_GEN[13])
-        br_snapshots_3_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_13 <= map_table_13;
-      if (_GEN_1[14])
-        br_snapshots_3_14 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[14])
-        br_snapshots_3_14 <= io_remap_reqs_1_pdst;
-      else if (_GEN[14])
-        br_snapshots_3_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_14 <= map_table_14;
-      if (_GEN_1[15])
-        br_snapshots_3_15 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[15])
-        br_snapshots_3_15 <= io_remap_reqs_1_pdst;
-      else if (_GEN[15])
-        br_snapshots_3_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_15 <= map_table_15;
-      if (_GEN_1[16])
-        br_snapshots_3_16 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[16])
-        br_snapshots_3_16 <= io_remap_reqs_1_pdst;
-      else if (_GEN[16])
-        br_snapshots_3_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_16 <= map_table_16;
-      if (_GEN_1[17])
-        br_snapshots_3_17 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[17])
-        br_snapshots_3_17 <= io_remap_reqs_1_pdst;
-      else if (_GEN[17])
-        br_snapshots_3_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_17 <= map_table_17;
-      if (_GEN_1[18])
-        br_snapshots_3_18 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[18])
-        br_snapshots_3_18 <= io_remap_reqs_1_pdst;
-      else if (_GEN[18])
-        br_snapshots_3_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_18 <= map_table_18;
-      if (_GEN_1[19])
-        br_snapshots_3_19 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[19])
-        br_snapshots_3_19 <= io_remap_reqs_1_pdst;
-      else if (_GEN[19])
-        br_snapshots_3_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_19 <= map_table_19;
-      if (_GEN_1[20])
-        br_snapshots_3_20 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[20])
-        br_snapshots_3_20 <= io_remap_reqs_1_pdst;
-      else if (_GEN[20])
-        br_snapshots_3_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_20 <= map_table_20;
-      if (_GEN_1[21])
-        br_snapshots_3_21 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[21])
-        br_snapshots_3_21 <= io_remap_reqs_1_pdst;
-      else if (_GEN[21])
-        br_snapshots_3_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_21 <= map_table_21;
-      if (_GEN_1[22])
-        br_snapshots_3_22 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[22])
-        br_snapshots_3_22 <= io_remap_reqs_1_pdst;
-      else if (_GEN[22])
-        br_snapshots_3_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_22 <= map_table_22;
-      if (_GEN_1[23])
-        br_snapshots_3_23 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[23])
-        br_snapshots_3_23 <= io_remap_reqs_1_pdst;
-      else if (_GEN[23])
-        br_snapshots_3_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_23 <= map_table_23;
-      if (_GEN_1[24])
-        br_snapshots_3_24 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[24])
-        br_snapshots_3_24 <= io_remap_reqs_1_pdst;
-      else if (_GEN[24])
-        br_snapshots_3_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_24 <= map_table_24;
-      if (_GEN_1[25])
-        br_snapshots_3_25 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[25])
-        br_snapshots_3_25 <= io_remap_reqs_1_pdst;
-      else if (_GEN[25])
-        br_snapshots_3_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_25 <= map_table_25;
-      if (_GEN_1[26])
-        br_snapshots_3_26 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[26])
-        br_snapshots_3_26 <= io_remap_reqs_1_pdst;
-      else if (_GEN[26])
-        br_snapshots_3_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_26 <= map_table_26;
-      if (_GEN_1[27])
-        br_snapshots_3_27 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[27])
-        br_snapshots_3_27 <= io_remap_reqs_1_pdst;
-      else if (_GEN[27])
-        br_snapshots_3_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_27 <= map_table_27;
-      if (_GEN_1[28])
-        br_snapshots_3_28 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[28])
-        br_snapshots_3_28 <= io_remap_reqs_1_pdst;
-      else if (_GEN[28])
-        br_snapshots_3_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_28 <= map_table_28;
-      if (_GEN_1[29])
-        br_snapshots_3_29 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[29])
-        br_snapshots_3_29 <= io_remap_reqs_1_pdst;
-      else if (_GEN[29])
-        br_snapshots_3_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_29 <= map_table_29;
-      if (_GEN_1[30])
-        br_snapshots_3_30 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[30])
-        br_snapshots_3_30 <= io_remap_reqs_1_pdst;
-      else if (_GEN[30])
-        br_snapshots_3_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_30 <= map_table_30;
-      if (_GEN_1[31])
-        br_snapshots_3_31 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[31])
-        br_snapshots_3_31 <= io_remap_reqs_1_pdst;
-      else if (_GEN[31])
-        br_snapshots_3_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_31 <= map_table_31;
+      br_snapshots_3_0 <= remap_table_3_0;
+      br_snapshots_3_1 <= remap_table_3_1;
+      br_snapshots_3_2 <= remap_table_3_2;
+      br_snapshots_3_3 <= remap_table_3_3;
+      br_snapshots_3_4 <= remap_table_3_4;
+      br_snapshots_3_5 <= remap_table_3_5;
+      br_snapshots_3_6 <= remap_table_3_6;
+      br_snapshots_3_7 <= remap_table_3_7;
+      br_snapshots_3_8 <= remap_table_3_8;
+      br_snapshots_3_9 <= remap_table_3_9;
+      br_snapshots_3_10 <= remap_table_3_10;
+      br_snapshots_3_11 <= remap_table_3_11;
+      br_snapshots_3_12 <= remap_table_3_12;
+      br_snapshots_3_13 <= remap_table_3_13;
+      br_snapshots_3_14 <= remap_table_3_14;
+      br_snapshots_3_15 <= remap_table_3_15;
+      br_snapshots_3_16 <= remap_table_3_16;
+      br_snapshots_3_17 <= remap_table_3_17;
+      br_snapshots_3_18 <= remap_table_3_18;
+      br_snapshots_3_19 <= remap_table_3_19;
+      br_snapshots_3_20 <= remap_table_3_20;
+      br_snapshots_3_21 <= remap_table_3_21;
+      br_snapshots_3_22 <= remap_table_3_22;
+      br_snapshots_3_23 <= remap_table_3_23;
+      br_snapshots_3_24 <= remap_table_3_24;
+      br_snapshots_3_25 <= remap_table_3_25;
+      br_snapshots_3_26 <= remap_table_3_26;
+      br_snapshots_3_27 <= remap_table_3_27;
+      br_snapshots_3_28 <= remap_table_3_28;
+      br_snapshots_3_29 <= remap_table_3_29;
+      br_snapshots_3_30 <= remap_table_3_30;
+      br_snapshots_3_31 <= remap_table_3_31;
     end
     else if (io_ren_br_tags_1_valid & io_ren_br_tags_1_bits == 5'h3) begin
-      if (_GEN_0[0])
-        br_snapshots_3_0 <= io_remap_reqs_1_pdst;
-      else if (_GEN[0])
-        br_snapshots_3_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_0 <= map_table_0;
-      if (_GEN_0[1])
-        br_snapshots_3_1 <= io_remap_reqs_1_pdst;
-      else if (_GEN[1])
-        br_snapshots_3_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_1 <= map_table_1;
-      if (_GEN_0[2])
-        br_snapshots_3_2 <= io_remap_reqs_1_pdst;
-      else if (_GEN[2])
-        br_snapshots_3_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_2 <= map_table_2;
-      if (_GEN_0[3])
-        br_snapshots_3_3 <= io_remap_reqs_1_pdst;
-      else if (_GEN[3])
-        br_snapshots_3_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_3 <= map_table_3;
-      if (_GEN_0[4])
-        br_snapshots_3_4 <= io_remap_reqs_1_pdst;
-      else if (_GEN[4])
-        br_snapshots_3_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_4 <= map_table_4;
-      if (_GEN_0[5])
-        br_snapshots_3_5 <= io_remap_reqs_1_pdst;
-      else if (_GEN[5])
-        br_snapshots_3_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_5 <= map_table_5;
-      if (_GEN_0[6])
-        br_snapshots_3_6 <= io_remap_reqs_1_pdst;
-      else if (_GEN[6])
-        br_snapshots_3_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_6 <= map_table_6;
-      if (_GEN_0[7])
-        br_snapshots_3_7 <= io_remap_reqs_1_pdst;
-      else if (_GEN[7])
-        br_snapshots_3_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_7 <= map_table_7;
-      if (_GEN_0[8])
-        br_snapshots_3_8 <= io_remap_reqs_1_pdst;
-      else if (_GEN[8])
-        br_snapshots_3_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_8 <= map_table_8;
-      if (_GEN_0[9])
-        br_snapshots_3_9 <= io_remap_reqs_1_pdst;
-      else if (_GEN[9])
-        br_snapshots_3_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_9 <= map_table_9;
-      if (_GEN_0[10])
-        br_snapshots_3_10 <= io_remap_reqs_1_pdst;
-      else if (_GEN[10])
-        br_snapshots_3_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_10 <= map_table_10;
-      if (_GEN_0[11])
-        br_snapshots_3_11 <= io_remap_reqs_1_pdst;
-      else if (_GEN[11])
-        br_snapshots_3_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_11 <= map_table_11;
-      if (_GEN_0[12])
-        br_snapshots_3_12 <= io_remap_reqs_1_pdst;
-      else if (_GEN[12])
-        br_snapshots_3_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_12 <= map_table_12;
-      if (_GEN_0[13])
-        br_snapshots_3_13 <= io_remap_reqs_1_pdst;
-      else if (_GEN[13])
-        br_snapshots_3_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_13 <= map_table_13;
-      if (_GEN_0[14])
-        br_snapshots_3_14 <= io_remap_reqs_1_pdst;
-      else if (_GEN[14])
-        br_snapshots_3_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_14 <= map_table_14;
-      if (_GEN_0[15])
-        br_snapshots_3_15 <= io_remap_reqs_1_pdst;
-      else if (_GEN[15])
-        br_snapshots_3_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_15 <= map_table_15;
-      if (_GEN_0[16])
-        br_snapshots_3_16 <= io_remap_reqs_1_pdst;
-      else if (_GEN[16])
-        br_snapshots_3_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_16 <= map_table_16;
-      if (_GEN_0[17])
-        br_snapshots_3_17 <= io_remap_reqs_1_pdst;
-      else if (_GEN[17])
-        br_snapshots_3_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_17 <= map_table_17;
-      if (_GEN_0[18])
-        br_snapshots_3_18 <= io_remap_reqs_1_pdst;
-      else if (_GEN[18])
-        br_snapshots_3_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_18 <= map_table_18;
-      if (_GEN_0[19])
-        br_snapshots_3_19 <= io_remap_reqs_1_pdst;
-      else if (_GEN[19])
-        br_snapshots_3_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_19 <= map_table_19;
-      if (_GEN_0[20])
-        br_snapshots_3_20 <= io_remap_reqs_1_pdst;
-      else if (_GEN[20])
-        br_snapshots_3_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_20 <= map_table_20;
-      if (_GEN_0[21])
-        br_snapshots_3_21 <= io_remap_reqs_1_pdst;
-      else if (_GEN[21])
-        br_snapshots_3_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_21 <= map_table_21;
-      if (_GEN_0[22])
-        br_snapshots_3_22 <= io_remap_reqs_1_pdst;
-      else if (_GEN[22])
-        br_snapshots_3_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_22 <= map_table_22;
-      if (_GEN_0[23])
-        br_snapshots_3_23 <= io_remap_reqs_1_pdst;
-      else if (_GEN[23])
-        br_snapshots_3_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_23 <= map_table_23;
-      if (_GEN_0[24])
-        br_snapshots_3_24 <= io_remap_reqs_1_pdst;
-      else if (_GEN[24])
-        br_snapshots_3_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_24 <= map_table_24;
-      if (_GEN_0[25])
-        br_snapshots_3_25 <= io_remap_reqs_1_pdst;
-      else if (_GEN[25])
-        br_snapshots_3_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_25 <= map_table_25;
-      if (_GEN_0[26])
-        br_snapshots_3_26 <= io_remap_reqs_1_pdst;
-      else if (_GEN[26])
-        br_snapshots_3_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_26 <= map_table_26;
-      if (_GEN_0[27])
-        br_snapshots_3_27 <= io_remap_reqs_1_pdst;
-      else if (_GEN[27])
-        br_snapshots_3_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_27 <= map_table_27;
-      if (_GEN_0[28])
-        br_snapshots_3_28 <= io_remap_reqs_1_pdst;
-      else if (_GEN[28])
-        br_snapshots_3_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_28 <= map_table_28;
-      if (_GEN_0[29])
-        br_snapshots_3_29 <= io_remap_reqs_1_pdst;
-      else if (_GEN[29])
-        br_snapshots_3_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_29 <= map_table_29;
-      if (_GEN_0[30])
-        br_snapshots_3_30 <= io_remap_reqs_1_pdst;
-      else if (_GEN[30])
-        br_snapshots_3_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_30 <= map_table_30;
-      if (_GEN_0[31])
-        br_snapshots_3_31 <= io_remap_reqs_1_pdst;
-      else if (_GEN[31])
-        br_snapshots_3_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_31 <= map_table_31;
+      br_snapshots_3_0 <= remap_table_2_0;
+      br_snapshots_3_1 <= remap_table_2_1;
+      br_snapshots_3_2 <= remap_table_2_2;
+      br_snapshots_3_3 <= remap_table_2_3;
+      br_snapshots_3_4 <= remap_table_2_4;
+      br_snapshots_3_5 <= remap_table_2_5;
+      br_snapshots_3_6 <= remap_table_2_6;
+      br_snapshots_3_7 <= remap_table_2_7;
+      br_snapshots_3_8 <= remap_table_2_8;
+      br_snapshots_3_9 <= remap_table_2_9;
+      br_snapshots_3_10 <= remap_table_2_10;
+      br_snapshots_3_11 <= remap_table_2_11;
+      br_snapshots_3_12 <= remap_table_2_12;
+      br_snapshots_3_13 <= remap_table_2_13;
+      br_snapshots_3_14 <= remap_table_2_14;
+      br_snapshots_3_15 <= remap_table_2_15;
+      br_snapshots_3_16 <= remap_table_2_16;
+      br_snapshots_3_17 <= remap_table_2_17;
+      br_snapshots_3_18 <= remap_table_2_18;
+      br_snapshots_3_19 <= remap_table_2_19;
+      br_snapshots_3_20 <= remap_table_2_20;
+      br_snapshots_3_21 <= remap_table_2_21;
+      br_snapshots_3_22 <= remap_table_2_22;
+      br_snapshots_3_23 <= remap_table_2_23;
+      br_snapshots_3_24 <= remap_table_2_24;
+      br_snapshots_3_25 <= remap_table_2_25;
+      br_snapshots_3_26 <= remap_table_2_26;
+      br_snapshots_3_27 <= remap_table_2_27;
+      br_snapshots_3_28 <= remap_table_2_28;
+      br_snapshots_3_29 <= remap_table_2_29;
+      br_snapshots_3_30 <= remap_table_2_30;
+      br_snapshots_3_31 <= remap_table_2_31;
     end
     else if (io_ren_br_tags_0_valid & io_ren_br_tags_0_bits == 5'h3) begin
-      if (_GEN[0])
-        br_snapshots_3_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_0 <= map_table_0;
-      if (_GEN[1])
-        br_snapshots_3_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_1 <= map_table_1;
-      if (_GEN[2])
-        br_snapshots_3_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_2 <= map_table_2;
-      if (_GEN[3])
-        br_snapshots_3_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_3 <= map_table_3;
-      if (_GEN[4])
-        br_snapshots_3_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_4 <= map_table_4;
-      if (_GEN[5])
-        br_snapshots_3_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_5 <= map_table_5;
-      if (_GEN[6])
-        br_snapshots_3_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_6 <= map_table_6;
-      if (_GEN[7])
-        br_snapshots_3_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_7 <= map_table_7;
-      if (_GEN[8])
-        br_snapshots_3_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_8 <= map_table_8;
-      if (_GEN[9])
-        br_snapshots_3_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_9 <= map_table_9;
-      if (_GEN[10])
-        br_snapshots_3_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_10 <= map_table_10;
-      if (_GEN[11])
-        br_snapshots_3_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_11 <= map_table_11;
-      if (_GEN[12])
-        br_snapshots_3_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_12 <= map_table_12;
-      if (_GEN[13])
-        br_snapshots_3_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_13 <= map_table_13;
-      if (_GEN[14])
-        br_snapshots_3_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_14 <= map_table_14;
-      if (_GEN[15])
-        br_snapshots_3_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_15 <= map_table_15;
-      if (_GEN[16])
-        br_snapshots_3_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_16 <= map_table_16;
-      if (_GEN[17])
-        br_snapshots_3_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_17 <= map_table_17;
-      if (_GEN[18])
-        br_snapshots_3_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_18 <= map_table_18;
-      if (_GEN[19])
-        br_snapshots_3_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_19 <= map_table_19;
-      if (_GEN[20])
-        br_snapshots_3_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_20 <= map_table_20;
-      if (_GEN[21])
-        br_snapshots_3_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_21 <= map_table_21;
-      if (_GEN[22])
-        br_snapshots_3_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_22 <= map_table_22;
-      if (_GEN[23])
-        br_snapshots_3_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_23 <= map_table_23;
-      if (_GEN[24])
-        br_snapshots_3_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_24 <= map_table_24;
-      if (_GEN[25])
-        br_snapshots_3_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_25 <= map_table_25;
-      if (_GEN[26])
-        br_snapshots_3_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_26 <= map_table_26;
-      if (_GEN[27])
-        br_snapshots_3_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_27 <= map_table_27;
-      if (_GEN[28])
-        br_snapshots_3_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_28 <= map_table_28;
-      if (_GEN[29])
-        br_snapshots_3_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_29 <= map_table_29;
-      if (_GEN[30])
-        br_snapshots_3_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_30 <= map_table_30;
-      if (_GEN[31])
-        br_snapshots_3_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_3_31 <= map_table_31;
+      br_snapshots_3_0 <= remap_table_1_0;
+      br_snapshots_3_1 <= remap_table_1_1;
+      br_snapshots_3_2 <= remap_table_1_2;
+      br_snapshots_3_3 <= remap_table_1_3;
+      br_snapshots_3_4 <= remap_table_1_4;
+      br_snapshots_3_5 <= remap_table_1_5;
+      br_snapshots_3_6 <= remap_table_1_6;
+      br_snapshots_3_7 <= remap_table_1_7;
+      br_snapshots_3_8 <= remap_table_1_8;
+      br_snapshots_3_9 <= remap_table_1_9;
+      br_snapshots_3_10 <= remap_table_1_10;
+      br_snapshots_3_11 <= remap_table_1_11;
+      br_snapshots_3_12 <= remap_table_1_12;
+      br_snapshots_3_13 <= remap_table_1_13;
+      br_snapshots_3_14 <= remap_table_1_14;
+      br_snapshots_3_15 <= remap_table_1_15;
+      br_snapshots_3_16 <= remap_table_1_16;
+      br_snapshots_3_17 <= remap_table_1_17;
+      br_snapshots_3_18 <= remap_table_1_18;
+      br_snapshots_3_19 <= remap_table_1_19;
+      br_snapshots_3_20 <= remap_table_1_20;
+      br_snapshots_3_21 <= remap_table_1_21;
+      br_snapshots_3_22 <= remap_table_1_22;
+      br_snapshots_3_23 <= remap_table_1_23;
+      br_snapshots_3_24 <= remap_table_1_24;
+      br_snapshots_3_25 <= remap_table_1_25;
+      br_snapshots_3_26 <= remap_table_1_26;
+      br_snapshots_3_27 <= remap_table_1_27;
+      br_snapshots_3_28 <= remap_table_1_28;
+      br_snapshots_3_29 <= remap_table_1_29;
+      br_snapshots_3_30 <= remap_table_1_30;
+      br_snapshots_3_31 <= remap_table_1_31;
     end
     if (io_ren_br_tags_3_valid & io_ren_br_tags_3_bits == 5'h4) begin
-      if (_GEN_2[0])
-        br_snapshots_4_0 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[0])
-        br_snapshots_4_0 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[0])
-        br_snapshots_4_0 <= io_remap_reqs_1_pdst;
-      else if (_GEN[0])
-        br_snapshots_4_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_0 <= map_table_0;
-      if (_GEN_2[1])
-        br_snapshots_4_1 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[1])
-        br_snapshots_4_1 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[1])
-        br_snapshots_4_1 <= io_remap_reqs_1_pdst;
-      else if (_GEN[1])
-        br_snapshots_4_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_1 <= map_table_1;
-      if (_GEN_2[2])
-        br_snapshots_4_2 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[2])
-        br_snapshots_4_2 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[2])
-        br_snapshots_4_2 <= io_remap_reqs_1_pdst;
-      else if (_GEN[2])
-        br_snapshots_4_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_2 <= map_table_2;
-      if (_GEN_2[3])
-        br_snapshots_4_3 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[3])
-        br_snapshots_4_3 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[3])
-        br_snapshots_4_3 <= io_remap_reqs_1_pdst;
-      else if (_GEN[3])
-        br_snapshots_4_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_3 <= map_table_3;
-      if (_GEN_2[4])
-        br_snapshots_4_4 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[4])
-        br_snapshots_4_4 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[4])
-        br_snapshots_4_4 <= io_remap_reqs_1_pdst;
-      else if (_GEN[4])
-        br_snapshots_4_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_4 <= map_table_4;
-      if (_GEN_2[5])
-        br_snapshots_4_5 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[5])
-        br_snapshots_4_5 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[5])
-        br_snapshots_4_5 <= io_remap_reqs_1_pdst;
-      else if (_GEN[5])
-        br_snapshots_4_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_5 <= map_table_5;
-      if (_GEN_2[6])
-        br_snapshots_4_6 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[6])
-        br_snapshots_4_6 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[6])
-        br_snapshots_4_6 <= io_remap_reqs_1_pdst;
-      else if (_GEN[6])
-        br_snapshots_4_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_6 <= map_table_6;
-      if (_GEN_2[7])
-        br_snapshots_4_7 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[7])
-        br_snapshots_4_7 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[7])
-        br_snapshots_4_7 <= io_remap_reqs_1_pdst;
-      else if (_GEN[7])
-        br_snapshots_4_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_7 <= map_table_7;
-      if (_GEN_2[8])
-        br_snapshots_4_8 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[8])
-        br_snapshots_4_8 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[8])
-        br_snapshots_4_8 <= io_remap_reqs_1_pdst;
-      else if (_GEN[8])
-        br_snapshots_4_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_8 <= map_table_8;
-      if (_GEN_2[9])
-        br_snapshots_4_9 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[9])
-        br_snapshots_4_9 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[9])
-        br_snapshots_4_9 <= io_remap_reqs_1_pdst;
-      else if (_GEN[9])
-        br_snapshots_4_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_9 <= map_table_9;
-      if (_GEN_2[10])
-        br_snapshots_4_10 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[10])
-        br_snapshots_4_10 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[10])
-        br_snapshots_4_10 <= io_remap_reqs_1_pdst;
-      else if (_GEN[10])
-        br_snapshots_4_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_10 <= map_table_10;
-      if (_GEN_2[11])
-        br_snapshots_4_11 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[11])
-        br_snapshots_4_11 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[11])
-        br_snapshots_4_11 <= io_remap_reqs_1_pdst;
-      else if (_GEN[11])
-        br_snapshots_4_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_11 <= map_table_11;
-      if (_GEN_2[12])
-        br_snapshots_4_12 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[12])
-        br_snapshots_4_12 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[12])
-        br_snapshots_4_12 <= io_remap_reqs_1_pdst;
-      else if (_GEN[12])
-        br_snapshots_4_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_12 <= map_table_12;
-      if (_GEN_2[13])
-        br_snapshots_4_13 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[13])
-        br_snapshots_4_13 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[13])
-        br_snapshots_4_13 <= io_remap_reqs_1_pdst;
-      else if (_GEN[13])
-        br_snapshots_4_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_13 <= map_table_13;
-      if (_GEN_2[14])
-        br_snapshots_4_14 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[14])
-        br_snapshots_4_14 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[14])
-        br_snapshots_4_14 <= io_remap_reqs_1_pdst;
-      else if (_GEN[14])
-        br_snapshots_4_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_14 <= map_table_14;
-      if (_GEN_2[15])
-        br_snapshots_4_15 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[15])
-        br_snapshots_4_15 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[15])
-        br_snapshots_4_15 <= io_remap_reqs_1_pdst;
-      else if (_GEN[15])
-        br_snapshots_4_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_15 <= map_table_15;
-      if (_GEN_2[16])
-        br_snapshots_4_16 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[16])
-        br_snapshots_4_16 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[16])
-        br_snapshots_4_16 <= io_remap_reqs_1_pdst;
-      else if (_GEN[16])
-        br_snapshots_4_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_16 <= map_table_16;
-      if (_GEN_2[17])
-        br_snapshots_4_17 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[17])
-        br_snapshots_4_17 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[17])
-        br_snapshots_4_17 <= io_remap_reqs_1_pdst;
-      else if (_GEN[17])
-        br_snapshots_4_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_17 <= map_table_17;
-      if (_GEN_2[18])
-        br_snapshots_4_18 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[18])
-        br_snapshots_4_18 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[18])
-        br_snapshots_4_18 <= io_remap_reqs_1_pdst;
-      else if (_GEN[18])
-        br_snapshots_4_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_18 <= map_table_18;
-      if (_GEN_2[19])
-        br_snapshots_4_19 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[19])
-        br_snapshots_4_19 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[19])
-        br_snapshots_4_19 <= io_remap_reqs_1_pdst;
-      else if (_GEN[19])
-        br_snapshots_4_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_19 <= map_table_19;
-      if (_GEN_2[20])
-        br_snapshots_4_20 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[20])
-        br_snapshots_4_20 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[20])
-        br_snapshots_4_20 <= io_remap_reqs_1_pdst;
-      else if (_GEN[20])
-        br_snapshots_4_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_20 <= map_table_20;
-      if (_GEN_2[21])
-        br_snapshots_4_21 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[21])
-        br_snapshots_4_21 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[21])
-        br_snapshots_4_21 <= io_remap_reqs_1_pdst;
-      else if (_GEN[21])
-        br_snapshots_4_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_21 <= map_table_21;
-      if (_GEN_2[22])
-        br_snapshots_4_22 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[22])
-        br_snapshots_4_22 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[22])
-        br_snapshots_4_22 <= io_remap_reqs_1_pdst;
-      else if (_GEN[22])
-        br_snapshots_4_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_22 <= map_table_22;
-      if (_GEN_2[23])
-        br_snapshots_4_23 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[23])
-        br_snapshots_4_23 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[23])
-        br_snapshots_4_23 <= io_remap_reqs_1_pdst;
-      else if (_GEN[23])
-        br_snapshots_4_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_23 <= map_table_23;
-      if (_GEN_2[24])
-        br_snapshots_4_24 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[24])
-        br_snapshots_4_24 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[24])
-        br_snapshots_4_24 <= io_remap_reqs_1_pdst;
-      else if (_GEN[24])
-        br_snapshots_4_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_24 <= map_table_24;
-      if (_GEN_2[25])
-        br_snapshots_4_25 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[25])
-        br_snapshots_4_25 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[25])
-        br_snapshots_4_25 <= io_remap_reqs_1_pdst;
-      else if (_GEN[25])
-        br_snapshots_4_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_25 <= map_table_25;
-      if (_GEN_2[26])
-        br_snapshots_4_26 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[26])
-        br_snapshots_4_26 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[26])
-        br_snapshots_4_26 <= io_remap_reqs_1_pdst;
-      else if (_GEN[26])
-        br_snapshots_4_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_26 <= map_table_26;
-      if (_GEN_2[27])
-        br_snapshots_4_27 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[27])
-        br_snapshots_4_27 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[27])
-        br_snapshots_4_27 <= io_remap_reqs_1_pdst;
-      else if (_GEN[27])
-        br_snapshots_4_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_27 <= map_table_27;
-      if (_GEN_2[28])
-        br_snapshots_4_28 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[28])
-        br_snapshots_4_28 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[28])
-        br_snapshots_4_28 <= io_remap_reqs_1_pdst;
-      else if (_GEN[28])
-        br_snapshots_4_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_28 <= map_table_28;
-      if (_GEN_2[29])
-        br_snapshots_4_29 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[29])
-        br_snapshots_4_29 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[29])
-        br_snapshots_4_29 <= io_remap_reqs_1_pdst;
-      else if (_GEN[29])
-        br_snapshots_4_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_29 <= map_table_29;
-      if (_GEN_2[30])
-        br_snapshots_4_30 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[30])
-        br_snapshots_4_30 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[30])
-        br_snapshots_4_30 <= io_remap_reqs_1_pdst;
-      else if (_GEN[30])
-        br_snapshots_4_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_30 <= map_table_30;
-      if (_GEN_2[31])
-        br_snapshots_4_31 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[31])
-        br_snapshots_4_31 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[31])
-        br_snapshots_4_31 <= io_remap_reqs_1_pdst;
-      else if (_GEN[31])
-        br_snapshots_4_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_31 <= map_table_31;
+      br_snapshots_4_0 <= remap_table_4_0;
+      br_snapshots_4_1 <= remap_table_4_1;
+      br_snapshots_4_2 <= remap_table_4_2;
+      br_snapshots_4_3 <= remap_table_4_3;
+      br_snapshots_4_4 <= remap_table_4_4;
+      br_snapshots_4_5 <= remap_table_4_5;
+      br_snapshots_4_6 <= remap_table_4_6;
+      br_snapshots_4_7 <= remap_table_4_7;
+      br_snapshots_4_8 <= remap_table_4_8;
+      br_snapshots_4_9 <= remap_table_4_9;
+      br_snapshots_4_10 <= remap_table_4_10;
+      br_snapshots_4_11 <= remap_table_4_11;
+      br_snapshots_4_12 <= remap_table_4_12;
+      br_snapshots_4_13 <= remap_table_4_13;
+      br_snapshots_4_14 <= remap_table_4_14;
+      br_snapshots_4_15 <= remap_table_4_15;
+      br_snapshots_4_16 <= remap_table_4_16;
+      br_snapshots_4_17 <= remap_table_4_17;
+      br_snapshots_4_18 <= remap_table_4_18;
+      br_snapshots_4_19 <= remap_table_4_19;
+      br_snapshots_4_20 <= remap_table_4_20;
+      br_snapshots_4_21 <= remap_table_4_21;
+      br_snapshots_4_22 <= remap_table_4_22;
+      br_snapshots_4_23 <= remap_table_4_23;
+      br_snapshots_4_24 <= remap_table_4_24;
+      br_snapshots_4_25 <= remap_table_4_25;
+      br_snapshots_4_26 <= remap_table_4_26;
+      br_snapshots_4_27 <= remap_table_4_27;
+      br_snapshots_4_28 <= remap_table_4_28;
+      br_snapshots_4_29 <= remap_table_4_29;
+      br_snapshots_4_30 <= remap_table_4_30;
+      br_snapshots_4_31 <= remap_table_4_31;
     end
     else if (io_ren_br_tags_2_valid & io_ren_br_tags_2_bits == 5'h4) begin
-      if (_GEN_1[0])
-        br_snapshots_4_0 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[0])
-        br_snapshots_4_0 <= io_remap_reqs_1_pdst;
-      else if (_GEN[0])
-        br_snapshots_4_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_0 <= map_table_0;
-      if (_GEN_1[1])
-        br_snapshots_4_1 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[1])
-        br_snapshots_4_1 <= io_remap_reqs_1_pdst;
-      else if (_GEN[1])
-        br_snapshots_4_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_1 <= map_table_1;
-      if (_GEN_1[2])
-        br_snapshots_4_2 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[2])
-        br_snapshots_4_2 <= io_remap_reqs_1_pdst;
-      else if (_GEN[2])
-        br_snapshots_4_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_2 <= map_table_2;
-      if (_GEN_1[3])
-        br_snapshots_4_3 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[3])
-        br_snapshots_4_3 <= io_remap_reqs_1_pdst;
-      else if (_GEN[3])
-        br_snapshots_4_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_3 <= map_table_3;
-      if (_GEN_1[4])
-        br_snapshots_4_4 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[4])
-        br_snapshots_4_4 <= io_remap_reqs_1_pdst;
-      else if (_GEN[4])
-        br_snapshots_4_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_4 <= map_table_4;
-      if (_GEN_1[5])
-        br_snapshots_4_5 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[5])
-        br_snapshots_4_5 <= io_remap_reqs_1_pdst;
-      else if (_GEN[5])
-        br_snapshots_4_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_5 <= map_table_5;
-      if (_GEN_1[6])
-        br_snapshots_4_6 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[6])
-        br_snapshots_4_6 <= io_remap_reqs_1_pdst;
-      else if (_GEN[6])
-        br_snapshots_4_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_6 <= map_table_6;
-      if (_GEN_1[7])
-        br_snapshots_4_7 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[7])
-        br_snapshots_4_7 <= io_remap_reqs_1_pdst;
-      else if (_GEN[7])
-        br_snapshots_4_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_7 <= map_table_7;
-      if (_GEN_1[8])
-        br_snapshots_4_8 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[8])
-        br_snapshots_4_8 <= io_remap_reqs_1_pdst;
-      else if (_GEN[8])
-        br_snapshots_4_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_8 <= map_table_8;
-      if (_GEN_1[9])
-        br_snapshots_4_9 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[9])
-        br_snapshots_4_9 <= io_remap_reqs_1_pdst;
-      else if (_GEN[9])
-        br_snapshots_4_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_9 <= map_table_9;
-      if (_GEN_1[10])
-        br_snapshots_4_10 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[10])
-        br_snapshots_4_10 <= io_remap_reqs_1_pdst;
-      else if (_GEN[10])
-        br_snapshots_4_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_10 <= map_table_10;
-      if (_GEN_1[11])
-        br_snapshots_4_11 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[11])
-        br_snapshots_4_11 <= io_remap_reqs_1_pdst;
-      else if (_GEN[11])
-        br_snapshots_4_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_11 <= map_table_11;
-      if (_GEN_1[12])
-        br_snapshots_4_12 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[12])
-        br_snapshots_4_12 <= io_remap_reqs_1_pdst;
-      else if (_GEN[12])
-        br_snapshots_4_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_12 <= map_table_12;
-      if (_GEN_1[13])
-        br_snapshots_4_13 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[13])
-        br_snapshots_4_13 <= io_remap_reqs_1_pdst;
-      else if (_GEN[13])
-        br_snapshots_4_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_13 <= map_table_13;
-      if (_GEN_1[14])
-        br_snapshots_4_14 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[14])
-        br_snapshots_4_14 <= io_remap_reqs_1_pdst;
-      else if (_GEN[14])
-        br_snapshots_4_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_14 <= map_table_14;
-      if (_GEN_1[15])
-        br_snapshots_4_15 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[15])
-        br_snapshots_4_15 <= io_remap_reqs_1_pdst;
-      else if (_GEN[15])
-        br_snapshots_4_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_15 <= map_table_15;
-      if (_GEN_1[16])
-        br_snapshots_4_16 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[16])
-        br_snapshots_4_16 <= io_remap_reqs_1_pdst;
-      else if (_GEN[16])
-        br_snapshots_4_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_16 <= map_table_16;
-      if (_GEN_1[17])
-        br_snapshots_4_17 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[17])
-        br_snapshots_4_17 <= io_remap_reqs_1_pdst;
-      else if (_GEN[17])
-        br_snapshots_4_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_17 <= map_table_17;
-      if (_GEN_1[18])
-        br_snapshots_4_18 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[18])
-        br_snapshots_4_18 <= io_remap_reqs_1_pdst;
-      else if (_GEN[18])
-        br_snapshots_4_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_18 <= map_table_18;
-      if (_GEN_1[19])
-        br_snapshots_4_19 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[19])
-        br_snapshots_4_19 <= io_remap_reqs_1_pdst;
-      else if (_GEN[19])
-        br_snapshots_4_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_19 <= map_table_19;
-      if (_GEN_1[20])
-        br_snapshots_4_20 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[20])
-        br_snapshots_4_20 <= io_remap_reqs_1_pdst;
-      else if (_GEN[20])
-        br_snapshots_4_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_20 <= map_table_20;
-      if (_GEN_1[21])
-        br_snapshots_4_21 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[21])
-        br_snapshots_4_21 <= io_remap_reqs_1_pdst;
-      else if (_GEN[21])
-        br_snapshots_4_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_21 <= map_table_21;
-      if (_GEN_1[22])
-        br_snapshots_4_22 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[22])
-        br_snapshots_4_22 <= io_remap_reqs_1_pdst;
-      else if (_GEN[22])
-        br_snapshots_4_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_22 <= map_table_22;
-      if (_GEN_1[23])
-        br_snapshots_4_23 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[23])
-        br_snapshots_4_23 <= io_remap_reqs_1_pdst;
-      else if (_GEN[23])
-        br_snapshots_4_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_23 <= map_table_23;
-      if (_GEN_1[24])
-        br_snapshots_4_24 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[24])
-        br_snapshots_4_24 <= io_remap_reqs_1_pdst;
-      else if (_GEN[24])
-        br_snapshots_4_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_24 <= map_table_24;
-      if (_GEN_1[25])
-        br_snapshots_4_25 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[25])
-        br_snapshots_4_25 <= io_remap_reqs_1_pdst;
-      else if (_GEN[25])
-        br_snapshots_4_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_25 <= map_table_25;
-      if (_GEN_1[26])
-        br_snapshots_4_26 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[26])
-        br_snapshots_4_26 <= io_remap_reqs_1_pdst;
-      else if (_GEN[26])
-        br_snapshots_4_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_26 <= map_table_26;
-      if (_GEN_1[27])
-        br_snapshots_4_27 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[27])
-        br_snapshots_4_27 <= io_remap_reqs_1_pdst;
-      else if (_GEN[27])
-        br_snapshots_4_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_27 <= map_table_27;
-      if (_GEN_1[28])
-        br_snapshots_4_28 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[28])
-        br_snapshots_4_28 <= io_remap_reqs_1_pdst;
-      else if (_GEN[28])
-        br_snapshots_4_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_28 <= map_table_28;
-      if (_GEN_1[29])
-        br_snapshots_4_29 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[29])
-        br_snapshots_4_29 <= io_remap_reqs_1_pdst;
-      else if (_GEN[29])
-        br_snapshots_4_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_29 <= map_table_29;
-      if (_GEN_1[30])
-        br_snapshots_4_30 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[30])
-        br_snapshots_4_30 <= io_remap_reqs_1_pdst;
-      else if (_GEN[30])
-        br_snapshots_4_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_30 <= map_table_30;
-      if (_GEN_1[31])
-        br_snapshots_4_31 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[31])
-        br_snapshots_4_31 <= io_remap_reqs_1_pdst;
-      else if (_GEN[31])
-        br_snapshots_4_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_31 <= map_table_31;
+      br_snapshots_4_0 <= remap_table_3_0;
+      br_snapshots_4_1 <= remap_table_3_1;
+      br_snapshots_4_2 <= remap_table_3_2;
+      br_snapshots_4_3 <= remap_table_3_3;
+      br_snapshots_4_4 <= remap_table_3_4;
+      br_snapshots_4_5 <= remap_table_3_5;
+      br_snapshots_4_6 <= remap_table_3_6;
+      br_snapshots_4_7 <= remap_table_3_7;
+      br_snapshots_4_8 <= remap_table_3_8;
+      br_snapshots_4_9 <= remap_table_3_9;
+      br_snapshots_4_10 <= remap_table_3_10;
+      br_snapshots_4_11 <= remap_table_3_11;
+      br_snapshots_4_12 <= remap_table_3_12;
+      br_snapshots_4_13 <= remap_table_3_13;
+      br_snapshots_4_14 <= remap_table_3_14;
+      br_snapshots_4_15 <= remap_table_3_15;
+      br_snapshots_4_16 <= remap_table_3_16;
+      br_snapshots_4_17 <= remap_table_3_17;
+      br_snapshots_4_18 <= remap_table_3_18;
+      br_snapshots_4_19 <= remap_table_3_19;
+      br_snapshots_4_20 <= remap_table_3_20;
+      br_snapshots_4_21 <= remap_table_3_21;
+      br_snapshots_4_22 <= remap_table_3_22;
+      br_snapshots_4_23 <= remap_table_3_23;
+      br_snapshots_4_24 <= remap_table_3_24;
+      br_snapshots_4_25 <= remap_table_3_25;
+      br_snapshots_4_26 <= remap_table_3_26;
+      br_snapshots_4_27 <= remap_table_3_27;
+      br_snapshots_4_28 <= remap_table_3_28;
+      br_snapshots_4_29 <= remap_table_3_29;
+      br_snapshots_4_30 <= remap_table_3_30;
+      br_snapshots_4_31 <= remap_table_3_31;
     end
     else if (io_ren_br_tags_1_valid & io_ren_br_tags_1_bits == 5'h4) begin
-      if (_GEN_0[0])
-        br_snapshots_4_0 <= io_remap_reqs_1_pdst;
-      else if (_GEN[0])
-        br_snapshots_4_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_0 <= map_table_0;
-      if (_GEN_0[1])
-        br_snapshots_4_1 <= io_remap_reqs_1_pdst;
-      else if (_GEN[1])
-        br_snapshots_4_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_1 <= map_table_1;
-      if (_GEN_0[2])
-        br_snapshots_4_2 <= io_remap_reqs_1_pdst;
-      else if (_GEN[2])
-        br_snapshots_4_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_2 <= map_table_2;
-      if (_GEN_0[3])
-        br_snapshots_4_3 <= io_remap_reqs_1_pdst;
-      else if (_GEN[3])
-        br_snapshots_4_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_3 <= map_table_3;
-      if (_GEN_0[4])
-        br_snapshots_4_4 <= io_remap_reqs_1_pdst;
-      else if (_GEN[4])
-        br_snapshots_4_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_4 <= map_table_4;
-      if (_GEN_0[5])
-        br_snapshots_4_5 <= io_remap_reqs_1_pdst;
-      else if (_GEN[5])
-        br_snapshots_4_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_5 <= map_table_5;
-      if (_GEN_0[6])
-        br_snapshots_4_6 <= io_remap_reqs_1_pdst;
-      else if (_GEN[6])
-        br_snapshots_4_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_6 <= map_table_6;
-      if (_GEN_0[7])
-        br_snapshots_4_7 <= io_remap_reqs_1_pdst;
-      else if (_GEN[7])
-        br_snapshots_4_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_7 <= map_table_7;
-      if (_GEN_0[8])
-        br_snapshots_4_8 <= io_remap_reqs_1_pdst;
-      else if (_GEN[8])
-        br_snapshots_4_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_8 <= map_table_8;
-      if (_GEN_0[9])
-        br_snapshots_4_9 <= io_remap_reqs_1_pdst;
-      else if (_GEN[9])
-        br_snapshots_4_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_9 <= map_table_9;
-      if (_GEN_0[10])
-        br_snapshots_4_10 <= io_remap_reqs_1_pdst;
-      else if (_GEN[10])
-        br_snapshots_4_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_10 <= map_table_10;
-      if (_GEN_0[11])
-        br_snapshots_4_11 <= io_remap_reqs_1_pdst;
-      else if (_GEN[11])
-        br_snapshots_4_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_11 <= map_table_11;
-      if (_GEN_0[12])
-        br_snapshots_4_12 <= io_remap_reqs_1_pdst;
-      else if (_GEN[12])
-        br_snapshots_4_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_12 <= map_table_12;
-      if (_GEN_0[13])
-        br_snapshots_4_13 <= io_remap_reqs_1_pdst;
-      else if (_GEN[13])
-        br_snapshots_4_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_13 <= map_table_13;
-      if (_GEN_0[14])
-        br_snapshots_4_14 <= io_remap_reqs_1_pdst;
-      else if (_GEN[14])
-        br_snapshots_4_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_14 <= map_table_14;
-      if (_GEN_0[15])
-        br_snapshots_4_15 <= io_remap_reqs_1_pdst;
-      else if (_GEN[15])
-        br_snapshots_4_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_15 <= map_table_15;
-      if (_GEN_0[16])
-        br_snapshots_4_16 <= io_remap_reqs_1_pdst;
-      else if (_GEN[16])
-        br_snapshots_4_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_16 <= map_table_16;
-      if (_GEN_0[17])
-        br_snapshots_4_17 <= io_remap_reqs_1_pdst;
-      else if (_GEN[17])
-        br_snapshots_4_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_17 <= map_table_17;
-      if (_GEN_0[18])
-        br_snapshots_4_18 <= io_remap_reqs_1_pdst;
-      else if (_GEN[18])
-        br_snapshots_4_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_18 <= map_table_18;
-      if (_GEN_0[19])
-        br_snapshots_4_19 <= io_remap_reqs_1_pdst;
-      else if (_GEN[19])
-        br_snapshots_4_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_19 <= map_table_19;
-      if (_GEN_0[20])
-        br_snapshots_4_20 <= io_remap_reqs_1_pdst;
-      else if (_GEN[20])
-        br_snapshots_4_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_20 <= map_table_20;
-      if (_GEN_0[21])
-        br_snapshots_4_21 <= io_remap_reqs_1_pdst;
-      else if (_GEN[21])
-        br_snapshots_4_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_21 <= map_table_21;
-      if (_GEN_0[22])
-        br_snapshots_4_22 <= io_remap_reqs_1_pdst;
-      else if (_GEN[22])
-        br_snapshots_4_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_22 <= map_table_22;
-      if (_GEN_0[23])
-        br_snapshots_4_23 <= io_remap_reqs_1_pdst;
-      else if (_GEN[23])
-        br_snapshots_4_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_23 <= map_table_23;
-      if (_GEN_0[24])
-        br_snapshots_4_24 <= io_remap_reqs_1_pdst;
-      else if (_GEN[24])
-        br_snapshots_4_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_24 <= map_table_24;
-      if (_GEN_0[25])
-        br_snapshots_4_25 <= io_remap_reqs_1_pdst;
-      else if (_GEN[25])
-        br_snapshots_4_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_25 <= map_table_25;
-      if (_GEN_0[26])
-        br_snapshots_4_26 <= io_remap_reqs_1_pdst;
-      else if (_GEN[26])
-        br_snapshots_4_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_26 <= map_table_26;
-      if (_GEN_0[27])
-        br_snapshots_4_27 <= io_remap_reqs_1_pdst;
-      else if (_GEN[27])
-        br_snapshots_4_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_27 <= map_table_27;
-      if (_GEN_0[28])
-        br_snapshots_4_28 <= io_remap_reqs_1_pdst;
-      else if (_GEN[28])
-        br_snapshots_4_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_28 <= map_table_28;
-      if (_GEN_0[29])
-        br_snapshots_4_29 <= io_remap_reqs_1_pdst;
-      else if (_GEN[29])
-        br_snapshots_4_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_29 <= map_table_29;
-      if (_GEN_0[30])
-        br_snapshots_4_30 <= io_remap_reqs_1_pdst;
-      else if (_GEN[30])
-        br_snapshots_4_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_30 <= map_table_30;
-      if (_GEN_0[31])
-        br_snapshots_4_31 <= io_remap_reqs_1_pdst;
-      else if (_GEN[31])
-        br_snapshots_4_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_31 <= map_table_31;
+      br_snapshots_4_0 <= remap_table_2_0;
+      br_snapshots_4_1 <= remap_table_2_1;
+      br_snapshots_4_2 <= remap_table_2_2;
+      br_snapshots_4_3 <= remap_table_2_3;
+      br_snapshots_4_4 <= remap_table_2_4;
+      br_snapshots_4_5 <= remap_table_2_5;
+      br_snapshots_4_6 <= remap_table_2_6;
+      br_snapshots_4_7 <= remap_table_2_7;
+      br_snapshots_4_8 <= remap_table_2_8;
+      br_snapshots_4_9 <= remap_table_2_9;
+      br_snapshots_4_10 <= remap_table_2_10;
+      br_snapshots_4_11 <= remap_table_2_11;
+      br_snapshots_4_12 <= remap_table_2_12;
+      br_snapshots_4_13 <= remap_table_2_13;
+      br_snapshots_4_14 <= remap_table_2_14;
+      br_snapshots_4_15 <= remap_table_2_15;
+      br_snapshots_4_16 <= remap_table_2_16;
+      br_snapshots_4_17 <= remap_table_2_17;
+      br_snapshots_4_18 <= remap_table_2_18;
+      br_snapshots_4_19 <= remap_table_2_19;
+      br_snapshots_4_20 <= remap_table_2_20;
+      br_snapshots_4_21 <= remap_table_2_21;
+      br_snapshots_4_22 <= remap_table_2_22;
+      br_snapshots_4_23 <= remap_table_2_23;
+      br_snapshots_4_24 <= remap_table_2_24;
+      br_snapshots_4_25 <= remap_table_2_25;
+      br_snapshots_4_26 <= remap_table_2_26;
+      br_snapshots_4_27 <= remap_table_2_27;
+      br_snapshots_4_28 <= remap_table_2_28;
+      br_snapshots_4_29 <= remap_table_2_29;
+      br_snapshots_4_30 <= remap_table_2_30;
+      br_snapshots_4_31 <= remap_table_2_31;
     end
     else if (io_ren_br_tags_0_valid & io_ren_br_tags_0_bits == 5'h4) begin
-      if (_GEN[0])
-        br_snapshots_4_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_0 <= map_table_0;
-      if (_GEN[1])
-        br_snapshots_4_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_1 <= map_table_1;
-      if (_GEN[2])
-        br_snapshots_4_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_2 <= map_table_2;
-      if (_GEN[3])
-        br_snapshots_4_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_3 <= map_table_3;
-      if (_GEN[4])
-        br_snapshots_4_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_4 <= map_table_4;
-      if (_GEN[5])
-        br_snapshots_4_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_5 <= map_table_5;
-      if (_GEN[6])
-        br_snapshots_4_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_6 <= map_table_6;
-      if (_GEN[7])
-        br_snapshots_4_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_7 <= map_table_7;
-      if (_GEN[8])
-        br_snapshots_4_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_8 <= map_table_8;
-      if (_GEN[9])
-        br_snapshots_4_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_9 <= map_table_9;
-      if (_GEN[10])
-        br_snapshots_4_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_10 <= map_table_10;
-      if (_GEN[11])
-        br_snapshots_4_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_11 <= map_table_11;
-      if (_GEN[12])
-        br_snapshots_4_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_12 <= map_table_12;
-      if (_GEN[13])
-        br_snapshots_4_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_13 <= map_table_13;
-      if (_GEN[14])
-        br_snapshots_4_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_14 <= map_table_14;
-      if (_GEN[15])
-        br_snapshots_4_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_15 <= map_table_15;
-      if (_GEN[16])
-        br_snapshots_4_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_16 <= map_table_16;
-      if (_GEN[17])
-        br_snapshots_4_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_17 <= map_table_17;
-      if (_GEN[18])
-        br_snapshots_4_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_18 <= map_table_18;
-      if (_GEN[19])
-        br_snapshots_4_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_19 <= map_table_19;
-      if (_GEN[20])
-        br_snapshots_4_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_20 <= map_table_20;
-      if (_GEN[21])
-        br_snapshots_4_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_21 <= map_table_21;
-      if (_GEN[22])
-        br_snapshots_4_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_22 <= map_table_22;
-      if (_GEN[23])
-        br_snapshots_4_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_23 <= map_table_23;
-      if (_GEN[24])
-        br_snapshots_4_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_24 <= map_table_24;
-      if (_GEN[25])
-        br_snapshots_4_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_25 <= map_table_25;
-      if (_GEN[26])
-        br_snapshots_4_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_26 <= map_table_26;
-      if (_GEN[27])
-        br_snapshots_4_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_27 <= map_table_27;
-      if (_GEN[28])
-        br_snapshots_4_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_28 <= map_table_28;
-      if (_GEN[29])
-        br_snapshots_4_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_29 <= map_table_29;
-      if (_GEN[30])
-        br_snapshots_4_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_30 <= map_table_30;
-      if (_GEN[31])
-        br_snapshots_4_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_4_31 <= map_table_31;
+      br_snapshots_4_0 <= remap_table_1_0;
+      br_snapshots_4_1 <= remap_table_1_1;
+      br_snapshots_4_2 <= remap_table_1_2;
+      br_snapshots_4_3 <= remap_table_1_3;
+      br_snapshots_4_4 <= remap_table_1_4;
+      br_snapshots_4_5 <= remap_table_1_5;
+      br_snapshots_4_6 <= remap_table_1_6;
+      br_snapshots_4_7 <= remap_table_1_7;
+      br_snapshots_4_8 <= remap_table_1_8;
+      br_snapshots_4_9 <= remap_table_1_9;
+      br_snapshots_4_10 <= remap_table_1_10;
+      br_snapshots_4_11 <= remap_table_1_11;
+      br_snapshots_4_12 <= remap_table_1_12;
+      br_snapshots_4_13 <= remap_table_1_13;
+      br_snapshots_4_14 <= remap_table_1_14;
+      br_snapshots_4_15 <= remap_table_1_15;
+      br_snapshots_4_16 <= remap_table_1_16;
+      br_snapshots_4_17 <= remap_table_1_17;
+      br_snapshots_4_18 <= remap_table_1_18;
+      br_snapshots_4_19 <= remap_table_1_19;
+      br_snapshots_4_20 <= remap_table_1_20;
+      br_snapshots_4_21 <= remap_table_1_21;
+      br_snapshots_4_22 <= remap_table_1_22;
+      br_snapshots_4_23 <= remap_table_1_23;
+      br_snapshots_4_24 <= remap_table_1_24;
+      br_snapshots_4_25 <= remap_table_1_25;
+      br_snapshots_4_26 <= remap_table_1_26;
+      br_snapshots_4_27 <= remap_table_1_27;
+      br_snapshots_4_28 <= remap_table_1_28;
+      br_snapshots_4_29 <= remap_table_1_29;
+      br_snapshots_4_30 <= remap_table_1_30;
+      br_snapshots_4_31 <= remap_table_1_31;
     end
     if (io_ren_br_tags_3_valid & io_ren_br_tags_3_bits == 5'h5) begin
-      if (_GEN_2[0])
-        br_snapshots_5_0 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[0])
-        br_snapshots_5_0 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[0])
-        br_snapshots_5_0 <= io_remap_reqs_1_pdst;
-      else if (_GEN[0])
-        br_snapshots_5_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_0 <= map_table_0;
-      if (_GEN_2[1])
-        br_snapshots_5_1 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[1])
-        br_snapshots_5_1 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[1])
-        br_snapshots_5_1 <= io_remap_reqs_1_pdst;
-      else if (_GEN[1])
-        br_snapshots_5_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_1 <= map_table_1;
-      if (_GEN_2[2])
-        br_snapshots_5_2 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[2])
-        br_snapshots_5_2 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[2])
-        br_snapshots_5_2 <= io_remap_reqs_1_pdst;
-      else if (_GEN[2])
-        br_snapshots_5_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_2 <= map_table_2;
-      if (_GEN_2[3])
-        br_snapshots_5_3 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[3])
-        br_snapshots_5_3 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[3])
-        br_snapshots_5_3 <= io_remap_reqs_1_pdst;
-      else if (_GEN[3])
-        br_snapshots_5_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_3 <= map_table_3;
-      if (_GEN_2[4])
-        br_snapshots_5_4 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[4])
-        br_snapshots_5_4 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[4])
-        br_snapshots_5_4 <= io_remap_reqs_1_pdst;
-      else if (_GEN[4])
-        br_snapshots_5_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_4 <= map_table_4;
-      if (_GEN_2[5])
-        br_snapshots_5_5 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[5])
-        br_snapshots_5_5 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[5])
-        br_snapshots_5_5 <= io_remap_reqs_1_pdst;
-      else if (_GEN[5])
-        br_snapshots_5_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_5 <= map_table_5;
-      if (_GEN_2[6])
-        br_snapshots_5_6 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[6])
-        br_snapshots_5_6 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[6])
-        br_snapshots_5_6 <= io_remap_reqs_1_pdst;
-      else if (_GEN[6])
-        br_snapshots_5_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_6 <= map_table_6;
-      if (_GEN_2[7])
-        br_snapshots_5_7 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[7])
-        br_snapshots_5_7 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[7])
-        br_snapshots_5_7 <= io_remap_reqs_1_pdst;
-      else if (_GEN[7])
-        br_snapshots_5_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_7 <= map_table_7;
-      if (_GEN_2[8])
-        br_snapshots_5_8 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[8])
-        br_snapshots_5_8 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[8])
-        br_snapshots_5_8 <= io_remap_reqs_1_pdst;
-      else if (_GEN[8])
-        br_snapshots_5_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_8 <= map_table_8;
-      if (_GEN_2[9])
-        br_snapshots_5_9 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[9])
-        br_snapshots_5_9 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[9])
-        br_snapshots_5_9 <= io_remap_reqs_1_pdst;
-      else if (_GEN[9])
-        br_snapshots_5_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_9 <= map_table_9;
-      if (_GEN_2[10])
-        br_snapshots_5_10 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[10])
-        br_snapshots_5_10 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[10])
-        br_snapshots_5_10 <= io_remap_reqs_1_pdst;
-      else if (_GEN[10])
-        br_snapshots_5_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_10 <= map_table_10;
-      if (_GEN_2[11])
-        br_snapshots_5_11 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[11])
-        br_snapshots_5_11 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[11])
-        br_snapshots_5_11 <= io_remap_reqs_1_pdst;
-      else if (_GEN[11])
-        br_snapshots_5_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_11 <= map_table_11;
-      if (_GEN_2[12])
-        br_snapshots_5_12 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[12])
-        br_snapshots_5_12 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[12])
-        br_snapshots_5_12 <= io_remap_reqs_1_pdst;
-      else if (_GEN[12])
-        br_snapshots_5_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_12 <= map_table_12;
-      if (_GEN_2[13])
-        br_snapshots_5_13 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[13])
-        br_snapshots_5_13 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[13])
-        br_snapshots_5_13 <= io_remap_reqs_1_pdst;
-      else if (_GEN[13])
-        br_snapshots_5_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_13 <= map_table_13;
-      if (_GEN_2[14])
-        br_snapshots_5_14 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[14])
-        br_snapshots_5_14 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[14])
-        br_snapshots_5_14 <= io_remap_reqs_1_pdst;
-      else if (_GEN[14])
-        br_snapshots_5_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_14 <= map_table_14;
-      if (_GEN_2[15])
-        br_snapshots_5_15 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[15])
-        br_snapshots_5_15 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[15])
-        br_snapshots_5_15 <= io_remap_reqs_1_pdst;
-      else if (_GEN[15])
-        br_snapshots_5_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_15 <= map_table_15;
-      if (_GEN_2[16])
-        br_snapshots_5_16 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[16])
-        br_snapshots_5_16 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[16])
-        br_snapshots_5_16 <= io_remap_reqs_1_pdst;
-      else if (_GEN[16])
-        br_snapshots_5_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_16 <= map_table_16;
-      if (_GEN_2[17])
-        br_snapshots_5_17 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[17])
-        br_snapshots_5_17 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[17])
-        br_snapshots_5_17 <= io_remap_reqs_1_pdst;
-      else if (_GEN[17])
-        br_snapshots_5_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_17 <= map_table_17;
-      if (_GEN_2[18])
-        br_snapshots_5_18 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[18])
-        br_snapshots_5_18 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[18])
-        br_snapshots_5_18 <= io_remap_reqs_1_pdst;
-      else if (_GEN[18])
-        br_snapshots_5_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_18 <= map_table_18;
-      if (_GEN_2[19])
-        br_snapshots_5_19 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[19])
-        br_snapshots_5_19 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[19])
-        br_snapshots_5_19 <= io_remap_reqs_1_pdst;
-      else if (_GEN[19])
-        br_snapshots_5_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_19 <= map_table_19;
-      if (_GEN_2[20])
-        br_snapshots_5_20 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[20])
-        br_snapshots_5_20 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[20])
-        br_snapshots_5_20 <= io_remap_reqs_1_pdst;
-      else if (_GEN[20])
-        br_snapshots_5_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_20 <= map_table_20;
-      if (_GEN_2[21])
-        br_snapshots_5_21 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[21])
-        br_snapshots_5_21 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[21])
-        br_snapshots_5_21 <= io_remap_reqs_1_pdst;
-      else if (_GEN[21])
-        br_snapshots_5_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_21 <= map_table_21;
-      if (_GEN_2[22])
-        br_snapshots_5_22 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[22])
-        br_snapshots_5_22 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[22])
-        br_snapshots_5_22 <= io_remap_reqs_1_pdst;
-      else if (_GEN[22])
-        br_snapshots_5_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_22 <= map_table_22;
-      if (_GEN_2[23])
-        br_snapshots_5_23 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[23])
-        br_snapshots_5_23 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[23])
-        br_snapshots_5_23 <= io_remap_reqs_1_pdst;
-      else if (_GEN[23])
-        br_snapshots_5_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_23 <= map_table_23;
-      if (_GEN_2[24])
-        br_snapshots_5_24 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[24])
-        br_snapshots_5_24 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[24])
-        br_snapshots_5_24 <= io_remap_reqs_1_pdst;
-      else if (_GEN[24])
-        br_snapshots_5_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_24 <= map_table_24;
-      if (_GEN_2[25])
-        br_snapshots_5_25 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[25])
-        br_snapshots_5_25 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[25])
-        br_snapshots_5_25 <= io_remap_reqs_1_pdst;
-      else if (_GEN[25])
-        br_snapshots_5_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_25 <= map_table_25;
-      if (_GEN_2[26])
-        br_snapshots_5_26 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[26])
-        br_snapshots_5_26 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[26])
-        br_snapshots_5_26 <= io_remap_reqs_1_pdst;
-      else if (_GEN[26])
-        br_snapshots_5_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_26 <= map_table_26;
-      if (_GEN_2[27])
-        br_snapshots_5_27 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[27])
-        br_snapshots_5_27 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[27])
-        br_snapshots_5_27 <= io_remap_reqs_1_pdst;
-      else if (_GEN[27])
-        br_snapshots_5_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_27 <= map_table_27;
-      if (_GEN_2[28])
-        br_snapshots_5_28 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[28])
-        br_snapshots_5_28 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[28])
-        br_snapshots_5_28 <= io_remap_reqs_1_pdst;
-      else if (_GEN[28])
-        br_snapshots_5_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_28 <= map_table_28;
-      if (_GEN_2[29])
-        br_snapshots_5_29 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[29])
-        br_snapshots_5_29 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[29])
-        br_snapshots_5_29 <= io_remap_reqs_1_pdst;
-      else if (_GEN[29])
-        br_snapshots_5_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_29 <= map_table_29;
-      if (_GEN_2[30])
-        br_snapshots_5_30 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[30])
-        br_snapshots_5_30 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[30])
-        br_snapshots_5_30 <= io_remap_reqs_1_pdst;
-      else if (_GEN[30])
-        br_snapshots_5_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_30 <= map_table_30;
-      if (_GEN_2[31])
-        br_snapshots_5_31 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[31])
-        br_snapshots_5_31 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[31])
-        br_snapshots_5_31 <= io_remap_reqs_1_pdst;
-      else if (_GEN[31])
-        br_snapshots_5_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_31 <= map_table_31;
+      br_snapshots_5_0 <= remap_table_4_0;
+      br_snapshots_5_1 <= remap_table_4_1;
+      br_snapshots_5_2 <= remap_table_4_2;
+      br_snapshots_5_3 <= remap_table_4_3;
+      br_snapshots_5_4 <= remap_table_4_4;
+      br_snapshots_5_5 <= remap_table_4_5;
+      br_snapshots_5_6 <= remap_table_4_6;
+      br_snapshots_5_7 <= remap_table_4_7;
+      br_snapshots_5_8 <= remap_table_4_8;
+      br_snapshots_5_9 <= remap_table_4_9;
+      br_snapshots_5_10 <= remap_table_4_10;
+      br_snapshots_5_11 <= remap_table_4_11;
+      br_snapshots_5_12 <= remap_table_4_12;
+      br_snapshots_5_13 <= remap_table_4_13;
+      br_snapshots_5_14 <= remap_table_4_14;
+      br_snapshots_5_15 <= remap_table_4_15;
+      br_snapshots_5_16 <= remap_table_4_16;
+      br_snapshots_5_17 <= remap_table_4_17;
+      br_snapshots_5_18 <= remap_table_4_18;
+      br_snapshots_5_19 <= remap_table_4_19;
+      br_snapshots_5_20 <= remap_table_4_20;
+      br_snapshots_5_21 <= remap_table_4_21;
+      br_snapshots_5_22 <= remap_table_4_22;
+      br_snapshots_5_23 <= remap_table_4_23;
+      br_snapshots_5_24 <= remap_table_4_24;
+      br_snapshots_5_25 <= remap_table_4_25;
+      br_snapshots_5_26 <= remap_table_4_26;
+      br_snapshots_5_27 <= remap_table_4_27;
+      br_snapshots_5_28 <= remap_table_4_28;
+      br_snapshots_5_29 <= remap_table_4_29;
+      br_snapshots_5_30 <= remap_table_4_30;
+      br_snapshots_5_31 <= remap_table_4_31;
     end
     else if (io_ren_br_tags_2_valid & io_ren_br_tags_2_bits == 5'h5) begin
-      if (_GEN_1[0])
-        br_snapshots_5_0 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[0])
-        br_snapshots_5_0 <= io_remap_reqs_1_pdst;
-      else if (_GEN[0])
-        br_snapshots_5_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_0 <= map_table_0;
-      if (_GEN_1[1])
-        br_snapshots_5_1 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[1])
-        br_snapshots_5_1 <= io_remap_reqs_1_pdst;
-      else if (_GEN[1])
-        br_snapshots_5_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_1 <= map_table_1;
-      if (_GEN_1[2])
-        br_snapshots_5_2 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[2])
-        br_snapshots_5_2 <= io_remap_reqs_1_pdst;
-      else if (_GEN[2])
-        br_snapshots_5_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_2 <= map_table_2;
-      if (_GEN_1[3])
-        br_snapshots_5_3 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[3])
-        br_snapshots_5_3 <= io_remap_reqs_1_pdst;
-      else if (_GEN[3])
-        br_snapshots_5_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_3 <= map_table_3;
-      if (_GEN_1[4])
-        br_snapshots_5_4 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[4])
-        br_snapshots_5_4 <= io_remap_reqs_1_pdst;
-      else if (_GEN[4])
-        br_snapshots_5_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_4 <= map_table_4;
-      if (_GEN_1[5])
-        br_snapshots_5_5 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[5])
-        br_snapshots_5_5 <= io_remap_reqs_1_pdst;
-      else if (_GEN[5])
-        br_snapshots_5_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_5 <= map_table_5;
-      if (_GEN_1[6])
-        br_snapshots_5_6 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[6])
-        br_snapshots_5_6 <= io_remap_reqs_1_pdst;
-      else if (_GEN[6])
-        br_snapshots_5_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_6 <= map_table_6;
-      if (_GEN_1[7])
-        br_snapshots_5_7 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[7])
-        br_snapshots_5_7 <= io_remap_reqs_1_pdst;
-      else if (_GEN[7])
-        br_snapshots_5_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_7 <= map_table_7;
-      if (_GEN_1[8])
-        br_snapshots_5_8 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[8])
-        br_snapshots_5_8 <= io_remap_reqs_1_pdst;
-      else if (_GEN[8])
-        br_snapshots_5_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_8 <= map_table_8;
-      if (_GEN_1[9])
-        br_snapshots_5_9 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[9])
-        br_snapshots_5_9 <= io_remap_reqs_1_pdst;
-      else if (_GEN[9])
-        br_snapshots_5_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_9 <= map_table_9;
-      if (_GEN_1[10])
-        br_snapshots_5_10 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[10])
-        br_snapshots_5_10 <= io_remap_reqs_1_pdst;
-      else if (_GEN[10])
-        br_snapshots_5_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_10 <= map_table_10;
-      if (_GEN_1[11])
-        br_snapshots_5_11 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[11])
-        br_snapshots_5_11 <= io_remap_reqs_1_pdst;
-      else if (_GEN[11])
-        br_snapshots_5_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_11 <= map_table_11;
-      if (_GEN_1[12])
-        br_snapshots_5_12 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[12])
-        br_snapshots_5_12 <= io_remap_reqs_1_pdst;
-      else if (_GEN[12])
-        br_snapshots_5_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_12 <= map_table_12;
-      if (_GEN_1[13])
-        br_snapshots_5_13 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[13])
-        br_snapshots_5_13 <= io_remap_reqs_1_pdst;
-      else if (_GEN[13])
-        br_snapshots_5_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_13 <= map_table_13;
-      if (_GEN_1[14])
-        br_snapshots_5_14 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[14])
-        br_snapshots_5_14 <= io_remap_reqs_1_pdst;
-      else if (_GEN[14])
-        br_snapshots_5_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_14 <= map_table_14;
-      if (_GEN_1[15])
-        br_snapshots_5_15 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[15])
-        br_snapshots_5_15 <= io_remap_reqs_1_pdst;
-      else if (_GEN[15])
-        br_snapshots_5_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_15 <= map_table_15;
-      if (_GEN_1[16])
-        br_snapshots_5_16 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[16])
-        br_snapshots_5_16 <= io_remap_reqs_1_pdst;
-      else if (_GEN[16])
-        br_snapshots_5_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_16 <= map_table_16;
-      if (_GEN_1[17])
-        br_snapshots_5_17 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[17])
-        br_snapshots_5_17 <= io_remap_reqs_1_pdst;
-      else if (_GEN[17])
-        br_snapshots_5_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_17 <= map_table_17;
-      if (_GEN_1[18])
-        br_snapshots_5_18 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[18])
-        br_snapshots_5_18 <= io_remap_reqs_1_pdst;
-      else if (_GEN[18])
-        br_snapshots_5_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_18 <= map_table_18;
-      if (_GEN_1[19])
-        br_snapshots_5_19 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[19])
-        br_snapshots_5_19 <= io_remap_reqs_1_pdst;
-      else if (_GEN[19])
-        br_snapshots_5_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_19 <= map_table_19;
-      if (_GEN_1[20])
-        br_snapshots_5_20 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[20])
-        br_snapshots_5_20 <= io_remap_reqs_1_pdst;
-      else if (_GEN[20])
-        br_snapshots_5_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_20 <= map_table_20;
-      if (_GEN_1[21])
-        br_snapshots_5_21 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[21])
-        br_snapshots_5_21 <= io_remap_reqs_1_pdst;
-      else if (_GEN[21])
-        br_snapshots_5_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_21 <= map_table_21;
-      if (_GEN_1[22])
-        br_snapshots_5_22 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[22])
-        br_snapshots_5_22 <= io_remap_reqs_1_pdst;
-      else if (_GEN[22])
-        br_snapshots_5_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_22 <= map_table_22;
-      if (_GEN_1[23])
-        br_snapshots_5_23 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[23])
-        br_snapshots_5_23 <= io_remap_reqs_1_pdst;
-      else if (_GEN[23])
-        br_snapshots_5_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_23 <= map_table_23;
-      if (_GEN_1[24])
-        br_snapshots_5_24 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[24])
-        br_snapshots_5_24 <= io_remap_reqs_1_pdst;
-      else if (_GEN[24])
-        br_snapshots_5_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_24 <= map_table_24;
-      if (_GEN_1[25])
-        br_snapshots_5_25 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[25])
-        br_snapshots_5_25 <= io_remap_reqs_1_pdst;
-      else if (_GEN[25])
-        br_snapshots_5_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_25 <= map_table_25;
-      if (_GEN_1[26])
-        br_snapshots_5_26 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[26])
-        br_snapshots_5_26 <= io_remap_reqs_1_pdst;
-      else if (_GEN[26])
-        br_snapshots_5_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_26 <= map_table_26;
-      if (_GEN_1[27])
-        br_snapshots_5_27 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[27])
-        br_snapshots_5_27 <= io_remap_reqs_1_pdst;
-      else if (_GEN[27])
-        br_snapshots_5_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_27 <= map_table_27;
-      if (_GEN_1[28])
-        br_snapshots_5_28 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[28])
-        br_snapshots_5_28 <= io_remap_reqs_1_pdst;
-      else if (_GEN[28])
-        br_snapshots_5_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_28 <= map_table_28;
-      if (_GEN_1[29])
-        br_snapshots_5_29 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[29])
-        br_snapshots_5_29 <= io_remap_reqs_1_pdst;
-      else if (_GEN[29])
-        br_snapshots_5_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_29 <= map_table_29;
-      if (_GEN_1[30])
-        br_snapshots_5_30 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[30])
-        br_snapshots_5_30 <= io_remap_reqs_1_pdst;
-      else if (_GEN[30])
-        br_snapshots_5_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_30 <= map_table_30;
-      if (_GEN_1[31])
-        br_snapshots_5_31 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[31])
-        br_snapshots_5_31 <= io_remap_reqs_1_pdst;
-      else if (_GEN[31])
-        br_snapshots_5_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_31 <= map_table_31;
+      br_snapshots_5_0 <= remap_table_3_0;
+      br_snapshots_5_1 <= remap_table_3_1;
+      br_snapshots_5_2 <= remap_table_3_2;
+      br_snapshots_5_3 <= remap_table_3_3;
+      br_snapshots_5_4 <= remap_table_3_4;
+      br_snapshots_5_5 <= remap_table_3_5;
+      br_snapshots_5_6 <= remap_table_3_6;
+      br_snapshots_5_7 <= remap_table_3_7;
+      br_snapshots_5_8 <= remap_table_3_8;
+      br_snapshots_5_9 <= remap_table_3_9;
+      br_snapshots_5_10 <= remap_table_3_10;
+      br_snapshots_5_11 <= remap_table_3_11;
+      br_snapshots_5_12 <= remap_table_3_12;
+      br_snapshots_5_13 <= remap_table_3_13;
+      br_snapshots_5_14 <= remap_table_3_14;
+      br_snapshots_5_15 <= remap_table_3_15;
+      br_snapshots_5_16 <= remap_table_3_16;
+      br_snapshots_5_17 <= remap_table_3_17;
+      br_snapshots_5_18 <= remap_table_3_18;
+      br_snapshots_5_19 <= remap_table_3_19;
+      br_snapshots_5_20 <= remap_table_3_20;
+      br_snapshots_5_21 <= remap_table_3_21;
+      br_snapshots_5_22 <= remap_table_3_22;
+      br_snapshots_5_23 <= remap_table_3_23;
+      br_snapshots_5_24 <= remap_table_3_24;
+      br_snapshots_5_25 <= remap_table_3_25;
+      br_snapshots_5_26 <= remap_table_3_26;
+      br_snapshots_5_27 <= remap_table_3_27;
+      br_snapshots_5_28 <= remap_table_3_28;
+      br_snapshots_5_29 <= remap_table_3_29;
+      br_snapshots_5_30 <= remap_table_3_30;
+      br_snapshots_5_31 <= remap_table_3_31;
     end
     else if (io_ren_br_tags_1_valid & io_ren_br_tags_1_bits == 5'h5) begin
-      if (_GEN_0[0])
-        br_snapshots_5_0 <= io_remap_reqs_1_pdst;
-      else if (_GEN[0])
-        br_snapshots_5_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_0 <= map_table_0;
-      if (_GEN_0[1])
-        br_snapshots_5_1 <= io_remap_reqs_1_pdst;
-      else if (_GEN[1])
-        br_snapshots_5_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_1 <= map_table_1;
-      if (_GEN_0[2])
-        br_snapshots_5_2 <= io_remap_reqs_1_pdst;
-      else if (_GEN[2])
-        br_snapshots_5_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_2 <= map_table_2;
-      if (_GEN_0[3])
-        br_snapshots_5_3 <= io_remap_reqs_1_pdst;
-      else if (_GEN[3])
-        br_snapshots_5_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_3 <= map_table_3;
-      if (_GEN_0[4])
-        br_snapshots_5_4 <= io_remap_reqs_1_pdst;
-      else if (_GEN[4])
-        br_snapshots_5_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_4 <= map_table_4;
-      if (_GEN_0[5])
-        br_snapshots_5_5 <= io_remap_reqs_1_pdst;
-      else if (_GEN[5])
-        br_snapshots_5_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_5 <= map_table_5;
-      if (_GEN_0[6])
-        br_snapshots_5_6 <= io_remap_reqs_1_pdst;
-      else if (_GEN[6])
-        br_snapshots_5_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_6 <= map_table_6;
-      if (_GEN_0[7])
-        br_snapshots_5_7 <= io_remap_reqs_1_pdst;
-      else if (_GEN[7])
-        br_snapshots_5_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_7 <= map_table_7;
-      if (_GEN_0[8])
-        br_snapshots_5_8 <= io_remap_reqs_1_pdst;
-      else if (_GEN[8])
-        br_snapshots_5_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_8 <= map_table_8;
-      if (_GEN_0[9])
-        br_snapshots_5_9 <= io_remap_reqs_1_pdst;
-      else if (_GEN[9])
-        br_snapshots_5_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_9 <= map_table_9;
-      if (_GEN_0[10])
-        br_snapshots_5_10 <= io_remap_reqs_1_pdst;
-      else if (_GEN[10])
-        br_snapshots_5_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_10 <= map_table_10;
-      if (_GEN_0[11])
-        br_snapshots_5_11 <= io_remap_reqs_1_pdst;
-      else if (_GEN[11])
-        br_snapshots_5_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_11 <= map_table_11;
-      if (_GEN_0[12])
-        br_snapshots_5_12 <= io_remap_reqs_1_pdst;
-      else if (_GEN[12])
-        br_snapshots_5_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_12 <= map_table_12;
-      if (_GEN_0[13])
-        br_snapshots_5_13 <= io_remap_reqs_1_pdst;
-      else if (_GEN[13])
-        br_snapshots_5_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_13 <= map_table_13;
-      if (_GEN_0[14])
-        br_snapshots_5_14 <= io_remap_reqs_1_pdst;
-      else if (_GEN[14])
-        br_snapshots_5_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_14 <= map_table_14;
-      if (_GEN_0[15])
-        br_snapshots_5_15 <= io_remap_reqs_1_pdst;
-      else if (_GEN[15])
-        br_snapshots_5_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_15 <= map_table_15;
-      if (_GEN_0[16])
-        br_snapshots_5_16 <= io_remap_reqs_1_pdst;
-      else if (_GEN[16])
-        br_snapshots_5_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_16 <= map_table_16;
-      if (_GEN_0[17])
-        br_snapshots_5_17 <= io_remap_reqs_1_pdst;
-      else if (_GEN[17])
-        br_snapshots_5_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_17 <= map_table_17;
-      if (_GEN_0[18])
-        br_snapshots_5_18 <= io_remap_reqs_1_pdst;
-      else if (_GEN[18])
-        br_snapshots_5_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_18 <= map_table_18;
-      if (_GEN_0[19])
-        br_snapshots_5_19 <= io_remap_reqs_1_pdst;
-      else if (_GEN[19])
-        br_snapshots_5_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_19 <= map_table_19;
-      if (_GEN_0[20])
-        br_snapshots_5_20 <= io_remap_reqs_1_pdst;
-      else if (_GEN[20])
-        br_snapshots_5_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_20 <= map_table_20;
-      if (_GEN_0[21])
-        br_snapshots_5_21 <= io_remap_reqs_1_pdst;
-      else if (_GEN[21])
-        br_snapshots_5_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_21 <= map_table_21;
-      if (_GEN_0[22])
-        br_snapshots_5_22 <= io_remap_reqs_1_pdst;
-      else if (_GEN[22])
-        br_snapshots_5_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_22 <= map_table_22;
-      if (_GEN_0[23])
-        br_snapshots_5_23 <= io_remap_reqs_1_pdst;
-      else if (_GEN[23])
-        br_snapshots_5_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_23 <= map_table_23;
-      if (_GEN_0[24])
-        br_snapshots_5_24 <= io_remap_reqs_1_pdst;
-      else if (_GEN[24])
-        br_snapshots_5_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_24 <= map_table_24;
-      if (_GEN_0[25])
-        br_snapshots_5_25 <= io_remap_reqs_1_pdst;
-      else if (_GEN[25])
-        br_snapshots_5_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_25 <= map_table_25;
-      if (_GEN_0[26])
-        br_snapshots_5_26 <= io_remap_reqs_1_pdst;
-      else if (_GEN[26])
-        br_snapshots_5_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_26 <= map_table_26;
-      if (_GEN_0[27])
-        br_snapshots_5_27 <= io_remap_reqs_1_pdst;
-      else if (_GEN[27])
-        br_snapshots_5_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_27 <= map_table_27;
-      if (_GEN_0[28])
-        br_snapshots_5_28 <= io_remap_reqs_1_pdst;
-      else if (_GEN[28])
-        br_snapshots_5_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_28 <= map_table_28;
-      if (_GEN_0[29])
-        br_snapshots_5_29 <= io_remap_reqs_1_pdst;
-      else if (_GEN[29])
-        br_snapshots_5_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_29 <= map_table_29;
-      if (_GEN_0[30])
-        br_snapshots_5_30 <= io_remap_reqs_1_pdst;
-      else if (_GEN[30])
-        br_snapshots_5_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_30 <= map_table_30;
-      if (_GEN_0[31])
-        br_snapshots_5_31 <= io_remap_reqs_1_pdst;
-      else if (_GEN[31])
-        br_snapshots_5_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_31 <= map_table_31;
+      br_snapshots_5_0 <= remap_table_2_0;
+      br_snapshots_5_1 <= remap_table_2_1;
+      br_snapshots_5_2 <= remap_table_2_2;
+      br_snapshots_5_3 <= remap_table_2_3;
+      br_snapshots_5_4 <= remap_table_2_4;
+      br_snapshots_5_5 <= remap_table_2_5;
+      br_snapshots_5_6 <= remap_table_2_6;
+      br_snapshots_5_7 <= remap_table_2_7;
+      br_snapshots_5_8 <= remap_table_2_8;
+      br_snapshots_5_9 <= remap_table_2_9;
+      br_snapshots_5_10 <= remap_table_2_10;
+      br_snapshots_5_11 <= remap_table_2_11;
+      br_snapshots_5_12 <= remap_table_2_12;
+      br_snapshots_5_13 <= remap_table_2_13;
+      br_snapshots_5_14 <= remap_table_2_14;
+      br_snapshots_5_15 <= remap_table_2_15;
+      br_snapshots_5_16 <= remap_table_2_16;
+      br_snapshots_5_17 <= remap_table_2_17;
+      br_snapshots_5_18 <= remap_table_2_18;
+      br_snapshots_5_19 <= remap_table_2_19;
+      br_snapshots_5_20 <= remap_table_2_20;
+      br_snapshots_5_21 <= remap_table_2_21;
+      br_snapshots_5_22 <= remap_table_2_22;
+      br_snapshots_5_23 <= remap_table_2_23;
+      br_snapshots_5_24 <= remap_table_2_24;
+      br_snapshots_5_25 <= remap_table_2_25;
+      br_snapshots_5_26 <= remap_table_2_26;
+      br_snapshots_5_27 <= remap_table_2_27;
+      br_snapshots_5_28 <= remap_table_2_28;
+      br_snapshots_5_29 <= remap_table_2_29;
+      br_snapshots_5_30 <= remap_table_2_30;
+      br_snapshots_5_31 <= remap_table_2_31;
     end
     else if (io_ren_br_tags_0_valid & io_ren_br_tags_0_bits == 5'h5) begin
-      if (_GEN[0])
-        br_snapshots_5_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_0 <= map_table_0;
-      if (_GEN[1])
-        br_snapshots_5_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_1 <= map_table_1;
-      if (_GEN[2])
-        br_snapshots_5_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_2 <= map_table_2;
-      if (_GEN[3])
-        br_snapshots_5_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_3 <= map_table_3;
-      if (_GEN[4])
-        br_snapshots_5_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_4 <= map_table_4;
-      if (_GEN[5])
-        br_snapshots_5_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_5 <= map_table_5;
-      if (_GEN[6])
-        br_snapshots_5_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_6 <= map_table_6;
-      if (_GEN[7])
-        br_snapshots_5_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_7 <= map_table_7;
-      if (_GEN[8])
-        br_snapshots_5_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_8 <= map_table_8;
-      if (_GEN[9])
-        br_snapshots_5_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_9 <= map_table_9;
-      if (_GEN[10])
-        br_snapshots_5_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_10 <= map_table_10;
-      if (_GEN[11])
-        br_snapshots_5_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_11 <= map_table_11;
-      if (_GEN[12])
-        br_snapshots_5_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_12 <= map_table_12;
-      if (_GEN[13])
-        br_snapshots_5_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_13 <= map_table_13;
-      if (_GEN[14])
-        br_snapshots_5_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_14 <= map_table_14;
-      if (_GEN[15])
-        br_snapshots_5_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_15 <= map_table_15;
-      if (_GEN[16])
-        br_snapshots_5_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_16 <= map_table_16;
-      if (_GEN[17])
-        br_snapshots_5_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_17 <= map_table_17;
-      if (_GEN[18])
-        br_snapshots_5_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_18 <= map_table_18;
-      if (_GEN[19])
-        br_snapshots_5_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_19 <= map_table_19;
-      if (_GEN[20])
-        br_snapshots_5_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_20 <= map_table_20;
-      if (_GEN[21])
-        br_snapshots_5_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_21 <= map_table_21;
-      if (_GEN[22])
-        br_snapshots_5_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_22 <= map_table_22;
-      if (_GEN[23])
-        br_snapshots_5_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_23 <= map_table_23;
-      if (_GEN[24])
-        br_snapshots_5_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_24 <= map_table_24;
-      if (_GEN[25])
-        br_snapshots_5_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_25 <= map_table_25;
-      if (_GEN[26])
-        br_snapshots_5_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_26 <= map_table_26;
-      if (_GEN[27])
-        br_snapshots_5_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_27 <= map_table_27;
-      if (_GEN[28])
-        br_snapshots_5_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_28 <= map_table_28;
-      if (_GEN[29])
-        br_snapshots_5_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_29 <= map_table_29;
-      if (_GEN[30])
-        br_snapshots_5_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_30 <= map_table_30;
-      if (_GEN[31])
-        br_snapshots_5_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_5_31 <= map_table_31;
+      br_snapshots_5_0 <= remap_table_1_0;
+      br_snapshots_5_1 <= remap_table_1_1;
+      br_snapshots_5_2 <= remap_table_1_2;
+      br_snapshots_5_3 <= remap_table_1_3;
+      br_snapshots_5_4 <= remap_table_1_4;
+      br_snapshots_5_5 <= remap_table_1_5;
+      br_snapshots_5_6 <= remap_table_1_6;
+      br_snapshots_5_7 <= remap_table_1_7;
+      br_snapshots_5_8 <= remap_table_1_8;
+      br_snapshots_5_9 <= remap_table_1_9;
+      br_snapshots_5_10 <= remap_table_1_10;
+      br_snapshots_5_11 <= remap_table_1_11;
+      br_snapshots_5_12 <= remap_table_1_12;
+      br_snapshots_5_13 <= remap_table_1_13;
+      br_snapshots_5_14 <= remap_table_1_14;
+      br_snapshots_5_15 <= remap_table_1_15;
+      br_snapshots_5_16 <= remap_table_1_16;
+      br_snapshots_5_17 <= remap_table_1_17;
+      br_snapshots_5_18 <= remap_table_1_18;
+      br_snapshots_5_19 <= remap_table_1_19;
+      br_snapshots_5_20 <= remap_table_1_20;
+      br_snapshots_5_21 <= remap_table_1_21;
+      br_snapshots_5_22 <= remap_table_1_22;
+      br_snapshots_5_23 <= remap_table_1_23;
+      br_snapshots_5_24 <= remap_table_1_24;
+      br_snapshots_5_25 <= remap_table_1_25;
+      br_snapshots_5_26 <= remap_table_1_26;
+      br_snapshots_5_27 <= remap_table_1_27;
+      br_snapshots_5_28 <= remap_table_1_28;
+      br_snapshots_5_29 <= remap_table_1_29;
+      br_snapshots_5_30 <= remap_table_1_30;
+      br_snapshots_5_31 <= remap_table_1_31;
     end
     if (io_ren_br_tags_3_valid & io_ren_br_tags_3_bits == 5'h6) begin
-      if (_GEN_2[0])
-        br_snapshots_6_0 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[0])
-        br_snapshots_6_0 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[0])
-        br_snapshots_6_0 <= io_remap_reqs_1_pdst;
-      else if (_GEN[0])
-        br_snapshots_6_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_0 <= map_table_0;
-      if (_GEN_2[1])
-        br_snapshots_6_1 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[1])
-        br_snapshots_6_1 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[1])
-        br_snapshots_6_1 <= io_remap_reqs_1_pdst;
-      else if (_GEN[1])
-        br_snapshots_6_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_1 <= map_table_1;
-      if (_GEN_2[2])
-        br_snapshots_6_2 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[2])
-        br_snapshots_6_2 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[2])
-        br_snapshots_6_2 <= io_remap_reqs_1_pdst;
-      else if (_GEN[2])
-        br_snapshots_6_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_2 <= map_table_2;
-      if (_GEN_2[3])
-        br_snapshots_6_3 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[3])
-        br_snapshots_6_3 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[3])
-        br_snapshots_6_3 <= io_remap_reqs_1_pdst;
-      else if (_GEN[3])
-        br_snapshots_6_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_3 <= map_table_3;
-      if (_GEN_2[4])
-        br_snapshots_6_4 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[4])
-        br_snapshots_6_4 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[4])
-        br_snapshots_6_4 <= io_remap_reqs_1_pdst;
-      else if (_GEN[4])
-        br_snapshots_6_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_4 <= map_table_4;
-      if (_GEN_2[5])
-        br_snapshots_6_5 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[5])
-        br_snapshots_6_5 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[5])
-        br_snapshots_6_5 <= io_remap_reqs_1_pdst;
-      else if (_GEN[5])
-        br_snapshots_6_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_5 <= map_table_5;
-      if (_GEN_2[6])
-        br_snapshots_6_6 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[6])
-        br_snapshots_6_6 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[6])
-        br_snapshots_6_6 <= io_remap_reqs_1_pdst;
-      else if (_GEN[6])
-        br_snapshots_6_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_6 <= map_table_6;
-      if (_GEN_2[7])
-        br_snapshots_6_7 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[7])
-        br_snapshots_6_7 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[7])
-        br_snapshots_6_7 <= io_remap_reqs_1_pdst;
-      else if (_GEN[7])
-        br_snapshots_6_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_7 <= map_table_7;
-      if (_GEN_2[8])
-        br_snapshots_6_8 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[8])
-        br_snapshots_6_8 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[8])
-        br_snapshots_6_8 <= io_remap_reqs_1_pdst;
-      else if (_GEN[8])
-        br_snapshots_6_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_8 <= map_table_8;
-      if (_GEN_2[9])
-        br_snapshots_6_9 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[9])
-        br_snapshots_6_9 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[9])
-        br_snapshots_6_9 <= io_remap_reqs_1_pdst;
-      else if (_GEN[9])
-        br_snapshots_6_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_9 <= map_table_9;
-      if (_GEN_2[10])
-        br_snapshots_6_10 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[10])
-        br_snapshots_6_10 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[10])
-        br_snapshots_6_10 <= io_remap_reqs_1_pdst;
-      else if (_GEN[10])
-        br_snapshots_6_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_10 <= map_table_10;
-      if (_GEN_2[11])
-        br_snapshots_6_11 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[11])
-        br_snapshots_6_11 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[11])
-        br_snapshots_6_11 <= io_remap_reqs_1_pdst;
-      else if (_GEN[11])
-        br_snapshots_6_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_11 <= map_table_11;
-      if (_GEN_2[12])
-        br_snapshots_6_12 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[12])
-        br_snapshots_6_12 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[12])
-        br_snapshots_6_12 <= io_remap_reqs_1_pdst;
-      else if (_GEN[12])
-        br_snapshots_6_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_12 <= map_table_12;
-      if (_GEN_2[13])
-        br_snapshots_6_13 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[13])
-        br_snapshots_6_13 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[13])
-        br_snapshots_6_13 <= io_remap_reqs_1_pdst;
-      else if (_GEN[13])
-        br_snapshots_6_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_13 <= map_table_13;
-      if (_GEN_2[14])
-        br_snapshots_6_14 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[14])
-        br_snapshots_6_14 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[14])
-        br_snapshots_6_14 <= io_remap_reqs_1_pdst;
-      else if (_GEN[14])
-        br_snapshots_6_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_14 <= map_table_14;
-      if (_GEN_2[15])
-        br_snapshots_6_15 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[15])
-        br_snapshots_6_15 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[15])
-        br_snapshots_6_15 <= io_remap_reqs_1_pdst;
-      else if (_GEN[15])
-        br_snapshots_6_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_15 <= map_table_15;
-      if (_GEN_2[16])
-        br_snapshots_6_16 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[16])
-        br_snapshots_6_16 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[16])
-        br_snapshots_6_16 <= io_remap_reqs_1_pdst;
-      else if (_GEN[16])
-        br_snapshots_6_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_16 <= map_table_16;
-      if (_GEN_2[17])
-        br_snapshots_6_17 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[17])
-        br_snapshots_6_17 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[17])
-        br_snapshots_6_17 <= io_remap_reqs_1_pdst;
-      else if (_GEN[17])
-        br_snapshots_6_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_17 <= map_table_17;
-      if (_GEN_2[18])
-        br_snapshots_6_18 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[18])
-        br_snapshots_6_18 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[18])
-        br_snapshots_6_18 <= io_remap_reqs_1_pdst;
-      else if (_GEN[18])
-        br_snapshots_6_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_18 <= map_table_18;
-      if (_GEN_2[19])
-        br_snapshots_6_19 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[19])
-        br_snapshots_6_19 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[19])
-        br_snapshots_6_19 <= io_remap_reqs_1_pdst;
-      else if (_GEN[19])
-        br_snapshots_6_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_19 <= map_table_19;
-      if (_GEN_2[20])
-        br_snapshots_6_20 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[20])
-        br_snapshots_6_20 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[20])
-        br_snapshots_6_20 <= io_remap_reqs_1_pdst;
-      else if (_GEN[20])
-        br_snapshots_6_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_20 <= map_table_20;
-      if (_GEN_2[21])
-        br_snapshots_6_21 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[21])
-        br_snapshots_6_21 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[21])
-        br_snapshots_6_21 <= io_remap_reqs_1_pdst;
-      else if (_GEN[21])
-        br_snapshots_6_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_21 <= map_table_21;
-      if (_GEN_2[22])
-        br_snapshots_6_22 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[22])
-        br_snapshots_6_22 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[22])
-        br_snapshots_6_22 <= io_remap_reqs_1_pdst;
-      else if (_GEN[22])
-        br_snapshots_6_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_22 <= map_table_22;
-      if (_GEN_2[23])
-        br_snapshots_6_23 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[23])
-        br_snapshots_6_23 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[23])
-        br_snapshots_6_23 <= io_remap_reqs_1_pdst;
-      else if (_GEN[23])
-        br_snapshots_6_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_23 <= map_table_23;
-      if (_GEN_2[24])
-        br_snapshots_6_24 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[24])
-        br_snapshots_6_24 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[24])
-        br_snapshots_6_24 <= io_remap_reqs_1_pdst;
-      else if (_GEN[24])
-        br_snapshots_6_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_24 <= map_table_24;
-      if (_GEN_2[25])
-        br_snapshots_6_25 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[25])
-        br_snapshots_6_25 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[25])
-        br_snapshots_6_25 <= io_remap_reqs_1_pdst;
-      else if (_GEN[25])
-        br_snapshots_6_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_25 <= map_table_25;
-      if (_GEN_2[26])
-        br_snapshots_6_26 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[26])
-        br_snapshots_6_26 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[26])
-        br_snapshots_6_26 <= io_remap_reqs_1_pdst;
-      else if (_GEN[26])
-        br_snapshots_6_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_26 <= map_table_26;
-      if (_GEN_2[27])
-        br_snapshots_6_27 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[27])
-        br_snapshots_6_27 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[27])
-        br_snapshots_6_27 <= io_remap_reqs_1_pdst;
-      else if (_GEN[27])
-        br_snapshots_6_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_27 <= map_table_27;
-      if (_GEN_2[28])
-        br_snapshots_6_28 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[28])
-        br_snapshots_6_28 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[28])
-        br_snapshots_6_28 <= io_remap_reqs_1_pdst;
-      else if (_GEN[28])
-        br_snapshots_6_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_28 <= map_table_28;
-      if (_GEN_2[29])
-        br_snapshots_6_29 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[29])
-        br_snapshots_6_29 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[29])
-        br_snapshots_6_29 <= io_remap_reqs_1_pdst;
-      else if (_GEN[29])
-        br_snapshots_6_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_29 <= map_table_29;
-      if (_GEN_2[30])
-        br_snapshots_6_30 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[30])
-        br_snapshots_6_30 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[30])
-        br_snapshots_6_30 <= io_remap_reqs_1_pdst;
-      else if (_GEN[30])
-        br_snapshots_6_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_30 <= map_table_30;
-      if (_GEN_2[31])
-        br_snapshots_6_31 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[31])
-        br_snapshots_6_31 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[31])
-        br_snapshots_6_31 <= io_remap_reqs_1_pdst;
-      else if (_GEN[31])
-        br_snapshots_6_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_31 <= map_table_31;
+      br_snapshots_6_0 <= remap_table_4_0;
+      br_snapshots_6_1 <= remap_table_4_1;
+      br_snapshots_6_2 <= remap_table_4_2;
+      br_snapshots_6_3 <= remap_table_4_3;
+      br_snapshots_6_4 <= remap_table_4_4;
+      br_snapshots_6_5 <= remap_table_4_5;
+      br_snapshots_6_6 <= remap_table_4_6;
+      br_snapshots_6_7 <= remap_table_4_7;
+      br_snapshots_6_8 <= remap_table_4_8;
+      br_snapshots_6_9 <= remap_table_4_9;
+      br_snapshots_6_10 <= remap_table_4_10;
+      br_snapshots_6_11 <= remap_table_4_11;
+      br_snapshots_6_12 <= remap_table_4_12;
+      br_snapshots_6_13 <= remap_table_4_13;
+      br_snapshots_6_14 <= remap_table_4_14;
+      br_snapshots_6_15 <= remap_table_4_15;
+      br_snapshots_6_16 <= remap_table_4_16;
+      br_snapshots_6_17 <= remap_table_4_17;
+      br_snapshots_6_18 <= remap_table_4_18;
+      br_snapshots_6_19 <= remap_table_4_19;
+      br_snapshots_6_20 <= remap_table_4_20;
+      br_snapshots_6_21 <= remap_table_4_21;
+      br_snapshots_6_22 <= remap_table_4_22;
+      br_snapshots_6_23 <= remap_table_4_23;
+      br_snapshots_6_24 <= remap_table_4_24;
+      br_snapshots_6_25 <= remap_table_4_25;
+      br_snapshots_6_26 <= remap_table_4_26;
+      br_snapshots_6_27 <= remap_table_4_27;
+      br_snapshots_6_28 <= remap_table_4_28;
+      br_snapshots_6_29 <= remap_table_4_29;
+      br_snapshots_6_30 <= remap_table_4_30;
+      br_snapshots_6_31 <= remap_table_4_31;
     end
     else if (io_ren_br_tags_2_valid & io_ren_br_tags_2_bits == 5'h6) begin
-      if (_GEN_1[0])
-        br_snapshots_6_0 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[0])
-        br_snapshots_6_0 <= io_remap_reqs_1_pdst;
-      else if (_GEN[0])
-        br_snapshots_6_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_0 <= map_table_0;
-      if (_GEN_1[1])
-        br_snapshots_6_1 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[1])
-        br_snapshots_6_1 <= io_remap_reqs_1_pdst;
-      else if (_GEN[1])
-        br_snapshots_6_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_1 <= map_table_1;
-      if (_GEN_1[2])
-        br_snapshots_6_2 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[2])
-        br_snapshots_6_2 <= io_remap_reqs_1_pdst;
-      else if (_GEN[2])
-        br_snapshots_6_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_2 <= map_table_2;
-      if (_GEN_1[3])
-        br_snapshots_6_3 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[3])
-        br_snapshots_6_3 <= io_remap_reqs_1_pdst;
-      else if (_GEN[3])
-        br_snapshots_6_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_3 <= map_table_3;
-      if (_GEN_1[4])
-        br_snapshots_6_4 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[4])
-        br_snapshots_6_4 <= io_remap_reqs_1_pdst;
-      else if (_GEN[4])
-        br_snapshots_6_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_4 <= map_table_4;
-      if (_GEN_1[5])
-        br_snapshots_6_5 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[5])
-        br_snapshots_6_5 <= io_remap_reqs_1_pdst;
-      else if (_GEN[5])
-        br_snapshots_6_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_5 <= map_table_5;
-      if (_GEN_1[6])
-        br_snapshots_6_6 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[6])
-        br_snapshots_6_6 <= io_remap_reqs_1_pdst;
-      else if (_GEN[6])
-        br_snapshots_6_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_6 <= map_table_6;
-      if (_GEN_1[7])
-        br_snapshots_6_7 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[7])
-        br_snapshots_6_7 <= io_remap_reqs_1_pdst;
-      else if (_GEN[7])
-        br_snapshots_6_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_7 <= map_table_7;
-      if (_GEN_1[8])
-        br_snapshots_6_8 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[8])
-        br_snapshots_6_8 <= io_remap_reqs_1_pdst;
-      else if (_GEN[8])
-        br_snapshots_6_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_8 <= map_table_8;
-      if (_GEN_1[9])
-        br_snapshots_6_9 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[9])
-        br_snapshots_6_9 <= io_remap_reqs_1_pdst;
-      else if (_GEN[9])
-        br_snapshots_6_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_9 <= map_table_9;
-      if (_GEN_1[10])
-        br_snapshots_6_10 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[10])
-        br_snapshots_6_10 <= io_remap_reqs_1_pdst;
-      else if (_GEN[10])
-        br_snapshots_6_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_10 <= map_table_10;
-      if (_GEN_1[11])
-        br_snapshots_6_11 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[11])
-        br_snapshots_6_11 <= io_remap_reqs_1_pdst;
-      else if (_GEN[11])
-        br_snapshots_6_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_11 <= map_table_11;
-      if (_GEN_1[12])
-        br_snapshots_6_12 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[12])
-        br_snapshots_6_12 <= io_remap_reqs_1_pdst;
-      else if (_GEN[12])
-        br_snapshots_6_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_12 <= map_table_12;
-      if (_GEN_1[13])
-        br_snapshots_6_13 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[13])
-        br_snapshots_6_13 <= io_remap_reqs_1_pdst;
-      else if (_GEN[13])
-        br_snapshots_6_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_13 <= map_table_13;
-      if (_GEN_1[14])
-        br_snapshots_6_14 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[14])
-        br_snapshots_6_14 <= io_remap_reqs_1_pdst;
-      else if (_GEN[14])
-        br_snapshots_6_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_14 <= map_table_14;
-      if (_GEN_1[15])
-        br_snapshots_6_15 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[15])
-        br_snapshots_6_15 <= io_remap_reqs_1_pdst;
-      else if (_GEN[15])
-        br_snapshots_6_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_15 <= map_table_15;
-      if (_GEN_1[16])
-        br_snapshots_6_16 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[16])
-        br_snapshots_6_16 <= io_remap_reqs_1_pdst;
-      else if (_GEN[16])
-        br_snapshots_6_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_16 <= map_table_16;
-      if (_GEN_1[17])
-        br_snapshots_6_17 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[17])
-        br_snapshots_6_17 <= io_remap_reqs_1_pdst;
-      else if (_GEN[17])
-        br_snapshots_6_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_17 <= map_table_17;
-      if (_GEN_1[18])
-        br_snapshots_6_18 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[18])
-        br_snapshots_6_18 <= io_remap_reqs_1_pdst;
-      else if (_GEN[18])
-        br_snapshots_6_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_18 <= map_table_18;
-      if (_GEN_1[19])
-        br_snapshots_6_19 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[19])
-        br_snapshots_6_19 <= io_remap_reqs_1_pdst;
-      else if (_GEN[19])
-        br_snapshots_6_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_19 <= map_table_19;
-      if (_GEN_1[20])
-        br_snapshots_6_20 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[20])
-        br_snapshots_6_20 <= io_remap_reqs_1_pdst;
-      else if (_GEN[20])
-        br_snapshots_6_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_20 <= map_table_20;
-      if (_GEN_1[21])
-        br_snapshots_6_21 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[21])
-        br_snapshots_6_21 <= io_remap_reqs_1_pdst;
-      else if (_GEN[21])
-        br_snapshots_6_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_21 <= map_table_21;
-      if (_GEN_1[22])
-        br_snapshots_6_22 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[22])
-        br_snapshots_6_22 <= io_remap_reqs_1_pdst;
-      else if (_GEN[22])
-        br_snapshots_6_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_22 <= map_table_22;
-      if (_GEN_1[23])
-        br_snapshots_6_23 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[23])
-        br_snapshots_6_23 <= io_remap_reqs_1_pdst;
-      else if (_GEN[23])
-        br_snapshots_6_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_23 <= map_table_23;
-      if (_GEN_1[24])
-        br_snapshots_6_24 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[24])
-        br_snapshots_6_24 <= io_remap_reqs_1_pdst;
-      else if (_GEN[24])
-        br_snapshots_6_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_24 <= map_table_24;
-      if (_GEN_1[25])
-        br_snapshots_6_25 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[25])
-        br_snapshots_6_25 <= io_remap_reqs_1_pdst;
-      else if (_GEN[25])
-        br_snapshots_6_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_25 <= map_table_25;
-      if (_GEN_1[26])
-        br_snapshots_6_26 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[26])
-        br_snapshots_6_26 <= io_remap_reqs_1_pdst;
-      else if (_GEN[26])
-        br_snapshots_6_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_26 <= map_table_26;
-      if (_GEN_1[27])
-        br_snapshots_6_27 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[27])
-        br_snapshots_6_27 <= io_remap_reqs_1_pdst;
-      else if (_GEN[27])
-        br_snapshots_6_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_27 <= map_table_27;
-      if (_GEN_1[28])
-        br_snapshots_6_28 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[28])
-        br_snapshots_6_28 <= io_remap_reqs_1_pdst;
-      else if (_GEN[28])
-        br_snapshots_6_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_28 <= map_table_28;
-      if (_GEN_1[29])
-        br_snapshots_6_29 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[29])
-        br_snapshots_6_29 <= io_remap_reqs_1_pdst;
-      else if (_GEN[29])
-        br_snapshots_6_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_29 <= map_table_29;
-      if (_GEN_1[30])
-        br_snapshots_6_30 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[30])
-        br_snapshots_6_30 <= io_remap_reqs_1_pdst;
-      else if (_GEN[30])
-        br_snapshots_6_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_30 <= map_table_30;
-      if (_GEN_1[31])
-        br_snapshots_6_31 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[31])
-        br_snapshots_6_31 <= io_remap_reqs_1_pdst;
-      else if (_GEN[31])
-        br_snapshots_6_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_31 <= map_table_31;
+      br_snapshots_6_0 <= remap_table_3_0;
+      br_snapshots_6_1 <= remap_table_3_1;
+      br_snapshots_6_2 <= remap_table_3_2;
+      br_snapshots_6_3 <= remap_table_3_3;
+      br_snapshots_6_4 <= remap_table_3_4;
+      br_snapshots_6_5 <= remap_table_3_5;
+      br_snapshots_6_6 <= remap_table_3_6;
+      br_snapshots_6_7 <= remap_table_3_7;
+      br_snapshots_6_8 <= remap_table_3_8;
+      br_snapshots_6_9 <= remap_table_3_9;
+      br_snapshots_6_10 <= remap_table_3_10;
+      br_snapshots_6_11 <= remap_table_3_11;
+      br_snapshots_6_12 <= remap_table_3_12;
+      br_snapshots_6_13 <= remap_table_3_13;
+      br_snapshots_6_14 <= remap_table_3_14;
+      br_snapshots_6_15 <= remap_table_3_15;
+      br_snapshots_6_16 <= remap_table_3_16;
+      br_snapshots_6_17 <= remap_table_3_17;
+      br_snapshots_6_18 <= remap_table_3_18;
+      br_snapshots_6_19 <= remap_table_3_19;
+      br_snapshots_6_20 <= remap_table_3_20;
+      br_snapshots_6_21 <= remap_table_3_21;
+      br_snapshots_6_22 <= remap_table_3_22;
+      br_snapshots_6_23 <= remap_table_3_23;
+      br_snapshots_6_24 <= remap_table_3_24;
+      br_snapshots_6_25 <= remap_table_3_25;
+      br_snapshots_6_26 <= remap_table_3_26;
+      br_snapshots_6_27 <= remap_table_3_27;
+      br_snapshots_6_28 <= remap_table_3_28;
+      br_snapshots_6_29 <= remap_table_3_29;
+      br_snapshots_6_30 <= remap_table_3_30;
+      br_snapshots_6_31 <= remap_table_3_31;
     end
     else if (io_ren_br_tags_1_valid & io_ren_br_tags_1_bits == 5'h6) begin
-      if (_GEN_0[0])
-        br_snapshots_6_0 <= io_remap_reqs_1_pdst;
-      else if (_GEN[0])
-        br_snapshots_6_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_0 <= map_table_0;
-      if (_GEN_0[1])
-        br_snapshots_6_1 <= io_remap_reqs_1_pdst;
-      else if (_GEN[1])
-        br_snapshots_6_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_1 <= map_table_1;
-      if (_GEN_0[2])
-        br_snapshots_6_2 <= io_remap_reqs_1_pdst;
-      else if (_GEN[2])
-        br_snapshots_6_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_2 <= map_table_2;
-      if (_GEN_0[3])
-        br_snapshots_6_3 <= io_remap_reqs_1_pdst;
-      else if (_GEN[3])
-        br_snapshots_6_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_3 <= map_table_3;
-      if (_GEN_0[4])
-        br_snapshots_6_4 <= io_remap_reqs_1_pdst;
-      else if (_GEN[4])
-        br_snapshots_6_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_4 <= map_table_4;
-      if (_GEN_0[5])
-        br_snapshots_6_5 <= io_remap_reqs_1_pdst;
-      else if (_GEN[5])
-        br_snapshots_6_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_5 <= map_table_5;
-      if (_GEN_0[6])
-        br_snapshots_6_6 <= io_remap_reqs_1_pdst;
-      else if (_GEN[6])
-        br_snapshots_6_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_6 <= map_table_6;
-      if (_GEN_0[7])
-        br_snapshots_6_7 <= io_remap_reqs_1_pdst;
-      else if (_GEN[7])
-        br_snapshots_6_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_7 <= map_table_7;
-      if (_GEN_0[8])
-        br_snapshots_6_8 <= io_remap_reqs_1_pdst;
-      else if (_GEN[8])
-        br_snapshots_6_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_8 <= map_table_8;
-      if (_GEN_0[9])
-        br_snapshots_6_9 <= io_remap_reqs_1_pdst;
-      else if (_GEN[9])
-        br_snapshots_6_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_9 <= map_table_9;
-      if (_GEN_0[10])
-        br_snapshots_6_10 <= io_remap_reqs_1_pdst;
-      else if (_GEN[10])
-        br_snapshots_6_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_10 <= map_table_10;
-      if (_GEN_0[11])
-        br_snapshots_6_11 <= io_remap_reqs_1_pdst;
-      else if (_GEN[11])
-        br_snapshots_6_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_11 <= map_table_11;
-      if (_GEN_0[12])
-        br_snapshots_6_12 <= io_remap_reqs_1_pdst;
-      else if (_GEN[12])
-        br_snapshots_6_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_12 <= map_table_12;
-      if (_GEN_0[13])
-        br_snapshots_6_13 <= io_remap_reqs_1_pdst;
-      else if (_GEN[13])
-        br_snapshots_6_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_13 <= map_table_13;
-      if (_GEN_0[14])
-        br_snapshots_6_14 <= io_remap_reqs_1_pdst;
-      else if (_GEN[14])
-        br_snapshots_6_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_14 <= map_table_14;
-      if (_GEN_0[15])
-        br_snapshots_6_15 <= io_remap_reqs_1_pdst;
-      else if (_GEN[15])
-        br_snapshots_6_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_15 <= map_table_15;
-      if (_GEN_0[16])
-        br_snapshots_6_16 <= io_remap_reqs_1_pdst;
-      else if (_GEN[16])
-        br_snapshots_6_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_16 <= map_table_16;
-      if (_GEN_0[17])
-        br_snapshots_6_17 <= io_remap_reqs_1_pdst;
-      else if (_GEN[17])
-        br_snapshots_6_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_17 <= map_table_17;
-      if (_GEN_0[18])
-        br_snapshots_6_18 <= io_remap_reqs_1_pdst;
-      else if (_GEN[18])
-        br_snapshots_6_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_18 <= map_table_18;
-      if (_GEN_0[19])
-        br_snapshots_6_19 <= io_remap_reqs_1_pdst;
-      else if (_GEN[19])
-        br_snapshots_6_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_19 <= map_table_19;
-      if (_GEN_0[20])
-        br_snapshots_6_20 <= io_remap_reqs_1_pdst;
-      else if (_GEN[20])
-        br_snapshots_6_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_20 <= map_table_20;
-      if (_GEN_0[21])
-        br_snapshots_6_21 <= io_remap_reqs_1_pdst;
-      else if (_GEN[21])
-        br_snapshots_6_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_21 <= map_table_21;
-      if (_GEN_0[22])
-        br_snapshots_6_22 <= io_remap_reqs_1_pdst;
-      else if (_GEN[22])
-        br_snapshots_6_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_22 <= map_table_22;
-      if (_GEN_0[23])
-        br_snapshots_6_23 <= io_remap_reqs_1_pdst;
-      else if (_GEN[23])
-        br_snapshots_6_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_23 <= map_table_23;
-      if (_GEN_0[24])
-        br_snapshots_6_24 <= io_remap_reqs_1_pdst;
-      else if (_GEN[24])
-        br_snapshots_6_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_24 <= map_table_24;
-      if (_GEN_0[25])
-        br_snapshots_6_25 <= io_remap_reqs_1_pdst;
-      else if (_GEN[25])
-        br_snapshots_6_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_25 <= map_table_25;
-      if (_GEN_0[26])
-        br_snapshots_6_26 <= io_remap_reqs_1_pdst;
-      else if (_GEN[26])
-        br_snapshots_6_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_26 <= map_table_26;
-      if (_GEN_0[27])
-        br_snapshots_6_27 <= io_remap_reqs_1_pdst;
-      else if (_GEN[27])
-        br_snapshots_6_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_27 <= map_table_27;
-      if (_GEN_0[28])
-        br_snapshots_6_28 <= io_remap_reqs_1_pdst;
-      else if (_GEN[28])
-        br_snapshots_6_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_28 <= map_table_28;
-      if (_GEN_0[29])
-        br_snapshots_6_29 <= io_remap_reqs_1_pdst;
-      else if (_GEN[29])
-        br_snapshots_6_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_29 <= map_table_29;
-      if (_GEN_0[30])
-        br_snapshots_6_30 <= io_remap_reqs_1_pdst;
-      else if (_GEN[30])
-        br_snapshots_6_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_30 <= map_table_30;
-      if (_GEN_0[31])
-        br_snapshots_6_31 <= io_remap_reqs_1_pdst;
-      else if (_GEN[31])
-        br_snapshots_6_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_31 <= map_table_31;
+      br_snapshots_6_0 <= remap_table_2_0;
+      br_snapshots_6_1 <= remap_table_2_1;
+      br_snapshots_6_2 <= remap_table_2_2;
+      br_snapshots_6_3 <= remap_table_2_3;
+      br_snapshots_6_4 <= remap_table_2_4;
+      br_snapshots_6_5 <= remap_table_2_5;
+      br_snapshots_6_6 <= remap_table_2_6;
+      br_snapshots_6_7 <= remap_table_2_7;
+      br_snapshots_6_8 <= remap_table_2_8;
+      br_snapshots_6_9 <= remap_table_2_9;
+      br_snapshots_6_10 <= remap_table_2_10;
+      br_snapshots_6_11 <= remap_table_2_11;
+      br_snapshots_6_12 <= remap_table_2_12;
+      br_snapshots_6_13 <= remap_table_2_13;
+      br_snapshots_6_14 <= remap_table_2_14;
+      br_snapshots_6_15 <= remap_table_2_15;
+      br_snapshots_6_16 <= remap_table_2_16;
+      br_snapshots_6_17 <= remap_table_2_17;
+      br_snapshots_6_18 <= remap_table_2_18;
+      br_snapshots_6_19 <= remap_table_2_19;
+      br_snapshots_6_20 <= remap_table_2_20;
+      br_snapshots_6_21 <= remap_table_2_21;
+      br_snapshots_6_22 <= remap_table_2_22;
+      br_snapshots_6_23 <= remap_table_2_23;
+      br_snapshots_6_24 <= remap_table_2_24;
+      br_snapshots_6_25 <= remap_table_2_25;
+      br_snapshots_6_26 <= remap_table_2_26;
+      br_snapshots_6_27 <= remap_table_2_27;
+      br_snapshots_6_28 <= remap_table_2_28;
+      br_snapshots_6_29 <= remap_table_2_29;
+      br_snapshots_6_30 <= remap_table_2_30;
+      br_snapshots_6_31 <= remap_table_2_31;
     end
     else if (io_ren_br_tags_0_valid & io_ren_br_tags_0_bits == 5'h6) begin
-      if (_GEN[0])
-        br_snapshots_6_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_0 <= map_table_0;
-      if (_GEN[1])
-        br_snapshots_6_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_1 <= map_table_1;
-      if (_GEN[2])
-        br_snapshots_6_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_2 <= map_table_2;
-      if (_GEN[3])
-        br_snapshots_6_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_3 <= map_table_3;
-      if (_GEN[4])
-        br_snapshots_6_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_4 <= map_table_4;
-      if (_GEN[5])
-        br_snapshots_6_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_5 <= map_table_5;
-      if (_GEN[6])
-        br_snapshots_6_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_6 <= map_table_6;
-      if (_GEN[7])
-        br_snapshots_6_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_7 <= map_table_7;
-      if (_GEN[8])
-        br_snapshots_6_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_8 <= map_table_8;
-      if (_GEN[9])
-        br_snapshots_6_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_9 <= map_table_9;
-      if (_GEN[10])
-        br_snapshots_6_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_10 <= map_table_10;
-      if (_GEN[11])
-        br_snapshots_6_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_11 <= map_table_11;
-      if (_GEN[12])
-        br_snapshots_6_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_12 <= map_table_12;
-      if (_GEN[13])
-        br_snapshots_6_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_13 <= map_table_13;
-      if (_GEN[14])
-        br_snapshots_6_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_14 <= map_table_14;
-      if (_GEN[15])
-        br_snapshots_6_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_15 <= map_table_15;
-      if (_GEN[16])
-        br_snapshots_6_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_16 <= map_table_16;
-      if (_GEN[17])
-        br_snapshots_6_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_17 <= map_table_17;
-      if (_GEN[18])
-        br_snapshots_6_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_18 <= map_table_18;
-      if (_GEN[19])
-        br_snapshots_6_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_19 <= map_table_19;
-      if (_GEN[20])
-        br_snapshots_6_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_20 <= map_table_20;
-      if (_GEN[21])
-        br_snapshots_6_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_21 <= map_table_21;
-      if (_GEN[22])
-        br_snapshots_6_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_22 <= map_table_22;
-      if (_GEN[23])
-        br_snapshots_6_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_23 <= map_table_23;
-      if (_GEN[24])
-        br_snapshots_6_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_24 <= map_table_24;
-      if (_GEN[25])
-        br_snapshots_6_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_25 <= map_table_25;
-      if (_GEN[26])
-        br_snapshots_6_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_26 <= map_table_26;
-      if (_GEN[27])
-        br_snapshots_6_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_27 <= map_table_27;
-      if (_GEN[28])
-        br_snapshots_6_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_28 <= map_table_28;
-      if (_GEN[29])
-        br_snapshots_6_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_29 <= map_table_29;
-      if (_GEN[30])
-        br_snapshots_6_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_30 <= map_table_30;
-      if (_GEN[31])
-        br_snapshots_6_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_6_31 <= map_table_31;
+      br_snapshots_6_0 <= remap_table_1_0;
+      br_snapshots_6_1 <= remap_table_1_1;
+      br_snapshots_6_2 <= remap_table_1_2;
+      br_snapshots_6_3 <= remap_table_1_3;
+      br_snapshots_6_4 <= remap_table_1_4;
+      br_snapshots_6_5 <= remap_table_1_5;
+      br_snapshots_6_6 <= remap_table_1_6;
+      br_snapshots_6_7 <= remap_table_1_7;
+      br_snapshots_6_8 <= remap_table_1_8;
+      br_snapshots_6_9 <= remap_table_1_9;
+      br_snapshots_6_10 <= remap_table_1_10;
+      br_snapshots_6_11 <= remap_table_1_11;
+      br_snapshots_6_12 <= remap_table_1_12;
+      br_snapshots_6_13 <= remap_table_1_13;
+      br_snapshots_6_14 <= remap_table_1_14;
+      br_snapshots_6_15 <= remap_table_1_15;
+      br_snapshots_6_16 <= remap_table_1_16;
+      br_snapshots_6_17 <= remap_table_1_17;
+      br_snapshots_6_18 <= remap_table_1_18;
+      br_snapshots_6_19 <= remap_table_1_19;
+      br_snapshots_6_20 <= remap_table_1_20;
+      br_snapshots_6_21 <= remap_table_1_21;
+      br_snapshots_6_22 <= remap_table_1_22;
+      br_snapshots_6_23 <= remap_table_1_23;
+      br_snapshots_6_24 <= remap_table_1_24;
+      br_snapshots_6_25 <= remap_table_1_25;
+      br_snapshots_6_26 <= remap_table_1_26;
+      br_snapshots_6_27 <= remap_table_1_27;
+      br_snapshots_6_28 <= remap_table_1_28;
+      br_snapshots_6_29 <= remap_table_1_29;
+      br_snapshots_6_30 <= remap_table_1_30;
+      br_snapshots_6_31 <= remap_table_1_31;
     end
     if (io_ren_br_tags_3_valid & io_ren_br_tags_3_bits == 5'h7) begin
-      if (_GEN_2[0])
-        br_snapshots_7_0 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[0])
-        br_snapshots_7_0 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[0])
-        br_snapshots_7_0 <= io_remap_reqs_1_pdst;
-      else if (_GEN[0])
-        br_snapshots_7_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_0 <= map_table_0;
-      if (_GEN_2[1])
-        br_snapshots_7_1 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[1])
-        br_snapshots_7_1 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[1])
-        br_snapshots_7_1 <= io_remap_reqs_1_pdst;
-      else if (_GEN[1])
-        br_snapshots_7_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_1 <= map_table_1;
-      if (_GEN_2[2])
-        br_snapshots_7_2 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[2])
-        br_snapshots_7_2 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[2])
-        br_snapshots_7_2 <= io_remap_reqs_1_pdst;
-      else if (_GEN[2])
-        br_snapshots_7_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_2 <= map_table_2;
-      if (_GEN_2[3])
-        br_snapshots_7_3 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[3])
-        br_snapshots_7_3 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[3])
-        br_snapshots_7_3 <= io_remap_reqs_1_pdst;
-      else if (_GEN[3])
-        br_snapshots_7_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_3 <= map_table_3;
-      if (_GEN_2[4])
-        br_snapshots_7_4 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[4])
-        br_snapshots_7_4 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[4])
-        br_snapshots_7_4 <= io_remap_reqs_1_pdst;
-      else if (_GEN[4])
-        br_snapshots_7_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_4 <= map_table_4;
-      if (_GEN_2[5])
-        br_snapshots_7_5 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[5])
-        br_snapshots_7_5 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[5])
-        br_snapshots_7_5 <= io_remap_reqs_1_pdst;
-      else if (_GEN[5])
-        br_snapshots_7_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_5 <= map_table_5;
-      if (_GEN_2[6])
-        br_snapshots_7_6 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[6])
-        br_snapshots_7_6 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[6])
-        br_snapshots_7_6 <= io_remap_reqs_1_pdst;
-      else if (_GEN[6])
-        br_snapshots_7_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_6 <= map_table_6;
-      if (_GEN_2[7])
-        br_snapshots_7_7 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[7])
-        br_snapshots_7_7 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[7])
-        br_snapshots_7_7 <= io_remap_reqs_1_pdst;
-      else if (_GEN[7])
-        br_snapshots_7_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_7 <= map_table_7;
-      if (_GEN_2[8])
-        br_snapshots_7_8 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[8])
-        br_snapshots_7_8 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[8])
-        br_snapshots_7_8 <= io_remap_reqs_1_pdst;
-      else if (_GEN[8])
-        br_snapshots_7_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_8 <= map_table_8;
-      if (_GEN_2[9])
-        br_snapshots_7_9 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[9])
-        br_snapshots_7_9 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[9])
-        br_snapshots_7_9 <= io_remap_reqs_1_pdst;
-      else if (_GEN[9])
-        br_snapshots_7_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_9 <= map_table_9;
-      if (_GEN_2[10])
-        br_snapshots_7_10 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[10])
-        br_snapshots_7_10 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[10])
-        br_snapshots_7_10 <= io_remap_reqs_1_pdst;
-      else if (_GEN[10])
-        br_snapshots_7_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_10 <= map_table_10;
-      if (_GEN_2[11])
-        br_snapshots_7_11 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[11])
-        br_snapshots_7_11 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[11])
-        br_snapshots_7_11 <= io_remap_reqs_1_pdst;
-      else if (_GEN[11])
-        br_snapshots_7_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_11 <= map_table_11;
-      if (_GEN_2[12])
-        br_snapshots_7_12 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[12])
-        br_snapshots_7_12 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[12])
-        br_snapshots_7_12 <= io_remap_reqs_1_pdst;
-      else if (_GEN[12])
-        br_snapshots_7_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_12 <= map_table_12;
-      if (_GEN_2[13])
-        br_snapshots_7_13 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[13])
-        br_snapshots_7_13 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[13])
-        br_snapshots_7_13 <= io_remap_reqs_1_pdst;
-      else if (_GEN[13])
-        br_snapshots_7_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_13 <= map_table_13;
-      if (_GEN_2[14])
-        br_snapshots_7_14 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[14])
-        br_snapshots_7_14 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[14])
-        br_snapshots_7_14 <= io_remap_reqs_1_pdst;
-      else if (_GEN[14])
-        br_snapshots_7_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_14 <= map_table_14;
-      if (_GEN_2[15])
-        br_snapshots_7_15 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[15])
-        br_snapshots_7_15 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[15])
-        br_snapshots_7_15 <= io_remap_reqs_1_pdst;
-      else if (_GEN[15])
-        br_snapshots_7_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_15 <= map_table_15;
-      if (_GEN_2[16])
-        br_snapshots_7_16 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[16])
-        br_snapshots_7_16 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[16])
-        br_snapshots_7_16 <= io_remap_reqs_1_pdst;
-      else if (_GEN[16])
-        br_snapshots_7_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_16 <= map_table_16;
-      if (_GEN_2[17])
-        br_snapshots_7_17 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[17])
-        br_snapshots_7_17 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[17])
-        br_snapshots_7_17 <= io_remap_reqs_1_pdst;
-      else if (_GEN[17])
-        br_snapshots_7_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_17 <= map_table_17;
-      if (_GEN_2[18])
-        br_snapshots_7_18 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[18])
-        br_snapshots_7_18 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[18])
-        br_snapshots_7_18 <= io_remap_reqs_1_pdst;
-      else if (_GEN[18])
-        br_snapshots_7_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_18 <= map_table_18;
-      if (_GEN_2[19])
-        br_snapshots_7_19 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[19])
-        br_snapshots_7_19 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[19])
-        br_snapshots_7_19 <= io_remap_reqs_1_pdst;
-      else if (_GEN[19])
-        br_snapshots_7_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_19 <= map_table_19;
-      if (_GEN_2[20])
-        br_snapshots_7_20 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[20])
-        br_snapshots_7_20 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[20])
-        br_snapshots_7_20 <= io_remap_reqs_1_pdst;
-      else if (_GEN[20])
-        br_snapshots_7_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_20 <= map_table_20;
-      if (_GEN_2[21])
-        br_snapshots_7_21 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[21])
-        br_snapshots_7_21 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[21])
-        br_snapshots_7_21 <= io_remap_reqs_1_pdst;
-      else if (_GEN[21])
-        br_snapshots_7_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_21 <= map_table_21;
-      if (_GEN_2[22])
-        br_snapshots_7_22 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[22])
-        br_snapshots_7_22 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[22])
-        br_snapshots_7_22 <= io_remap_reqs_1_pdst;
-      else if (_GEN[22])
-        br_snapshots_7_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_22 <= map_table_22;
-      if (_GEN_2[23])
-        br_snapshots_7_23 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[23])
-        br_snapshots_7_23 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[23])
-        br_snapshots_7_23 <= io_remap_reqs_1_pdst;
-      else if (_GEN[23])
-        br_snapshots_7_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_23 <= map_table_23;
-      if (_GEN_2[24])
-        br_snapshots_7_24 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[24])
-        br_snapshots_7_24 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[24])
-        br_snapshots_7_24 <= io_remap_reqs_1_pdst;
-      else if (_GEN[24])
-        br_snapshots_7_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_24 <= map_table_24;
-      if (_GEN_2[25])
-        br_snapshots_7_25 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[25])
-        br_snapshots_7_25 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[25])
-        br_snapshots_7_25 <= io_remap_reqs_1_pdst;
-      else if (_GEN[25])
-        br_snapshots_7_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_25 <= map_table_25;
-      if (_GEN_2[26])
-        br_snapshots_7_26 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[26])
-        br_snapshots_7_26 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[26])
-        br_snapshots_7_26 <= io_remap_reqs_1_pdst;
-      else if (_GEN[26])
-        br_snapshots_7_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_26 <= map_table_26;
-      if (_GEN_2[27])
-        br_snapshots_7_27 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[27])
-        br_snapshots_7_27 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[27])
-        br_snapshots_7_27 <= io_remap_reqs_1_pdst;
-      else if (_GEN[27])
-        br_snapshots_7_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_27 <= map_table_27;
-      if (_GEN_2[28])
-        br_snapshots_7_28 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[28])
-        br_snapshots_7_28 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[28])
-        br_snapshots_7_28 <= io_remap_reqs_1_pdst;
-      else if (_GEN[28])
-        br_snapshots_7_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_28 <= map_table_28;
-      if (_GEN_2[29])
-        br_snapshots_7_29 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[29])
-        br_snapshots_7_29 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[29])
-        br_snapshots_7_29 <= io_remap_reqs_1_pdst;
-      else if (_GEN[29])
-        br_snapshots_7_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_29 <= map_table_29;
-      if (_GEN_2[30])
-        br_snapshots_7_30 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[30])
-        br_snapshots_7_30 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[30])
-        br_snapshots_7_30 <= io_remap_reqs_1_pdst;
-      else if (_GEN[30])
-        br_snapshots_7_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_30 <= map_table_30;
-      if (_GEN_2[31])
-        br_snapshots_7_31 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[31])
-        br_snapshots_7_31 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[31])
-        br_snapshots_7_31 <= io_remap_reqs_1_pdst;
-      else if (_GEN[31])
-        br_snapshots_7_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_31 <= map_table_31;
+      br_snapshots_7_0 <= remap_table_4_0;
+      br_snapshots_7_1 <= remap_table_4_1;
+      br_snapshots_7_2 <= remap_table_4_2;
+      br_snapshots_7_3 <= remap_table_4_3;
+      br_snapshots_7_4 <= remap_table_4_4;
+      br_snapshots_7_5 <= remap_table_4_5;
+      br_snapshots_7_6 <= remap_table_4_6;
+      br_snapshots_7_7 <= remap_table_4_7;
+      br_snapshots_7_8 <= remap_table_4_8;
+      br_snapshots_7_9 <= remap_table_4_9;
+      br_snapshots_7_10 <= remap_table_4_10;
+      br_snapshots_7_11 <= remap_table_4_11;
+      br_snapshots_7_12 <= remap_table_4_12;
+      br_snapshots_7_13 <= remap_table_4_13;
+      br_snapshots_7_14 <= remap_table_4_14;
+      br_snapshots_7_15 <= remap_table_4_15;
+      br_snapshots_7_16 <= remap_table_4_16;
+      br_snapshots_7_17 <= remap_table_4_17;
+      br_snapshots_7_18 <= remap_table_4_18;
+      br_snapshots_7_19 <= remap_table_4_19;
+      br_snapshots_7_20 <= remap_table_4_20;
+      br_snapshots_7_21 <= remap_table_4_21;
+      br_snapshots_7_22 <= remap_table_4_22;
+      br_snapshots_7_23 <= remap_table_4_23;
+      br_snapshots_7_24 <= remap_table_4_24;
+      br_snapshots_7_25 <= remap_table_4_25;
+      br_snapshots_7_26 <= remap_table_4_26;
+      br_snapshots_7_27 <= remap_table_4_27;
+      br_snapshots_7_28 <= remap_table_4_28;
+      br_snapshots_7_29 <= remap_table_4_29;
+      br_snapshots_7_30 <= remap_table_4_30;
+      br_snapshots_7_31 <= remap_table_4_31;
     end
     else if (io_ren_br_tags_2_valid & io_ren_br_tags_2_bits == 5'h7) begin
-      if (_GEN_1[0])
-        br_snapshots_7_0 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[0])
-        br_snapshots_7_0 <= io_remap_reqs_1_pdst;
-      else if (_GEN[0])
-        br_snapshots_7_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_0 <= map_table_0;
-      if (_GEN_1[1])
-        br_snapshots_7_1 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[1])
-        br_snapshots_7_1 <= io_remap_reqs_1_pdst;
-      else if (_GEN[1])
-        br_snapshots_7_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_1 <= map_table_1;
-      if (_GEN_1[2])
-        br_snapshots_7_2 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[2])
-        br_snapshots_7_2 <= io_remap_reqs_1_pdst;
-      else if (_GEN[2])
-        br_snapshots_7_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_2 <= map_table_2;
-      if (_GEN_1[3])
-        br_snapshots_7_3 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[3])
-        br_snapshots_7_3 <= io_remap_reqs_1_pdst;
-      else if (_GEN[3])
-        br_snapshots_7_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_3 <= map_table_3;
-      if (_GEN_1[4])
-        br_snapshots_7_4 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[4])
-        br_snapshots_7_4 <= io_remap_reqs_1_pdst;
-      else if (_GEN[4])
-        br_snapshots_7_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_4 <= map_table_4;
-      if (_GEN_1[5])
-        br_snapshots_7_5 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[5])
-        br_snapshots_7_5 <= io_remap_reqs_1_pdst;
-      else if (_GEN[5])
-        br_snapshots_7_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_5 <= map_table_5;
-      if (_GEN_1[6])
-        br_snapshots_7_6 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[6])
-        br_snapshots_7_6 <= io_remap_reqs_1_pdst;
-      else if (_GEN[6])
-        br_snapshots_7_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_6 <= map_table_6;
-      if (_GEN_1[7])
-        br_snapshots_7_7 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[7])
-        br_snapshots_7_7 <= io_remap_reqs_1_pdst;
-      else if (_GEN[7])
-        br_snapshots_7_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_7 <= map_table_7;
-      if (_GEN_1[8])
-        br_snapshots_7_8 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[8])
-        br_snapshots_7_8 <= io_remap_reqs_1_pdst;
-      else if (_GEN[8])
-        br_snapshots_7_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_8 <= map_table_8;
-      if (_GEN_1[9])
-        br_snapshots_7_9 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[9])
-        br_snapshots_7_9 <= io_remap_reqs_1_pdst;
-      else if (_GEN[9])
-        br_snapshots_7_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_9 <= map_table_9;
-      if (_GEN_1[10])
-        br_snapshots_7_10 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[10])
-        br_snapshots_7_10 <= io_remap_reqs_1_pdst;
-      else if (_GEN[10])
-        br_snapshots_7_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_10 <= map_table_10;
-      if (_GEN_1[11])
-        br_snapshots_7_11 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[11])
-        br_snapshots_7_11 <= io_remap_reqs_1_pdst;
-      else if (_GEN[11])
-        br_snapshots_7_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_11 <= map_table_11;
-      if (_GEN_1[12])
-        br_snapshots_7_12 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[12])
-        br_snapshots_7_12 <= io_remap_reqs_1_pdst;
-      else if (_GEN[12])
-        br_snapshots_7_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_12 <= map_table_12;
-      if (_GEN_1[13])
-        br_snapshots_7_13 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[13])
-        br_snapshots_7_13 <= io_remap_reqs_1_pdst;
-      else if (_GEN[13])
-        br_snapshots_7_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_13 <= map_table_13;
-      if (_GEN_1[14])
-        br_snapshots_7_14 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[14])
-        br_snapshots_7_14 <= io_remap_reqs_1_pdst;
-      else if (_GEN[14])
-        br_snapshots_7_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_14 <= map_table_14;
-      if (_GEN_1[15])
-        br_snapshots_7_15 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[15])
-        br_snapshots_7_15 <= io_remap_reqs_1_pdst;
-      else if (_GEN[15])
-        br_snapshots_7_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_15 <= map_table_15;
-      if (_GEN_1[16])
-        br_snapshots_7_16 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[16])
-        br_snapshots_7_16 <= io_remap_reqs_1_pdst;
-      else if (_GEN[16])
-        br_snapshots_7_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_16 <= map_table_16;
-      if (_GEN_1[17])
-        br_snapshots_7_17 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[17])
-        br_snapshots_7_17 <= io_remap_reqs_1_pdst;
-      else if (_GEN[17])
-        br_snapshots_7_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_17 <= map_table_17;
-      if (_GEN_1[18])
-        br_snapshots_7_18 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[18])
-        br_snapshots_7_18 <= io_remap_reqs_1_pdst;
-      else if (_GEN[18])
-        br_snapshots_7_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_18 <= map_table_18;
-      if (_GEN_1[19])
-        br_snapshots_7_19 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[19])
-        br_snapshots_7_19 <= io_remap_reqs_1_pdst;
-      else if (_GEN[19])
-        br_snapshots_7_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_19 <= map_table_19;
-      if (_GEN_1[20])
-        br_snapshots_7_20 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[20])
-        br_snapshots_7_20 <= io_remap_reqs_1_pdst;
-      else if (_GEN[20])
-        br_snapshots_7_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_20 <= map_table_20;
-      if (_GEN_1[21])
-        br_snapshots_7_21 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[21])
-        br_snapshots_7_21 <= io_remap_reqs_1_pdst;
-      else if (_GEN[21])
-        br_snapshots_7_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_21 <= map_table_21;
-      if (_GEN_1[22])
-        br_snapshots_7_22 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[22])
-        br_snapshots_7_22 <= io_remap_reqs_1_pdst;
-      else if (_GEN[22])
-        br_snapshots_7_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_22 <= map_table_22;
-      if (_GEN_1[23])
-        br_snapshots_7_23 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[23])
-        br_snapshots_7_23 <= io_remap_reqs_1_pdst;
-      else if (_GEN[23])
-        br_snapshots_7_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_23 <= map_table_23;
-      if (_GEN_1[24])
-        br_snapshots_7_24 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[24])
-        br_snapshots_7_24 <= io_remap_reqs_1_pdst;
-      else if (_GEN[24])
-        br_snapshots_7_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_24 <= map_table_24;
-      if (_GEN_1[25])
-        br_snapshots_7_25 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[25])
-        br_snapshots_7_25 <= io_remap_reqs_1_pdst;
-      else if (_GEN[25])
-        br_snapshots_7_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_25 <= map_table_25;
-      if (_GEN_1[26])
-        br_snapshots_7_26 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[26])
-        br_snapshots_7_26 <= io_remap_reqs_1_pdst;
-      else if (_GEN[26])
-        br_snapshots_7_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_26 <= map_table_26;
-      if (_GEN_1[27])
-        br_snapshots_7_27 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[27])
-        br_snapshots_7_27 <= io_remap_reqs_1_pdst;
-      else if (_GEN[27])
-        br_snapshots_7_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_27 <= map_table_27;
-      if (_GEN_1[28])
-        br_snapshots_7_28 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[28])
-        br_snapshots_7_28 <= io_remap_reqs_1_pdst;
-      else if (_GEN[28])
-        br_snapshots_7_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_28 <= map_table_28;
-      if (_GEN_1[29])
-        br_snapshots_7_29 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[29])
-        br_snapshots_7_29 <= io_remap_reqs_1_pdst;
-      else if (_GEN[29])
-        br_snapshots_7_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_29 <= map_table_29;
-      if (_GEN_1[30])
-        br_snapshots_7_30 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[30])
-        br_snapshots_7_30 <= io_remap_reqs_1_pdst;
-      else if (_GEN[30])
-        br_snapshots_7_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_30 <= map_table_30;
-      if (_GEN_1[31])
-        br_snapshots_7_31 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[31])
-        br_snapshots_7_31 <= io_remap_reqs_1_pdst;
-      else if (_GEN[31])
-        br_snapshots_7_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_31 <= map_table_31;
+      br_snapshots_7_0 <= remap_table_3_0;
+      br_snapshots_7_1 <= remap_table_3_1;
+      br_snapshots_7_2 <= remap_table_3_2;
+      br_snapshots_7_3 <= remap_table_3_3;
+      br_snapshots_7_4 <= remap_table_3_4;
+      br_snapshots_7_5 <= remap_table_3_5;
+      br_snapshots_7_6 <= remap_table_3_6;
+      br_snapshots_7_7 <= remap_table_3_7;
+      br_snapshots_7_8 <= remap_table_3_8;
+      br_snapshots_7_9 <= remap_table_3_9;
+      br_snapshots_7_10 <= remap_table_3_10;
+      br_snapshots_7_11 <= remap_table_3_11;
+      br_snapshots_7_12 <= remap_table_3_12;
+      br_snapshots_7_13 <= remap_table_3_13;
+      br_snapshots_7_14 <= remap_table_3_14;
+      br_snapshots_7_15 <= remap_table_3_15;
+      br_snapshots_7_16 <= remap_table_3_16;
+      br_snapshots_7_17 <= remap_table_3_17;
+      br_snapshots_7_18 <= remap_table_3_18;
+      br_snapshots_7_19 <= remap_table_3_19;
+      br_snapshots_7_20 <= remap_table_3_20;
+      br_snapshots_7_21 <= remap_table_3_21;
+      br_snapshots_7_22 <= remap_table_3_22;
+      br_snapshots_7_23 <= remap_table_3_23;
+      br_snapshots_7_24 <= remap_table_3_24;
+      br_snapshots_7_25 <= remap_table_3_25;
+      br_snapshots_7_26 <= remap_table_3_26;
+      br_snapshots_7_27 <= remap_table_3_27;
+      br_snapshots_7_28 <= remap_table_3_28;
+      br_snapshots_7_29 <= remap_table_3_29;
+      br_snapshots_7_30 <= remap_table_3_30;
+      br_snapshots_7_31 <= remap_table_3_31;
     end
     else if (io_ren_br_tags_1_valid & io_ren_br_tags_1_bits == 5'h7) begin
-      if (_GEN_0[0])
-        br_snapshots_7_0 <= io_remap_reqs_1_pdst;
-      else if (_GEN[0])
-        br_snapshots_7_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_0 <= map_table_0;
-      if (_GEN_0[1])
-        br_snapshots_7_1 <= io_remap_reqs_1_pdst;
-      else if (_GEN[1])
-        br_snapshots_7_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_1 <= map_table_1;
-      if (_GEN_0[2])
-        br_snapshots_7_2 <= io_remap_reqs_1_pdst;
-      else if (_GEN[2])
-        br_snapshots_7_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_2 <= map_table_2;
-      if (_GEN_0[3])
-        br_snapshots_7_3 <= io_remap_reqs_1_pdst;
-      else if (_GEN[3])
-        br_snapshots_7_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_3 <= map_table_3;
-      if (_GEN_0[4])
-        br_snapshots_7_4 <= io_remap_reqs_1_pdst;
-      else if (_GEN[4])
-        br_snapshots_7_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_4 <= map_table_4;
-      if (_GEN_0[5])
-        br_snapshots_7_5 <= io_remap_reqs_1_pdst;
-      else if (_GEN[5])
-        br_snapshots_7_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_5 <= map_table_5;
-      if (_GEN_0[6])
-        br_snapshots_7_6 <= io_remap_reqs_1_pdst;
-      else if (_GEN[6])
-        br_snapshots_7_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_6 <= map_table_6;
-      if (_GEN_0[7])
-        br_snapshots_7_7 <= io_remap_reqs_1_pdst;
-      else if (_GEN[7])
-        br_snapshots_7_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_7 <= map_table_7;
-      if (_GEN_0[8])
-        br_snapshots_7_8 <= io_remap_reqs_1_pdst;
-      else if (_GEN[8])
-        br_snapshots_7_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_8 <= map_table_8;
-      if (_GEN_0[9])
-        br_snapshots_7_9 <= io_remap_reqs_1_pdst;
-      else if (_GEN[9])
-        br_snapshots_7_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_9 <= map_table_9;
-      if (_GEN_0[10])
-        br_snapshots_7_10 <= io_remap_reqs_1_pdst;
-      else if (_GEN[10])
-        br_snapshots_7_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_10 <= map_table_10;
-      if (_GEN_0[11])
-        br_snapshots_7_11 <= io_remap_reqs_1_pdst;
-      else if (_GEN[11])
-        br_snapshots_7_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_11 <= map_table_11;
-      if (_GEN_0[12])
-        br_snapshots_7_12 <= io_remap_reqs_1_pdst;
-      else if (_GEN[12])
-        br_snapshots_7_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_12 <= map_table_12;
-      if (_GEN_0[13])
-        br_snapshots_7_13 <= io_remap_reqs_1_pdst;
-      else if (_GEN[13])
-        br_snapshots_7_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_13 <= map_table_13;
-      if (_GEN_0[14])
-        br_snapshots_7_14 <= io_remap_reqs_1_pdst;
-      else if (_GEN[14])
-        br_snapshots_7_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_14 <= map_table_14;
-      if (_GEN_0[15])
-        br_snapshots_7_15 <= io_remap_reqs_1_pdst;
-      else if (_GEN[15])
-        br_snapshots_7_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_15 <= map_table_15;
-      if (_GEN_0[16])
-        br_snapshots_7_16 <= io_remap_reqs_1_pdst;
-      else if (_GEN[16])
-        br_snapshots_7_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_16 <= map_table_16;
-      if (_GEN_0[17])
-        br_snapshots_7_17 <= io_remap_reqs_1_pdst;
-      else if (_GEN[17])
-        br_snapshots_7_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_17 <= map_table_17;
-      if (_GEN_0[18])
-        br_snapshots_7_18 <= io_remap_reqs_1_pdst;
-      else if (_GEN[18])
-        br_snapshots_7_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_18 <= map_table_18;
-      if (_GEN_0[19])
-        br_snapshots_7_19 <= io_remap_reqs_1_pdst;
-      else if (_GEN[19])
-        br_snapshots_7_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_19 <= map_table_19;
-      if (_GEN_0[20])
-        br_snapshots_7_20 <= io_remap_reqs_1_pdst;
-      else if (_GEN[20])
-        br_snapshots_7_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_20 <= map_table_20;
-      if (_GEN_0[21])
-        br_snapshots_7_21 <= io_remap_reqs_1_pdst;
-      else if (_GEN[21])
-        br_snapshots_7_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_21 <= map_table_21;
-      if (_GEN_0[22])
-        br_snapshots_7_22 <= io_remap_reqs_1_pdst;
-      else if (_GEN[22])
-        br_snapshots_7_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_22 <= map_table_22;
-      if (_GEN_0[23])
-        br_snapshots_7_23 <= io_remap_reqs_1_pdst;
-      else if (_GEN[23])
-        br_snapshots_7_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_23 <= map_table_23;
-      if (_GEN_0[24])
-        br_snapshots_7_24 <= io_remap_reqs_1_pdst;
-      else if (_GEN[24])
-        br_snapshots_7_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_24 <= map_table_24;
-      if (_GEN_0[25])
-        br_snapshots_7_25 <= io_remap_reqs_1_pdst;
-      else if (_GEN[25])
-        br_snapshots_7_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_25 <= map_table_25;
-      if (_GEN_0[26])
-        br_snapshots_7_26 <= io_remap_reqs_1_pdst;
-      else if (_GEN[26])
-        br_snapshots_7_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_26 <= map_table_26;
-      if (_GEN_0[27])
-        br_snapshots_7_27 <= io_remap_reqs_1_pdst;
-      else if (_GEN[27])
-        br_snapshots_7_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_27 <= map_table_27;
-      if (_GEN_0[28])
-        br_snapshots_7_28 <= io_remap_reqs_1_pdst;
-      else if (_GEN[28])
-        br_snapshots_7_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_28 <= map_table_28;
-      if (_GEN_0[29])
-        br_snapshots_7_29 <= io_remap_reqs_1_pdst;
-      else if (_GEN[29])
-        br_snapshots_7_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_29 <= map_table_29;
-      if (_GEN_0[30])
-        br_snapshots_7_30 <= io_remap_reqs_1_pdst;
-      else if (_GEN[30])
-        br_snapshots_7_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_30 <= map_table_30;
-      if (_GEN_0[31])
-        br_snapshots_7_31 <= io_remap_reqs_1_pdst;
-      else if (_GEN[31])
-        br_snapshots_7_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_31 <= map_table_31;
+      br_snapshots_7_0 <= remap_table_2_0;
+      br_snapshots_7_1 <= remap_table_2_1;
+      br_snapshots_7_2 <= remap_table_2_2;
+      br_snapshots_7_3 <= remap_table_2_3;
+      br_snapshots_7_4 <= remap_table_2_4;
+      br_snapshots_7_5 <= remap_table_2_5;
+      br_snapshots_7_6 <= remap_table_2_6;
+      br_snapshots_7_7 <= remap_table_2_7;
+      br_snapshots_7_8 <= remap_table_2_8;
+      br_snapshots_7_9 <= remap_table_2_9;
+      br_snapshots_7_10 <= remap_table_2_10;
+      br_snapshots_7_11 <= remap_table_2_11;
+      br_snapshots_7_12 <= remap_table_2_12;
+      br_snapshots_7_13 <= remap_table_2_13;
+      br_snapshots_7_14 <= remap_table_2_14;
+      br_snapshots_7_15 <= remap_table_2_15;
+      br_snapshots_7_16 <= remap_table_2_16;
+      br_snapshots_7_17 <= remap_table_2_17;
+      br_snapshots_7_18 <= remap_table_2_18;
+      br_snapshots_7_19 <= remap_table_2_19;
+      br_snapshots_7_20 <= remap_table_2_20;
+      br_snapshots_7_21 <= remap_table_2_21;
+      br_snapshots_7_22 <= remap_table_2_22;
+      br_snapshots_7_23 <= remap_table_2_23;
+      br_snapshots_7_24 <= remap_table_2_24;
+      br_snapshots_7_25 <= remap_table_2_25;
+      br_snapshots_7_26 <= remap_table_2_26;
+      br_snapshots_7_27 <= remap_table_2_27;
+      br_snapshots_7_28 <= remap_table_2_28;
+      br_snapshots_7_29 <= remap_table_2_29;
+      br_snapshots_7_30 <= remap_table_2_30;
+      br_snapshots_7_31 <= remap_table_2_31;
     end
     else if (io_ren_br_tags_0_valid & io_ren_br_tags_0_bits == 5'h7) begin
-      if (_GEN[0])
-        br_snapshots_7_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_0 <= map_table_0;
-      if (_GEN[1])
-        br_snapshots_7_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_1 <= map_table_1;
-      if (_GEN[2])
-        br_snapshots_7_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_2 <= map_table_2;
-      if (_GEN[3])
-        br_snapshots_7_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_3 <= map_table_3;
-      if (_GEN[4])
-        br_snapshots_7_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_4 <= map_table_4;
-      if (_GEN[5])
-        br_snapshots_7_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_5 <= map_table_5;
-      if (_GEN[6])
-        br_snapshots_7_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_6 <= map_table_6;
-      if (_GEN[7])
-        br_snapshots_7_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_7 <= map_table_7;
-      if (_GEN[8])
-        br_snapshots_7_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_8 <= map_table_8;
-      if (_GEN[9])
-        br_snapshots_7_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_9 <= map_table_9;
-      if (_GEN[10])
-        br_snapshots_7_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_10 <= map_table_10;
-      if (_GEN[11])
-        br_snapshots_7_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_11 <= map_table_11;
-      if (_GEN[12])
-        br_snapshots_7_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_12 <= map_table_12;
-      if (_GEN[13])
-        br_snapshots_7_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_13 <= map_table_13;
-      if (_GEN[14])
-        br_snapshots_7_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_14 <= map_table_14;
-      if (_GEN[15])
-        br_snapshots_7_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_15 <= map_table_15;
-      if (_GEN[16])
-        br_snapshots_7_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_16 <= map_table_16;
-      if (_GEN[17])
-        br_snapshots_7_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_17 <= map_table_17;
-      if (_GEN[18])
-        br_snapshots_7_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_18 <= map_table_18;
-      if (_GEN[19])
-        br_snapshots_7_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_19 <= map_table_19;
-      if (_GEN[20])
-        br_snapshots_7_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_20 <= map_table_20;
-      if (_GEN[21])
-        br_snapshots_7_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_21 <= map_table_21;
-      if (_GEN[22])
-        br_snapshots_7_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_22 <= map_table_22;
-      if (_GEN[23])
-        br_snapshots_7_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_23 <= map_table_23;
-      if (_GEN[24])
-        br_snapshots_7_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_24 <= map_table_24;
-      if (_GEN[25])
-        br_snapshots_7_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_25 <= map_table_25;
-      if (_GEN[26])
-        br_snapshots_7_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_26 <= map_table_26;
-      if (_GEN[27])
-        br_snapshots_7_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_27 <= map_table_27;
-      if (_GEN[28])
-        br_snapshots_7_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_28 <= map_table_28;
-      if (_GEN[29])
-        br_snapshots_7_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_29 <= map_table_29;
-      if (_GEN[30])
-        br_snapshots_7_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_30 <= map_table_30;
-      if (_GEN[31])
-        br_snapshots_7_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_7_31 <= map_table_31;
+      br_snapshots_7_0 <= remap_table_1_0;
+      br_snapshots_7_1 <= remap_table_1_1;
+      br_snapshots_7_2 <= remap_table_1_2;
+      br_snapshots_7_3 <= remap_table_1_3;
+      br_snapshots_7_4 <= remap_table_1_4;
+      br_snapshots_7_5 <= remap_table_1_5;
+      br_snapshots_7_6 <= remap_table_1_6;
+      br_snapshots_7_7 <= remap_table_1_7;
+      br_snapshots_7_8 <= remap_table_1_8;
+      br_snapshots_7_9 <= remap_table_1_9;
+      br_snapshots_7_10 <= remap_table_1_10;
+      br_snapshots_7_11 <= remap_table_1_11;
+      br_snapshots_7_12 <= remap_table_1_12;
+      br_snapshots_7_13 <= remap_table_1_13;
+      br_snapshots_7_14 <= remap_table_1_14;
+      br_snapshots_7_15 <= remap_table_1_15;
+      br_snapshots_7_16 <= remap_table_1_16;
+      br_snapshots_7_17 <= remap_table_1_17;
+      br_snapshots_7_18 <= remap_table_1_18;
+      br_snapshots_7_19 <= remap_table_1_19;
+      br_snapshots_7_20 <= remap_table_1_20;
+      br_snapshots_7_21 <= remap_table_1_21;
+      br_snapshots_7_22 <= remap_table_1_22;
+      br_snapshots_7_23 <= remap_table_1_23;
+      br_snapshots_7_24 <= remap_table_1_24;
+      br_snapshots_7_25 <= remap_table_1_25;
+      br_snapshots_7_26 <= remap_table_1_26;
+      br_snapshots_7_27 <= remap_table_1_27;
+      br_snapshots_7_28 <= remap_table_1_28;
+      br_snapshots_7_29 <= remap_table_1_29;
+      br_snapshots_7_30 <= remap_table_1_30;
+      br_snapshots_7_31 <= remap_table_1_31;
     end
     if (io_ren_br_tags_3_valid & io_ren_br_tags_3_bits == 5'h8) begin
-      if (_GEN_2[0])
-        br_snapshots_8_0 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[0])
-        br_snapshots_8_0 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[0])
-        br_snapshots_8_0 <= io_remap_reqs_1_pdst;
-      else if (_GEN[0])
-        br_snapshots_8_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_0 <= map_table_0;
-      if (_GEN_2[1])
-        br_snapshots_8_1 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[1])
-        br_snapshots_8_1 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[1])
-        br_snapshots_8_1 <= io_remap_reqs_1_pdst;
-      else if (_GEN[1])
-        br_snapshots_8_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_1 <= map_table_1;
-      if (_GEN_2[2])
-        br_snapshots_8_2 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[2])
-        br_snapshots_8_2 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[2])
-        br_snapshots_8_2 <= io_remap_reqs_1_pdst;
-      else if (_GEN[2])
-        br_snapshots_8_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_2 <= map_table_2;
-      if (_GEN_2[3])
-        br_snapshots_8_3 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[3])
-        br_snapshots_8_3 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[3])
-        br_snapshots_8_3 <= io_remap_reqs_1_pdst;
-      else if (_GEN[3])
-        br_snapshots_8_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_3 <= map_table_3;
-      if (_GEN_2[4])
-        br_snapshots_8_4 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[4])
-        br_snapshots_8_4 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[4])
-        br_snapshots_8_4 <= io_remap_reqs_1_pdst;
-      else if (_GEN[4])
-        br_snapshots_8_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_4 <= map_table_4;
-      if (_GEN_2[5])
-        br_snapshots_8_5 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[5])
-        br_snapshots_8_5 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[5])
-        br_snapshots_8_5 <= io_remap_reqs_1_pdst;
-      else if (_GEN[5])
-        br_snapshots_8_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_5 <= map_table_5;
-      if (_GEN_2[6])
-        br_snapshots_8_6 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[6])
-        br_snapshots_8_6 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[6])
-        br_snapshots_8_6 <= io_remap_reqs_1_pdst;
-      else if (_GEN[6])
-        br_snapshots_8_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_6 <= map_table_6;
-      if (_GEN_2[7])
-        br_snapshots_8_7 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[7])
-        br_snapshots_8_7 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[7])
-        br_snapshots_8_7 <= io_remap_reqs_1_pdst;
-      else if (_GEN[7])
-        br_snapshots_8_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_7 <= map_table_7;
-      if (_GEN_2[8])
-        br_snapshots_8_8 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[8])
-        br_snapshots_8_8 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[8])
-        br_snapshots_8_8 <= io_remap_reqs_1_pdst;
-      else if (_GEN[8])
-        br_snapshots_8_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_8 <= map_table_8;
-      if (_GEN_2[9])
-        br_snapshots_8_9 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[9])
-        br_snapshots_8_9 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[9])
-        br_snapshots_8_9 <= io_remap_reqs_1_pdst;
-      else if (_GEN[9])
-        br_snapshots_8_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_9 <= map_table_9;
-      if (_GEN_2[10])
-        br_snapshots_8_10 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[10])
-        br_snapshots_8_10 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[10])
-        br_snapshots_8_10 <= io_remap_reqs_1_pdst;
-      else if (_GEN[10])
-        br_snapshots_8_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_10 <= map_table_10;
-      if (_GEN_2[11])
-        br_snapshots_8_11 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[11])
-        br_snapshots_8_11 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[11])
-        br_snapshots_8_11 <= io_remap_reqs_1_pdst;
-      else if (_GEN[11])
-        br_snapshots_8_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_11 <= map_table_11;
-      if (_GEN_2[12])
-        br_snapshots_8_12 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[12])
-        br_snapshots_8_12 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[12])
-        br_snapshots_8_12 <= io_remap_reqs_1_pdst;
-      else if (_GEN[12])
-        br_snapshots_8_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_12 <= map_table_12;
-      if (_GEN_2[13])
-        br_snapshots_8_13 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[13])
-        br_snapshots_8_13 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[13])
-        br_snapshots_8_13 <= io_remap_reqs_1_pdst;
-      else if (_GEN[13])
-        br_snapshots_8_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_13 <= map_table_13;
-      if (_GEN_2[14])
-        br_snapshots_8_14 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[14])
-        br_snapshots_8_14 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[14])
-        br_snapshots_8_14 <= io_remap_reqs_1_pdst;
-      else if (_GEN[14])
-        br_snapshots_8_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_14 <= map_table_14;
-      if (_GEN_2[15])
-        br_snapshots_8_15 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[15])
-        br_snapshots_8_15 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[15])
-        br_snapshots_8_15 <= io_remap_reqs_1_pdst;
-      else if (_GEN[15])
-        br_snapshots_8_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_15 <= map_table_15;
-      if (_GEN_2[16])
-        br_snapshots_8_16 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[16])
-        br_snapshots_8_16 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[16])
-        br_snapshots_8_16 <= io_remap_reqs_1_pdst;
-      else if (_GEN[16])
-        br_snapshots_8_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_16 <= map_table_16;
-      if (_GEN_2[17])
-        br_snapshots_8_17 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[17])
-        br_snapshots_8_17 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[17])
-        br_snapshots_8_17 <= io_remap_reqs_1_pdst;
-      else if (_GEN[17])
-        br_snapshots_8_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_17 <= map_table_17;
-      if (_GEN_2[18])
-        br_snapshots_8_18 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[18])
-        br_snapshots_8_18 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[18])
-        br_snapshots_8_18 <= io_remap_reqs_1_pdst;
-      else if (_GEN[18])
-        br_snapshots_8_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_18 <= map_table_18;
-      if (_GEN_2[19])
-        br_snapshots_8_19 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[19])
-        br_snapshots_8_19 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[19])
-        br_snapshots_8_19 <= io_remap_reqs_1_pdst;
-      else if (_GEN[19])
-        br_snapshots_8_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_19 <= map_table_19;
-      if (_GEN_2[20])
-        br_snapshots_8_20 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[20])
-        br_snapshots_8_20 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[20])
-        br_snapshots_8_20 <= io_remap_reqs_1_pdst;
-      else if (_GEN[20])
-        br_snapshots_8_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_20 <= map_table_20;
-      if (_GEN_2[21])
-        br_snapshots_8_21 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[21])
-        br_snapshots_8_21 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[21])
-        br_snapshots_8_21 <= io_remap_reqs_1_pdst;
-      else if (_GEN[21])
-        br_snapshots_8_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_21 <= map_table_21;
-      if (_GEN_2[22])
-        br_snapshots_8_22 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[22])
-        br_snapshots_8_22 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[22])
-        br_snapshots_8_22 <= io_remap_reqs_1_pdst;
-      else if (_GEN[22])
-        br_snapshots_8_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_22 <= map_table_22;
-      if (_GEN_2[23])
-        br_snapshots_8_23 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[23])
-        br_snapshots_8_23 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[23])
-        br_snapshots_8_23 <= io_remap_reqs_1_pdst;
-      else if (_GEN[23])
-        br_snapshots_8_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_23 <= map_table_23;
-      if (_GEN_2[24])
-        br_snapshots_8_24 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[24])
-        br_snapshots_8_24 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[24])
-        br_snapshots_8_24 <= io_remap_reqs_1_pdst;
-      else if (_GEN[24])
-        br_snapshots_8_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_24 <= map_table_24;
-      if (_GEN_2[25])
-        br_snapshots_8_25 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[25])
-        br_snapshots_8_25 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[25])
-        br_snapshots_8_25 <= io_remap_reqs_1_pdst;
-      else if (_GEN[25])
-        br_snapshots_8_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_25 <= map_table_25;
-      if (_GEN_2[26])
-        br_snapshots_8_26 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[26])
-        br_snapshots_8_26 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[26])
-        br_snapshots_8_26 <= io_remap_reqs_1_pdst;
-      else if (_GEN[26])
-        br_snapshots_8_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_26 <= map_table_26;
-      if (_GEN_2[27])
-        br_snapshots_8_27 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[27])
-        br_snapshots_8_27 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[27])
-        br_snapshots_8_27 <= io_remap_reqs_1_pdst;
-      else if (_GEN[27])
-        br_snapshots_8_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_27 <= map_table_27;
-      if (_GEN_2[28])
-        br_snapshots_8_28 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[28])
-        br_snapshots_8_28 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[28])
-        br_snapshots_8_28 <= io_remap_reqs_1_pdst;
-      else if (_GEN[28])
-        br_snapshots_8_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_28 <= map_table_28;
-      if (_GEN_2[29])
-        br_snapshots_8_29 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[29])
-        br_snapshots_8_29 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[29])
-        br_snapshots_8_29 <= io_remap_reqs_1_pdst;
-      else if (_GEN[29])
-        br_snapshots_8_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_29 <= map_table_29;
-      if (_GEN_2[30])
-        br_snapshots_8_30 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[30])
-        br_snapshots_8_30 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[30])
-        br_snapshots_8_30 <= io_remap_reqs_1_pdst;
-      else if (_GEN[30])
-        br_snapshots_8_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_30 <= map_table_30;
-      if (_GEN_2[31])
-        br_snapshots_8_31 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[31])
-        br_snapshots_8_31 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[31])
-        br_snapshots_8_31 <= io_remap_reqs_1_pdst;
-      else if (_GEN[31])
-        br_snapshots_8_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_31 <= map_table_31;
+      br_snapshots_8_0 <= remap_table_4_0;
+      br_snapshots_8_1 <= remap_table_4_1;
+      br_snapshots_8_2 <= remap_table_4_2;
+      br_snapshots_8_3 <= remap_table_4_3;
+      br_snapshots_8_4 <= remap_table_4_4;
+      br_snapshots_8_5 <= remap_table_4_5;
+      br_snapshots_8_6 <= remap_table_4_6;
+      br_snapshots_8_7 <= remap_table_4_7;
+      br_snapshots_8_8 <= remap_table_4_8;
+      br_snapshots_8_9 <= remap_table_4_9;
+      br_snapshots_8_10 <= remap_table_4_10;
+      br_snapshots_8_11 <= remap_table_4_11;
+      br_snapshots_8_12 <= remap_table_4_12;
+      br_snapshots_8_13 <= remap_table_4_13;
+      br_snapshots_8_14 <= remap_table_4_14;
+      br_snapshots_8_15 <= remap_table_4_15;
+      br_snapshots_8_16 <= remap_table_4_16;
+      br_snapshots_8_17 <= remap_table_4_17;
+      br_snapshots_8_18 <= remap_table_4_18;
+      br_snapshots_8_19 <= remap_table_4_19;
+      br_snapshots_8_20 <= remap_table_4_20;
+      br_snapshots_8_21 <= remap_table_4_21;
+      br_snapshots_8_22 <= remap_table_4_22;
+      br_snapshots_8_23 <= remap_table_4_23;
+      br_snapshots_8_24 <= remap_table_4_24;
+      br_snapshots_8_25 <= remap_table_4_25;
+      br_snapshots_8_26 <= remap_table_4_26;
+      br_snapshots_8_27 <= remap_table_4_27;
+      br_snapshots_8_28 <= remap_table_4_28;
+      br_snapshots_8_29 <= remap_table_4_29;
+      br_snapshots_8_30 <= remap_table_4_30;
+      br_snapshots_8_31 <= remap_table_4_31;
     end
     else if (io_ren_br_tags_2_valid & io_ren_br_tags_2_bits == 5'h8) begin
-      if (_GEN_1[0])
-        br_snapshots_8_0 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[0])
-        br_snapshots_8_0 <= io_remap_reqs_1_pdst;
-      else if (_GEN[0])
-        br_snapshots_8_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_0 <= map_table_0;
-      if (_GEN_1[1])
-        br_snapshots_8_1 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[1])
-        br_snapshots_8_1 <= io_remap_reqs_1_pdst;
-      else if (_GEN[1])
-        br_snapshots_8_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_1 <= map_table_1;
-      if (_GEN_1[2])
-        br_snapshots_8_2 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[2])
-        br_snapshots_8_2 <= io_remap_reqs_1_pdst;
-      else if (_GEN[2])
-        br_snapshots_8_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_2 <= map_table_2;
-      if (_GEN_1[3])
-        br_snapshots_8_3 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[3])
-        br_snapshots_8_3 <= io_remap_reqs_1_pdst;
-      else if (_GEN[3])
-        br_snapshots_8_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_3 <= map_table_3;
-      if (_GEN_1[4])
-        br_snapshots_8_4 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[4])
-        br_snapshots_8_4 <= io_remap_reqs_1_pdst;
-      else if (_GEN[4])
-        br_snapshots_8_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_4 <= map_table_4;
-      if (_GEN_1[5])
-        br_snapshots_8_5 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[5])
-        br_snapshots_8_5 <= io_remap_reqs_1_pdst;
-      else if (_GEN[5])
-        br_snapshots_8_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_5 <= map_table_5;
-      if (_GEN_1[6])
-        br_snapshots_8_6 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[6])
-        br_snapshots_8_6 <= io_remap_reqs_1_pdst;
-      else if (_GEN[6])
-        br_snapshots_8_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_6 <= map_table_6;
-      if (_GEN_1[7])
-        br_snapshots_8_7 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[7])
-        br_snapshots_8_7 <= io_remap_reqs_1_pdst;
-      else if (_GEN[7])
-        br_snapshots_8_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_7 <= map_table_7;
-      if (_GEN_1[8])
-        br_snapshots_8_8 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[8])
-        br_snapshots_8_8 <= io_remap_reqs_1_pdst;
-      else if (_GEN[8])
-        br_snapshots_8_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_8 <= map_table_8;
-      if (_GEN_1[9])
-        br_snapshots_8_9 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[9])
-        br_snapshots_8_9 <= io_remap_reqs_1_pdst;
-      else if (_GEN[9])
-        br_snapshots_8_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_9 <= map_table_9;
-      if (_GEN_1[10])
-        br_snapshots_8_10 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[10])
-        br_snapshots_8_10 <= io_remap_reqs_1_pdst;
-      else if (_GEN[10])
-        br_snapshots_8_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_10 <= map_table_10;
-      if (_GEN_1[11])
-        br_snapshots_8_11 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[11])
-        br_snapshots_8_11 <= io_remap_reqs_1_pdst;
-      else if (_GEN[11])
-        br_snapshots_8_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_11 <= map_table_11;
-      if (_GEN_1[12])
-        br_snapshots_8_12 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[12])
-        br_snapshots_8_12 <= io_remap_reqs_1_pdst;
-      else if (_GEN[12])
-        br_snapshots_8_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_12 <= map_table_12;
-      if (_GEN_1[13])
-        br_snapshots_8_13 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[13])
-        br_snapshots_8_13 <= io_remap_reqs_1_pdst;
-      else if (_GEN[13])
-        br_snapshots_8_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_13 <= map_table_13;
-      if (_GEN_1[14])
-        br_snapshots_8_14 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[14])
-        br_snapshots_8_14 <= io_remap_reqs_1_pdst;
-      else if (_GEN[14])
-        br_snapshots_8_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_14 <= map_table_14;
-      if (_GEN_1[15])
-        br_snapshots_8_15 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[15])
-        br_snapshots_8_15 <= io_remap_reqs_1_pdst;
-      else if (_GEN[15])
-        br_snapshots_8_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_15 <= map_table_15;
-      if (_GEN_1[16])
-        br_snapshots_8_16 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[16])
-        br_snapshots_8_16 <= io_remap_reqs_1_pdst;
-      else if (_GEN[16])
-        br_snapshots_8_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_16 <= map_table_16;
-      if (_GEN_1[17])
-        br_snapshots_8_17 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[17])
-        br_snapshots_8_17 <= io_remap_reqs_1_pdst;
-      else if (_GEN[17])
-        br_snapshots_8_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_17 <= map_table_17;
-      if (_GEN_1[18])
-        br_snapshots_8_18 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[18])
-        br_snapshots_8_18 <= io_remap_reqs_1_pdst;
-      else if (_GEN[18])
-        br_snapshots_8_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_18 <= map_table_18;
-      if (_GEN_1[19])
-        br_snapshots_8_19 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[19])
-        br_snapshots_8_19 <= io_remap_reqs_1_pdst;
-      else if (_GEN[19])
-        br_snapshots_8_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_19 <= map_table_19;
-      if (_GEN_1[20])
-        br_snapshots_8_20 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[20])
-        br_snapshots_8_20 <= io_remap_reqs_1_pdst;
-      else if (_GEN[20])
-        br_snapshots_8_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_20 <= map_table_20;
-      if (_GEN_1[21])
-        br_snapshots_8_21 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[21])
-        br_snapshots_8_21 <= io_remap_reqs_1_pdst;
-      else if (_GEN[21])
-        br_snapshots_8_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_21 <= map_table_21;
-      if (_GEN_1[22])
-        br_snapshots_8_22 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[22])
-        br_snapshots_8_22 <= io_remap_reqs_1_pdst;
-      else if (_GEN[22])
-        br_snapshots_8_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_22 <= map_table_22;
-      if (_GEN_1[23])
-        br_snapshots_8_23 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[23])
-        br_snapshots_8_23 <= io_remap_reqs_1_pdst;
-      else if (_GEN[23])
-        br_snapshots_8_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_23 <= map_table_23;
-      if (_GEN_1[24])
-        br_snapshots_8_24 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[24])
-        br_snapshots_8_24 <= io_remap_reqs_1_pdst;
-      else if (_GEN[24])
-        br_snapshots_8_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_24 <= map_table_24;
-      if (_GEN_1[25])
-        br_snapshots_8_25 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[25])
-        br_snapshots_8_25 <= io_remap_reqs_1_pdst;
-      else if (_GEN[25])
-        br_snapshots_8_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_25 <= map_table_25;
-      if (_GEN_1[26])
-        br_snapshots_8_26 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[26])
-        br_snapshots_8_26 <= io_remap_reqs_1_pdst;
-      else if (_GEN[26])
-        br_snapshots_8_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_26 <= map_table_26;
-      if (_GEN_1[27])
-        br_snapshots_8_27 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[27])
-        br_snapshots_8_27 <= io_remap_reqs_1_pdst;
-      else if (_GEN[27])
-        br_snapshots_8_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_27 <= map_table_27;
-      if (_GEN_1[28])
-        br_snapshots_8_28 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[28])
-        br_snapshots_8_28 <= io_remap_reqs_1_pdst;
-      else if (_GEN[28])
-        br_snapshots_8_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_28 <= map_table_28;
-      if (_GEN_1[29])
-        br_snapshots_8_29 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[29])
-        br_snapshots_8_29 <= io_remap_reqs_1_pdst;
-      else if (_GEN[29])
-        br_snapshots_8_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_29 <= map_table_29;
-      if (_GEN_1[30])
-        br_snapshots_8_30 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[30])
-        br_snapshots_8_30 <= io_remap_reqs_1_pdst;
-      else if (_GEN[30])
-        br_snapshots_8_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_30 <= map_table_30;
-      if (_GEN_1[31])
-        br_snapshots_8_31 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[31])
-        br_snapshots_8_31 <= io_remap_reqs_1_pdst;
-      else if (_GEN[31])
-        br_snapshots_8_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_31 <= map_table_31;
+      br_snapshots_8_0 <= remap_table_3_0;
+      br_snapshots_8_1 <= remap_table_3_1;
+      br_snapshots_8_2 <= remap_table_3_2;
+      br_snapshots_8_3 <= remap_table_3_3;
+      br_snapshots_8_4 <= remap_table_3_4;
+      br_snapshots_8_5 <= remap_table_3_5;
+      br_snapshots_8_6 <= remap_table_3_6;
+      br_snapshots_8_7 <= remap_table_3_7;
+      br_snapshots_8_8 <= remap_table_3_8;
+      br_snapshots_8_9 <= remap_table_3_9;
+      br_snapshots_8_10 <= remap_table_3_10;
+      br_snapshots_8_11 <= remap_table_3_11;
+      br_snapshots_8_12 <= remap_table_3_12;
+      br_snapshots_8_13 <= remap_table_3_13;
+      br_snapshots_8_14 <= remap_table_3_14;
+      br_snapshots_8_15 <= remap_table_3_15;
+      br_snapshots_8_16 <= remap_table_3_16;
+      br_snapshots_8_17 <= remap_table_3_17;
+      br_snapshots_8_18 <= remap_table_3_18;
+      br_snapshots_8_19 <= remap_table_3_19;
+      br_snapshots_8_20 <= remap_table_3_20;
+      br_snapshots_8_21 <= remap_table_3_21;
+      br_snapshots_8_22 <= remap_table_3_22;
+      br_snapshots_8_23 <= remap_table_3_23;
+      br_snapshots_8_24 <= remap_table_3_24;
+      br_snapshots_8_25 <= remap_table_3_25;
+      br_snapshots_8_26 <= remap_table_3_26;
+      br_snapshots_8_27 <= remap_table_3_27;
+      br_snapshots_8_28 <= remap_table_3_28;
+      br_snapshots_8_29 <= remap_table_3_29;
+      br_snapshots_8_30 <= remap_table_3_30;
+      br_snapshots_8_31 <= remap_table_3_31;
     end
     else if (io_ren_br_tags_1_valid & io_ren_br_tags_1_bits == 5'h8) begin
-      if (_GEN_0[0])
-        br_snapshots_8_0 <= io_remap_reqs_1_pdst;
-      else if (_GEN[0])
-        br_snapshots_8_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_0 <= map_table_0;
-      if (_GEN_0[1])
-        br_snapshots_8_1 <= io_remap_reqs_1_pdst;
-      else if (_GEN[1])
-        br_snapshots_8_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_1 <= map_table_1;
-      if (_GEN_0[2])
-        br_snapshots_8_2 <= io_remap_reqs_1_pdst;
-      else if (_GEN[2])
-        br_snapshots_8_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_2 <= map_table_2;
-      if (_GEN_0[3])
-        br_snapshots_8_3 <= io_remap_reqs_1_pdst;
-      else if (_GEN[3])
-        br_snapshots_8_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_3 <= map_table_3;
-      if (_GEN_0[4])
-        br_snapshots_8_4 <= io_remap_reqs_1_pdst;
-      else if (_GEN[4])
-        br_snapshots_8_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_4 <= map_table_4;
-      if (_GEN_0[5])
-        br_snapshots_8_5 <= io_remap_reqs_1_pdst;
-      else if (_GEN[5])
-        br_snapshots_8_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_5 <= map_table_5;
-      if (_GEN_0[6])
-        br_snapshots_8_6 <= io_remap_reqs_1_pdst;
-      else if (_GEN[6])
-        br_snapshots_8_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_6 <= map_table_6;
-      if (_GEN_0[7])
-        br_snapshots_8_7 <= io_remap_reqs_1_pdst;
-      else if (_GEN[7])
-        br_snapshots_8_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_7 <= map_table_7;
-      if (_GEN_0[8])
-        br_snapshots_8_8 <= io_remap_reqs_1_pdst;
-      else if (_GEN[8])
-        br_snapshots_8_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_8 <= map_table_8;
-      if (_GEN_0[9])
-        br_snapshots_8_9 <= io_remap_reqs_1_pdst;
-      else if (_GEN[9])
-        br_snapshots_8_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_9 <= map_table_9;
-      if (_GEN_0[10])
-        br_snapshots_8_10 <= io_remap_reqs_1_pdst;
-      else if (_GEN[10])
-        br_snapshots_8_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_10 <= map_table_10;
-      if (_GEN_0[11])
-        br_snapshots_8_11 <= io_remap_reqs_1_pdst;
-      else if (_GEN[11])
-        br_snapshots_8_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_11 <= map_table_11;
-      if (_GEN_0[12])
-        br_snapshots_8_12 <= io_remap_reqs_1_pdst;
-      else if (_GEN[12])
-        br_snapshots_8_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_12 <= map_table_12;
-      if (_GEN_0[13])
-        br_snapshots_8_13 <= io_remap_reqs_1_pdst;
-      else if (_GEN[13])
-        br_snapshots_8_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_13 <= map_table_13;
-      if (_GEN_0[14])
-        br_snapshots_8_14 <= io_remap_reqs_1_pdst;
-      else if (_GEN[14])
-        br_snapshots_8_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_14 <= map_table_14;
-      if (_GEN_0[15])
-        br_snapshots_8_15 <= io_remap_reqs_1_pdst;
-      else if (_GEN[15])
-        br_snapshots_8_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_15 <= map_table_15;
-      if (_GEN_0[16])
-        br_snapshots_8_16 <= io_remap_reqs_1_pdst;
-      else if (_GEN[16])
-        br_snapshots_8_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_16 <= map_table_16;
-      if (_GEN_0[17])
-        br_snapshots_8_17 <= io_remap_reqs_1_pdst;
-      else if (_GEN[17])
-        br_snapshots_8_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_17 <= map_table_17;
-      if (_GEN_0[18])
-        br_snapshots_8_18 <= io_remap_reqs_1_pdst;
-      else if (_GEN[18])
-        br_snapshots_8_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_18 <= map_table_18;
-      if (_GEN_0[19])
-        br_snapshots_8_19 <= io_remap_reqs_1_pdst;
-      else if (_GEN[19])
-        br_snapshots_8_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_19 <= map_table_19;
-      if (_GEN_0[20])
-        br_snapshots_8_20 <= io_remap_reqs_1_pdst;
-      else if (_GEN[20])
-        br_snapshots_8_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_20 <= map_table_20;
-      if (_GEN_0[21])
-        br_snapshots_8_21 <= io_remap_reqs_1_pdst;
-      else if (_GEN[21])
-        br_snapshots_8_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_21 <= map_table_21;
-      if (_GEN_0[22])
-        br_snapshots_8_22 <= io_remap_reqs_1_pdst;
-      else if (_GEN[22])
-        br_snapshots_8_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_22 <= map_table_22;
-      if (_GEN_0[23])
-        br_snapshots_8_23 <= io_remap_reqs_1_pdst;
-      else if (_GEN[23])
-        br_snapshots_8_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_23 <= map_table_23;
-      if (_GEN_0[24])
-        br_snapshots_8_24 <= io_remap_reqs_1_pdst;
-      else if (_GEN[24])
-        br_snapshots_8_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_24 <= map_table_24;
-      if (_GEN_0[25])
-        br_snapshots_8_25 <= io_remap_reqs_1_pdst;
-      else if (_GEN[25])
-        br_snapshots_8_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_25 <= map_table_25;
-      if (_GEN_0[26])
-        br_snapshots_8_26 <= io_remap_reqs_1_pdst;
-      else if (_GEN[26])
-        br_snapshots_8_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_26 <= map_table_26;
-      if (_GEN_0[27])
-        br_snapshots_8_27 <= io_remap_reqs_1_pdst;
-      else if (_GEN[27])
-        br_snapshots_8_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_27 <= map_table_27;
-      if (_GEN_0[28])
-        br_snapshots_8_28 <= io_remap_reqs_1_pdst;
-      else if (_GEN[28])
-        br_snapshots_8_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_28 <= map_table_28;
-      if (_GEN_0[29])
-        br_snapshots_8_29 <= io_remap_reqs_1_pdst;
-      else if (_GEN[29])
-        br_snapshots_8_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_29 <= map_table_29;
-      if (_GEN_0[30])
-        br_snapshots_8_30 <= io_remap_reqs_1_pdst;
-      else if (_GEN[30])
-        br_snapshots_8_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_30 <= map_table_30;
-      if (_GEN_0[31])
-        br_snapshots_8_31 <= io_remap_reqs_1_pdst;
-      else if (_GEN[31])
-        br_snapshots_8_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_31 <= map_table_31;
+      br_snapshots_8_0 <= remap_table_2_0;
+      br_snapshots_8_1 <= remap_table_2_1;
+      br_snapshots_8_2 <= remap_table_2_2;
+      br_snapshots_8_3 <= remap_table_2_3;
+      br_snapshots_8_4 <= remap_table_2_4;
+      br_snapshots_8_5 <= remap_table_2_5;
+      br_snapshots_8_6 <= remap_table_2_6;
+      br_snapshots_8_7 <= remap_table_2_7;
+      br_snapshots_8_8 <= remap_table_2_8;
+      br_snapshots_8_9 <= remap_table_2_9;
+      br_snapshots_8_10 <= remap_table_2_10;
+      br_snapshots_8_11 <= remap_table_2_11;
+      br_snapshots_8_12 <= remap_table_2_12;
+      br_snapshots_8_13 <= remap_table_2_13;
+      br_snapshots_8_14 <= remap_table_2_14;
+      br_snapshots_8_15 <= remap_table_2_15;
+      br_snapshots_8_16 <= remap_table_2_16;
+      br_snapshots_8_17 <= remap_table_2_17;
+      br_snapshots_8_18 <= remap_table_2_18;
+      br_snapshots_8_19 <= remap_table_2_19;
+      br_snapshots_8_20 <= remap_table_2_20;
+      br_snapshots_8_21 <= remap_table_2_21;
+      br_snapshots_8_22 <= remap_table_2_22;
+      br_snapshots_8_23 <= remap_table_2_23;
+      br_snapshots_8_24 <= remap_table_2_24;
+      br_snapshots_8_25 <= remap_table_2_25;
+      br_snapshots_8_26 <= remap_table_2_26;
+      br_snapshots_8_27 <= remap_table_2_27;
+      br_snapshots_8_28 <= remap_table_2_28;
+      br_snapshots_8_29 <= remap_table_2_29;
+      br_snapshots_8_30 <= remap_table_2_30;
+      br_snapshots_8_31 <= remap_table_2_31;
     end
     else if (io_ren_br_tags_0_valid & io_ren_br_tags_0_bits == 5'h8) begin
-      if (_GEN[0])
-        br_snapshots_8_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_0 <= map_table_0;
-      if (_GEN[1])
-        br_snapshots_8_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_1 <= map_table_1;
-      if (_GEN[2])
-        br_snapshots_8_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_2 <= map_table_2;
-      if (_GEN[3])
-        br_snapshots_8_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_3 <= map_table_3;
-      if (_GEN[4])
-        br_snapshots_8_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_4 <= map_table_4;
-      if (_GEN[5])
-        br_snapshots_8_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_5 <= map_table_5;
-      if (_GEN[6])
-        br_snapshots_8_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_6 <= map_table_6;
-      if (_GEN[7])
-        br_snapshots_8_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_7 <= map_table_7;
-      if (_GEN[8])
-        br_snapshots_8_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_8 <= map_table_8;
-      if (_GEN[9])
-        br_snapshots_8_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_9 <= map_table_9;
-      if (_GEN[10])
-        br_snapshots_8_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_10 <= map_table_10;
-      if (_GEN[11])
-        br_snapshots_8_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_11 <= map_table_11;
-      if (_GEN[12])
-        br_snapshots_8_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_12 <= map_table_12;
-      if (_GEN[13])
-        br_snapshots_8_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_13 <= map_table_13;
-      if (_GEN[14])
-        br_snapshots_8_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_14 <= map_table_14;
-      if (_GEN[15])
-        br_snapshots_8_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_15 <= map_table_15;
-      if (_GEN[16])
-        br_snapshots_8_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_16 <= map_table_16;
-      if (_GEN[17])
-        br_snapshots_8_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_17 <= map_table_17;
-      if (_GEN[18])
-        br_snapshots_8_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_18 <= map_table_18;
-      if (_GEN[19])
-        br_snapshots_8_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_19 <= map_table_19;
-      if (_GEN[20])
-        br_snapshots_8_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_20 <= map_table_20;
-      if (_GEN[21])
-        br_snapshots_8_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_21 <= map_table_21;
-      if (_GEN[22])
-        br_snapshots_8_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_22 <= map_table_22;
-      if (_GEN[23])
-        br_snapshots_8_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_23 <= map_table_23;
-      if (_GEN[24])
-        br_snapshots_8_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_24 <= map_table_24;
-      if (_GEN[25])
-        br_snapshots_8_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_25 <= map_table_25;
-      if (_GEN[26])
-        br_snapshots_8_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_26 <= map_table_26;
-      if (_GEN[27])
-        br_snapshots_8_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_27 <= map_table_27;
-      if (_GEN[28])
-        br_snapshots_8_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_28 <= map_table_28;
-      if (_GEN[29])
-        br_snapshots_8_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_29 <= map_table_29;
-      if (_GEN[30])
-        br_snapshots_8_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_30 <= map_table_30;
-      if (_GEN[31])
-        br_snapshots_8_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_8_31 <= map_table_31;
+      br_snapshots_8_0 <= remap_table_1_0;
+      br_snapshots_8_1 <= remap_table_1_1;
+      br_snapshots_8_2 <= remap_table_1_2;
+      br_snapshots_8_3 <= remap_table_1_3;
+      br_snapshots_8_4 <= remap_table_1_4;
+      br_snapshots_8_5 <= remap_table_1_5;
+      br_snapshots_8_6 <= remap_table_1_6;
+      br_snapshots_8_7 <= remap_table_1_7;
+      br_snapshots_8_8 <= remap_table_1_8;
+      br_snapshots_8_9 <= remap_table_1_9;
+      br_snapshots_8_10 <= remap_table_1_10;
+      br_snapshots_8_11 <= remap_table_1_11;
+      br_snapshots_8_12 <= remap_table_1_12;
+      br_snapshots_8_13 <= remap_table_1_13;
+      br_snapshots_8_14 <= remap_table_1_14;
+      br_snapshots_8_15 <= remap_table_1_15;
+      br_snapshots_8_16 <= remap_table_1_16;
+      br_snapshots_8_17 <= remap_table_1_17;
+      br_snapshots_8_18 <= remap_table_1_18;
+      br_snapshots_8_19 <= remap_table_1_19;
+      br_snapshots_8_20 <= remap_table_1_20;
+      br_snapshots_8_21 <= remap_table_1_21;
+      br_snapshots_8_22 <= remap_table_1_22;
+      br_snapshots_8_23 <= remap_table_1_23;
+      br_snapshots_8_24 <= remap_table_1_24;
+      br_snapshots_8_25 <= remap_table_1_25;
+      br_snapshots_8_26 <= remap_table_1_26;
+      br_snapshots_8_27 <= remap_table_1_27;
+      br_snapshots_8_28 <= remap_table_1_28;
+      br_snapshots_8_29 <= remap_table_1_29;
+      br_snapshots_8_30 <= remap_table_1_30;
+      br_snapshots_8_31 <= remap_table_1_31;
     end
     if (io_ren_br_tags_3_valid & io_ren_br_tags_3_bits == 5'h9) begin
-      if (_GEN_2[0])
-        br_snapshots_9_0 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[0])
-        br_snapshots_9_0 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[0])
-        br_snapshots_9_0 <= io_remap_reqs_1_pdst;
-      else if (_GEN[0])
-        br_snapshots_9_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_0 <= map_table_0;
-      if (_GEN_2[1])
-        br_snapshots_9_1 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[1])
-        br_snapshots_9_1 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[1])
-        br_snapshots_9_1 <= io_remap_reqs_1_pdst;
-      else if (_GEN[1])
-        br_snapshots_9_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_1 <= map_table_1;
-      if (_GEN_2[2])
-        br_snapshots_9_2 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[2])
-        br_snapshots_9_2 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[2])
-        br_snapshots_9_2 <= io_remap_reqs_1_pdst;
-      else if (_GEN[2])
-        br_snapshots_9_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_2 <= map_table_2;
-      if (_GEN_2[3])
-        br_snapshots_9_3 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[3])
-        br_snapshots_9_3 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[3])
-        br_snapshots_9_3 <= io_remap_reqs_1_pdst;
-      else if (_GEN[3])
-        br_snapshots_9_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_3 <= map_table_3;
-      if (_GEN_2[4])
-        br_snapshots_9_4 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[4])
-        br_snapshots_9_4 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[4])
-        br_snapshots_9_4 <= io_remap_reqs_1_pdst;
-      else if (_GEN[4])
-        br_snapshots_9_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_4 <= map_table_4;
-      if (_GEN_2[5])
-        br_snapshots_9_5 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[5])
-        br_snapshots_9_5 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[5])
-        br_snapshots_9_5 <= io_remap_reqs_1_pdst;
-      else if (_GEN[5])
-        br_snapshots_9_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_5 <= map_table_5;
-      if (_GEN_2[6])
-        br_snapshots_9_6 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[6])
-        br_snapshots_9_6 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[6])
-        br_snapshots_9_6 <= io_remap_reqs_1_pdst;
-      else if (_GEN[6])
-        br_snapshots_9_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_6 <= map_table_6;
-      if (_GEN_2[7])
-        br_snapshots_9_7 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[7])
-        br_snapshots_9_7 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[7])
-        br_snapshots_9_7 <= io_remap_reqs_1_pdst;
-      else if (_GEN[7])
-        br_snapshots_9_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_7 <= map_table_7;
-      if (_GEN_2[8])
-        br_snapshots_9_8 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[8])
-        br_snapshots_9_8 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[8])
-        br_snapshots_9_8 <= io_remap_reqs_1_pdst;
-      else if (_GEN[8])
-        br_snapshots_9_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_8 <= map_table_8;
-      if (_GEN_2[9])
-        br_snapshots_9_9 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[9])
-        br_snapshots_9_9 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[9])
-        br_snapshots_9_9 <= io_remap_reqs_1_pdst;
-      else if (_GEN[9])
-        br_snapshots_9_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_9 <= map_table_9;
-      if (_GEN_2[10])
-        br_snapshots_9_10 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[10])
-        br_snapshots_9_10 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[10])
-        br_snapshots_9_10 <= io_remap_reqs_1_pdst;
-      else if (_GEN[10])
-        br_snapshots_9_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_10 <= map_table_10;
-      if (_GEN_2[11])
-        br_snapshots_9_11 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[11])
-        br_snapshots_9_11 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[11])
-        br_snapshots_9_11 <= io_remap_reqs_1_pdst;
-      else if (_GEN[11])
-        br_snapshots_9_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_11 <= map_table_11;
-      if (_GEN_2[12])
-        br_snapshots_9_12 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[12])
-        br_snapshots_9_12 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[12])
-        br_snapshots_9_12 <= io_remap_reqs_1_pdst;
-      else if (_GEN[12])
-        br_snapshots_9_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_12 <= map_table_12;
-      if (_GEN_2[13])
-        br_snapshots_9_13 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[13])
-        br_snapshots_9_13 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[13])
-        br_snapshots_9_13 <= io_remap_reqs_1_pdst;
-      else if (_GEN[13])
-        br_snapshots_9_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_13 <= map_table_13;
-      if (_GEN_2[14])
-        br_snapshots_9_14 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[14])
-        br_snapshots_9_14 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[14])
-        br_snapshots_9_14 <= io_remap_reqs_1_pdst;
-      else if (_GEN[14])
-        br_snapshots_9_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_14 <= map_table_14;
-      if (_GEN_2[15])
-        br_snapshots_9_15 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[15])
-        br_snapshots_9_15 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[15])
-        br_snapshots_9_15 <= io_remap_reqs_1_pdst;
-      else if (_GEN[15])
-        br_snapshots_9_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_15 <= map_table_15;
-      if (_GEN_2[16])
-        br_snapshots_9_16 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[16])
-        br_snapshots_9_16 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[16])
-        br_snapshots_9_16 <= io_remap_reqs_1_pdst;
-      else if (_GEN[16])
-        br_snapshots_9_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_16 <= map_table_16;
-      if (_GEN_2[17])
-        br_snapshots_9_17 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[17])
-        br_snapshots_9_17 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[17])
-        br_snapshots_9_17 <= io_remap_reqs_1_pdst;
-      else if (_GEN[17])
-        br_snapshots_9_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_17 <= map_table_17;
-      if (_GEN_2[18])
-        br_snapshots_9_18 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[18])
-        br_snapshots_9_18 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[18])
-        br_snapshots_9_18 <= io_remap_reqs_1_pdst;
-      else if (_GEN[18])
-        br_snapshots_9_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_18 <= map_table_18;
-      if (_GEN_2[19])
-        br_snapshots_9_19 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[19])
-        br_snapshots_9_19 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[19])
-        br_snapshots_9_19 <= io_remap_reqs_1_pdst;
-      else if (_GEN[19])
-        br_snapshots_9_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_19 <= map_table_19;
-      if (_GEN_2[20])
-        br_snapshots_9_20 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[20])
-        br_snapshots_9_20 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[20])
-        br_snapshots_9_20 <= io_remap_reqs_1_pdst;
-      else if (_GEN[20])
-        br_snapshots_9_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_20 <= map_table_20;
-      if (_GEN_2[21])
-        br_snapshots_9_21 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[21])
-        br_snapshots_9_21 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[21])
-        br_snapshots_9_21 <= io_remap_reqs_1_pdst;
-      else if (_GEN[21])
-        br_snapshots_9_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_21 <= map_table_21;
-      if (_GEN_2[22])
-        br_snapshots_9_22 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[22])
-        br_snapshots_9_22 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[22])
-        br_snapshots_9_22 <= io_remap_reqs_1_pdst;
-      else if (_GEN[22])
-        br_snapshots_9_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_22 <= map_table_22;
-      if (_GEN_2[23])
-        br_snapshots_9_23 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[23])
-        br_snapshots_9_23 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[23])
-        br_snapshots_9_23 <= io_remap_reqs_1_pdst;
-      else if (_GEN[23])
-        br_snapshots_9_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_23 <= map_table_23;
-      if (_GEN_2[24])
-        br_snapshots_9_24 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[24])
-        br_snapshots_9_24 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[24])
-        br_snapshots_9_24 <= io_remap_reqs_1_pdst;
-      else if (_GEN[24])
-        br_snapshots_9_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_24 <= map_table_24;
-      if (_GEN_2[25])
-        br_snapshots_9_25 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[25])
-        br_snapshots_9_25 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[25])
-        br_snapshots_9_25 <= io_remap_reqs_1_pdst;
-      else if (_GEN[25])
-        br_snapshots_9_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_25 <= map_table_25;
-      if (_GEN_2[26])
-        br_snapshots_9_26 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[26])
-        br_snapshots_9_26 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[26])
-        br_snapshots_9_26 <= io_remap_reqs_1_pdst;
-      else if (_GEN[26])
-        br_snapshots_9_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_26 <= map_table_26;
-      if (_GEN_2[27])
-        br_snapshots_9_27 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[27])
-        br_snapshots_9_27 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[27])
-        br_snapshots_9_27 <= io_remap_reqs_1_pdst;
-      else if (_GEN[27])
-        br_snapshots_9_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_27 <= map_table_27;
-      if (_GEN_2[28])
-        br_snapshots_9_28 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[28])
-        br_snapshots_9_28 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[28])
-        br_snapshots_9_28 <= io_remap_reqs_1_pdst;
-      else if (_GEN[28])
-        br_snapshots_9_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_28 <= map_table_28;
-      if (_GEN_2[29])
-        br_snapshots_9_29 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[29])
-        br_snapshots_9_29 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[29])
-        br_snapshots_9_29 <= io_remap_reqs_1_pdst;
-      else if (_GEN[29])
-        br_snapshots_9_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_29 <= map_table_29;
-      if (_GEN_2[30])
-        br_snapshots_9_30 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[30])
-        br_snapshots_9_30 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[30])
-        br_snapshots_9_30 <= io_remap_reqs_1_pdst;
-      else if (_GEN[30])
-        br_snapshots_9_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_30 <= map_table_30;
-      if (_GEN_2[31])
-        br_snapshots_9_31 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[31])
-        br_snapshots_9_31 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[31])
-        br_snapshots_9_31 <= io_remap_reqs_1_pdst;
-      else if (_GEN[31])
-        br_snapshots_9_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_31 <= map_table_31;
+      br_snapshots_9_0 <= remap_table_4_0;
+      br_snapshots_9_1 <= remap_table_4_1;
+      br_snapshots_9_2 <= remap_table_4_2;
+      br_snapshots_9_3 <= remap_table_4_3;
+      br_snapshots_9_4 <= remap_table_4_4;
+      br_snapshots_9_5 <= remap_table_4_5;
+      br_snapshots_9_6 <= remap_table_4_6;
+      br_snapshots_9_7 <= remap_table_4_7;
+      br_snapshots_9_8 <= remap_table_4_8;
+      br_snapshots_9_9 <= remap_table_4_9;
+      br_snapshots_9_10 <= remap_table_4_10;
+      br_snapshots_9_11 <= remap_table_4_11;
+      br_snapshots_9_12 <= remap_table_4_12;
+      br_snapshots_9_13 <= remap_table_4_13;
+      br_snapshots_9_14 <= remap_table_4_14;
+      br_snapshots_9_15 <= remap_table_4_15;
+      br_snapshots_9_16 <= remap_table_4_16;
+      br_snapshots_9_17 <= remap_table_4_17;
+      br_snapshots_9_18 <= remap_table_4_18;
+      br_snapshots_9_19 <= remap_table_4_19;
+      br_snapshots_9_20 <= remap_table_4_20;
+      br_snapshots_9_21 <= remap_table_4_21;
+      br_snapshots_9_22 <= remap_table_4_22;
+      br_snapshots_9_23 <= remap_table_4_23;
+      br_snapshots_9_24 <= remap_table_4_24;
+      br_snapshots_9_25 <= remap_table_4_25;
+      br_snapshots_9_26 <= remap_table_4_26;
+      br_snapshots_9_27 <= remap_table_4_27;
+      br_snapshots_9_28 <= remap_table_4_28;
+      br_snapshots_9_29 <= remap_table_4_29;
+      br_snapshots_9_30 <= remap_table_4_30;
+      br_snapshots_9_31 <= remap_table_4_31;
     end
     else if (io_ren_br_tags_2_valid & io_ren_br_tags_2_bits == 5'h9) begin
-      if (_GEN_1[0])
-        br_snapshots_9_0 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[0])
-        br_snapshots_9_0 <= io_remap_reqs_1_pdst;
-      else if (_GEN[0])
-        br_snapshots_9_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_0 <= map_table_0;
-      if (_GEN_1[1])
-        br_snapshots_9_1 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[1])
-        br_snapshots_9_1 <= io_remap_reqs_1_pdst;
-      else if (_GEN[1])
-        br_snapshots_9_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_1 <= map_table_1;
-      if (_GEN_1[2])
-        br_snapshots_9_2 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[2])
-        br_snapshots_9_2 <= io_remap_reqs_1_pdst;
-      else if (_GEN[2])
-        br_snapshots_9_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_2 <= map_table_2;
-      if (_GEN_1[3])
-        br_snapshots_9_3 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[3])
-        br_snapshots_9_3 <= io_remap_reqs_1_pdst;
-      else if (_GEN[3])
-        br_snapshots_9_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_3 <= map_table_3;
-      if (_GEN_1[4])
-        br_snapshots_9_4 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[4])
-        br_snapshots_9_4 <= io_remap_reqs_1_pdst;
-      else if (_GEN[4])
-        br_snapshots_9_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_4 <= map_table_4;
-      if (_GEN_1[5])
-        br_snapshots_9_5 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[5])
-        br_snapshots_9_5 <= io_remap_reqs_1_pdst;
-      else if (_GEN[5])
-        br_snapshots_9_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_5 <= map_table_5;
-      if (_GEN_1[6])
-        br_snapshots_9_6 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[6])
-        br_snapshots_9_6 <= io_remap_reqs_1_pdst;
-      else if (_GEN[6])
-        br_snapshots_9_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_6 <= map_table_6;
-      if (_GEN_1[7])
-        br_snapshots_9_7 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[7])
-        br_snapshots_9_7 <= io_remap_reqs_1_pdst;
-      else if (_GEN[7])
-        br_snapshots_9_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_7 <= map_table_7;
-      if (_GEN_1[8])
-        br_snapshots_9_8 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[8])
-        br_snapshots_9_8 <= io_remap_reqs_1_pdst;
-      else if (_GEN[8])
-        br_snapshots_9_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_8 <= map_table_8;
-      if (_GEN_1[9])
-        br_snapshots_9_9 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[9])
-        br_snapshots_9_9 <= io_remap_reqs_1_pdst;
-      else if (_GEN[9])
-        br_snapshots_9_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_9 <= map_table_9;
-      if (_GEN_1[10])
-        br_snapshots_9_10 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[10])
-        br_snapshots_9_10 <= io_remap_reqs_1_pdst;
-      else if (_GEN[10])
-        br_snapshots_9_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_10 <= map_table_10;
-      if (_GEN_1[11])
-        br_snapshots_9_11 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[11])
-        br_snapshots_9_11 <= io_remap_reqs_1_pdst;
-      else if (_GEN[11])
-        br_snapshots_9_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_11 <= map_table_11;
-      if (_GEN_1[12])
-        br_snapshots_9_12 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[12])
-        br_snapshots_9_12 <= io_remap_reqs_1_pdst;
-      else if (_GEN[12])
-        br_snapshots_9_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_12 <= map_table_12;
-      if (_GEN_1[13])
-        br_snapshots_9_13 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[13])
-        br_snapshots_9_13 <= io_remap_reqs_1_pdst;
-      else if (_GEN[13])
-        br_snapshots_9_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_13 <= map_table_13;
-      if (_GEN_1[14])
-        br_snapshots_9_14 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[14])
-        br_snapshots_9_14 <= io_remap_reqs_1_pdst;
-      else if (_GEN[14])
-        br_snapshots_9_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_14 <= map_table_14;
-      if (_GEN_1[15])
-        br_snapshots_9_15 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[15])
-        br_snapshots_9_15 <= io_remap_reqs_1_pdst;
-      else if (_GEN[15])
-        br_snapshots_9_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_15 <= map_table_15;
-      if (_GEN_1[16])
-        br_snapshots_9_16 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[16])
-        br_snapshots_9_16 <= io_remap_reqs_1_pdst;
-      else if (_GEN[16])
-        br_snapshots_9_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_16 <= map_table_16;
-      if (_GEN_1[17])
-        br_snapshots_9_17 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[17])
-        br_snapshots_9_17 <= io_remap_reqs_1_pdst;
-      else if (_GEN[17])
-        br_snapshots_9_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_17 <= map_table_17;
-      if (_GEN_1[18])
-        br_snapshots_9_18 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[18])
-        br_snapshots_9_18 <= io_remap_reqs_1_pdst;
-      else if (_GEN[18])
-        br_snapshots_9_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_18 <= map_table_18;
-      if (_GEN_1[19])
-        br_snapshots_9_19 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[19])
-        br_snapshots_9_19 <= io_remap_reqs_1_pdst;
-      else if (_GEN[19])
-        br_snapshots_9_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_19 <= map_table_19;
-      if (_GEN_1[20])
-        br_snapshots_9_20 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[20])
-        br_snapshots_9_20 <= io_remap_reqs_1_pdst;
-      else if (_GEN[20])
-        br_snapshots_9_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_20 <= map_table_20;
-      if (_GEN_1[21])
-        br_snapshots_9_21 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[21])
-        br_snapshots_9_21 <= io_remap_reqs_1_pdst;
-      else if (_GEN[21])
-        br_snapshots_9_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_21 <= map_table_21;
-      if (_GEN_1[22])
-        br_snapshots_9_22 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[22])
-        br_snapshots_9_22 <= io_remap_reqs_1_pdst;
-      else if (_GEN[22])
-        br_snapshots_9_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_22 <= map_table_22;
-      if (_GEN_1[23])
-        br_snapshots_9_23 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[23])
-        br_snapshots_9_23 <= io_remap_reqs_1_pdst;
-      else if (_GEN[23])
-        br_snapshots_9_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_23 <= map_table_23;
-      if (_GEN_1[24])
-        br_snapshots_9_24 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[24])
-        br_snapshots_9_24 <= io_remap_reqs_1_pdst;
-      else if (_GEN[24])
-        br_snapshots_9_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_24 <= map_table_24;
-      if (_GEN_1[25])
-        br_snapshots_9_25 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[25])
-        br_snapshots_9_25 <= io_remap_reqs_1_pdst;
-      else if (_GEN[25])
-        br_snapshots_9_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_25 <= map_table_25;
-      if (_GEN_1[26])
-        br_snapshots_9_26 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[26])
-        br_snapshots_9_26 <= io_remap_reqs_1_pdst;
-      else if (_GEN[26])
-        br_snapshots_9_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_26 <= map_table_26;
-      if (_GEN_1[27])
-        br_snapshots_9_27 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[27])
-        br_snapshots_9_27 <= io_remap_reqs_1_pdst;
-      else if (_GEN[27])
-        br_snapshots_9_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_27 <= map_table_27;
-      if (_GEN_1[28])
-        br_snapshots_9_28 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[28])
-        br_snapshots_9_28 <= io_remap_reqs_1_pdst;
-      else if (_GEN[28])
-        br_snapshots_9_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_28 <= map_table_28;
-      if (_GEN_1[29])
-        br_snapshots_9_29 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[29])
-        br_snapshots_9_29 <= io_remap_reqs_1_pdst;
-      else if (_GEN[29])
-        br_snapshots_9_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_29 <= map_table_29;
-      if (_GEN_1[30])
-        br_snapshots_9_30 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[30])
-        br_snapshots_9_30 <= io_remap_reqs_1_pdst;
-      else if (_GEN[30])
-        br_snapshots_9_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_30 <= map_table_30;
-      if (_GEN_1[31])
-        br_snapshots_9_31 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[31])
-        br_snapshots_9_31 <= io_remap_reqs_1_pdst;
-      else if (_GEN[31])
-        br_snapshots_9_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_31 <= map_table_31;
+      br_snapshots_9_0 <= remap_table_3_0;
+      br_snapshots_9_1 <= remap_table_3_1;
+      br_snapshots_9_2 <= remap_table_3_2;
+      br_snapshots_9_3 <= remap_table_3_3;
+      br_snapshots_9_4 <= remap_table_3_4;
+      br_snapshots_9_5 <= remap_table_3_5;
+      br_snapshots_9_6 <= remap_table_3_6;
+      br_snapshots_9_7 <= remap_table_3_7;
+      br_snapshots_9_8 <= remap_table_3_8;
+      br_snapshots_9_9 <= remap_table_3_9;
+      br_snapshots_9_10 <= remap_table_3_10;
+      br_snapshots_9_11 <= remap_table_3_11;
+      br_snapshots_9_12 <= remap_table_3_12;
+      br_snapshots_9_13 <= remap_table_3_13;
+      br_snapshots_9_14 <= remap_table_3_14;
+      br_snapshots_9_15 <= remap_table_3_15;
+      br_snapshots_9_16 <= remap_table_3_16;
+      br_snapshots_9_17 <= remap_table_3_17;
+      br_snapshots_9_18 <= remap_table_3_18;
+      br_snapshots_9_19 <= remap_table_3_19;
+      br_snapshots_9_20 <= remap_table_3_20;
+      br_snapshots_9_21 <= remap_table_3_21;
+      br_snapshots_9_22 <= remap_table_3_22;
+      br_snapshots_9_23 <= remap_table_3_23;
+      br_snapshots_9_24 <= remap_table_3_24;
+      br_snapshots_9_25 <= remap_table_3_25;
+      br_snapshots_9_26 <= remap_table_3_26;
+      br_snapshots_9_27 <= remap_table_3_27;
+      br_snapshots_9_28 <= remap_table_3_28;
+      br_snapshots_9_29 <= remap_table_3_29;
+      br_snapshots_9_30 <= remap_table_3_30;
+      br_snapshots_9_31 <= remap_table_3_31;
     end
     else if (io_ren_br_tags_1_valid & io_ren_br_tags_1_bits == 5'h9) begin
-      if (_GEN_0[0])
-        br_snapshots_9_0 <= io_remap_reqs_1_pdst;
-      else if (_GEN[0])
-        br_snapshots_9_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_0 <= map_table_0;
-      if (_GEN_0[1])
-        br_snapshots_9_1 <= io_remap_reqs_1_pdst;
-      else if (_GEN[1])
-        br_snapshots_9_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_1 <= map_table_1;
-      if (_GEN_0[2])
-        br_snapshots_9_2 <= io_remap_reqs_1_pdst;
-      else if (_GEN[2])
-        br_snapshots_9_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_2 <= map_table_2;
-      if (_GEN_0[3])
-        br_snapshots_9_3 <= io_remap_reqs_1_pdst;
-      else if (_GEN[3])
-        br_snapshots_9_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_3 <= map_table_3;
-      if (_GEN_0[4])
-        br_snapshots_9_4 <= io_remap_reqs_1_pdst;
-      else if (_GEN[4])
-        br_snapshots_9_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_4 <= map_table_4;
-      if (_GEN_0[5])
-        br_snapshots_9_5 <= io_remap_reqs_1_pdst;
-      else if (_GEN[5])
-        br_snapshots_9_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_5 <= map_table_5;
-      if (_GEN_0[6])
-        br_snapshots_9_6 <= io_remap_reqs_1_pdst;
-      else if (_GEN[6])
-        br_snapshots_9_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_6 <= map_table_6;
-      if (_GEN_0[7])
-        br_snapshots_9_7 <= io_remap_reqs_1_pdst;
-      else if (_GEN[7])
-        br_snapshots_9_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_7 <= map_table_7;
-      if (_GEN_0[8])
-        br_snapshots_9_8 <= io_remap_reqs_1_pdst;
-      else if (_GEN[8])
-        br_snapshots_9_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_8 <= map_table_8;
-      if (_GEN_0[9])
-        br_snapshots_9_9 <= io_remap_reqs_1_pdst;
-      else if (_GEN[9])
-        br_snapshots_9_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_9 <= map_table_9;
-      if (_GEN_0[10])
-        br_snapshots_9_10 <= io_remap_reqs_1_pdst;
-      else if (_GEN[10])
-        br_snapshots_9_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_10 <= map_table_10;
-      if (_GEN_0[11])
-        br_snapshots_9_11 <= io_remap_reqs_1_pdst;
-      else if (_GEN[11])
-        br_snapshots_9_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_11 <= map_table_11;
-      if (_GEN_0[12])
-        br_snapshots_9_12 <= io_remap_reqs_1_pdst;
-      else if (_GEN[12])
-        br_snapshots_9_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_12 <= map_table_12;
-      if (_GEN_0[13])
-        br_snapshots_9_13 <= io_remap_reqs_1_pdst;
-      else if (_GEN[13])
-        br_snapshots_9_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_13 <= map_table_13;
-      if (_GEN_0[14])
-        br_snapshots_9_14 <= io_remap_reqs_1_pdst;
-      else if (_GEN[14])
-        br_snapshots_9_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_14 <= map_table_14;
-      if (_GEN_0[15])
-        br_snapshots_9_15 <= io_remap_reqs_1_pdst;
-      else if (_GEN[15])
-        br_snapshots_9_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_15 <= map_table_15;
-      if (_GEN_0[16])
-        br_snapshots_9_16 <= io_remap_reqs_1_pdst;
-      else if (_GEN[16])
-        br_snapshots_9_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_16 <= map_table_16;
-      if (_GEN_0[17])
-        br_snapshots_9_17 <= io_remap_reqs_1_pdst;
-      else if (_GEN[17])
-        br_snapshots_9_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_17 <= map_table_17;
-      if (_GEN_0[18])
-        br_snapshots_9_18 <= io_remap_reqs_1_pdst;
-      else if (_GEN[18])
-        br_snapshots_9_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_18 <= map_table_18;
-      if (_GEN_0[19])
-        br_snapshots_9_19 <= io_remap_reqs_1_pdst;
-      else if (_GEN[19])
-        br_snapshots_9_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_19 <= map_table_19;
-      if (_GEN_0[20])
-        br_snapshots_9_20 <= io_remap_reqs_1_pdst;
-      else if (_GEN[20])
-        br_snapshots_9_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_20 <= map_table_20;
-      if (_GEN_0[21])
-        br_snapshots_9_21 <= io_remap_reqs_1_pdst;
-      else if (_GEN[21])
-        br_snapshots_9_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_21 <= map_table_21;
-      if (_GEN_0[22])
-        br_snapshots_9_22 <= io_remap_reqs_1_pdst;
-      else if (_GEN[22])
-        br_snapshots_9_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_22 <= map_table_22;
-      if (_GEN_0[23])
-        br_snapshots_9_23 <= io_remap_reqs_1_pdst;
-      else if (_GEN[23])
-        br_snapshots_9_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_23 <= map_table_23;
-      if (_GEN_0[24])
-        br_snapshots_9_24 <= io_remap_reqs_1_pdst;
-      else if (_GEN[24])
-        br_snapshots_9_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_24 <= map_table_24;
-      if (_GEN_0[25])
-        br_snapshots_9_25 <= io_remap_reqs_1_pdst;
-      else if (_GEN[25])
-        br_snapshots_9_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_25 <= map_table_25;
-      if (_GEN_0[26])
-        br_snapshots_9_26 <= io_remap_reqs_1_pdst;
-      else if (_GEN[26])
-        br_snapshots_9_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_26 <= map_table_26;
-      if (_GEN_0[27])
-        br_snapshots_9_27 <= io_remap_reqs_1_pdst;
-      else if (_GEN[27])
-        br_snapshots_9_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_27 <= map_table_27;
-      if (_GEN_0[28])
-        br_snapshots_9_28 <= io_remap_reqs_1_pdst;
-      else if (_GEN[28])
-        br_snapshots_9_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_28 <= map_table_28;
-      if (_GEN_0[29])
-        br_snapshots_9_29 <= io_remap_reqs_1_pdst;
-      else if (_GEN[29])
-        br_snapshots_9_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_29 <= map_table_29;
-      if (_GEN_0[30])
-        br_snapshots_9_30 <= io_remap_reqs_1_pdst;
-      else if (_GEN[30])
-        br_snapshots_9_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_30 <= map_table_30;
-      if (_GEN_0[31])
-        br_snapshots_9_31 <= io_remap_reqs_1_pdst;
-      else if (_GEN[31])
-        br_snapshots_9_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_31 <= map_table_31;
+      br_snapshots_9_0 <= remap_table_2_0;
+      br_snapshots_9_1 <= remap_table_2_1;
+      br_snapshots_9_2 <= remap_table_2_2;
+      br_snapshots_9_3 <= remap_table_2_3;
+      br_snapshots_9_4 <= remap_table_2_4;
+      br_snapshots_9_5 <= remap_table_2_5;
+      br_snapshots_9_6 <= remap_table_2_6;
+      br_snapshots_9_7 <= remap_table_2_7;
+      br_snapshots_9_8 <= remap_table_2_8;
+      br_snapshots_9_9 <= remap_table_2_9;
+      br_snapshots_9_10 <= remap_table_2_10;
+      br_snapshots_9_11 <= remap_table_2_11;
+      br_snapshots_9_12 <= remap_table_2_12;
+      br_snapshots_9_13 <= remap_table_2_13;
+      br_snapshots_9_14 <= remap_table_2_14;
+      br_snapshots_9_15 <= remap_table_2_15;
+      br_snapshots_9_16 <= remap_table_2_16;
+      br_snapshots_9_17 <= remap_table_2_17;
+      br_snapshots_9_18 <= remap_table_2_18;
+      br_snapshots_9_19 <= remap_table_2_19;
+      br_snapshots_9_20 <= remap_table_2_20;
+      br_snapshots_9_21 <= remap_table_2_21;
+      br_snapshots_9_22 <= remap_table_2_22;
+      br_snapshots_9_23 <= remap_table_2_23;
+      br_snapshots_9_24 <= remap_table_2_24;
+      br_snapshots_9_25 <= remap_table_2_25;
+      br_snapshots_9_26 <= remap_table_2_26;
+      br_snapshots_9_27 <= remap_table_2_27;
+      br_snapshots_9_28 <= remap_table_2_28;
+      br_snapshots_9_29 <= remap_table_2_29;
+      br_snapshots_9_30 <= remap_table_2_30;
+      br_snapshots_9_31 <= remap_table_2_31;
     end
     else if (io_ren_br_tags_0_valid & io_ren_br_tags_0_bits == 5'h9) begin
-      if (_GEN[0])
-        br_snapshots_9_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_0 <= map_table_0;
-      if (_GEN[1])
-        br_snapshots_9_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_1 <= map_table_1;
-      if (_GEN[2])
-        br_snapshots_9_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_2 <= map_table_2;
-      if (_GEN[3])
-        br_snapshots_9_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_3 <= map_table_3;
-      if (_GEN[4])
-        br_snapshots_9_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_4 <= map_table_4;
-      if (_GEN[5])
-        br_snapshots_9_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_5 <= map_table_5;
-      if (_GEN[6])
-        br_snapshots_9_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_6 <= map_table_6;
-      if (_GEN[7])
-        br_snapshots_9_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_7 <= map_table_7;
-      if (_GEN[8])
-        br_snapshots_9_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_8 <= map_table_8;
-      if (_GEN[9])
-        br_snapshots_9_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_9 <= map_table_9;
-      if (_GEN[10])
-        br_snapshots_9_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_10 <= map_table_10;
-      if (_GEN[11])
-        br_snapshots_9_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_11 <= map_table_11;
-      if (_GEN[12])
-        br_snapshots_9_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_12 <= map_table_12;
-      if (_GEN[13])
-        br_snapshots_9_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_13 <= map_table_13;
-      if (_GEN[14])
-        br_snapshots_9_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_14 <= map_table_14;
-      if (_GEN[15])
-        br_snapshots_9_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_15 <= map_table_15;
-      if (_GEN[16])
-        br_snapshots_9_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_16 <= map_table_16;
-      if (_GEN[17])
-        br_snapshots_9_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_17 <= map_table_17;
-      if (_GEN[18])
-        br_snapshots_9_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_18 <= map_table_18;
-      if (_GEN[19])
-        br_snapshots_9_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_19 <= map_table_19;
-      if (_GEN[20])
-        br_snapshots_9_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_20 <= map_table_20;
-      if (_GEN[21])
-        br_snapshots_9_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_21 <= map_table_21;
-      if (_GEN[22])
-        br_snapshots_9_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_22 <= map_table_22;
-      if (_GEN[23])
-        br_snapshots_9_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_23 <= map_table_23;
-      if (_GEN[24])
-        br_snapshots_9_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_24 <= map_table_24;
-      if (_GEN[25])
-        br_snapshots_9_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_25 <= map_table_25;
-      if (_GEN[26])
-        br_snapshots_9_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_26 <= map_table_26;
-      if (_GEN[27])
-        br_snapshots_9_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_27 <= map_table_27;
-      if (_GEN[28])
-        br_snapshots_9_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_28 <= map_table_28;
-      if (_GEN[29])
-        br_snapshots_9_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_29 <= map_table_29;
-      if (_GEN[30])
-        br_snapshots_9_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_30 <= map_table_30;
-      if (_GEN[31])
-        br_snapshots_9_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_9_31 <= map_table_31;
+      br_snapshots_9_0 <= remap_table_1_0;
+      br_snapshots_9_1 <= remap_table_1_1;
+      br_snapshots_9_2 <= remap_table_1_2;
+      br_snapshots_9_3 <= remap_table_1_3;
+      br_snapshots_9_4 <= remap_table_1_4;
+      br_snapshots_9_5 <= remap_table_1_5;
+      br_snapshots_9_6 <= remap_table_1_6;
+      br_snapshots_9_7 <= remap_table_1_7;
+      br_snapshots_9_8 <= remap_table_1_8;
+      br_snapshots_9_9 <= remap_table_1_9;
+      br_snapshots_9_10 <= remap_table_1_10;
+      br_snapshots_9_11 <= remap_table_1_11;
+      br_snapshots_9_12 <= remap_table_1_12;
+      br_snapshots_9_13 <= remap_table_1_13;
+      br_snapshots_9_14 <= remap_table_1_14;
+      br_snapshots_9_15 <= remap_table_1_15;
+      br_snapshots_9_16 <= remap_table_1_16;
+      br_snapshots_9_17 <= remap_table_1_17;
+      br_snapshots_9_18 <= remap_table_1_18;
+      br_snapshots_9_19 <= remap_table_1_19;
+      br_snapshots_9_20 <= remap_table_1_20;
+      br_snapshots_9_21 <= remap_table_1_21;
+      br_snapshots_9_22 <= remap_table_1_22;
+      br_snapshots_9_23 <= remap_table_1_23;
+      br_snapshots_9_24 <= remap_table_1_24;
+      br_snapshots_9_25 <= remap_table_1_25;
+      br_snapshots_9_26 <= remap_table_1_26;
+      br_snapshots_9_27 <= remap_table_1_27;
+      br_snapshots_9_28 <= remap_table_1_28;
+      br_snapshots_9_29 <= remap_table_1_29;
+      br_snapshots_9_30 <= remap_table_1_30;
+      br_snapshots_9_31 <= remap_table_1_31;
     end
     if (io_ren_br_tags_3_valid & io_ren_br_tags_3_bits == 5'hA) begin
-      if (_GEN_2[0])
-        br_snapshots_10_0 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[0])
-        br_snapshots_10_0 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[0])
-        br_snapshots_10_0 <= io_remap_reqs_1_pdst;
-      else if (_GEN[0])
-        br_snapshots_10_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_0 <= map_table_0;
-      if (_GEN_2[1])
-        br_snapshots_10_1 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[1])
-        br_snapshots_10_1 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[1])
-        br_snapshots_10_1 <= io_remap_reqs_1_pdst;
-      else if (_GEN[1])
-        br_snapshots_10_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_1 <= map_table_1;
-      if (_GEN_2[2])
-        br_snapshots_10_2 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[2])
-        br_snapshots_10_2 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[2])
-        br_snapshots_10_2 <= io_remap_reqs_1_pdst;
-      else if (_GEN[2])
-        br_snapshots_10_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_2 <= map_table_2;
-      if (_GEN_2[3])
-        br_snapshots_10_3 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[3])
-        br_snapshots_10_3 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[3])
-        br_snapshots_10_3 <= io_remap_reqs_1_pdst;
-      else if (_GEN[3])
-        br_snapshots_10_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_3 <= map_table_3;
-      if (_GEN_2[4])
-        br_snapshots_10_4 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[4])
-        br_snapshots_10_4 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[4])
-        br_snapshots_10_4 <= io_remap_reqs_1_pdst;
-      else if (_GEN[4])
-        br_snapshots_10_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_4 <= map_table_4;
-      if (_GEN_2[5])
-        br_snapshots_10_5 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[5])
-        br_snapshots_10_5 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[5])
-        br_snapshots_10_5 <= io_remap_reqs_1_pdst;
-      else if (_GEN[5])
-        br_snapshots_10_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_5 <= map_table_5;
-      if (_GEN_2[6])
-        br_snapshots_10_6 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[6])
-        br_snapshots_10_6 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[6])
-        br_snapshots_10_6 <= io_remap_reqs_1_pdst;
-      else if (_GEN[6])
-        br_snapshots_10_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_6 <= map_table_6;
-      if (_GEN_2[7])
-        br_snapshots_10_7 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[7])
-        br_snapshots_10_7 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[7])
-        br_snapshots_10_7 <= io_remap_reqs_1_pdst;
-      else if (_GEN[7])
-        br_snapshots_10_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_7 <= map_table_7;
-      if (_GEN_2[8])
-        br_snapshots_10_8 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[8])
-        br_snapshots_10_8 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[8])
-        br_snapshots_10_8 <= io_remap_reqs_1_pdst;
-      else if (_GEN[8])
-        br_snapshots_10_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_8 <= map_table_8;
-      if (_GEN_2[9])
-        br_snapshots_10_9 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[9])
-        br_snapshots_10_9 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[9])
-        br_snapshots_10_9 <= io_remap_reqs_1_pdst;
-      else if (_GEN[9])
-        br_snapshots_10_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_9 <= map_table_9;
-      if (_GEN_2[10])
-        br_snapshots_10_10 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[10])
-        br_snapshots_10_10 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[10])
-        br_snapshots_10_10 <= io_remap_reqs_1_pdst;
-      else if (_GEN[10])
-        br_snapshots_10_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_10 <= map_table_10;
-      if (_GEN_2[11])
-        br_snapshots_10_11 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[11])
-        br_snapshots_10_11 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[11])
-        br_snapshots_10_11 <= io_remap_reqs_1_pdst;
-      else if (_GEN[11])
-        br_snapshots_10_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_11 <= map_table_11;
-      if (_GEN_2[12])
-        br_snapshots_10_12 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[12])
-        br_snapshots_10_12 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[12])
-        br_snapshots_10_12 <= io_remap_reqs_1_pdst;
-      else if (_GEN[12])
-        br_snapshots_10_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_12 <= map_table_12;
-      if (_GEN_2[13])
-        br_snapshots_10_13 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[13])
-        br_snapshots_10_13 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[13])
-        br_snapshots_10_13 <= io_remap_reqs_1_pdst;
-      else if (_GEN[13])
-        br_snapshots_10_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_13 <= map_table_13;
-      if (_GEN_2[14])
-        br_snapshots_10_14 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[14])
-        br_snapshots_10_14 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[14])
-        br_snapshots_10_14 <= io_remap_reqs_1_pdst;
-      else if (_GEN[14])
-        br_snapshots_10_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_14 <= map_table_14;
-      if (_GEN_2[15])
-        br_snapshots_10_15 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[15])
-        br_snapshots_10_15 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[15])
-        br_snapshots_10_15 <= io_remap_reqs_1_pdst;
-      else if (_GEN[15])
-        br_snapshots_10_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_15 <= map_table_15;
-      if (_GEN_2[16])
-        br_snapshots_10_16 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[16])
-        br_snapshots_10_16 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[16])
-        br_snapshots_10_16 <= io_remap_reqs_1_pdst;
-      else if (_GEN[16])
-        br_snapshots_10_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_16 <= map_table_16;
-      if (_GEN_2[17])
-        br_snapshots_10_17 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[17])
-        br_snapshots_10_17 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[17])
-        br_snapshots_10_17 <= io_remap_reqs_1_pdst;
-      else if (_GEN[17])
-        br_snapshots_10_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_17 <= map_table_17;
-      if (_GEN_2[18])
-        br_snapshots_10_18 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[18])
-        br_snapshots_10_18 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[18])
-        br_snapshots_10_18 <= io_remap_reqs_1_pdst;
-      else if (_GEN[18])
-        br_snapshots_10_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_18 <= map_table_18;
-      if (_GEN_2[19])
-        br_snapshots_10_19 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[19])
-        br_snapshots_10_19 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[19])
-        br_snapshots_10_19 <= io_remap_reqs_1_pdst;
-      else if (_GEN[19])
-        br_snapshots_10_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_19 <= map_table_19;
-      if (_GEN_2[20])
-        br_snapshots_10_20 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[20])
-        br_snapshots_10_20 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[20])
-        br_snapshots_10_20 <= io_remap_reqs_1_pdst;
-      else if (_GEN[20])
-        br_snapshots_10_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_20 <= map_table_20;
-      if (_GEN_2[21])
-        br_snapshots_10_21 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[21])
-        br_snapshots_10_21 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[21])
-        br_snapshots_10_21 <= io_remap_reqs_1_pdst;
-      else if (_GEN[21])
-        br_snapshots_10_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_21 <= map_table_21;
-      if (_GEN_2[22])
-        br_snapshots_10_22 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[22])
-        br_snapshots_10_22 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[22])
-        br_snapshots_10_22 <= io_remap_reqs_1_pdst;
-      else if (_GEN[22])
-        br_snapshots_10_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_22 <= map_table_22;
-      if (_GEN_2[23])
-        br_snapshots_10_23 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[23])
-        br_snapshots_10_23 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[23])
-        br_snapshots_10_23 <= io_remap_reqs_1_pdst;
-      else if (_GEN[23])
-        br_snapshots_10_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_23 <= map_table_23;
-      if (_GEN_2[24])
-        br_snapshots_10_24 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[24])
-        br_snapshots_10_24 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[24])
-        br_snapshots_10_24 <= io_remap_reqs_1_pdst;
-      else if (_GEN[24])
-        br_snapshots_10_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_24 <= map_table_24;
-      if (_GEN_2[25])
-        br_snapshots_10_25 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[25])
-        br_snapshots_10_25 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[25])
-        br_snapshots_10_25 <= io_remap_reqs_1_pdst;
-      else if (_GEN[25])
-        br_snapshots_10_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_25 <= map_table_25;
-      if (_GEN_2[26])
-        br_snapshots_10_26 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[26])
-        br_snapshots_10_26 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[26])
-        br_snapshots_10_26 <= io_remap_reqs_1_pdst;
-      else if (_GEN[26])
-        br_snapshots_10_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_26 <= map_table_26;
-      if (_GEN_2[27])
-        br_snapshots_10_27 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[27])
-        br_snapshots_10_27 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[27])
-        br_snapshots_10_27 <= io_remap_reqs_1_pdst;
-      else if (_GEN[27])
-        br_snapshots_10_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_27 <= map_table_27;
-      if (_GEN_2[28])
-        br_snapshots_10_28 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[28])
-        br_snapshots_10_28 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[28])
-        br_snapshots_10_28 <= io_remap_reqs_1_pdst;
-      else if (_GEN[28])
-        br_snapshots_10_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_28 <= map_table_28;
-      if (_GEN_2[29])
-        br_snapshots_10_29 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[29])
-        br_snapshots_10_29 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[29])
-        br_snapshots_10_29 <= io_remap_reqs_1_pdst;
-      else if (_GEN[29])
-        br_snapshots_10_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_29 <= map_table_29;
-      if (_GEN_2[30])
-        br_snapshots_10_30 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[30])
-        br_snapshots_10_30 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[30])
-        br_snapshots_10_30 <= io_remap_reqs_1_pdst;
-      else if (_GEN[30])
-        br_snapshots_10_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_30 <= map_table_30;
-      if (_GEN_2[31])
-        br_snapshots_10_31 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[31])
-        br_snapshots_10_31 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[31])
-        br_snapshots_10_31 <= io_remap_reqs_1_pdst;
-      else if (_GEN[31])
-        br_snapshots_10_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_31 <= map_table_31;
+      br_snapshots_10_0 <= remap_table_4_0;
+      br_snapshots_10_1 <= remap_table_4_1;
+      br_snapshots_10_2 <= remap_table_4_2;
+      br_snapshots_10_3 <= remap_table_4_3;
+      br_snapshots_10_4 <= remap_table_4_4;
+      br_snapshots_10_5 <= remap_table_4_5;
+      br_snapshots_10_6 <= remap_table_4_6;
+      br_snapshots_10_7 <= remap_table_4_7;
+      br_snapshots_10_8 <= remap_table_4_8;
+      br_snapshots_10_9 <= remap_table_4_9;
+      br_snapshots_10_10 <= remap_table_4_10;
+      br_snapshots_10_11 <= remap_table_4_11;
+      br_snapshots_10_12 <= remap_table_4_12;
+      br_snapshots_10_13 <= remap_table_4_13;
+      br_snapshots_10_14 <= remap_table_4_14;
+      br_snapshots_10_15 <= remap_table_4_15;
+      br_snapshots_10_16 <= remap_table_4_16;
+      br_snapshots_10_17 <= remap_table_4_17;
+      br_snapshots_10_18 <= remap_table_4_18;
+      br_snapshots_10_19 <= remap_table_4_19;
+      br_snapshots_10_20 <= remap_table_4_20;
+      br_snapshots_10_21 <= remap_table_4_21;
+      br_snapshots_10_22 <= remap_table_4_22;
+      br_snapshots_10_23 <= remap_table_4_23;
+      br_snapshots_10_24 <= remap_table_4_24;
+      br_snapshots_10_25 <= remap_table_4_25;
+      br_snapshots_10_26 <= remap_table_4_26;
+      br_snapshots_10_27 <= remap_table_4_27;
+      br_snapshots_10_28 <= remap_table_4_28;
+      br_snapshots_10_29 <= remap_table_4_29;
+      br_snapshots_10_30 <= remap_table_4_30;
+      br_snapshots_10_31 <= remap_table_4_31;
     end
     else if (io_ren_br_tags_2_valid & io_ren_br_tags_2_bits == 5'hA) begin
-      if (_GEN_1[0])
-        br_snapshots_10_0 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[0])
-        br_snapshots_10_0 <= io_remap_reqs_1_pdst;
-      else if (_GEN[0])
-        br_snapshots_10_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_0 <= map_table_0;
-      if (_GEN_1[1])
-        br_snapshots_10_1 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[1])
-        br_snapshots_10_1 <= io_remap_reqs_1_pdst;
-      else if (_GEN[1])
-        br_snapshots_10_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_1 <= map_table_1;
-      if (_GEN_1[2])
-        br_snapshots_10_2 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[2])
-        br_snapshots_10_2 <= io_remap_reqs_1_pdst;
-      else if (_GEN[2])
-        br_snapshots_10_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_2 <= map_table_2;
-      if (_GEN_1[3])
-        br_snapshots_10_3 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[3])
-        br_snapshots_10_3 <= io_remap_reqs_1_pdst;
-      else if (_GEN[3])
-        br_snapshots_10_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_3 <= map_table_3;
-      if (_GEN_1[4])
-        br_snapshots_10_4 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[4])
-        br_snapshots_10_4 <= io_remap_reqs_1_pdst;
-      else if (_GEN[4])
-        br_snapshots_10_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_4 <= map_table_4;
-      if (_GEN_1[5])
-        br_snapshots_10_5 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[5])
-        br_snapshots_10_5 <= io_remap_reqs_1_pdst;
-      else if (_GEN[5])
-        br_snapshots_10_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_5 <= map_table_5;
-      if (_GEN_1[6])
-        br_snapshots_10_6 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[6])
-        br_snapshots_10_6 <= io_remap_reqs_1_pdst;
-      else if (_GEN[6])
-        br_snapshots_10_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_6 <= map_table_6;
-      if (_GEN_1[7])
-        br_snapshots_10_7 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[7])
-        br_snapshots_10_7 <= io_remap_reqs_1_pdst;
-      else if (_GEN[7])
-        br_snapshots_10_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_7 <= map_table_7;
-      if (_GEN_1[8])
-        br_snapshots_10_8 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[8])
-        br_snapshots_10_8 <= io_remap_reqs_1_pdst;
-      else if (_GEN[8])
-        br_snapshots_10_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_8 <= map_table_8;
-      if (_GEN_1[9])
-        br_snapshots_10_9 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[9])
-        br_snapshots_10_9 <= io_remap_reqs_1_pdst;
-      else if (_GEN[9])
-        br_snapshots_10_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_9 <= map_table_9;
-      if (_GEN_1[10])
-        br_snapshots_10_10 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[10])
-        br_snapshots_10_10 <= io_remap_reqs_1_pdst;
-      else if (_GEN[10])
-        br_snapshots_10_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_10 <= map_table_10;
-      if (_GEN_1[11])
-        br_snapshots_10_11 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[11])
-        br_snapshots_10_11 <= io_remap_reqs_1_pdst;
-      else if (_GEN[11])
-        br_snapshots_10_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_11 <= map_table_11;
-      if (_GEN_1[12])
-        br_snapshots_10_12 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[12])
-        br_snapshots_10_12 <= io_remap_reqs_1_pdst;
-      else if (_GEN[12])
-        br_snapshots_10_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_12 <= map_table_12;
-      if (_GEN_1[13])
-        br_snapshots_10_13 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[13])
-        br_snapshots_10_13 <= io_remap_reqs_1_pdst;
-      else if (_GEN[13])
-        br_snapshots_10_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_13 <= map_table_13;
-      if (_GEN_1[14])
-        br_snapshots_10_14 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[14])
-        br_snapshots_10_14 <= io_remap_reqs_1_pdst;
-      else if (_GEN[14])
-        br_snapshots_10_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_14 <= map_table_14;
-      if (_GEN_1[15])
-        br_snapshots_10_15 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[15])
-        br_snapshots_10_15 <= io_remap_reqs_1_pdst;
-      else if (_GEN[15])
-        br_snapshots_10_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_15 <= map_table_15;
-      if (_GEN_1[16])
-        br_snapshots_10_16 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[16])
-        br_snapshots_10_16 <= io_remap_reqs_1_pdst;
-      else if (_GEN[16])
-        br_snapshots_10_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_16 <= map_table_16;
-      if (_GEN_1[17])
-        br_snapshots_10_17 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[17])
-        br_snapshots_10_17 <= io_remap_reqs_1_pdst;
-      else if (_GEN[17])
-        br_snapshots_10_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_17 <= map_table_17;
-      if (_GEN_1[18])
-        br_snapshots_10_18 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[18])
-        br_snapshots_10_18 <= io_remap_reqs_1_pdst;
-      else if (_GEN[18])
-        br_snapshots_10_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_18 <= map_table_18;
-      if (_GEN_1[19])
-        br_snapshots_10_19 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[19])
-        br_snapshots_10_19 <= io_remap_reqs_1_pdst;
-      else if (_GEN[19])
-        br_snapshots_10_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_19 <= map_table_19;
-      if (_GEN_1[20])
-        br_snapshots_10_20 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[20])
-        br_snapshots_10_20 <= io_remap_reqs_1_pdst;
-      else if (_GEN[20])
-        br_snapshots_10_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_20 <= map_table_20;
-      if (_GEN_1[21])
-        br_snapshots_10_21 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[21])
-        br_snapshots_10_21 <= io_remap_reqs_1_pdst;
-      else if (_GEN[21])
-        br_snapshots_10_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_21 <= map_table_21;
-      if (_GEN_1[22])
-        br_snapshots_10_22 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[22])
-        br_snapshots_10_22 <= io_remap_reqs_1_pdst;
-      else if (_GEN[22])
-        br_snapshots_10_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_22 <= map_table_22;
-      if (_GEN_1[23])
-        br_snapshots_10_23 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[23])
-        br_snapshots_10_23 <= io_remap_reqs_1_pdst;
-      else if (_GEN[23])
-        br_snapshots_10_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_23 <= map_table_23;
-      if (_GEN_1[24])
-        br_snapshots_10_24 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[24])
-        br_snapshots_10_24 <= io_remap_reqs_1_pdst;
-      else if (_GEN[24])
-        br_snapshots_10_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_24 <= map_table_24;
-      if (_GEN_1[25])
-        br_snapshots_10_25 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[25])
-        br_snapshots_10_25 <= io_remap_reqs_1_pdst;
-      else if (_GEN[25])
-        br_snapshots_10_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_25 <= map_table_25;
-      if (_GEN_1[26])
-        br_snapshots_10_26 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[26])
-        br_snapshots_10_26 <= io_remap_reqs_1_pdst;
-      else if (_GEN[26])
-        br_snapshots_10_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_26 <= map_table_26;
-      if (_GEN_1[27])
-        br_snapshots_10_27 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[27])
-        br_snapshots_10_27 <= io_remap_reqs_1_pdst;
-      else if (_GEN[27])
-        br_snapshots_10_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_27 <= map_table_27;
-      if (_GEN_1[28])
-        br_snapshots_10_28 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[28])
-        br_snapshots_10_28 <= io_remap_reqs_1_pdst;
-      else if (_GEN[28])
-        br_snapshots_10_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_28 <= map_table_28;
-      if (_GEN_1[29])
-        br_snapshots_10_29 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[29])
-        br_snapshots_10_29 <= io_remap_reqs_1_pdst;
-      else if (_GEN[29])
-        br_snapshots_10_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_29 <= map_table_29;
-      if (_GEN_1[30])
-        br_snapshots_10_30 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[30])
-        br_snapshots_10_30 <= io_remap_reqs_1_pdst;
-      else if (_GEN[30])
-        br_snapshots_10_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_30 <= map_table_30;
-      if (_GEN_1[31])
-        br_snapshots_10_31 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[31])
-        br_snapshots_10_31 <= io_remap_reqs_1_pdst;
-      else if (_GEN[31])
-        br_snapshots_10_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_31 <= map_table_31;
+      br_snapshots_10_0 <= remap_table_3_0;
+      br_snapshots_10_1 <= remap_table_3_1;
+      br_snapshots_10_2 <= remap_table_3_2;
+      br_snapshots_10_3 <= remap_table_3_3;
+      br_snapshots_10_4 <= remap_table_3_4;
+      br_snapshots_10_5 <= remap_table_3_5;
+      br_snapshots_10_6 <= remap_table_3_6;
+      br_snapshots_10_7 <= remap_table_3_7;
+      br_snapshots_10_8 <= remap_table_3_8;
+      br_snapshots_10_9 <= remap_table_3_9;
+      br_snapshots_10_10 <= remap_table_3_10;
+      br_snapshots_10_11 <= remap_table_3_11;
+      br_snapshots_10_12 <= remap_table_3_12;
+      br_snapshots_10_13 <= remap_table_3_13;
+      br_snapshots_10_14 <= remap_table_3_14;
+      br_snapshots_10_15 <= remap_table_3_15;
+      br_snapshots_10_16 <= remap_table_3_16;
+      br_snapshots_10_17 <= remap_table_3_17;
+      br_snapshots_10_18 <= remap_table_3_18;
+      br_snapshots_10_19 <= remap_table_3_19;
+      br_snapshots_10_20 <= remap_table_3_20;
+      br_snapshots_10_21 <= remap_table_3_21;
+      br_snapshots_10_22 <= remap_table_3_22;
+      br_snapshots_10_23 <= remap_table_3_23;
+      br_snapshots_10_24 <= remap_table_3_24;
+      br_snapshots_10_25 <= remap_table_3_25;
+      br_snapshots_10_26 <= remap_table_3_26;
+      br_snapshots_10_27 <= remap_table_3_27;
+      br_snapshots_10_28 <= remap_table_3_28;
+      br_snapshots_10_29 <= remap_table_3_29;
+      br_snapshots_10_30 <= remap_table_3_30;
+      br_snapshots_10_31 <= remap_table_3_31;
     end
     else if (io_ren_br_tags_1_valid & io_ren_br_tags_1_bits == 5'hA) begin
-      if (_GEN_0[0])
-        br_snapshots_10_0 <= io_remap_reqs_1_pdst;
-      else if (_GEN[0])
-        br_snapshots_10_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_0 <= map_table_0;
-      if (_GEN_0[1])
-        br_snapshots_10_1 <= io_remap_reqs_1_pdst;
-      else if (_GEN[1])
-        br_snapshots_10_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_1 <= map_table_1;
-      if (_GEN_0[2])
-        br_snapshots_10_2 <= io_remap_reqs_1_pdst;
-      else if (_GEN[2])
-        br_snapshots_10_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_2 <= map_table_2;
-      if (_GEN_0[3])
-        br_snapshots_10_3 <= io_remap_reqs_1_pdst;
-      else if (_GEN[3])
-        br_snapshots_10_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_3 <= map_table_3;
-      if (_GEN_0[4])
-        br_snapshots_10_4 <= io_remap_reqs_1_pdst;
-      else if (_GEN[4])
-        br_snapshots_10_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_4 <= map_table_4;
-      if (_GEN_0[5])
-        br_snapshots_10_5 <= io_remap_reqs_1_pdst;
-      else if (_GEN[5])
-        br_snapshots_10_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_5 <= map_table_5;
-      if (_GEN_0[6])
-        br_snapshots_10_6 <= io_remap_reqs_1_pdst;
-      else if (_GEN[6])
-        br_snapshots_10_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_6 <= map_table_6;
-      if (_GEN_0[7])
-        br_snapshots_10_7 <= io_remap_reqs_1_pdst;
-      else if (_GEN[7])
-        br_snapshots_10_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_7 <= map_table_7;
-      if (_GEN_0[8])
-        br_snapshots_10_8 <= io_remap_reqs_1_pdst;
-      else if (_GEN[8])
-        br_snapshots_10_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_8 <= map_table_8;
-      if (_GEN_0[9])
-        br_snapshots_10_9 <= io_remap_reqs_1_pdst;
-      else if (_GEN[9])
-        br_snapshots_10_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_9 <= map_table_9;
-      if (_GEN_0[10])
-        br_snapshots_10_10 <= io_remap_reqs_1_pdst;
-      else if (_GEN[10])
-        br_snapshots_10_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_10 <= map_table_10;
-      if (_GEN_0[11])
-        br_snapshots_10_11 <= io_remap_reqs_1_pdst;
-      else if (_GEN[11])
-        br_snapshots_10_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_11 <= map_table_11;
-      if (_GEN_0[12])
-        br_snapshots_10_12 <= io_remap_reqs_1_pdst;
-      else if (_GEN[12])
-        br_snapshots_10_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_12 <= map_table_12;
-      if (_GEN_0[13])
-        br_snapshots_10_13 <= io_remap_reqs_1_pdst;
-      else if (_GEN[13])
-        br_snapshots_10_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_13 <= map_table_13;
-      if (_GEN_0[14])
-        br_snapshots_10_14 <= io_remap_reqs_1_pdst;
-      else if (_GEN[14])
-        br_snapshots_10_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_14 <= map_table_14;
-      if (_GEN_0[15])
-        br_snapshots_10_15 <= io_remap_reqs_1_pdst;
-      else if (_GEN[15])
-        br_snapshots_10_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_15 <= map_table_15;
-      if (_GEN_0[16])
-        br_snapshots_10_16 <= io_remap_reqs_1_pdst;
-      else if (_GEN[16])
-        br_snapshots_10_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_16 <= map_table_16;
-      if (_GEN_0[17])
-        br_snapshots_10_17 <= io_remap_reqs_1_pdst;
-      else if (_GEN[17])
-        br_snapshots_10_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_17 <= map_table_17;
-      if (_GEN_0[18])
-        br_snapshots_10_18 <= io_remap_reqs_1_pdst;
-      else if (_GEN[18])
-        br_snapshots_10_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_18 <= map_table_18;
-      if (_GEN_0[19])
-        br_snapshots_10_19 <= io_remap_reqs_1_pdst;
-      else if (_GEN[19])
-        br_snapshots_10_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_19 <= map_table_19;
-      if (_GEN_0[20])
-        br_snapshots_10_20 <= io_remap_reqs_1_pdst;
-      else if (_GEN[20])
-        br_snapshots_10_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_20 <= map_table_20;
-      if (_GEN_0[21])
-        br_snapshots_10_21 <= io_remap_reqs_1_pdst;
-      else if (_GEN[21])
-        br_snapshots_10_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_21 <= map_table_21;
-      if (_GEN_0[22])
-        br_snapshots_10_22 <= io_remap_reqs_1_pdst;
-      else if (_GEN[22])
-        br_snapshots_10_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_22 <= map_table_22;
-      if (_GEN_0[23])
-        br_snapshots_10_23 <= io_remap_reqs_1_pdst;
-      else if (_GEN[23])
-        br_snapshots_10_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_23 <= map_table_23;
-      if (_GEN_0[24])
-        br_snapshots_10_24 <= io_remap_reqs_1_pdst;
-      else if (_GEN[24])
-        br_snapshots_10_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_24 <= map_table_24;
-      if (_GEN_0[25])
-        br_snapshots_10_25 <= io_remap_reqs_1_pdst;
-      else if (_GEN[25])
-        br_snapshots_10_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_25 <= map_table_25;
-      if (_GEN_0[26])
-        br_snapshots_10_26 <= io_remap_reqs_1_pdst;
-      else if (_GEN[26])
-        br_snapshots_10_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_26 <= map_table_26;
-      if (_GEN_0[27])
-        br_snapshots_10_27 <= io_remap_reqs_1_pdst;
-      else if (_GEN[27])
-        br_snapshots_10_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_27 <= map_table_27;
-      if (_GEN_0[28])
-        br_snapshots_10_28 <= io_remap_reqs_1_pdst;
-      else if (_GEN[28])
-        br_snapshots_10_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_28 <= map_table_28;
-      if (_GEN_0[29])
-        br_snapshots_10_29 <= io_remap_reqs_1_pdst;
-      else if (_GEN[29])
-        br_snapshots_10_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_29 <= map_table_29;
-      if (_GEN_0[30])
-        br_snapshots_10_30 <= io_remap_reqs_1_pdst;
-      else if (_GEN[30])
-        br_snapshots_10_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_30 <= map_table_30;
-      if (_GEN_0[31])
-        br_snapshots_10_31 <= io_remap_reqs_1_pdst;
-      else if (_GEN[31])
-        br_snapshots_10_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_31 <= map_table_31;
+      br_snapshots_10_0 <= remap_table_2_0;
+      br_snapshots_10_1 <= remap_table_2_1;
+      br_snapshots_10_2 <= remap_table_2_2;
+      br_snapshots_10_3 <= remap_table_2_3;
+      br_snapshots_10_4 <= remap_table_2_4;
+      br_snapshots_10_5 <= remap_table_2_5;
+      br_snapshots_10_6 <= remap_table_2_6;
+      br_snapshots_10_7 <= remap_table_2_7;
+      br_snapshots_10_8 <= remap_table_2_8;
+      br_snapshots_10_9 <= remap_table_2_9;
+      br_snapshots_10_10 <= remap_table_2_10;
+      br_snapshots_10_11 <= remap_table_2_11;
+      br_snapshots_10_12 <= remap_table_2_12;
+      br_snapshots_10_13 <= remap_table_2_13;
+      br_snapshots_10_14 <= remap_table_2_14;
+      br_snapshots_10_15 <= remap_table_2_15;
+      br_snapshots_10_16 <= remap_table_2_16;
+      br_snapshots_10_17 <= remap_table_2_17;
+      br_snapshots_10_18 <= remap_table_2_18;
+      br_snapshots_10_19 <= remap_table_2_19;
+      br_snapshots_10_20 <= remap_table_2_20;
+      br_snapshots_10_21 <= remap_table_2_21;
+      br_snapshots_10_22 <= remap_table_2_22;
+      br_snapshots_10_23 <= remap_table_2_23;
+      br_snapshots_10_24 <= remap_table_2_24;
+      br_snapshots_10_25 <= remap_table_2_25;
+      br_snapshots_10_26 <= remap_table_2_26;
+      br_snapshots_10_27 <= remap_table_2_27;
+      br_snapshots_10_28 <= remap_table_2_28;
+      br_snapshots_10_29 <= remap_table_2_29;
+      br_snapshots_10_30 <= remap_table_2_30;
+      br_snapshots_10_31 <= remap_table_2_31;
     end
     else if (io_ren_br_tags_0_valid & io_ren_br_tags_0_bits == 5'hA) begin
-      if (_GEN[0])
-        br_snapshots_10_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_0 <= map_table_0;
-      if (_GEN[1])
-        br_snapshots_10_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_1 <= map_table_1;
-      if (_GEN[2])
-        br_snapshots_10_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_2 <= map_table_2;
-      if (_GEN[3])
-        br_snapshots_10_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_3 <= map_table_3;
-      if (_GEN[4])
-        br_snapshots_10_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_4 <= map_table_4;
-      if (_GEN[5])
-        br_snapshots_10_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_5 <= map_table_5;
-      if (_GEN[6])
-        br_snapshots_10_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_6 <= map_table_6;
-      if (_GEN[7])
-        br_snapshots_10_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_7 <= map_table_7;
-      if (_GEN[8])
-        br_snapshots_10_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_8 <= map_table_8;
-      if (_GEN[9])
-        br_snapshots_10_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_9 <= map_table_9;
-      if (_GEN[10])
-        br_snapshots_10_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_10 <= map_table_10;
-      if (_GEN[11])
-        br_snapshots_10_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_11 <= map_table_11;
-      if (_GEN[12])
-        br_snapshots_10_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_12 <= map_table_12;
-      if (_GEN[13])
-        br_snapshots_10_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_13 <= map_table_13;
-      if (_GEN[14])
-        br_snapshots_10_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_14 <= map_table_14;
-      if (_GEN[15])
-        br_snapshots_10_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_15 <= map_table_15;
-      if (_GEN[16])
-        br_snapshots_10_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_16 <= map_table_16;
-      if (_GEN[17])
-        br_snapshots_10_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_17 <= map_table_17;
-      if (_GEN[18])
-        br_snapshots_10_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_18 <= map_table_18;
-      if (_GEN[19])
-        br_snapshots_10_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_19 <= map_table_19;
-      if (_GEN[20])
-        br_snapshots_10_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_20 <= map_table_20;
-      if (_GEN[21])
-        br_snapshots_10_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_21 <= map_table_21;
-      if (_GEN[22])
-        br_snapshots_10_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_22 <= map_table_22;
-      if (_GEN[23])
-        br_snapshots_10_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_23 <= map_table_23;
-      if (_GEN[24])
-        br_snapshots_10_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_24 <= map_table_24;
-      if (_GEN[25])
-        br_snapshots_10_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_25 <= map_table_25;
-      if (_GEN[26])
-        br_snapshots_10_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_26 <= map_table_26;
-      if (_GEN[27])
-        br_snapshots_10_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_27 <= map_table_27;
-      if (_GEN[28])
-        br_snapshots_10_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_28 <= map_table_28;
-      if (_GEN[29])
-        br_snapshots_10_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_29 <= map_table_29;
-      if (_GEN[30])
-        br_snapshots_10_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_30 <= map_table_30;
-      if (_GEN[31])
-        br_snapshots_10_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_10_31 <= map_table_31;
+      br_snapshots_10_0 <= remap_table_1_0;
+      br_snapshots_10_1 <= remap_table_1_1;
+      br_snapshots_10_2 <= remap_table_1_2;
+      br_snapshots_10_3 <= remap_table_1_3;
+      br_snapshots_10_4 <= remap_table_1_4;
+      br_snapshots_10_5 <= remap_table_1_5;
+      br_snapshots_10_6 <= remap_table_1_6;
+      br_snapshots_10_7 <= remap_table_1_7;
+      br_snapshots_10_8 <= remap_table_1_8;
+      br_snapshots_10_9 <= remap_table_1_9;
+      br_snapshots_10_10 <= remap_table_1_10;
+      br_snapshots_10_11 <= remap_table_1_11;
+      br_snapshots_10_12 <= remap_table_1_12;
+      br_snapshots_10_13 <= remap_table_1_13;
+      br_snapshots_10_14 <= remap_table_1_14;
+      br_snapshots_10_15 <= remap_table_1_15;
+      br_snapshots_10_16 <= remap_table_1_16;
+      br_snapshots_10_17 <= remap_table_1_17;
+      br_snapshots_10_18 <= remap_table_1_18;
+      br_snapshots_10_19 <= remap_table_1_19;
+      br_snapshots_10_20 <= remap_table_1_20;
+      br_snapshots_10_21 <= remap_table_1_21;
+      br_snapshots_10_22 <= remap_table_1_22;
+      br_snapshots_10_23 <= remap_table_1_23;
+      br_snapshots_10_24 <= remap_table_1_24;
+      br_snapshots_10_25 <= remap_table_1_25;
+      br_snapshots_10_26 <= remap_table_1_26;
+      br_snapshots_10_27 <= remap_table_1_27;
+      br_snapshots_10_28 <= remap_table_1_28;
+      br_snapshots_10_29 <= remap_table_1_29;
+      br_snapshots_10_30 <= remap_table_1_30;
+      br_snapshots_10_31 <= remap_table_1_31;
     end
     if (io_ren_br_tags_3_valid & io_ren_br_tags_3_bits == 5'hB) begin
-      if (_GEN_2[0])
-        br_snapshots_11_0 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[0])
-        br_snapshots_11_0 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[0])
-        br_snapshots_11_0 <= io_remap_reqs_1_pdst;
-      else if (_GEN[0])
-        br_snapshots_11_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_0 <= map_table_0;
-      if (_GEN_2[1])
-        br_snapshots_11_1 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[1])
-        br_snapshots_11_1 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[1])
-        br_snapshots_11_1 <= io_remap_reqs_1_pdst;
-      else if (_GEN[1])
-        br_snapshots_11_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_1 <= map_table_1;
-      if (_GEN_2[2])
-        br_snapshots_11_2 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[2])
-        br_snapshots_11_2 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[2])
-        br_snapshots_11_2 <= io_remap_reqs_1_pdst;
-      else if (_GEN[2])
-        br_snapshots_11_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_2 <= map_table_2;
-      if (_GEN_2[3])
-        br_snapshots_11_3 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[3])
-        br_snapshots_11_3 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[3])
-        br_snapshots_11_3 <= io_remap_reqs_1_pdst;
-      else if (_GEN[3])
-        br_snapshots_11_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_3 <= map_table_3;
-      if (_GEN_2[4])
-        br_snapshots_11_4 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[4])
-        br_snapshots_11_4 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[4])
-        br_snapshots_11_4 <= io_remap_reqs_1_pdst;
-      else if (_GEN[4])
-        br_snapshots_11_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_4 <= map_table_4;
-      if (_GEN_2[5])
-        br_snapshots_11_5 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[5])
-        br_snapshots_11_5 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[5])
-        br_snapshots_11_5 <= io_remap_reqs_1_pdst;
-      else if (_GEN[5])
-        br_snapshots_11_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_5 <= map_table_5;
-      if (_GEN_2[6])
-        br_snapshots_11_6 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[6])
-        br_snapshots_11_6 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[6])
-        br_snapshots_11_6 <= io_remap_reqs_1_pdst;
-      else if (_GEN[6])
-        br_snapshots_11_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_6 <= map_table_6;
-      if (_GEN_2[7])
-        br_snapshots_11_7 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[7])
-        br_snapshots_11_7 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[7])
-        br_snapshots_11_7 <= io_remap_reqs_1_pdst;
-      else if (_GEN[7])
-        br_snapshots_11_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_7 <= map_table_7;
-      if (_GEN_2[8])
-        br_snapshots_11_8 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[8])
-        br_snapshots_11_8 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[8])
-        br_snapshots_11_8 <= io_remap_reqs_1_pdst;
-      else if (_GEN[8])
-        br_snapshots_11_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_8 <= map_table_8;
-      if (_GEN_2[9])
-        br_snapshots_11_9 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[9])
-        br_snapshots_11_9 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[9])
-        br_snapshots_11_9 <= io_remap_reqs_1_pdst;
-      else if (_GEN[9])
-        br_snapshots_11_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_9 <= map_table_9;
-      if (_GEN_2[10])
-        br_snapshots_11_10 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[10])
-        br_snapshots_11_10 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[10])
-        br_snapshots_11_10 <= io_remap_reqs_1_pdst;
-      else if (_GEN[10])
-        br_snapshots_11_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_10 <= map_table_10;
-      if (_GEN_2[11])
-        br_snapshots_11_11 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[11])
-        br_snapshots_11_11 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[11])
-        br_snapshots_11_11 <= io_remap_reqs_1_pdst;
-      else if (_GEN[11])
-        br_snapshots_11_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_11 <= map_table_11;
-      if (_GEN_2[12])
-        br_snapshots_11_12 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[12])
-        br_snapshots_11_12 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[12])
-        br_snapshots_11_12 <= io_remap_reqs_1_pdst;
-      else if (_GEN[12])
-        br_snapshots_11_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_12 <= map_table_12;
-      if (_GEN_2[13])
-        br_snapshots_11_13 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[13])
-        br_snapshots_11_13 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[13])
-        br_snapshots_11_13 <= io_remap_reqs_1_pdst;
-      else if (_GEN[13])
-        br_snapshots_11_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_13 <= map_table_13;
-      if (_GEN_2[14])
-        br_snapshots_11_14 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[14])
-        br_snapshots_11_14 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[14])
-        br_snapshots_11_14 <= io_remap_reqs_1_pdst;
-      else if (_GEN[14])
-        br_snapshots_11_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_14 <= map_table_14;
-      if (_GEN_2[15])
-        br_snapshots_11_15 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[15])
-        br_snapshots_11_15 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[15])
-        br_snapshots_11_15 <= io_remap_reqs_1_pdst;
-      else if (_GEN[15])
-        br_snapshots_11_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_15 <= map_table_15;
-      if (_GEN_2[16])
-        br_snapshots_11_16 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[16])
-        br_snapshots_11_16 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[16])
-        br_snapshots_11_16 <= io_remap_reqs_1_pdst;
-      else if (_GEN[16])
-        br_snapshots_11_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_16 <= map_table_16;
-      if (_GEN_2[17])
-        br_snapshots_11_17 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[17])
-        br_snapshots_11_17 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[17])
-        br_snapshots_11_17 <= io_remap_reqs_1_pdst;
-      else if (_GEN[17])
-        br_snapshots_11_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_17 <= map_table_17;
-      if (_GEN_2[18])
-        br_snapshots_11_18 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[18])
-        br_snapshots_11_18 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[18])
-        br_snapshots_11_18 <= io_remap_reqs_1_pdst;
-      else if (_GEN[18])
-        br_snapshots_11_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_18 <= map_table_18;
-      if (_GEN_2[19])
-        br_snapshots_11_19 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[19])
-        br_snapshots_11_19 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[19])
-        br_snapshots_11_19 <= io_remap_reqs_1_pdst;
-      else if (_GEN[19])
-        br_snapshots_11_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_19 <= map_table_19;
-      if (_GEN_2[20])
-        br_snapshots_11_20 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[20])
-        br_snapshots_11_20 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[20])
-        br_snapshots_11_20 <= io_remap_reqs_1_pdst;
-      else if (_GEN[20])
-        br_snapshots_11_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_20 <= map_table_20;
-      if (_GEN_2[21])
-        br_snapshots_11_21 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[21])
-        br_snapshots_11_21 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[21])
-        br_snapshots_11_21 <= io_remap_reqs_1_pdst;
-      else if (_GEN[21])
-        br_snapshots_11_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_21 <= map_table_21;
-      if (_GEN_2[22])
-        br_snapshots_11_22 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[22])
-        br_snapshots_11_22 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[22])
-        br_snapshots_11_22 <= io_remap_reqs_1_pdst;
-      else if (_GEN[22])
-        br_snapshots_11_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_22 <= map_table_22;
-      if (_GEN_2[23])
-        br_snapshots_11_23 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[23])
-        br_snapshots_11_23 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[23])
-        br_snapshots_11_23 <= io_remap_reqs_1_pdst;
-      else if (_GEN[23])
-        br_snapshots_11_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_23 <= map_table_23;
-      if (_GEN_2[24])
-        br_snapshots_11_24 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[24])
-        br_snapshots_11_24 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[24])
-        br_snapshots_11_24 <= io_remap_reqs_1_pdst;
-      else if (_GEN[24])
-        br_snapshots_11_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_24 <= map_table_24;
-      if (_GEN_2[25])
-        br_snapshots_11_25 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[25])
-        br_snapshots_11_25 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[25])
-        br_snapshots_11_25 <= io_remap_reqs_1_pdst;
-      else if (_GEN[25])
-        br_snapshots_11_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_25 <= map_table_25;
-      if (_GEN_2[26])
-        br_snapshots_11_26 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[26])
-        br_snapshots_11_26 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[26])
-        br_snapshots_11_26 <= io_remap_reqs_1_pdst;
-      else if (_GEN[26])
-        br_snapshots_11_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_26 <= map_table_26;
-      if (_GEN_2[27])
-        br_snapshots_11_27 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[27])
-        br_snapshots_11_27 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[27])
-        br_snapshots_11_27 <= io_remap_reqs_1_pdst;
-      else if (_GEN[27])
-        br_snapshots_11_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_27 <= map_table_27;
-      if (_GEN_2[28])
-        br_snapshots_11_28 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[28])
-        br_snapshots_11_28 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[28])
-        br_snapshots_11_28 <= io_remap_reqs_1_pdst;
-      else if (_GEN[28])
-        br_snapshots_11_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_28 <= map_table_28;
-      if (_GEN_2[29])
-        br_snapshots_11_29 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[29])
-        br_snapshots_11_29 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[29])
-        br_snapshots_11_29 <= io_remap_reqs_1_pdst;
-      else if (_GEN[29])
-        br_snapshots_11_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_29 <= map_table_29;
-      if (_GEN_2[30])
-        br_snapshots_11_30 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[30])
-        br_snapshots_11_30 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[30])
-        br_snapshots_11_30 <= io_remap_reqs_1_pdst;
-      else if (_GEN[30])
-        br_snapshots_11_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_30 <= map_table_30;
-      if (_GEN_2[31])
-        br_snapshots_11_31 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[31])
-        br_snapshots_11_31 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[31])
-        br_snapshots_11_31 <= io_remap_reqs_1_pdst;
-      else if (_GEN[31])
-        br_snapshots_11_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_31 <= map_table_31;
+      br_snapshots_11_0 <= remap_table_4_0;
+      br_snapshots_11_1 <= remap_table_4_1;
+      br_snapshots_11_2 <= remap_table_4_2;
+      br_snapshots_11_3 <= remap_table_4_3;
+      br_snapshots_11_4 <= remap_table_4_4;
+      br_snapshots_11_5 <= remap_table_4_5;
+      br_snapshots_11_6 <= remap_table_4_6;
+      br_snapshots_11_7 <= remap_table_4_7;
+      br_snapshots_11_8 <= remap_table_4_8;
+      br_snapshots_11_9 <= remap_table_4_9;
+      br_snapshots_11_10 <= remap_table_4_10;
+      br_snapshots_11_11 <= remap_table_4_11;
+      br_snapshots_11_12 <= remap_table_4_12;
+      br_snapshots_11_13 <= remap_table_4_13;
+      br_snapshots_11_14 <= remap_table_4_14;
+      br_snapshots_11_15 <= remap_table_4_15;
+      br_snapshots_11_16 <= remap_table_4_16;
+      br_snapshots_11_17 <= remap_table_4_17;
+      br_snapshots_11_18 <= remap_table_4_18;
+      br_snapshots_11_19 <= remap_table_4_19;
+      br_snapshots_11_20 <= remap_table_4_20;
+      br_snapshots_11_21 <= remap_table_4_21;
+      br_snapshots_11_22 <= remap_table_4_22;
+      br_snapshots_11_23 <= remap_table_4_23;
+      br_snapshots_11_24 <= remap_table_4_24;
+      br_snapshots_11_25 <= remap_table_4_25;
+      br_snapshots_11_26 <= remap_table_4_26;
+      br_snapshots_11_27 <= remap_table_4_27;
+      br_snapshots_11_28 <= remap_table_4_28;
+      br_snapshots_11_29 <= remap_table_4_29;
+      br_snapshots_11_30 <= remap_table_4_30;
+      br_snapshots_11_31 <= remap_table_4_31;
     end
     else if (io_ren_br_tags_2_valid & io_ren_br_tags_2_bits == 5'hB) begin
-      if (_GEN_1[0])
-        br_snapshots_11_0 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[0])
-        br_snapshots_11_0 <= io_remap_reqs_1_pdst;
-      else if (_GEN[0])
-        br_snapshots_11_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_0 <= map_table_0;
-      if (_GEN_1[1])
-        br_snapshots_11_1 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[1])
-        br_snapshots_11_1 <= io_remap_reqs_1_pdst;
-      else if (_GEN[1])
-        br_snapshots_11_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_1 <= map_table_1;
-      if (_GEN_1[2])
-        br_snapshots_11_2 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[2])
-        br_snapshots_11_2 <= io_remap_reqs_1_pdst;
-      else if (_GEN[2])
-        br_snapshots_11_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_2 <= map_table_2;
-      if (_GEN_1[3])
-        br_snapshots_11_3 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[3])
-        br_snapshots_11_3 <= io_remap_reqs_1_pdst;
-      else if (_GEN[3])
-        br_snapshots_11_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_3 <= map_table_3;
-      if (_GEN_1[4])
-        br_snapshots_11_4 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[4])
-        br_snapshots_11_4 <= io_remap_reqs_1_pdst;
-      else if (_GEN[4])
-        br_snapshots_11_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_4 <= map_table_4;
-      if (_GEN_1[5])
-        br_snapshots_11_5 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[5])
-        br_snapshots_11_5 <= io_remap_reqs_1_pdst;
-      else if (_GEN[5])
-        br_snapshots_11_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_5 <= map_table_5;
-      if (_GEN_1[6])
-        br_snapshots_11_6 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[6])
-        br_snapshots_11_6 <= io_remap_reqs_1_pdst;
-      else if (_GEN[6])
-        br_snapshots_11_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_6 <= map_table_6;
-      if (_GEN_1[7])
-        br_snapshots_11_7 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[7])
-        br_snapshots_11_7 <= io_remap_reqs_1_pdst;
-      else if (_GEN[7])
-        br_snapshots_11_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_7 <= map_table_7;
-      if (_GEN_1[8])
-        br_snapshots_11_8 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[8])
-        br_snapshots_11_8 <= io_remap_reqs_1_pdst;
-      else if (_GEN[8])
-        br_snapshots_11_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_8 <= map_table_8;
-      if (_GEN_1[9])
-        br_snapshots_11_9 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[9])
-        br_snapshots_11_9 <= io_remap_reqs_1_pdst;
-      else if (_GEN[9])
-        br_snapshots_11_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_9 <= map_table_9;
-      if (_GEN_1[10])
-        br_snapshots_11_10 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[10])
-        br_snapshots_11_10 <= io_remap_reqs_1_pdst;
-      else if (_GEN[10])
-        br_snapshots_11_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_10 <= map_table_10;
-      if (_GEN_1[11])
-        br_snapshots_11_11 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[11])
-        br_snapshots_11_11 <= io_remap_reqs_1_pdst;
-      else if (_GEN[11])
-        br_snapshots_11_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_11 <= map_table_11;
-      if (_GEN_1[12])
-        br_snapshots_11_12 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[12])
-        br_snapshots_11_12 <= io_remap_reqs_1_pdst;
-      else if (_GEN[12])
-        br_snapshots_11_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_12 <= map_table_12;
-      if (_GEN_1[13])
-        br_snapshots_11_13 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[13])
-        br_snapshots_11_13 <= io_remap_reqs_1_pdst;
-      else if (_GEN[13])
-        br_snapshots_11_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_13 <= map_table_13;
-      if (_GEN_1[14])
-        br_snapshots_11_14 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[14])
-        br_snapshots_11_14 <= io_remap_reqs_1_pdst;
-      else if (_GEN[14])
-        br_snapshots_11_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_14 <= map_table_14;
-      if (_GEN_1[15])
-        br_snapshots_11_15 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[15])
-        br_snapshots_11_15 <= io_remap_reqs_1_pdst;
-      else if (_GEN[15])
-        br_snapshots_11_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_15 <= map_table_15;
-      if (_GEN_1[16])
-        br_snapshots_11_16 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[16])
-        br_snapshots_11_16 <= io_remap_reqs_1_pdst;
-      else if (_GEN[16])
-        br_snapshots_11_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_16 <= map_table_16;
-      if (_GEN_1[17])
-        br_snapshots_11_17 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[17])
-        br_snapshots_11_17 <= io_remap_reqs_1_pdst;
-      else if (_GEN[17])
-        br_snapshots_11_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_17 <= map_table_17;
-      if (_GEN_1[18])
-        br_snapshots_11_18 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[18])
-        br_snapshots_11_18 <= io_remap_reqs_1_pdst;
-      else if (_GEN[18])
-        br_snapshots_11_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_18 <= map_table_18;
-      if (_GEN_1[19])
-        br_snapshots_11_19 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[19])
-        br_snapshots_11_19 <= io_remap_reqs_1_pdst;
-      else if (_GEN[19])
-        br_snapshots_11_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_19 <= map_table_19;
-      if (_GEN_1[20])
-        br_snapshots_11_20 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[20])
-        br_snapshots_11_20 <= io_remap_reqs_1_pdst;
-      else if (_GEN[20])
-        br_snapshots_11_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_20 <= map_table_20;
-      if (_GEN_1[21])
-        br_snapshots_11_21 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[21])
-        br_snapshots_11_21 <= io_remap_reqs_1_pdst;
-      else if (_GEN[21])
-        br_snapshots_11_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_21 <= map_table_21;
-      if (_GEN_1[22])
-        br_snapshots_11_22 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[22])
-        br_snapshots_11_22 <= io_remap_reqs_1_pdst;
-      else if (_GEN[22])
-        br_snapshots_11_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_22 <= map_table_22;
-      if (_GEN_1[23])
-        br_snapshots_11_23 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[23])
-        br_snapshots_11_23 <= io_remap_reqs_1_pdst;
-      else if (_GEN[23])
-        br_snapshots_11_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_23 <= map_table_23;
-      if (_GEN_1[24])
-        br_snapshots_11_24 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[24])
-        br_snapshots_11_24 <= io_remap_reqs_1_pdst;
-      else if (_GEN[24])
-        br_snapshots_11_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_24 <= map_table_24;
-      if (_GEN_1[25])
-        br_snapshots_11_25 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[25])
-        br_snapshots_11_25 <= io_remap_reqs_1_pdst;
-      else if (_GEN[25])
-        br_snapshots_11_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_25 <= map_table_25;
-      if (_GEN_1[26])
-        br_snapshots_11_26 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[26])
-        br_snapshots_11_26 <= io_remap_reqs_1_pdst;
-      else if (_GEN[26])
-        br_snapshots_11_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_26 <= map_table_26;
-      if (_GEN_1[27])
-        br_snapshots_11_27 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[27])
-        br_snapshots_11_27 <= io_remap_reqs_1_pdst;
-      else if (_GEN[27])
-        br_snapshots_11_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_27 <= map_table_27;
-      if (_GEN_1[28])
-        br_snapshots_11_28 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[28])
-        br_snapshots_11_28 <= io_remap_reqs_1_pdst;
-      else if (_GEN[28])
-        br_snapshots_11_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_28 <= map_table_28;
-      if (_GEN_1[29])
-        br_snapshots_11_29 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[29])
-        br_snapshots_11_29 <= io_remap_reqs_1_pdst;
-      else if (_GEN[29])
-        br_snapshots_11_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_29 <= map_table_29;
-      if (_GEN_1[30])
-        br_snapshots_11_30 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[30])
-        br_snapshots_11_30 <= io_remap_reqs_1_pdst;
-      else if (_GEN[30])
-        br_snapshots_11_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_30 <= map_table_30;
-      if (_GEN_1[31])
-        br_snapshots_11_31 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[31])
-        br_snapshots_11_31 <= io_remap_reqs_1_pdst;
-      else if (_GEN[31])
-        br_snapshots_11_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_31 <= map_table_31;
+      br_snapshots_11_0 <= remap_table_3_0;
+      br_snapshots_11_1 <= remap_table_3_1;
+      br_snapshots_11_2 <= remap_table_3_2;
+      br_snapshots_11_3 <= remap_table_3_3;
+      br_snapshots_11_4 <= remap_table_3_4;
+      br_snapshots_11_5 <= remap_table_3_5;
+      br_snapshots_11_6 <= remap_table_3_6;
+      br_snapshots_11_7 <= remap_table_3_7;
+      br_snapshots_11_8 <= remap_table_3_8;
+      br_snapshots_11_9 <= remap_table_3_9;
+      br_snapshots_11_10 <= remap_table_3_10;
+      br_snapshots_11_11 <= remap_table_3_11;
+      br_snapshots_11_12 <= remap_table_3_12;
+      br_snapshots_11_13 <= remap_table_3_13;
+      br_snapshots_11_14 <= remap_table_3_14;
+      br_snapshots_11_15 <= remap_table_3_15;
+      br_snapshots_11_16 <= remap_table_3_16;
+      br_snapshots_11_17 <= remap_table_3_17;
+      br_snapshots_11_18 <= remap_table_3_18;
+      br_snapshots_11_19 <= remap_table_3_19;
+      br_snapshots_11_20 <= remap_table_3_20;
+      br_snapshots_11_21 <= remap_table_3_21;
+      br_snapshots_11_22 <= remap_table_3_22;
+      br_snapshots_11_23 <= remap_table_3_23;
+      br_snapshots_11_24 <= remap_table_3_24;
+      br_snapshots_11_25 <= remap_table_3_25;
+      br_snapshots_11_26 <= remap_table_3_26;
+      br_snapshots_11_27 <= remap_table_3_27;
+      br_snapshots_11_28 <= remap_table_3_28;
+      br_snapshots_11_29 <= remap_table_3_29;
+      br_snapshots_11_30 <= remap_table_3_30;
+      br_snapshots_11_31 <= remap_table_3_31;
     end
     else if (io_ren_br_tags_1_valid & io_ren_br_tags_1_bits == 5'hB) begin
-      if (_GEN_0[0])
-        br_snapshots_11_0 <= io_remap_reqs_1_pdst;
-      else if (_GEN[0])
-        br_snapshots_11_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_0 <= map_table_0;
-      if (_GEN_0[1])
-        br_snapshots_11_1 <= io_remap_reqs_1_pdst;
-      else if (_GEN[1])
-        br_snapshots_11_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_1 <= map_table_1;
-      if (_GEN_0[2])
-        br_snapshots_11_2 <= io_remap_reqs_1_pdst;
-      else if (_GEN[2])
-        br_snapshots_11_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_2 <= map_table_2;
-      if (_GEN_0[3])
-        br_snapshots_11_3 <= io_remap_reqs_1_pdst;
-      else if (_GEN[3])
-        br_snapshots_11_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_3 <= map_table_3;
-      if (_GEN_0[4])
-        br_snapshots_11_4 <= io_remap_reqs_1_pdst;
-      else if (_GEN[4])
-        br_snapshots_11_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_4 <= map_table_4;
-      if (_GEN_0[5])
-        br_snapshots_11_5 <= io_remap_reqs_1_pdst;
-      else if (_GEN[5])
-        br_snapshots_11_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_5 <= map_table_5;
-      if (_GEN_0[6])
-        br_snapshots_11_6 <= io_remap_reqs_1_pdst;
-      else if (_GEN[6])
-        br_snapshots_11_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_6 <= map_table_6;
-      if (_GEN_0[7])
-        br_snapshots_11_7 <= io_remap_reqs_1_pdst;
-      else if (_GEN[7])
-        br_snapshots_11_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_7 <= map_table_7;
-      if (_GEN_0[8])
-        br_snapshots_11_8 <= io_remap_reqs_1_pdst;
-      else if (_GEN[8])
-        br_snapshots_11_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_8 <= map_table_8;
-      if (_GEN_0[9])
-        br_snapshots_11_9 <= io_remap_reqs_1_pdst;
-      else if (_GEN[9])
-        br_snapshots_11_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_9 <= map_table_9;
-      if (_GEN_0[10])
-        br_snapshots_11_10 <= io_remap_reqs_1_pdst;
-      else if (_GEN[10])
-        br_snapshots_11_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_10 <= map_table_10;
-      if (_GEN_0[11])
-        br_snapshots_11_11 <= io_remap_reqs_1_pdst;
-      else if (_GEN[11])
-        br_snapshots_11_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_11 <= map_table_11;
-      if (_GEN_0[12])
-        br_snapshots_11_12 <= io_remap_reqs_1_pdst;
-      else if (_GEN[12])
-        br_snapshots_11_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_12 <= map_table_12;
-      if (_GEN_0[13])
-        br_snapshots_11_13 <= io_remap_reqs_1_pdst;
-      else if (_GEN[13])
-        br_snapshots_11_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_13 <= map_table_13;
-      if (_GEN_0[14])
-        br_snapshots_11_14 <= io_remap_reqs_1_pdst;
-      else if (_GEN[14])
-        br_snapshots_11_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_14 <= map_table_14;
-      if (_GEN_0[15])
-        br_snapshots_11_15 <= io_remap_reqs_1_pdst;
-      else if (_GEN[15])
-        br_snapshots_11_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_15 <= map_table_15;
-      if (_GEN_0[16])
-        br_snapshots_11_16 <= io_remap_reqs_1_pdst;
-      else if (_GEN[16])
-        br_snapshots_11_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_16 <= map_table_16;
-      if (_GEN_0[17])
-        br_snapshots_11_17 <= io_remap_reqs_1_pdst;
-      else if (_GEN[17])
-        br_snapshots_11_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_17 <= map_table_17;
-      if (_GEN_0[18])
-        br_snapshots_11_18 <= io_remap_reqs_1_pdst;
-      else if (_GEN[18])
-        br_snapshots_11_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_18 <= map_table_18;
-      if (_GEN_0[19])
-        br_snapshots_11_19 <= io_remap_reqs_1_pdst;
-      else if (_GEN[19])
-        br_snapshots_11_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_19 <= map_table_19;
-      if (_GEN_0[20])
-        br_snapshots_11_20 <= io_remap_reqs_1_pdst;
-      else if (_GEN[20])
-        br_snapshots_11_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_20 <= map_table_20;
-      if (_GEN_0[21])
-        br_snapshots_11_21 <= io_remap_reqs_1_pdst;
-      else if (_GEN[21])
-        br_snapshots_11_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_21 <= map_table_21;
-      if (_GEN_0[22])
-        br_snapshots_11_22 <= io_remap_reqs_1_pdst;
-      else if (_GEN[22])
-        br_snapshots_11_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_22 <= map_table_22;
-      if (_GEN_0[23])
-        br_snapshots_11_23 <= io_remap_reqs_1_pdst;
-      else if (_GEN[23])
-        br_snapshots_11_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_23 <= map_table_23;
-      if (_GEN_0[24])
-        br_snapshots_11_24 <= io_remap_reqs_1_pdst;
-      else if (_GEN[24])
-        br_snapshots_11_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_24 <= map_table_24;
-      if (_GEN_0[25])
-        br_snapshots_11_25 <= io_remap_reqs_1_pdst;
-      else if (_GEN[25])
-        br_snapshots_11_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_25 <= map_table_25;
-      if (_GEN_0[26])
-        br_snapshots_11_26 <= io_remap_reqs_1_pdst;
-      else if (_GEN[26])
-        br_snapshots_11_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_26 <= map_table_26;
-      if (_GEN_0[27])
-        br_snapshots_11_27 <= io_remap_reqs_1_pdst;
-      else if (_GEN[27])
-        br_snapshots_11_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_27 <= map_table_27;
-      if (_GEN_0[28])
-        br_snapshots_11_28 <= io_remap_reqs_1_pdst;
-      else if (_GEN[28])
-        br_snapshots_11_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_28 <= map_table_28;
-      if (_GEN_0[29])
-        br_snapshots_11_29 <= io_remap_reqs_1_pdst;
-      else if (_GEN[29])
-        br_snapshots_11_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_29 <= map_table_29;
-      if (_GEN_0[30])
-        br_snapshots_11_30 <= io_remap_reqs_1_pdst;
-      else if (_GEN[30])
-        br_snapshots_11_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_30 <= map_table_30;
-      if (_GEN_0[31])
-        br_snapshots_11_31 <= io_remap_reqs_1_pdst;
-      else if (_GEN[31])
-        br_snapshots_11_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_31 <= map_table_31;
+      br_snapshots_11_0 <= remap_table_2_0;
+      br_snapshots_11_1 <= remap_table_2_1;
+      br_snapshots_11_2 <= remap_table_2_2;
+      br_snapshots_11_3 <= remap_table_2_3;
+      br_snapshots_11_4 <= remap_table_2_4;
+      br_snapshots_11_5 <= remap_table_2_5;
+      br_snapshots_11_6 <= remap_table_2_6;
+      br_snapshots_11_7 <= remap_table_2_7;
+      br_snapshots_11_8 <= remap_table_2_8;
+      br_snapshots_11_9 <= remap_table_2_9;
+      br_snapshots_11_10 <= remap_table_2_10;
+      br_snapshots_11_11 <= remap_table_2_11;
+      br_snapshots_11_12 <= remap_table_2_12;
+      br_snapshots_11_13 <= remap_table_2_13;
+      br_snapshots_11_14 <= remap_table_2_14;
+      br_snapshots_11_15 <= remap_table_2_15;
+      br_snapshots_11_16 <= remap_table_2_16;
+      br_snapshots_11_17 <= remap_table_2_17;
+      br_snapshots_11_18 <= remap_table_2_18;
+      br_snapshots_11_19 <= remap_table_2_19;
+      br_snapshots_11_20 <= remap_table_2_20;
+      br_snapshots_11_21 <= remap_table_2_21;
+      br_snapshots_11_22 <= remap_table_2_22;
+      br_snapshots_11_23 <= remap_table_2_23;
+      br_snapshots_11_24 <= remap_table_2_24;
+      br_snapshots_11_25 <= remap_table_2_25;
+      br_snapshots_11_26 <= remap_table_2_26;
+      br_snapshots_11_27 <= remap_table_2_27;
+      br_snapshots_11_28 <= remap_table_2_28;
+      br_snapshots_11_29 <= remap_table_2_29;
+      br_snapshots_11_30 <= remap_table_2_30;
+      br_snapshots_11_31 <= remap_table_2_31;
     end
     else if (io_ren_br_tags_0_valid & io_ren_br_tags_0_bits == 5'hB) begin
-      if (_GEN[0])
-        br_snapshots_11_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_0 <= map_table_0;
-      if (_GEN[1])
-        br_snapshots_11_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_1 <= map_table_1;
-      if (_GEN[2])
-        br_snapshots_11_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_2 <= map_table_2;
-      if (_GEN[3])
-        br_snapshots_11_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_3 <= map_table_3;
-      if (_GEN[4])
-        br_snapshots_11_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_4 <= map_table_4;
-      if (_GEN[5])
-        br_snapshots_11_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_5 <= map_table_5;
-      if (_GEN[6])
-        br_snapshots_11_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_6 <= map_table_6;
-      if (_GEN[7])
-        br_snapshots_11_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_7 <= map_table_7;
-      if (_GEN[8])
-        br_snapshots_11_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_8 <= map_table_8;
-      if (_GEN[9])
-        br_snapshots_11_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_9 <= map_table_9;
-      if (_GEN[10])
-        br_snapshots_11_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_10 <= map_table_10;
-      if (_GEN[11])
-        br_snapshots_11_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_11 <= map_table_11;
-      if (_GEN[12])
-        br_snapshots_11_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_12 <= map_table_12;
-      if (_GEN[13])
-        br_snapshots_11_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_13 <= map_table_13;
-      if (_GEN[14])
-        br_snapshots_11_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_14 <= map_table_14;
-      if (_GEN[15])
-        br_snapshots_11_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_15 <= map_table_15;
-      if (_GEN[16])
-        br_snapshots_11_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_16 <= map_table_16;
-      if (_GEN[17])
-        br_snapshots_11_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_17 <= map_table_17;
-      if (_GEN[18])
-        br_snapshots_11_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_18 <= map_table_18;
-      if (_GEN[19])
-        br_snapshots_11_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_19 <= map_table_19;
-      if (_GEN[20])
-        br_snapshots_11_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_20 <= map_table_20;
-      if (_GEN[21])
-        br_snapshots_11_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_21 <= map_table_21;
-      if (_GEN[22])
-        br_snapshots_11_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_22 <= map_table_22;
-      if (_GEN[23])
-        br_snapshots_11_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_23 <= map_table_23;
-      if (_GEN[24])
-        br_snapshots_11_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_24 <= map_table_24;
-      if (_GEN[25])
-        br_snapshots_11_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_25 <= map_table_25;
-      if (_GEN[26])
-        br_snapshots_11_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_26 <= map_table_26;
-      if (_GEN[27])
-        br_snapshots_11_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_27 <= map_table_27;
-      if (_GEN[28])
-        br_snapshots_11_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_28 <= map_table_28;
-      if (_GEN[29])
-        br_snapshots_11_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_29 <= map_table_29;
-      if (_GEN[30])
-        br_snapshots_11_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_30 <= map_table_30;
-      if (_GEN[31])
-        br_snapshots_11_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_11_31 <= map_table_31;
+      br_snapshots_11_0 <= remap_table_1_0;
+      br_snapshots_11_1 <= remap_table_1_1;
+      br_snapshots_11_2 <= remap_table_1_2;
+      br_snapshots_11_3 <= remap_table_1_3;
+      br_snapshots_11_4 <= remap_table_1_4;
+      br_snapshots_11_5 <= remap_table_1_5;
+      br_snapshots_11_6 <= remap_table_1_6;
+      br_snapshots_11_7 <= remap_table_1_7;
+      br_snapshots_11_8 <= remap_table_1_8;
+      br_snapshots_11_9 <= remap_table_1_9;
+      br_snapshots_11_10 <= remap_table_1_10;
+      br_snapshots_11_11 <= remap_table_1_11;
+      br_snapshots_11_12 <= remap_table_1_12;
+      br_snapshots_11_13 <= remap_table_1_13;
+      br_snapshots_11_14 <= remap_table_1_14;
+      br_snapshots_11_15 <= remap_table_1_15;
+      br_snapshots_11_16 <= remap_table_1_16;
+      br_snapshots_11_17 <= remap_table_1_17;
+      br_snapshots_11_18 <= remap_table_1_18;
+      br_snapshots_11_19 <= remap_table_1_19;
+      br_snapshots_11_20 <= remap_table_1_20;
+      br_snapshots_11_21 <= remap_table_1_21;
+      br_snapshots_11_22 <= remap_table_1_22;
+      br_snapshots_11_23 <= remap_table_1_23;
+      br_snapshots_11_24 <= remap_table_1_24;
+      br_snapshots_11_25 <= remap_table_1_25;
+      br_snapshots_11_26 <= remap_table_1_26;
+      br_snapshots_11_27 <= remap_table_1_27;
+      br_snapshots_11_28 <= remap_table_1_28;
+      br_snapshots_11_29 <= remap_table_1_29;
+      br_snapshots_11_30 <= remap_table_1_30;
+      br_snapshots_11_31 <= remap_table_1_31;
     end
     if (io_ren_br_tags_3_valid & io_ren_br_tags_3_bits == 5'hC) begin
-      if (_GEN_2[0])
-        br_snapshots_12_0 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[0])
-        br_snapshots_12_0 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[0])
-        br_snapshots_12_0 <= io_remap_reqs_1_pdst;
-      else if (_GEN[0])
-        br_snapshots_12_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_0 <= map_table_0;
-      if (_GEN_2[1])
-        br_snapshots_12_1 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[1])
-        br_snapshots_12_1 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[1])
-        br_snapshots_12_1 <= io_remap_reqs_1_pdst;
-      else if (_GEN[1])
-        br_snapshots_12_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_1 <= map_table_1;
-      if (_GEN_2[2])
-        br_snapshots_12_2 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[2])
-        br_snapshots_12_2 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[2])
-        br_snapshots_12_2 <= io_remap_reqs_1_pdst;
-      else if (_GEN[2])
-        br_snapshots_12_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_2 <= map_table_2;
-      if (_GEN_2[3])
-        br_snapshots_12_3 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[3])
-        br_snapshots_12_3 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[3])
-        br_snapshots_12_3 <= io_remap_reqs_1_pdst;
-      else if (_GEN[3])
-        br_snapshots_12_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_3 <= map_table_3;
-      if (_GEN_2[4])
-        br_snapshots_12_4 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[4])
-        br_snapshots_12_4 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[4])
-        br_snapshots_12_4 <= io_remap_reqs_1_pdst;
-      else if (_GEN[4])
-        br_snapshots_12_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_4 <= map_table_4;
-      if (_GEN_2[5])
-        br_snapshots_12_5 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[5])
-        br_snapshots_12_5 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[5])
-        br_snapshots_12_5 <= io_remap_reqs_1_pdst;
-      else if (_GEN[5])
-        br_snapshots_12_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_5 <= map_table_5;
-      if (_GEN_2[6])
-        br_snapshots_12_6 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[6])
-        br_snapshots_12_6 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[6])
-        br_snapshots_12_6 <= io_remap_reqs_1_pdst;
-      else if (_GEN[6])
-        br_snapshots_12_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_6 <= map_table_6;
-      if (_GEN_2[7])
-        br_snapshots_12_7 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[7])
-        br_snapshots_12_7 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[7])
-        br_snapshots_12_7 <= io_remap_reqs_1_pdst;
-      else if (_GEN[7])
-        br_snapshots_12_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_7 <= map_table_7;
-      if (_GEN_2[8])
-        br_snapshots_12_8 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[8])
-        br_snapshots_12_8 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[8])
-        br_snapshots_12_8 <= io_remap_reqs_1_pdst;
-      else if (_GEN[8])
-        br_snapshots_12_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_8 <= map_table_8;
-      if (_GEN_2[9])
-        br_snapshots_12_9 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[9])
-        br_snapshots_12_9 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[9])
-        br_snapshots_12_9 <= io_remap_reqs_1_pdst;
-      else if (_GEN[9])
-        br_snapshots_12_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_9 <= map_table_9;
-      if (_GEN_2[10])
-        br_snapshots_12_10 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[10])
-        br_snapshots_12_10 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[10])
-        br_snapshots_12_10 <= io_remap_reqs_1_pdst;
-      else if (_GEN[10])
-        br_snapshots_12_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_10 <= map_table_10;
-      if (_GEN_2[11])
-        br_snapshots_12_11 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[11])
-        br_snapshots_12_11 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[11])
-        br_snapshots_12_11 <= io_remap_reqs_1_pdst;
-      else if (_GEN[11])
-        br_snapshots_12_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_11 <= map_table_11;
-      if (_GEN_2[12])
-        br_snapshots_12_12 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[12])
-        br_snapshots_12_12 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[12])
-        br_snapshots_12_12 <= io_remap_reqs_1_pdst;
-      else if (_GEN[12])
-        br_snapshots_12_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_12 <= map_table_12;
-      if (_GEN_2[13])
-        br_snapshots_12_13 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[13])
-        br_snapshots_12_13 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[13])
-        br_snapshots_12_13 <= io_remap_reqs_1_pdst;
-      else if (_GEN[13])
-        br_snapshots_12_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_13 <= map_table_13;
-      if (_GEN_2[14])
-        br_snapshots_12_14 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[14])
-        br_snapshots_12_14 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[14])
-        br_snapshots_12_14 <= io_remap_reqs_1_pdst;
-      else if (_GEN[14])
-        br_snapshots_12_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_14 <= map_table_14;
-      if (_GEN_2[15])
-        br_snapshots_12_15 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[15])
-        br_snapshots_12_15 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[15])
-        br_snapshots_12_15 <= io_remap_reqs_1_pdst;
-      else if (_GEN[15])
-        br_snapshots_12_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_15 <= map_table_15;
-      if (_GEN_2[16])
-        br_snapshots_12_16 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[16])
-        br_snapshots_12_16 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[16])
-        br_snapshots_12_16 <= io_remap_reqs_1_pdst;
-      else if (_GEN[16])
-        br_snapshots_12_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_16 <= map_table_16;
-      if (_GEN_2[17])
-        br_snapshots_12_17 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[17])
-        br_snapshots_12_17 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[17])
-        br_snapshots_12_17 <= io_remap_reqs_1_pdst;
-      else if (_GEN[17])
-        br_snapshots_12_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_17 <= map_table_17;
-      if (_GEN_2[18])
-        br_snapshots_12_18 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[18])
-        br_snapshots_12_18 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[18])
-        br_snapshots_12_18 <= io_remap_reqs_1_pdst;
-      else if (_GEN[18])
-        br_snapshots_12_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_18 <= map_table_18;
-      if (_GEN_2[19])
-        br_snapshots_12_19 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[19])
-        br_snapshots_12_19 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[19])
-        br_snapshots_12_19 <= io_remap_reqs_1_pdst;
-      else if (_GEN[19])
-        br_snapshots_12_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_19 <= map_table_19;
-      if (_GEN_2[20])
-        br_snapshots_12_20 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[20])
-        br_snapshots_12_20 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[20])
-        br_snapshots_12_20 <= io_remap_reqs_1_pdst;
-      else if (_GEN[20])
-        br_snapshots_12_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_20 <= map_table_20;
-      if (_GEN_2[21])
-        br_snapshots_12_21 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[21])
-        br_snapshots_12_21 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[21])
-        br_snapshots_12_21 <= io_remap_reqs_1_pdst;
-      else if (_GEN[21])
-        br_snapshots_12_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_21 <= map_table_21;
-      if (_GEN_2[22])
-        br_snapshots_12_22 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[22])
-        br_snapshots_12_22 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[22])
-        br_snapshots_12_22 <= io_remap_reqs_1_pdst;
-      else if (_GEN[22])
-        br_snapshots_12_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_22 <= map_table_22;
-      if (_GEN_2[23])
-        br_snapshots_12_23 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[23])
-        br_snapshots_12_23 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[23])
-        br_snapshots_12_23 <= io_remap_reqs_1_pdst;
-      else if (_GEN[23])
-        br_snapshots_12_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_23 <= map_table_23;
-      if (_GEN_2[24])
-        br_snapshots_12_24 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[24])
-        br_snapshots_12_24 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[24])
-        br_snapshots_12_24 <= io_remap_reqs_1_pdst;
-      else if (_GEN[24])
-        br_snapshots_12_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_24 <= map_table_24;
-      if (_GEN_2[25])
-        br_snapshots_12_25 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[25])
-        br_snapshots_12_25 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[25])
-        br_snapshots_12_25 <= io_remap_reqs_1_pdst;
-      else if (_GEN[25])
-        br_snapshots_12_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_25 <= map_table_25;
-      if (_GEN_2[26])
-        br_snapshots_12_26 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[26])
-        br_snapshots_12_26 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[26])
-        br_snapshots_12_26 <= io_remap_reqs_1_pdst;
-      else if (_GEN[26])
-        br_snapshots_12_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_26 <= map_table_26;
-      if (_GEN_2[27])
-        br_snapshots_12_27 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[27])
-        br_snapshots_12_27 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[27])
-        br_snapshots_12_27 <= io_remap_reqs_1_pdst;
-      else if (_GEN[27])
-        br_snapshots_12_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_27 <= map_table_27;
-      if (_GEN_2[28])
-        br_snapshots_12_28 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[28])
-        br_snapshots_12_28 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[28])
-        br_snapshots_12_28 <= io_remap_reqs_1_pdst;
-      else if (_GEN[28])
-        br_snapshots_12_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_28 <= map_table_28;
-      if (_GEN_2[29])
-        br_snapshots_12_29 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[29])
-        br_snapshots_12_29 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[29])
-        br_snapshots_12_29 <= io_remap_reqs_1_pdst;
-      else if (_GEN[29])
-        br_snapshots_12_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_29 <= map_table_29;
-      if (_GEN_2[30])
-        br_snapshots_12_30 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[30])
-        br_snapshots_12_30 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[30])
-        br_snapshots_12_30 <= io_remap_reqs_1_pdst;
-      else if (_GEN[30])
-        br_snapshots_12_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_30 <= map_table_30;
-      if (_GEN_2[31])
-        br_snapshots_12_31 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[31])
-        br_snapshots_12_31 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[31])
-        br_snapshots_12_31 <= io_remap_reqs_1_pdst;
-      else if (_GEN[31])
-        br_snapshots_12_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_31 <= map_table_31;
+      br_snapshots_12_0 <= remap_table_4_0;
+      br_snapshots_12_1 <= remap_table_4_1;
+      br_snapshots_12_2 <= remap_table_4_2;
+      br_snapshots_12_3 <= remap_table_4_3;
+      br_snapshots_12_4 <= remap_table_4_4;
+      br_snapshots_12_5 <= remap_table_4_5;
+      br_snapshots_12_6 <= remap_table_4_6;
+      br_snapshots_12_7 <= remap_table_4_7;
+      br_snapshots_12_8 <= remap_table_4_8;
+      br_snapshots_12_9 <= remap_table_4_9;
+      br_snapshots_12_10 <= remap_table_4_10;
+      br_snapshots_12_11 <= remap_table_4_11;
+      br_snapshots_12_12 <= remap_table_4_12;
+      br_snapshots_12_13 <= remap_table_4_13;
+      br_snapshots_12_14 <= remap_table_4_14;
+      br_snapshots_12_15 <= remap_table_4_15;
+      br_snapshots_12_16 <= remap_table_4_16;
+      br_snapshots_12_17 <= remap_table_4_17;
+      br_snapshots_12_18 <= remap_table_4_18;
+      br_snapshots_12_19 <= remap_table_4_19;
+      br_snapshots_12_20 <= remap_table_4_20;
+      br_snapshots_12_21 <= remap_table_4_21;
+      br_snapshots_12_22 <= remap_table_4_22;
+      br_snapshots_12_23 <= remap_table_4_23;
+      br_snapshots_12_24 <= remap_table_4_24;
+      br_snapshots_12_25 <= remap_table_4_25;
+      br_snapshots_12_26 <= remap_table_4_26;
+      br_snapshots_12_27 <= remap_table_4_27;
+      br_snapshots_12_28 <= remap_table_4_28;
+      br_snapshots_12_29 <= remap_table_4_29;
+      br_snapshots_12_30 <= remap_table_4_30;
+      br_snapshots_12_31 <= remap_table_4_31;
     end
     else if (io_ren_br_tags_2_valid & io_ren_br_tags_2_bits == 5'hC) begin
-      if (_GEN_1[0])
-        br_snapshots_12_0 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[0])
-        br_snapshots_12_0 <= io_remap_reqs_1_pdst;
-      else if (_GEN[0])
-        br_snapshots_12_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_0 <= map_table_0;
-      if (_GEN_1[1])
-        br_snapshots_12_1 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[1])
-        br_snapshots_12_1 <= io_remap_reqs_1_pdst;
-      else if (_GEN[1])
-        br_snapshots_12_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_1 <= map_table_1;
-      if (_GEN_1[2])
-        br_snapshots_12_2 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[2])
-        br_snapshots_12_2 <= io_remap_reqs_1_pdst;
-      else if (_GEN[2])
-        br_snapshots_12_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_2 <= map_table_2;
-      if (_GEN_1[3])
-        br_snapshots_12_3 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[3])
-        br_snapshots_12_3 <= io_remap_reqs_1_pdst;
-      else if (_GEN[3])
-        br_snapshots_12_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_3 <= map_table_3;
-      if (_GEN_1[4])
-        br_snapshots_12_4 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[4])
-        br_snapshots_12_4 <= io_remap_reqs_1_pdst;
-      else if (_GEN[4])
-        br_snapshots_12_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_4 <= map_table_4;
-      if (_GEN_1[5])
-        br_snapshots_12_5 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[5])
-        br_snapshots_12_5 <= io_remap_reqs_1_pdst;
-      else if (_GEN[5])
-        br_snapshots_12_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_5 <= map_table_5;
-      if (_GEN_1[6])
-        br_snapshots_12_6 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[6])
-        br_snapshots_12_6 <= io_remap_reqs_1_pdst;
-      else if (_GEN[6])
-        br_snapshots_12_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_6 <= map_table_6;
-      if (_GEN_1[7])
-        br_snapshots_12_7 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[7])
-        br_snapshots_12_7 <= io_remap_reqs_1_pdst;
-      else if (_GEN[7])
-        br_snapshots_12_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_7 <= map_table_7;
-      if (_GEN_1[8])
-        br_snapshots_12_8 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[8])
-        br_snapshots_12_8 <= io_remap_reqs_1_pdst;
-      else if (_GEN[8])
-        br_snapshots_12_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_8 <= map_table_8;
-      if (_GEN_1[9])
-        br_snapshots_12_9 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[9])
-        br_snapshots_12_9 <= io_remap_reqs_1_pdst;
-      else if (_GEN[9])
-        br_snapshots_12_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_9 <= map_table_9;
-      if (_GEN_1[10])
-        br_snapshots_12_10 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[10])
-        br_snapshots_12_10 <= io_remap_reqs_1_pdst;
-      else if (_GEN[10])
-        br_snapshots_12_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_10 <= map_table_10;
-      if (_GEN_1[11])
-        br_snapshots_12_11 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[11])
-        br_snapshots_12_11 <= io_remap_reqs_1_pdst;
-      else if (_GEN[11])
-        br_snapshots_12_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_11 <= map_table_11;
-      if (_GEN_1[12])
-        br_snapshots_12_12 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[12])
-        br_snapshots_12_12 <= io_remap_reqs_1_pdst;
-      else if (_GEN[12])
-        br_snapshots_12_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_12 <= map_table_12;
-      if (_GEN_1[13])
-        br_snapshots_12_13 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[13])
-        br_snapshots_12_13 <= io_remap_reqs_1_pdst;
-      else if (_GEN[13])
-        br_snapshots_12_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_13 <= map_table_13;
-      if (_GEN_1[14])
-        br_snapshots_12_14 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[14])
-        br_snapshots_12_14 <= io_remap_reqs_1_pdst;
-      else if (_GEN[14])
-        br_snapshots_12_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_14 <= map_table_14;
-      if (_GEN_1[15])
-        br_snapshots_12_15 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[15])
-        br_snapshots_12_15 <= io_remap_reqs_1_pdst;
-      else if (_GEN[15])
-        br_snapshots_12_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_15 <= map_table_15;
-      if (_GEN_1[16])
-        br_snapshots_12_16 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[16])
-        br_snapshots_12_16 <= io_remap_reqs_1_pdst;
-      else if (_GEN[16])
-        br_snapshots_12_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_16 <= map_table_16;
-      if (_GEN_1[17])
-        br_snapshots_12_17 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[17])
-        br_snapshots_12_17 <= io_remap_reqs_1_pdst;
-      else if (_GEN[17])
-        br_snapshots_12_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_17 <= map_table_17;
-      if (_GEN_1[18])
-        br_snapshots_12_18 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[18])
-        br_snapshots_12_18 <= io_remap_reqs_1_pdst;
-      else if (_GEN[18])
-        br_snapshots_12_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_18 <= map_table_18;
-      if (_GEN_1[19])
-        br_snapshots_12_19 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[19])
-        br_snapshots_12_19 <= io_remap_reqs_1_pdst;
-      else if (_GEN[19])
-        br_snapshots_12_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_19 <= map_table_19;
-      if (_GEN_1[20])
-        br_snapshots_12_20 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[20])
-        br_snapshots_12_20 <= io_remap_reqs_1_pdst;
-      else if (_GEN[20])
-        br_snapshots_12_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_20 <= map_table_20;
-      if (_GEN_1[21])
-        br_snapshots_12_21 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[21])
-        br_snapshots_12_21 <= io_remap_reqs_1_pdst;
-      else if (_GEN[21])
-        br_snapshots_12_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_21 <= map_table_21;
-      if (_GEN_1[22])
-        br_snapshots_12_22 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[22])
-        br_snapshots_12_22 <= io_remap_reqs_1_pdst;
-      else if (_GEN[22])
-        br_snapshots_12_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_22 <= map_table_22;
-      if (_GEN_1[23])
-        br_snapshots_12_23 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[23])
-        br_snapshots_12_23 <= io_remap_reqs_1_pdst;
-      else if (_GEN[23])
-        br_snapshots_12_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_23 <= map_table_23;
-      if (_GEN_1[24])
-        br_snapshots_12_24 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[24])
-        br_snapshots_12_24 <= io_remap_reqs_1_pdst;
-      else if (_GEN[24])
-        br_snapshots_12_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_24 <= map_table_24;
-      if (_GEN_1[25])
-        br_snapshots_12_25 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[25])
-        br_snapshots_12_25 <= io_remap_reqs_1_pdst;
-      else if (_GEN[25])
-        br_snapshots_12_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_25 <= map_table_25;
-      if (_GEN_1[26])
-        br_snapshots_12_26 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[26])
-        br_snapshots_12_26 <= io_remap_reqs_1_pdst;
-      else if (_GEN[26])
-        br_snapshots_12_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_26 <= map_table_26;
-      if (_GEN_1[27])
-        br_snapshots_12_27 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[27])
-        br_snapshots_12_27 <= io_remap_reqs_1_pdst;
-      else if (_GEN[27])
-        br_snapshots_12_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_27 <= map_table_27;
-      if (_GEN_1[28])
-        br_snapshots_12_28 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[28])
-        br_snapshots_12_28 <= io_remap_reqs_1_pdst;
-      else if (_GEN[28])
-        br_snapshots_12_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_28 <= map_table_28;
-      if (_GEN_1[29])
-        br_snapshots_12_29 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[29])
-        br_snapshots_12_29 <= io_remap_reqs_1_pdst;
-      else if (_GEN[29])
-        br_snapshots_12_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_29 <= map_table_29;
-      if (_GEN_1[30])
-        br_snapshots_12_30 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[30])
-        br_snapshots_12_30 <= io_remap_reqs_1_pdst;
-      else if (_GEN[30])
-        br_snapshots_12_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_30 <= map_table_30;
-      if (_GEN_1[31])
-        br_snapshots_12_31 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[31])
-        br_snapshots_12_31 <= io_remap_reqs_1_pdst;
-      else if (_GEN[31])
-        br_snapshots_12_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_31 <= map_table_31;
+      br_snapshots_12_0 <= remap_table_3_0;
+      br_snapshots_12_1 <= remap_table_3_1;
+      br_snapshots_12_2 <= remap_table_3_2;
+      br_snapshots_12_3 <= remap_table_3_3;
+      br_snapshots_12_4 <= remap_table_3_4;
+      br_snapshots_12_5 <= remap_table_3_5;
+      br_snapshots_12_6 <= remap_table_3_6;
+      br_snapshots_12_7 <= remap_table_3_7;
+      br_snapshots_12_8 <= remap_table_3_8;
+      br_snapshots_12_9 <= remap_table_3_9;
+      br_snapshots_12_10 <= remap_table_3_10;
+      br_snapshots_12_11 <= remap_table_3_11;
+      br_snapshots_12_12 <= remap_table_3_12;
+      br_snapshots_12_13 <= remap_table_3_13;
+      br_snapshots_12_14 <= remap_table_3_14;
+      br_snapshots_12_15 <= remap_table_3_15;
+      br_snapshots_12_16 <= remap_table_3_16;
+      br_snapshots_12_17 <= remap_table_3_17;
+      br_snapshots_12_18 <= remap_table_3_18;
+      br_snapshots_12_19 <= remap_table_3_19;
+      br_snapshots_12_20 <= remap_table_3_20;
+      br_snapshots_12_21 <= remap_table_3_21;
+      br_snapshots_12_22 <= remap_table_3_22;
+      br_snapshots_12_23 <= remap_table_3_23;
+      br_snapshots_12_24 <= remap_table_3_24;
+      br_snapshots_12_25 <= remap_table_3_25;
+      br_snapshots_12_26 <= remap_table_3_26;
+      br_snapshots_12_27 <= remap_table_3_27;
+      br_snapshots_12_28 <= remap_table_3_28;
+      br_snapshots_12_29 <= remap_table_3_29;
+      br_snapshots_12_30 <= remap_table_3_30;
+      br_snapshots_12_31 <= remap_table_3_31;
     end
     else if (io_ren_br_tags_1_valid & io_ren_br_tags_1_bits == 5'hC) begin
-      if (_GEN_0[0])
-        br_snapshots_12_0 <= io_remap_reqs_1_pdst;
-      else if (_GEN[0])
-        br_snapshots_12_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_0 <= map_table_0;
-      if (_GEN_0[1])
-        br_snapshots_12_1 <= io_remap_reqs_1_pdst;
-      else if (_GEN[1])
-        br_snapshots_12_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_1 <= map_table_1;
-      if (_GEN_0[2])
-        br_snapshots_12_2 <= io_remap_reqs_1_pdst;
-      else if (_GEN[2])
-        br_snapshots_12_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_2 <= map_table_2;
-      if (_GEN_0[3])
-        br_snapshots_12_3 <= io_remap_reqs_1_pdst;
-      else if (_GEN[3])
-        br_snapshots_12_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_3 <= map_table_3;
-      if (_GEN_0[4])
-        br_snapshots_12_4 <= io_remap_reqs_1_pdst;
-      else if (_GEN[4])
-        br_snapshots_12_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_4 <= map_table_4;
-      if (_GEN_0[5])
-        br_snapshots_12_5 <= io_remap_reqs_1_pdst;
-      else if (_GEN[5])
-        br_snapshots_12_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_5 <= map_table_5;
-      if (_GEN_0[6])
-        br_snapshots_12_6 <= io_remap_reqs_1_pdst;
-      else if (_GEN[6])
-        br_snapshots_12_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_6 <= map_table_6;
-      if (_GEN_0[7])
-        br_snapshots_12_7 <= io_remap_reqs_1_pdst;
-      else if (_GEN[7])
-        br_snapshots_12_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_7 <= map_table_7;
-      if (_GEN_0[8])
-        br_snapshots_12_8 <= io_remap_reqs_1_pdst;
-      else if (_GEN[8])
-        br_snapshots_12_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_8 <= map_table_8;
-      if (_GEN_0[9])
-        br_snapshots_12_9 <= io_remap_reqs_1_pdst;
-      else if (_GEN[9])
-        br_snapshots_12_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_9 <= map_table_9;
-      if (_GEN_0[10])
-        br_snapshots_12_10 <= io_remap_reqs_1_pdst;
-      else if (_GEN[10])
-        br_snapshots_12_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_10 <= map_table_10;
-      if (_GEN_0[11])
-        br_snapshots_12_11 <= io_remap_reqs_1_pdst;
-      else if (_GEN[11])
-        br_snapshots_12_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_11 <= map_table_11;
-      if (_GEN_0[12])
-        br_snapshots_12_12 <= io_remap_reqs_1_pdst;
-      else if (_GEN[12])
-        br_snapshots_12_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_12 <= map_table_12;
-      if (_GEN_0[13])
-        br_snapshots_12_13 <= io_remap_reqs_1_pdst;
-      else if (_GEN[13])
-        br_snapshots_12_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_13 <= map_table_13;
-      if (_GEN_0[14])
-        br_snapshots_12_14 <= io_remap_reqs_1_pdst;
-      else if (_GEN[14])
-        br_snapshots_12_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_14 <= map_table_14;
-      if (_GEN_0[15])
-        br_snapshots_12_15 <= io_remap_reqs_1_pdst;
-      else if (_GEN[15])
-        br_snapshots_12_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_15 <= map_table_15;
-      if (_GEN_0[16])
-        br_snapshots_12_16 <= io_remap_reqs_1_pdst;
-      else if (_GEN[16])
-        br_snapshots_12_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_16 <= map_table_16;
-      if (_GEN_0[17])
-        br_snapshots_12_17 <= io_remap_reqs_1_pdst;
-      else if (_GEN[17])
-        br_snapshots_12_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_17 <= map_table_17;
-      if (_GEN_0[18])
-        br_snapshots_12_18 <= io_remap_reqs_1_pdst;
-      else if (_GEN[18])
-        br_snapshots_12_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_18 <= map_table_18;
-      if (_GEN_0[19])
-        br_snapshots_12_19 <= io_remap_reqs_1_pdst;
-      else if (_GEN[19])
-        br_snapshots_12_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_19 <= map_table_19;
-      if (_GEN_0[20])
-        br_snapshots_12_20 <= io_remap_reqs_1_pdst;
-      else if (_GEN[20])
-        br_snapshots_12_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_20 <= map_table_20;
-      if (_GEN_0[21])
-        br_snapshots_12_21 <= io_remap_reqs_1_pdst;
-      else if (_GEN[21])
-        br_snapshots_12_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_21 <= map_table_21;
-      if (_GEN_0[22])
-        br_snapshots_12_22 <= io_remap_reqs_1_pdst;
-      else if (_GEN[22])
-        br_snapshots_12_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_22 <= map_table_22;
-      if (_GEN_0[23])
-        br_snapshots_12_23 <= io_remap_reqs_1_pdst;
-      else if (_GEN[23])
-        br_snapshots_12_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_23 <= map_table_23;
-      if (_GEN_0[24])
-        br_snapshots_12_24 <= io_remap_reqs_1_pdst;
-      else if (_GEN[24])
-        br_snapshots_12_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_24 <= map_table_24;
-      if (_GEN_0[25])
-        br_snapshots_12_25 <= io_remap_reqs_1_pdst;
-      else if (_GEN[25])
-        br_snapshots_12_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_25 <= map_table_25;
-      if (_GEN_0[26])
-        br_snapshots_12_26 <= io_remap_reqs_1_pdst;
-      else if (_GEN[26])
-        br_snapshots_12_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_26 <= map_table_26;
-      if (_GEN_0[27])
-        br_snapshots_12_27 <= io_remap_reqs_1_pdst;
-      else if (_GEN[27])
-        br_snapshots_12_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_27 <= map_table_27;
-      if (_GEN_0[28])
-        br_snapshots_12_28 <= io_remap_reqs_1_pdst;
-      else if (_GEN[28])
-        br_snapshots_12_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_28 <= map_table_28;
-      if (_GEN_0[29])
-        br_snapshots_12_29 <= io_remap_reqs_1_pdst;
-      else if (_GEN[29])
-        br_snapshots_12_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_29 <= map_table_29;
-      if (_GEN_0[30])
-        br_snapshots_12_30 <= io_remap_reqs_1_pdst;
-      else if (_GEN[30])
-        br_snapshots_12_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_30 <= map_table_30;
-      if (_GEN_0[31])
-        br_snapshots_12_31 <= io_remap_reqs_1_pdst;
-      else if (_GEN[31])
-        br_snapshots_12_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_31 <= map_table_31;
+      br_snapshots_12_0 <= remap_table_2_0;
+      br_snapshots_12_1 <= remap_table_2_1;
+      br_snapshots_12_2 <= remap_table_2_2;
+      br_snapshots_12_3 <= remap_table_2_3;
+      br_snapshots_12_4 <= remap_table_2_4;
+      br_snapshots_12_5 <= remap_table_2_5;
+      br_snapshots_12_6 <= remap_table_2_6;
+      br_snapshots_12_7 <= remap_table_2_7;
+      br_snapshots_12_8 <= remap_table_2_8;
+      br_snapshots_12_9 <= remap_table_2_9;
+      br_snapshots_12_10 <= remap_table_2_10;
+      br_snapshots_12_11 <= remap_table_2_11;
+      br_snapshots_12_12 <= remap_table_2_12;
+      br_snapshots_12_13 <= remap_table_2_13;
+      br_snapshots_12_14 <= remap_table_2_14;
+      br_snapshots_12_15 <= remap_table_2_15;
+      br_snapshots_12_16 <= remap_table_2_16;
+      br_snapshots_12_17 <= remap_table_2_17;
+      br_snapshots_12_18 <= remap_table_2_18;
+      br_snapshots_12_19 <= remap_table_2_19;
+      br_snapshots_12_20 <= remap_table_2_20;
+      br_snapshots_12_21 <= remap_table_2_21;
+      br_snapshots_12_22 <= remap_table_2_22;
+      br_snapshots_12_23 <= remap_table_2_23;
+      br_snapshots_12_24 <= remap_table_2_24;
+      br_snapshots_12_25 <= remap_table_2_25;
+      br_snapshots_12_26 <= remap_table_2_26;
+      br_snapshots_12_27 <= remap_table_2_27;
+      br_snapshots_12_28 <= remap_table_2_28;
+      br_snapshots_12_29 <= remap_table_2_29;
+      br_snapshots_12_30 <= remap_table_2_30;
+      br_snapshots_12_31 <= remap_table_2_31;
     end
     else if (io_ren_br_tags_0_valid & io_ren_br_tags_0_bits == 5'hC) begin
-      if (_GEN[0])
-        br_snapshots_12_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_0 <= map_table_0;
-      if (_GEN[1])
-        br_snapshots_12_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_1 <= map_table_1;
-      if (_GEN[2])
-        br_snapshots_12_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_2 <= map_table_2;
-      if (_GEN[3])
-        br_snapshots_12_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_3 <= map_table_3;
-      if (_GEN[4])
-        br_snapshots_12_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_4 <= map_table_4;
-      if (_GEN[5])
-        br_snapshots_12_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_5 <= map_table_5;
-      if (_GEN[6])
-        br_snapshots_12_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_6 <= map_table_6;
-      if (_GEN[7])
-        br_snapshots_12_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_7 <= map_table_7;
-      if (_GEN[8])
-        br_snapshots_12_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_8 <= map_table_8;
-      if (_GEN[9])
-        br_snapshots_12_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_9 <= map_table_9;
-      if (_GEN[10])
-        br_snapshots_12_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_10 <= map_table_10;
-      if (_GEN[11])
-        br_snapshots_12_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_11 <= map_table_11;
-      if (_GEN[12])
-        br_snapshots_12_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_12 <= map_table_12;
-      if (_GEN[13])
-        br_snapshots_12_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_13 <= map_table_13;
-      if (_GEN[14])
-        br_snapshots_12_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_14 <= map_table_14;
-      if (_GEN[15])
-        br_snapshots_12_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_15 <= map_table_15;
-      if (_GEN[16])
-        br_snapshots_12_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_16 <= map_table_16;
-      if (_GEN[17])
-        br_snapshots_12_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_17 <= map_table_17;
-      if (_GEN[18])
-        br_snapshots_12_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_18 <= map_table_18;
-      if (_GEN[19])
-        br_snapshots_12_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_19 <= map_table_19;
-      if (_GEN[20])
-        br_snapshots_12_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_20 <= map_table_20;
-      if (_GEN[21])
-        br_snapshots_12_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_21 <= map_table_21;
-      if (_GEN[22])
-        br_snapshots_12_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_22 <= map_table_22;
-      if (_GEN[23])
-        br_snapshots_12_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_23 <= map_table_23;
-      if (_GEN[24])
-        br_snapshots_12_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_24 <= map_table_24;
-      if (_GEN[25])
-        br_snapshots_12_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_25 <= map_table_25;
-      if (_GEN[26])
-        br_snapshots_12_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_26 <= map_table_26;
-      if (_GEN[27])
-        br_snapshots_12_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_27 <= map_table_27;
-      if (_GEN[28])
-        br_snapshots_12_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_28 <= map_table_28;
-      if (_GEN[29])
-        br_snapshots_12_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_29 <= map_table_29;
-      if (_GEN[30])
-        br_snapshots_12_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_30 <= map_table_30;
-      if (_GEN[31])
-        br_snapshots_12_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_12_31 <= map_table_31;
+      br_snapshots_12_0 <= remap_table_1_0;
+      br_snapshots_12_1 <= remap_table_1_1;
+      br_snapshots_12_2 <= remap_table_1_2;
+      br_snapshots_12_3 <= remap_table_1_3;
+      br_snapshots_12_4 <= remap_table_1_4;
+      br_snapshots_12_5 <= remap_table_1_5;
+      br_snapshots_12_6 <= remap_table_1_6;
+      br_snapshots_12_7 <= remap_table_1_7;
+      br_snapshots_12_8 <= remap_table_1_8;
+      br_snapshots_12_9 <= remap_table_1_9;
+      br_snapshots_12_10 <= remap_table_1_10;
+      br_snapshots_12_11 <= remap_table_1_11;
+      br_snapshots_12_12 <= remap_table_1_12;
+      br_snapshots_12_13 <= remap_table_1_13;
+      br_snapshots_12_14 <= remap_table_1_14;
+      br_snapshots_12_15 <= remap_table_1_15;
+      br_snapshots_12_16 <= remap_table_1_16;
+      br_snapshots_12_17 <= remap_table_1_17;
+      br_snapshots_12_18 <= remap_table_1_18;
+      br_snapshots_12_19 <= remap_table_1_19;
+      br_snapshots_12_20 <= remap_table_1_20;
+      br_snapshots_12_21 <= remap_table_1_21;
+      br_snapshots_12_22 <= remap_table_1_22;
+      br_snapshots_12_23 <= remap_table_1_23;
+      br_snapshots_12_24 <= remap_table_1_24;
+      br_snapshots_12_25 <= remap_table_1_25;
+      br_snapshots_12_26 <= remap_table_1_26;
+      br_snapshots_12_27 <= remap_table_1_27;
+      br_snapshots_12_28 <= remap_table_1_28;
+      br_snapshots_12_29 <= remap_table_1_29;
+      br_snapshots_12_30 <= remap_table_1_30;
+      br_snapshots_12_31 <= remap_table_1_31;
     end
     if (io_ren_br_tags_3_valid & io_ren_br_tags_3_bits == 5'hD) begin
-      if (_GEN_2[0])
-        br_snapshots_13_0 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[0])
-        br_snapshots_13_0 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[0])
-        br_snapshots_13_0 <= io_remap_reqs_1_pdst;
-      else if (_GEN[0])
-        br_snapshots_13_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_0 <= map_table_0;
-      if (_GEN_2[1])
-        br_snapshots_13_1 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[1])
-        br_snapshots_13_1 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[1])
-        br_snapshots_13_1 <= io_remap_reqs_1_pdst;
-      else if (_GEN[1])
-        br_snapshots_13_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_1 <= map_table_1;
-      if (_GEN_2[2])
-        br_snapshots_13_2 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[2])
-        br_snapshots_13_2 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[2])
-        br_snapshots_13_2 <= io_remap_reqs_1_pdst;
-      else if (_GEN[2])
-        br_snapshots_13_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_2 <= map_table_2;
-      if (_GEN_2[3])
-        br_snapshots_13_3 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[3])
-        br_snapshots_13_3 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[3])
-        br_snapshots_13_3 <= io_remap_reqs_1_pdst;
-      else if (_GEN[3])
-        br_snapshots_13_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_3 <= map_table_3;
-      if (_GEN_2[4])
-        br_snapshots_13_4 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[4])
-        br_snapshots_13_4 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[4])
-        br_snapshots_13_4 <= io_remap_reqs_1_pdst;
-      else if (_GEN[4])
-        br_snapshots_13_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_4 <= map_table_4;
-      if (_GEN_2[5])
-        br_snapshots_13_5 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[5])
-        br_snapshots_13_5 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[5])
-        br_snapshots_13_5 <= io_remap_reqs_1_pdst;
-      else if (_GEN[5])
-        br_snapshots_13_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_5 <= map_table_5;
-      if (_GEN_2[6])
-        br_snapshots_13_6 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[6])
-        br_snapshots_13_6 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[6])
-        br_snapshots_13_6 <= io_remap_reqs_1_pdst;
-      else if (_GEN[6])
-        br_snapshots_13_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_6 <= map_table_6;
-      if (_GEN_2[7])
-        br_snapshots_13_7 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[7])
-        br_snapshots_13_7 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[7])
-        br_snapshots_13_7 <= io_remap_reqs_1_pdst;
-      else if (_GEN[7])
-        br_snapshots_13_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_7 <= map_table_7;
-      if (_GEN_2[8])
-        br_snapshots_13_8 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[8])
-        br_snapshots_13_8 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[8])
-        br_snapshots_13_8 <= io_remap_reqs_1_pdst;
-      else if (_GEN[8])
-        br_snapshots_13_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_8 <= map_table_8;
-      if (_GEN_2[9])
-        br_snapshots_13_9 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[9])
-        br_snapshots_13_9 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[9])
-        br_snapshots_13_9 <= io_remap_reqs_1_pdst;
-      else if (_GEN[9])
-        br_snapshots_13_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_9 <= map_table_9;
-      if (_GEN_2[10])
-        br_snapshots_13_10 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[10])
-        br_snapshots_13_10 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[10])
-        br_snapshots_13_10 <= io_remap_reqs_1_pdst;
-      else if (_GEN[10])
-        br_snapshots_13_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_10 <= map_table_10;
-      if (_GEN_2[11])
-        br_snapshots_13_11 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[11])
-        br_snapshots_13_11 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[11])
-        br_snapshots_13_11 <= io_remap_reqs_1_pdst;
-      else if (_GEN[11])
-        br_snapshots_13_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_11 <= map_table_11;
-      if (_GEN_2[12])
-        br_snapshots_13_12 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[12])
-        br_snapshots_13_12 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[12])
-        br_snapshots_13_12 <= io_remap_reqs_1_pdst;
-      else if (_GEN[12])
-        br_snapshots_13_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_12 <= map_table_12;
-      if (_GEN_2[13])
-        br_snapshots_13_13 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[13])
-        br_snapshots_13_13 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[13])
-        br_snapshots_13_13 <= io_remap_reqs_1_pdst;
-      else if (_GEN[13])
-        br_snapshots_13_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_13 <= map_table_13;
-      if (_GEN_2[14])
-        br_snapshots_13_14 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[14])
-        br_snapshots_13_14 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[14])
-        br_snapshots_13_14 <= io_remap_reqs_1_pdst;
-      else if (_GEN[14])
-        br_snapshots_13_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_14 <= map_table_14;
-      if (_GEN_2[15])
-        br_snapshots_13_15 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[15])
-        br_snapshots_13_15 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[15])
-        br_snapshots_13_15 <= io_remap_reqs_1_pdst;
-      else if (_GEN[15])
-        br_snapshots_13_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_15 <= map_table_15;
-      if (_GEN_2[16])
-        br_snapshots_13_16 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[16])
-        br_snapshots_13_16 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[16])
-        br_snapshots_13_16 <= io_remap_reqs_1_pdst;
-      else if (_GEN[16])
-        br_snapshots_13_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_16 <= map_table_16;
-      if (_GEN_2[17])
-        br_snapshots_13_17 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[17])
-        br_snapshots_13_17 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[17])
-        br_snapshots_13_17 <= io_remap_reqs_1_pdst;
-      else if (_GEN[17])
-        br_snapshots_13_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_17 <= map_table_17;
-      if (_GEN_2[18])
-        br_snapshots_13_18 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[18])
-        br_snapshots_13_18 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[18])
-        br_snapshots_13_18 <= io_remap_reqs_1_pdst;
-      else if (_GEN[18])
-        br_snapshots_13_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_18 <= map_table_18;
-      if (_GEN_2[19])
-        br_snapshots_13_19 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[19])
-        br_snapshots_13_19 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[19])
-        br_snapshots_13_19 <= io_remap_reqs_1_pdst;
-      else if (_GEN[19])
-        br_snapshots_13_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_19 <= map_table_19;
-      if (_GEN_2[20])
-        br_snapshots_13_20 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[20])
-        br_snapshots_13_20 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[20])
-        br_snapshots_13_20 <= io_remap_reqs_1_pdst;
-      else if (_GEN[20])
-        br_snapshots_13_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_20 <= map_table_20;
-      if (_GEN_2[21])
-        br_snapshots_13_21 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[21])
-        br_snapshots_13_21 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[21])
-        br_snapshots_13_21 <= io_remap_reqs_1_pdst;
-      else if (_GEN[21])
-        br_snapshots_13_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_21 <= map_table_21;
-      if (_GEN_2[22])
-        br_snapshots_13_22 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[22])
-        br_snapshots_13_22 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[22])
-        br_snapshots_13_22 <= io_remap_reqs_1_pdst;
-      else if (_GEN[22])
-        br_snapshots_13_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_22 <= map_table_22;
-      if (_GEN_2[23])
-        br_snapshots_13_23 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[23])
-        br_snapshots_13_23 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[23])
-        br_snapshots_13_23 <= io_remap_reqs_1_pdst;
-      else if (_GEN[23])
-        br_snapshots_13_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_23 <= map_table_23;
-      if (_GEN_2[24])
-        br_snapshots_13_24 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[24])
-        br_snapshots_13_24 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[24])
-        br_snapshots_13_24 <= io_remap_reqs_1_pdst;
-      else if (_GEN[24])
-        br_snapshots_13_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_24 <= map_table_24;
-      if (_GEN_2[25])
-        br_snapshots_13_25 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[25])
-        br_snapshots_13_25 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[25])
-        br_snapshots_13_25 <= io_remap_reqs_1_pdst;
-      else if (_GEN[25])
-        br_snapshots_13_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_25 <= map_table_25;
-      if (_GEN_2[26])
-        br_snapshots_13_26 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[26])
-        br_snapshots_13_26 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[26])
-        br_snapshots_13_26 <= io_remap_reqs_1_pdst;
-      else if (_GEN[26])
-        br_snapshots_13_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_26 <= map_table_26;
-      if (_GEN_2[27])
-        br_snapshots_13_27 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[27])
-        br_snapshots_13_27 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[27])
-        br_snapshots_13_27 <= io_remap_reqs_1_pdst;
-      else if (_GEN[27])
-        br_snapshots_13_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_27 <= map_table_27;
-      if (_GEN_2[28])
-        br_snapshots_13_28 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[28])
-        br_snapshots_13_28 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[28])
-        br_snapshots_13_28 <= io_remap_reqs_1_pdst;
-      else if (_GEN[28])
-        br_snapshots_13_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_28 <= map_table_28;
-      if (_GEN_2[29])
-        br_snapshots_13_29 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[29])
-        br_snapshots_13_29 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[29])
-        br_snapshots_13_29 <= io_remap_reqs_1_pdst;
-      else if (_GEN[29])
-        br_snapshots_13_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_29 <= map_table_29;
-      if (_GEN_2[30])
-        br_snapshots_13_30 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[30])
-        br_snapshots_13_30 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[30])
-        br_snapshots_13_30 <= io_remap_reqs_1_pdst;
-      else if (_GEN[30])
-        br_snapshots_13_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_30 <= map_table_30;
-      if (_GEN_2[31])
-        br_snapshots_13_31 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[31])
-        br_snapshots_13_31 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[31])
-        br_snapshots_13_31 <= io_remap_reqs_1_pdst;
-      else if (_GEN[31])
-        br_snapshots_13_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_31 <= map_table_31;
+      br_snapshots_13_0 <= remap_table_4_0;
+      br_snapshots_13_1 <= remap_table_4_1;
+      br_snapshots_13_2 <= remap_table_4_2;
+      br_snapshots_13_3 <= remap_table_4_3;
+      br_snapshots_13_4 <= remap_table_4_4;
+      br_snapshots_13_5 <= remap_table_4_5;
+      br_snapshots_13_6 <= remap_table_4_6;
+      br_snapshots_13_7 <= remap_table_4_7;
+      br_snapshots_13_8 <= remap_table_4_8;
+      br_snapshots_13_9 <= remap_table_4_9;
+      br_snapshots_13_10 <= remap_table_4_10;
+      br_snapshots_13_11 <= remap_table_4_11;
+      br_snapshots_13_12 <= remap_table_4_12;
+      br_snapshots_13_13 <= remap_table_4_13;
+      br_snapshots_13_14 <= remap_table_4_14;
+      br_snapshots_13_15 <= remap_table_4_15;
+      br_snapshots_13_16 <= remap_table_4_16;
+      br_snapshots_13_17 <= remap_table_4_17;
+      br_snapshots_13_18 <= remap_table_4_18;
+      br_snapshots_13_19 <= remap_table_4_19;
+      br_snapshots_13_20 <= remap_table_4_20;
+      br_snapshots_13_21 <= remap_table_4_21;
+      br_snapshots_13_22 <= remap_table_4_22;
+      br_snapshots_13_23 <= remap_table_4_23;
+      br_snapshots_13_24 <= remap_table_4_24;
+      br_snapshots_13_25 <= remap_table_4_25;
+      br_snapshots_13_26 <= remap_table_4_26;
+      br_snapshots_13_27 <= remap_table_4_27;
+      br_snapshots_13_28 <= remap_table_4_28;
+      br_snapshots_13_29 <= remap_table_4_29;
+      br_snapshots_13_30 <= remap_table_4_30;
+      br_snapshots_13_31 <= remap_table_4_31;
     end
     else if (io_ren_br_tags_2_valid & io_ren_br_tags_2_bits == 5'hD) begin
-      if (_GEN_1[0])
-        br_snapshots_13_0 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[0])
-        br_snapshots_13_0 <= io_remap_reqs_1_pdst;
-      else if (_GEN[0])
-        br_snapshots_13_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_0 <= map_table_0;
-      if (_GEN_1[1])
-        br_snapshots_13_1 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[1])
-        br_snapshots_13_1 <= io_remap_reqs_1_pdst;
-      else if (_GEN[1])
-        br_snapshots_13_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_1 <= map_table_1;
-      if (_GEN_1[2])
-        br_snapshots_13_2 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[2])
-        br_snapshots_13_2 <= io_remap_reqs_1_pdst;
-      else if (_GEN[2])
-        br_snapshots_13_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_2 <= map_table_2;
-      if (_GEN_1[3])
-        br_snapshots_13_3 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[3])
-        br_snapshots_13_3 <= io_remap_reqs_1_pdst;
-      else if (_GEN[3])
-        br_snapshots_13_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_3 <= map_table_3;
-      if (_GEN_1[4])
-        br_snapshots_13_4 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[4])
-        br_snapshots_13_4 <= io_remap_reqs_1_pdst;
-      else if (_GEN[4])
-        br_snapshots_13_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_4 <= map_table_4;
-      if (_GEN_1[5])
-        br_snapshots_13_5 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[5])
-        br_snapshots_13_5 <= io_remap_reqs_1_pdst;
-      else if (_GEN[5])
-        br_snapshots_13_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_5 <= map_table_5;
-      if (_GEN_1[6])
-        br_snapshots_13_6 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[6])
-        br_snapshots_13_6 <= io_remap_reqs_1_pdst;
-      else if (_GEN[6])
-        br_snapshots_13_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_6 <= map_table_6;
-      if (_GEN_1[7])
-        br_snapshots_13_7 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[7])
-        br_snapshots_13_7 <= io_remap_reqs_1_pdst;
-      else if (_GEN[7])
-        br_snapshots_13_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_7 <= map_table_7;
-      if (_GEN_1[8])
-        br_snapshots_13_8 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[8])
-        br_snapshots_13_8 <= io_remap_reqs_1_pdst;
-      else if (_GEN[8])
-        br_snapshots_13_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_8 <= map_table_8;
-      if (_GEN_1[9])
-        br_snapshots_13_9 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[9])
-        br_snapshots_13_9 <= io_remap_reqs_1_pdst;
-      else if (_GEN[9])
-        br_snapshots_13_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_9 <= map_table_9;
-      if (_GEN_1[10])
-        br_snapshots_13_10 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[10])
-        br_snapshots_13_10 <= io_remap_reqs_1_pdst;
-      else if (_GEN[10])
-        br_snapshots_13_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_10 <= map_table_10;
-      if (_GEN_1[11])
-        br_snapshots_13_11 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[11])
-        br_snapshots_13_11 <= io_remap_reqs_1_pdst;
-      else if (_GEN[11])
-        br_snapshots_13_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_11 <= map_table_11;
-      if (_GEN_1[12])
-        br_snapshots_13_12 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[12])
-        br_snapshots_13_12 <= io_remap_reqs_1_pdst;
-      else if (_GEN[12])
-        br_snapshots_13_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_12 <= map_table_12;
-      if (_GEN_1[13])
-        br_snapshots_13_13 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[13])
-        br_snapshots_13_13 <= io_remap_reqs_1_pdst;
-      else if (_GEN[13])
-        br_snapshots_13_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_13 <= map_table_13;
-      if (_GEN_1[14])
-        br_snapshots_13_14 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[14])
-        br_snapshots_13_14 <= io_remap_reqs_1_pdst;
-      else if (_GEN[14])
-        br_snapshots_13_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_14 <= map_table_14;
-      if (_GEN_1[15])
-        br_snapshots_13_15 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[15])
-        br_snapshots_13_15 <= io_remap_reqs_1_pdst;
-      else if (_GEN[15])
-        br_snapshots_13_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_15 <= map_table_15;
-      if (_GEN_1[16])
-        br_snapshots_13_16 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[16])
-        br_snapshots_13_16 <= io_remap_reqs_1_pdst;
-      else if (_GEN[16])
-        br_snapshots_13_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_16 <= map_table_16;
-      if (_GEN_1[17])
-        br_snapshots_13_17 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[17])
-        br_snapshots_13_17 <= io_remap_reqs_1_pdst;
-      else if (_GEN[17])
-        br_snapshots_13_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_17 <= map_table_17;
-      if (_GEN_1[18])
-        br_snapshots_13_18 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[18])
-        br_snapshots_13_18 <= io_remap_reqs_1_pdst;
-      else if (_GEN[18])
-        br_snapshots_13_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_18 <= map_table_18;
-      if (_GEN_1[19])
-        br_snapshots_13_19 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[19])
-        br_snapshots_13_19 <= io_remap_reqs_1_pdst;
-      else if (_GEN[19])
-        br_snapshots_13_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_19 <= map_table_19;
-      if (_GEN_1[20])
-        br_snapshots_13_20 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[20])
-        br_snapshots_13_20 <= io_remap_reqs_1_pdst;
-      else if (_GEN[20])
-        br_snapshots_13_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_20 <= map_table_20;
-      if (_GEN_1[21])
-        br_snapshots_13_21 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[21])
-        br_snapshots_13_21 <= io_remap_reqs_1_pdst;
-      else if (_GEN[21])
-        br_snapshots_13_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_21 <= map_table_21;
-      if (_GEN_1[22])
-        br_snapshots_13_22 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[22])
-        br_snapshots_13_22 <= io_remap_reqs_1_pdst;
-      else if (_GEN[22])
-        br_snapshots_13_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_22 <= map_table_22;
-      if (_GEN_1[23])
-        br_snapshots_13_23 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[23])
-        br_snapshots_13_23 <= io_remap_reqs_1_pdst;
-      else if (_GEN[23])
-        br_snapshots_13_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_23 <= map_table_23;
-      if (_GEN_1[24])
-        br_snapshots_13_24 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[24])
-        br_snapshots_13_24 <= io_remap_reqs_1_pdst;
-      else if (_GEN[24])
-        br_snapshots_13_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_24 <= map_table_24;
-      if (_GEN_1[25])
-        br_snapshots_13_25 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[25])
-        br_snapshots_13_25 <= io_remap_reqs_1_pdst;
-      else if (_GEN[25])
-        br_snapshots_13_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_25 <= map_table_25;
-      if (_GEN_1[26])
-        br_snapshots_13_26 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[26])
-        br_snapshots_13_26 <= io_remap_reqs_1_pdst;
-      else if (_GEN[26])
-        br_snapshots_13_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_26 <= map_table_26;
-      if (_GEN_1[27])
-        br_snapshots_13_27 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[27])
-        br_snapshots_13_27 <= io_remap_reqs_1_pdst;
-      else if (_GEN[27])
-        br_snapshots_13_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_27 <= map_table_27;
-      if (_GEN_1[28])
-        br_snapshots_13_28 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[28])
-        br_snapshots_13_28 <= io_remap_reqs_1_pdst;
-      else if (_GEN[28])
-        br_snapshots_13_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_28 <= map_table_28;
-      if (_GEN_1[29])
-        br_snapshots_13_29 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[29])
-        br_snapshots_13_29 <= io_remap_reqs_1_pdst;
-      else if (_GEN[29])
-        br_snapshots_13_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_29 <= map_table_29;
-      if (_GEN_1[30])
-        br_snapshots_13_30 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[30])
-        br_snapshots_13_30 <= io_remap_reqs_1_pdst;
-      else if (_GEN[30])
-        br_snapshots_13_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_30 <= map_table_30;
-      if (_GEN_1[31])
-        br_snapshots_13_31 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[31])
-        br_snapshots_13_31 <= io_remap_reqs_1_pdst;
-      else if (_GEN[31])
-        br_snapshots_13_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_31 <= map_table_31;
+      br_snapshots_13_0 <= remap_table_3_0;
+      br_snapshots_13_1 <= remap_table_3_1;
+      br_snapshots_13_2 <= remap_table_3_2;
+      br_snapshots_13_3 <= remap_table_3_3;
+      br_snapshots_13_4 <= remap_table_3_4;
+      br_snapshots_13_5 <= remap_table_3_5;
+      br_snapshots_13_6 <= remap_table_3_6;
+      br_snapshots_13_7 <= remap_table_3_7;
+      br_snapshots_13_8 <= remap_table_3_8;
+      br_snapshots_13_9 <= remap_table_3_9;
+      br_snapshots_13_10 <= remap_table_3_10;
+      br_snapshots_13_11 <= remap_table_3_11;
+      br_snapshots_13_12 <= remap_table_3_12;
+      br_snapshots_13_13 <= remap_table_3_13;
+      br_snapshots_13_14 <= remap_table_3_14;
+      br_snapshots_13_15 <= remap_table_3_15;
+      br_snapshots_13_16 <= remap_table_3_16;
+      br_snapshots_13_17 <= remap_table_3_17;
+      br_snapshots_13_18 <= remap_table_3_18;
+      br_snapshots_13_19 <= remap_table_3_19;
+      br_snapshots_13_20 <= remap_table_3_20;
+      br_snapshots_13_21 <= remap_table_3_21;
+      br_snapshots_13_22 <= remap_table_3_22;
+      br_snapshots_13_23 <= remap_table_3_23;
+      br_snapshots_13_24 <= remap_table_3_24;
+      br_snapshots_13_25 <= remap_table_3_25;
+      br_snapshots_13_26 <= remap_table_3_26;
+      br_snapshots_13_27 <= remap_table_3_27;
+      br_snapshots_13_28 <= remap_table_3_28;
+      br_snapshots_13_29 <= remap_table_3_29;
+      br_snapshots_13_30 <= remap_table_3_30;
+      br_snapshots_13_31 <= remap_table_3_31;
     end
     else if (io_ren_br_tags_1_valid & io_ren_br_tags_1_bits == 5'hD) begin
-      if (_GEN_0[0])
-        br_snapshots_13_0 <= io_remap_reqs_1_pdst;
-      else if (_GEN[0])
-        br_snapshots_13_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_0 <= map_table_0;
-      if (_GEN_0[1])
-        br_snapshots_13_1 <= io_remap_reqs_1_pdst;
-      else if (_GEN[1])
-        br_snapshots_13_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_1 <= map_table_1;
-      if (_GEN_0[2])
-        br_snapshots_13_2 <= io_remap_reqs_1_pdst;
-      else if (_GEN[2])
-        br_snapshots_13_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_2 <= map_table_2;
-      if (_GEN_0[3])
-        br_snapshots_13_3 <= io_remap_reqs_1_pdst;
-      else if (_GEN[3])
-        br_snapshots_13_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_3 <= map_table_3;
-      if (_GEN_0[4])
-        br_snapshots_13_4 <= io_remap_reqs_1_pdst;
-      else if (_GEN[4])
-        br_snapshots_13_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_4 <= map_table_4;
-      if (_GEN_0[5])
-        br_snapshots_13_5 <= io_remap_reqs_1_pdst;
-      else if (_GEN[5])
-        br_snapshots_13_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_5 <= map_table_5;
-      if (_GEN_0[6])
-        br_snapshots_13_6 <= io_remap_reqs_1_pdst;
-      else if (_GEN[6])
-        br_snapshots_13_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_6 <= map_table_6;
-      if (_GEN_0[7])
-        br_snapshots_13_7 <= io_remap_reqs_1_pdst;
-      else if (_GEN[7])
-        br_snapshots_13_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_7 <= map_table_7;
-      if (_GEN_0[8])
-        br_snapshots_13_8 <= io_remap_reqs_1_pdst;
-      else if (_GEN[8])
-        br_snapshots_13_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_8 <= map_table_8;
-      if (_GEN_0[9])
-        br_snapshots_13_9 <= io_remap_reqs_1_pdst;
-      else if (_GEN[9])
-        br_snapshots_13_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_9 <= map_table_9;
-      if (_GEN_0[10])
-        br_snapshots_13_10 <= io_remap_reqs_1_pdst;
-      else if (_GEN[10])
-        br_snapshots_13_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_10 <= map_table_10;
-      if (_GEN_0[11])
-        br_snapshots_13_11 <= io_remap_reqs_1_pdst;
-      else if (_GEN[11])
-        br_snapshots_13_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_11 <= map_table_11;
-      if (_GEN_0[12])
-        br_snapshots_13_12 <= io_remap_reqs_1_pdst;
-      else if (_GEN[12])
-        br_snapshots_13_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_12 <= map_table_12;
-      if (_GEN_0[13])
-        br_snapshots_13_13 <= io_remap_reqs_1_pdst;
-      else if (_GEN[13])
-        br_snapshots_13_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_13 <= map_table_13;
-      if (_GEN_0[14])
-        br_snapshots_13_14 <= io_remap_reqs_1_pdst;
-      else if (_GEN[14])
-        br_snapshots_13_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_14 <= map_table_14;
-      if (_GEN_0[15])
-        br_snapshots_13_15 <= io_remap_reqs_1_pdst;
-      else if (_GEN[15])
-        br_snapshots_13_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_15 <= map_table_15;
-      if (_GEN_0[16])
-        br_snapshots_13_16 <= io_remap_reqs_1_pdst;
-      else if (_GEN[16])
-        br_snapshots_13_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_16 <= map_table_16;
-      if (_GEN_0[17])
-        br_snapshots_13_17 <= io_remap_reqs_1_pdst;
-      else if (_GEN[17])
-        br_snapshots_13_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_17 <= map_table_17;
-      if (_GEN_0[18])
-        br_snapshots_13_18 <= io_remap_reqs_1_pdst;
-      else if (_GEN[18])
-        br_snapshots_13_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_18 <= map_table_18;
-      if (_GEN_0[19])
-        br_snapshots_13_19 <= io_remap_reqs_1_pdst;
-      else if (_GEN[19])
-        br_snapshots_13_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_19 <= map_table_19;
-      if (_GEN_0[20])
-        br_snapshots_13_20 <= io_remap_reqs_1_pdst;
-      else if (_GEN[20])
-        br_snapshots_13_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_20 <= map_table_20;
-      if (_GEN_0[21])
-        br_snapshots_13_21 <= io_remap_reqs_1_pdst;
-      else if (_GEN[21])
-        br_snapshots_13_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_21 <= map_table_21;
-      if (_GEN_0[22])
-        br_snapshots_13_22 <= io_remap_reqs_1_pdst;
-      else if (_GEN[22])
-        br_snapshots_13_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_22 <= map_table_22;
-      if (_GEN_0[23])
-        br_snapshots_13_23 <= io_remap_reqs_1_pdst;
-      else if (_GEN[23])
-        br_snapshots_13_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_23 <= map_table_23;
-      if (_GEN_0[24])
-        br_snapshots_13_24 <= io_remap_reqs_1_pdst;
-      else if (_GEN[24])
-        br_snapshots_13_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_24 <= map_table_24;
-      if (_GEN_0[25])
-        br_snapshots_13_25 <= io_remap_reqs_1_pdst;
-      else if (_GEN[25])
-        br_snapshots_13_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_25 <= map_table_25;
-      if (_GEN_0[26])
-        br_snapshots_13_26 <= io_remap_reqs_1_pdst;
-      else if (_GEN[26])
-        br_snapshots_13_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_26 <= map_table_26;
-      if (_GEN_0[27])
-        br_snapshots_13_27 <= io_remap_reqs_1_pdst;
-      else if (_GEN[27])
-        br_snapshots_13_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_27 <= map_table_27;
-      if (_GEN_0[28])
-        br_snapshots_13_28 <= io_remap_reqs_1_pdst;
-      else if (_GEN[28])
-        br_snapshots_13_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_28 <= map_table_28;
-      if (_GEN_0[29])
-        br_snapshots_13_29 <= io_remap_reqs_1_pdst;
-      else if (_GEN[29])
-        br_snapshots_13_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_29 <= map_table_29;
-      if (_GEN_0[30])
-        br_snapshots_13_30 <= io_remap_reqs_1_pdst;
-      else if (_GEN[30])
-        br_snapshots_13_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_30 <= map_table_30;
-      if (_GEN_0[31])
-        br_snapshots_13_31 <= io_remap_reqs_1_pdst;
-      else if (_GEN[31])
-        br_snapshots_13_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_31 <= map_table_31;
+      br_snapshots_13_0 <= remap_table_2_0;
+      br_snapshots_13_1 <= remap_table_2_1;
+      br_snapshots_13_2 <= remap_table_2_2;
+      br_snapshots_13_3 <= remap_table_2_3;
+      br_snapshots_13_4 <= remap_table_2_4;
+      br_snapshots_13_5 <= remap_table_2_5;
+      br_snapshots_13_6 <= remap_table_2_6;
+      br_snapshots_13_7 <= remap_table_2_7;
+      br_snapshots_13_8 <= remap_table_2_8;
+      br_snapshots_13_9 <= remap_table_2_9;
+      br_snapshots_13_10 <= remap_table_2_10;
+      br_snapshots_13_11 <= remap_table_2_11;
+      br_snapshots_13_12 <= remap_table_2_12;
+      br_snapshots_13_13 <= remap_table_2_13;
+      br_snapshots_13_14 <= remap_table_2_14;
+      br_snapshots_13_15 <= remap_table_2_15;
+      br_snapshots_13_16 <= remap_table_2_16;
+      br_snapshots_13_17 <= remap_table_2_17;
+      br_snapshots_13_18 <= remap_table_2_18;
+      br_snapshots_13_19 <= remap_table_2_19;
+      br_snapshots_13_20 <= remap_table_2_20;
+      br_snapshots_13_21 <= remap_table_2_21;
+      br_snapshots_13_22 <= remap_table_2_22;
+      br_snapshots_13_23 <= remap_table_2_23;
+      br_snapshots_13_24 <= remap_table_2_24;
+      br_snapshots_13_25 <= remap_table_2_25;
+      br_snapshots_13_26 <= remap_table_2_26;
+      br_snapshots_13_27 <= remap_table_2_27;
+      br_snapshots_13_28 <= remap_table_2_28;
+      br_snapshots_13_29 <= remap_table_2_29;
+      br_snapshots_13_30 <= remap_table_2_30;
+      br_snapshots_13_31 <= remap_table_2_31;
     end
     else if (io_ren_br_tags_0_valid & io_ren_br_tags_0_bits == 5'hD) begin
-      if (_GEN[0])
-        br_snapshots_13_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_0 <= map_table_0;
-      if (_GEN[1])
-        br_snapshots_13_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_1 <= map_table_1;
-      if (_GEN[2])
-        br_snapshots_13_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_2 <= map_table_2;
-      if (_GEN[3])
-        br_snapshots_13_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_3 <= map_table_3;
-      if (_GEN[4])
-        br_snapshots_13_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_4 <= map_table_4;
-      if (_GEN[5])
-        br_snapshots_13_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_5 <= map_table_5;
-      if (_GEN[6])
-        br_snapshots_13_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_6 <= map_table_6;
-      if (_GEN[7])
-        br_snapshots_13_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_7 <= map_table_7;
-      if (_GEN[8])
-        br_snapshots_13_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_8 <= map_table_8;
-      if (_GEN[9])
-        br_snapshots_13_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_9 <= map_table_9;
-      if (_GEN[10])
-        br_snapshots_13_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_10 <= map_table_10;
-      if (_GEN[11])
-        br_snapshots_13_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_11 <= map_table_11;
-      if (_GEN[12])
-        br_snapshots_13_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_12 <= map_table_12;
-      if (_GEN[13])
-        br_snapshots_13_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_13 <= map_table_13;
-      if (_GEN[14])
-        br_snapshots_13_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_14 <= map_table_14;
-      if (_GEN[15])
-        br_snapshots_13_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_15 <= map_table_15;
-      if (_GEN[16])
-        br_snapshots_13_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_16 <= map_table_16;
-      if (_GEN[17])
-        br_snapshots_13_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_17 <= map_table_17;
-      if (_GEN[18])
-        br_snapshots_13_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_18 <= map_table_18;
-      if (_GEN[19])
-        br_snapshots_13_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_19 <= map_table_19;
-      if (_GEN[20])
-        br_snapshots_13_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_20 <= map_table_20;
-      if (_GEN[21])
-        br_snapshots_13_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_21 <= map_table_21;
-      if (_GEN[22])
-        br_snapshots_13_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_22 <= map_table_22;
-      if (_GEN[23])
-        br_snapshots_13_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_23 <= map_table_23;
-      if (_GEN[24])
-        br_snapshots_13_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_24 <= map_table_24;
-      if (_GEN[25])
-        br_snapshots_13_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_25 <= map_table_25;
-      if (_GEN[26])
-        br_snapshots_13_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_26 <= map_table_26;
-      if (_GEN[27])
-        br_snapshots_13_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_27 <= map_table_27;
-      if (_GEN[28])
-        br_snapshots_13_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_28 <= map_table_28;
-      if (_GEN[29])
-        br_snapshots_13_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_29 <= map_table_29;
-      if (_GEN[30])
-        br_snapshots_13_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_30 <= map_table_30;
-      if (_GEN[31])
-        br_snapshots_13_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_13_31 <= map_table_31;
+      br_snapshots_13_0 <= remap_table_1_0;
+      br_snapshots_13_1 <= remap_table_1_1;
+      br_snapshots_13_2 <= remap_table_1_2;
+      br_snapshots_13_3 <= remap_table_1_3;
+      br_snapshots_13_4 <= remap_table_1_4;
+      br_snapshots_13_5 <= remap_table_1_5;
+      br_snapshots_13_6 <= remap_table_1_6;
+      br_snapshots_13_7 <= remap_table_1_7;
+      br_snapshots_13_8 <= remap_table_1_8;
+      br_snapshots_13_9 <= remap_table_1_9;
+      br_snapshots_13_10 <= remap_table_1_10;
+      br_snapshots_13_11 <= remap_table_1_11;
+      br_snapshots_13_12 <= remap_table_1_12;
+      br_snapshots_13_13 <= remap_table_1_13;
+      br_snapshots_13_14 <= remap_table_1_14;
+      br_snapshots_13_15 <= remap_table_1_15;
+      br_snapshots_13_16 <= remap_table_1_16;
+      br_snapshots_13_17 <= remap_table_1_17;
+      br_snapshots_13_18 <= remap_table_1_18;
+      br_snapshots_13_19 <= remap_table_1_19;
+      br_snapshots_13_20 <= remap_table_1_20;
+      br_snapshots_13_21 <= remap_table_1_21;
+      br_snapshots_13_22 <= remap_table_1_22;
+      br_snapshots_13_23 <= remap_table_1_23;
+      br_snapshots_13_24 <= remap_table_1_24;
+      br_snapshots_13_25 <= remap_table_1_25;
+      br_snapshots_13_26 <= remap_table_1_26;
+      br_snapshots_13_27 <= remap_table_1_27;
+      br_snapshots_13_28 <= remap_table_1_28;
+      br_snapshots_13_29 <= remap_table_1_29;
+      br_snapshots_13_30 <= remap_table_1_30;
+      br_snapshots_13_31 <= remap_table_1_31;
     end
     if (io_ren_br_tags_3_valid & io_ren_br_tags_3_bits == 5'hE) begin
-      if (_GEN_2[0])
-        br_snapshots_14_0 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[0])
-        br_snapshots_14_0 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[0])
-        br_snapshots_14_0 <= io_remap_reqs_1_pdst;
-      else if (_GEN[0])
-        br_snapshots_14_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_0 <= map_table_0;
-      if (_GEN_2[1])
-        br_snapshots_14_1 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[1])
-        br_snapshots_14_1 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[1])
-        br_snapshots_14_1 <= io_remap_reqs_1_pdst;
-      else if (_GEN[1])
-        br_snapshots_14_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_1 <= map_table_1;
-      if (_GEN_2[2])
-        br_snapshots_14_2 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[2])
-        br_snapshots_14_2 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[2])
-        br_snapshots_14_2 <= io_remap_reqs_1_pdst;
-      else if (_GEN[2])
-        br_snapshots_14_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_2 <= map_table_2;
-      if (_GEN_2[3])
-        br_snapshots_14_3 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[3])
-        br_snapshots_14_3 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[3])
-        br_snapshots_14_3 <= io_remap_reqs_1_pdst;
-      else if (_GEN[3])
-        br_snapshots_14_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_3 <= map_table_3;
-      if (_GEN_2[4])
-        br_snapshots_14_4 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[4])
-        br_snapshots_14_4 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[4])
-        br_snapshots_14_4 <= io_remap_reqs_1_pdst;
-      else if (_GEN[4])
-        br_snapshots_14_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_4 <= map_table_4;
-      if (_GEN_2[5])
-        br_snapshots_14_5 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[5])
-        br_snapshots_14_5 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[5])
-        br_snapshots_14_5 <= io_remap_reqs_1_pdst;
-      else if (_GEN[5])
-        br_snapshots_14_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_5 <= map_table_5;
-      if (_GEN_2[6])
-        br_snapshots_14_6 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[6])
-        br_snapshots_14_6 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[6])
-        br_snapshots_14_6 <= io_remap_reqs_1_pdst;
-      else if (_GEN[6])
-        br_snapshots_14_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_6 <= map_table_6;
-      if (_GEN_2[7])
-        br_snapshots_14_7 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[7])
-        br_snapshots_14_7 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[7])
-        br_snapshots_14_7 <= io_remap_reqs_1_pdst;
-      else if (_GEN[7])
-        br_snapshots_14_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_7 <= map_table_7;
-      if (_GEN_2[8])
-        br_snapshots_14_8 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[8])
-        br_snapshots_14_8 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[8])
-        br_snapshots_14_8 <= io_remap_reqs_1_pdst;
-      else if (_GEN[8])
-        br_snapshots_14_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_8 <= map_table_8;
-      if (_GEN_2[9])
-        br_snapshots_14_9 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[9])
-        br_snapshots_14_9 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[9])
-        br_snapshots_14_9 <= io_remap_reqs_1_pdst;
-      else if (_GEN[9])
-        br_snapshots_14_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_9 <= map_table_9;
-      if (_GEN_2[10])
-        br_snapshots_14_10 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[10])
-        br_snapshots_14_10 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[10])
-        br_snapshots_14_10 <= io_remap_reqs_1_pdst;
-      else if (_GEN[10])
-        br_snapshots_14_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_10 <= map_table_10;
-      if (_GEN_2[11])
-        br_snapshots_14_11 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[11])
-        br_snapshots_14_11 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[11])
-        br_snapshots_14_11 <= io_remap_reqs_1_pdst;
-      else if (_GEN[11])
-        br_snapshots_14_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_11 <= map_table_11;
-      if (_GEN_2[12])
-        br_snapshots_14_12 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[12])
-        br_snapshots_14_12 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[12])
-        br_snapshots_14_12 <= io_remap_reqs_1_pdst;
-      else if (_GEN[12])
-        br_snapshots_14_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_12 <= map_table_12;
-      if (_GEN_2[13])
-        br_snapshots_14_13 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[13])
-        br_snapshots_14_13 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[13])
-        br_snapshots_14_13 <= io_remap_reqs_1_pdst;
-      else if (_GEN[13])
-        br_snapshots_14_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_13 <= map_table_13;
-      if (_GEN_2[14])
-        br_snapshots_14_14 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[14])
-        br_snapshots_14_14 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[14])
-        br_snapshots_14_14 <= io_remap_reqs_1_pdst;
-      else if (_GEN[14])
-        br_snapshots_14_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_14 <= map_table_14;
-      if (_GEN_2[15])
-        br_snapshots_14_15 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[15])
-        br_snapshots_14_15 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[15])
-        br_snapshots_14_15 <= io_remap_reqs_1_pdst;
-      else if (_GEN[15])
-        br_snapshots_14_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_15 <= map_table_15;
-      if (_GEN_2[16])
-        br_snapshots_14_16 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[16])
-        br_snapshots_14_16 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[16])
-        br_snapshots_14_16 <= io_remap_reqs_1_pdst;
-      else if (_GEN[16])
-        br_snapshots_14_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_16 <= map_table_16;
-      if (_GEN_2[17])
-        br_snapshots_14_17 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[17])
-        br_snapshots_14_17 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[17])
-        br_snapshots_14_17 <= io_remap_reqs_1_pdst;
-      else if (_GEN[17])
-        br_snapshots_14_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_17 <= map_table_17;
-      if (_GEN_2[18])
-        br_snapshots_14_18 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[18])
-        br_snapshots_14_18 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[18])
-        br_snapshots_14_18 <= io_remap_reqs_1_pdst;
-      else if (_GEN[18])
-        br_snapshots_14_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_18 <= map_table_18;
-      if (_GEN_2[19])
-        br_snapshots_14_19 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[19])
-        br_snapshots_14_19 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[19])
-        br_snapshots_14_19 <= io_remap_reqs_1_pdst;
-      else if (_GEN[19])
-        br_snapshots_14_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_19 <= map_table_19;
-      if (_GEN_2[20])
-        br_snapshots_14_20 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[20])
-        br_snapshots_14_20 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[20])
-        br_snapshots_14_20 <= io_remap_reqs_1_pdst;
-      else if (_GEN[20])
-        br_snapshots_14_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_20 <= map_table_20;
-      if (_GEN_2[21])
-        br_snapshots_14_21 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[21])
-        br_snapshots_14_21 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[21])
-        br_snapshots_14_21 <= io_remap_reqs_1_pdst;
-      else if (_GEN[21])
-        br_snapshots_14_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_21 <= map_table_21;
-      if (_GEN_2[22])
-        br_snapshots_14_22 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[22])
-        br_snapshots_14_22 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[22])
-        br_snapshots_14_22 <= io_remap_reqs_1_pdst;
-      else if (_GEN[22])
-        br_snapshots_14_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_22 <= map_table_22;
-      if (_GEN_2[23])
-        br_snapshots_14_23 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[23])
-        br_snapshots_14_23 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[23])
-        br_snapshots_14_23 <= io_remap_reqs_1_pdst;
-      else if (_GEN[23])
-        br_snapshots_14_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_23 <= map_table_23;
-      if (_GEN_2[24])
-        br_snapshots_14_24 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[24])
-        br_snapshots_14_24 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[24])
-        br_snapshots_14_24 <= io_remap_reqs_1_pdst;
-      else if (_GEN[24])
-        br_snapshots_14_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_24 <= map_table_24;
-      if (_GEN_2[25])
-        br_snapshots_14_25 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[25])
-        br_snapshots_14_25 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[25])
-        br_snapshots_14_25 <= io_remap_reqs_1_pdst;
-      else if (_GEN[25])
-        br_snapshots_14_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_25 <= map_table_25;
-      if (_GEN_2[26])
-        br_snapshots_14_26 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[26])
-        br_snapshots_14_26 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[26])
-        br_snapshots_14_26 <= io_remap_reqs_1_pdst;
-      else if (_GEN[26])
-        br_snapshots_14_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_26 <= map_table_26;
-      if (_GEN_2[27])
-        br_snapshots_14_27 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[27])
-        br_snapshots_14_27 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[27])
-        br_snapshots_14_27 <= io_remap_reqs_1_pdst;
-      else if (_GEN[27])
-        br_snapshots_14_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_27 <= map_table_27;
-      if (_GEN_2[28])
-        br_snapshots_14_28 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[28])
-        br_snapshots_14_28 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[28])
-        br_snapshots_14_28 <= io_remap_reqs_1_pdst;
-      else if (_GEN[28])
-        br_snapshots_14_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_28 <= map_table_28;
-      if (_GEN_2[29])
-        br_snapshots_14_29 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[29])
-        br_snapshots_14_29 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[29])
-        br_snapshots_14_29 <= io_remap_reqs_1_pdst;
-      else if (_GEN[29])
-        br_snapshots_14_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_29 <= map_table_29;
-      if (_GEN_2[30])
-        br_snapshots_14_30 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[30])
-        br_snapshots_14_30 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[30])
-        br_snapshots_14_30 <= io_remap_reqs_1_pdst;
-      else if (_GEN[30])
-        br_snapshots_14_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_30 <= map_table_30;
-      if (_GEN_2[31])
-        br_snapshots_14_31 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[31])
-        br_snapshots_14_31 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[31])
-        br_snapshots_14_31 <= io_remap_reqs_1_pdst;
-      else if (_GEN[31])
-        br_snapshots_14_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_31 <= map_table_31;
+      br_snapshots_14_0 <= remap_table_4_0;
+      br_snapshots_14_1 <= remap_table_4_1;
+      br_snapshots_14_2 <= remap_table_4_2;
+      br_snapshots_14_3 <= remap_table_4_3;
+      br_snapshots_14_4 <= remap_table_4_4;
+      br_snapshots_14_5 <= remap_table_4_5;
+      br_snapshots_14_6 <= remap_table_4_6;
+      br_snapshots_14_7 <= remap_table_4_7;
+      br_snapshots_14_8 <= remap_table_4_8;
+      br_snapshots_14_9 <= remap_table_4_9;
+      br_snapshots_14_10 <= remap_table_4_10;
+      br_snapshots_14_11 <= remap_table_4_11;
+      br_snapshots_14_12 <= remap_table_4_12;
+      br_snapshots_14_13 <= remap_table_4_13;
+      br_snapshots_14_14 <= remap_table_4_14;
+      br_snapshots_14_15 <= remap_table_4_15;
+      br_snapshots_14_16 <= remap_table_4_16;
+      br_snapshots_14_17 <= remap_table_4_17;
+      br_snapshots_14_18 <= remap_table_4_18;
+      br_snapshots_14_19 <= remap_table_4_19;
+      br_snapshots_14_20 <= remap_table_4_20;
+      br_snapshots_14_21 <= remap_table_4_21;
+      br_snapshots_14_22 <= remap_table_4_22;
+      br_snapshots_14_23 <= remap_table_4_23;
+      br_snapshots_14_24 <= remap_table_4_24;
+      br_snapshots_14_25 <= remap_table_4_25;
+      br_snapshots_14_26 <= remap_table_4_26;
+      br_snapshots_14_27 <= remap_table_4_27;
+      br_snapshots_14_28 <= remap_table_4_28;
+      br_snapshots_14_29 <= remap_table_4_29;
+      br_snapshots_14_30 <= remap_table_4_30;
+      br_snapshots_14_31 <= remap_table_4_31;
     end
     else if (io_ren_br_tags_2_valid & io_ren_br_tags_2_bits == 5'hE) begin
-      if (_GEN_1[0])
-        br_snapshots_14_0 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[0])
-        br_snapshots_14_0 <= io_remap_reqs_1_pdst;
-      else if (_GEN[0])
-        br_snapshots_14_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_0 <= map_table_0;
-      if (_GEN_1[1])
-        br_snapshots_14_1 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[1])
-        br_snapshots_14_1 <= io_remap_reqs_1_pdst;
-      else if (_GEN[1])
-        br_snapshots_14_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_1 <= map_table_1;
-      if (_GEN_1[2])
-        br_snapshots_14_2 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[2])
-        br_snapshots_14_2 <= io_remap_reqs_1_pdst;
-      else if (_GEN[2])
-        br_snapshots_14_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_2 <= map_table_2;
-      if (_GEN_1[3])
-        br_snapshots_14_3 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[3])
-        br_snapshots_14_3 <= io_remap_reqs_1_pdst;
-      else if (_GEN[3])
-        br_snapshots_14_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_3 <= map_table_3;
-      if (_GEN_1[4])
-        br_snapshots_14_4 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[4])
-        br_snapshots_14_4 <= io_remap_reqs_1_pdst;
-      else if (_GEN[4])
-        br_snapshots_14_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_4 <= map_table_4;
-      if (_GEN_1[5])
-        br_snapshots_14_5 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[5])
-        br_snapshots_14_5 <= io_remap_reqs_1_pdst;
-      else if (_GEN[5])
-        br_snapshots_14_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_5 <= map_table_5;
-      if (_GEN_1[6])
-        br_snapshots_14_6 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[6])
-        br_snapshots_14_6 <= io_remap_reqs_1_pdst;
-      else if (_GEN[6])
-        br_snapshots_14_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_6 <= map_table_6;
-      if (_GEN_1[7])
-        br_snapshots_14_7 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[7])
-        br_snapshots_14_7 <= io_remap_reqs_1_pdst;
-      else if (_GEN[7])
-        br_snapshots_14_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_7 <= map_table_7;
-      if (_GEN_1[8])
-        br_snapshots_14_8 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[8])
-        br_snapshots_14_8 <= io_remap_reqs_1_pdst;
-      else if (_GEN[8])
-        br_snapshots_14_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_8 <= map_table_8;
-      if (_GEN_1[9])
-        br_snapshots_14_9 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[9])
-        br_snapshots_14_9 <= io_remap_reqs_1_pdst;
-      else if (_GEN[9])
-        br_snapshots_14_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_9 <= map_table_9;
-      if (_GEN_1[10])
-        br_snapshots_14_10 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[10])
-        br_snapshots_14_10 <= io_remap_reqs_1_pdst;
-      else if (_GEN[10])
-        br_snapshots_14_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_10 <= map_table_10;
-      if (_GEN_1[11])
-        br_snapshots_14_11 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[11])
-        br_snapshots_14_11 <= io_remap_reqs_1_pdst;
-      else if (_GEN[11])
-        br_snapshots_14_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_11 <= map_table_11;
-      if (_GEN_1[12])
-        br_snapshots_14_12 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[12])
-        br_snapshots_14_12 <= io_remap_reqs_1_pdst;
-      else if (_GEN[12])
-        br_snapshots_14_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_12 <= map_table_12;
-      if (_GEN_1[13])
-        br_snapshots_14_13 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[13])
-        br_snapshots_14_13 <= io_remap_reqs_1_pdst;
-      else if (_GEN[13])
-        br_snapshots_14_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_13 <= map_table_13;
-      if (_GEN_1[14])
-        br_snapshots_14_14 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[14])
-        br_snapshots_14_14 <= io_remap_reqs_1_pdst;
-      else if (_GEN[14])
-        br_snapshots_14_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_14 <= map_table_14;
-      if (_GEN_1[15])
-        br_snapshots_14_15 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[15])
-        br_snapshots_14_15 <= io_remap_reqs_1_pdst;
-      else if (_GEN[15])
-        br_snapshots_14_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_15 <= map_table_15;
-      if (_GEN_1[16])
-        br_snapshots_14_16 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[16])
-        br_snapshots_14_16 <= io_remap_reqs_1_pdst;
-      else if (_GEN[16])
-        br_snapshots_14_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_16 <= map_table_16;
-      if (_GEN_1[17])
-        br_snapshots_14_17 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[17])
-        br_snapshots_14_17 <= io_remap_reqs_1_pdst;
-      else if (_GEN[17])
-        br_snapshots_14_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_17 <= map_table_17;
-      if (_GEN_1[18])
-        br_snapshots_14_18 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[18])
-        br_snapshots_14_18 <= io_remap_reqs_1_pdst;
-      else if (_GEN[18])
-        br_snapshots_14_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_18 <= map_table_18;
-      if (_GEN_1[19])
-        br_snapshots_14_19 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[19])
-        br_snapshots_14_19 <= io_remap_reqs_1_pdst;
-      else if (_GEN[19])
-        br_snapshots_14_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_19 <= map_table_19;
-      if (_GEN_1[20])
-        br_snapshots_14_20 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[20])
-        br_snapshots_14_20 <= io_remap_reqs_1_pdst;
-      else if (_GEN[20])
-        br_snapshots_14_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_20 <= map_table_20;
-      if (_GEN_1[21])
-        br_snapshots_14_21 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[21])
-        br_snapshots_14_21 <= io_remap_reqs_1_pdst;
-      else if (_GEN[21])
-        br_snapshots_14_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_21 <= map_table_21;
-      if (_GEN_1[22])
-        br_snapshots_14_22 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[22])
-        br_snapshots_14_22 <= io_remap_reqs_1_pdst;
-      else if (_GEN[22])
-        br_snapshots_14_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_22 <= map_table_22;
-      if (_GEN_1[23])
-        br_snapshots_14_23 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[23])
-        br_snapshots_14_23 <= io_remap_reqs_1_pdst;
-      else if (_GEN[23])
-        br_snapshots_14_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_23 <= map_table_23;
-      if (_GEN_1[24])
-        br_snapshots_14_24 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[24])
-        br_snapshots_14_24 <= io_remap_reqs_1_pdst;
-      else if (_GEN[24])
-        br_snapshots_14_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_24 <= map_table_24;
-      if (_GEN_1[25])
-        br_snapshots_14_25 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[25])
-        br_snapshots_14_25 <= io_remap_reqs_1_pdst;
-      else if (_GEN[25])
-        br_snapshots_14_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_25 <= map_table_25;
-      if (_GEN_1[26])
-        br_snapshots_14_26 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[26])
-        br_snapshots_14_26 <= io_remap_reqs_1_pdst;
-      else if (_GEN[26])
-        br_snapshots_14_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_26 <= map_table_26;
-      if (_GEN_1[27])
-        br_snapshots_14_27 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[27])
-        br_snapshots_14_27 <= io_remap_reqs_1_pdst;
-      else if (_GEN[27])
-        br_snapshots_14_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_27 <= map_table_27;
-      if (_GEN_1[28])
-        br_snapshots_14_28 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[28])
-        br_snapshots_14_28 <= io_remap_reqs_1_pdst;
-      else if (_GEN[28])
-        br_snapshots_14_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_28 <= map_table_28;
-      if (_GEN_1[29])
-        br_snapshots_14_29 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[29])
-        br_snapshots_14_29 <= io_remap_reqs_1_pdst;
-      else if (_GEN[29])
-        br_snapshots_14_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_29 <= map_table_29;
-      if (_GEN_1[30])
-        br_snapshots_14_30 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[30])
-        br_snapshots_14_30 <= io_remap_reqs_1_pdst;
-      else if (_GEN[30])
-        br_snapshots_14_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_30 <= map_table_30;
-      if (_GEN_1[31])
-        br_snapshots_14_31 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[31])
-        br_snapshots_14_31 <= io_remap_reqs_1_pdst;
-      else if (_GEN[31])
-        br_snapshots_14_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_31 <= map_table_31;
+      br_snapshots_14_0 <= remap_table_3_0;
+      br_snapshots_14_1 <= remap_table_3_1;
+      br_snapshots_14_2 <= remap_table_3_2;
+      br_snapshots_14_3 <= remap_table_3_3;
+      br_snapshots_14_4 <= remap_table_3_4;
+      br_snapshots_14_5 <= remap_table_3_5;
+      br_snapshots_14_6 <= remap_table_3_6;
+      br_snapshots_14_7 <= remap_table_3_7;
+      br_snapshots_14_8 <= remap_table_3_8;
+      br_snapshots_14_9 <= remap_table_3_9;
+      br_snapshots_14_10 <= remap_table_3_10;
+      br_snapshots_14_11 <= remap_table_3_11;
+      br_snapshots_14_12 <= remap_table_3_12;
+      br_snapshots_14_13 <= remap_table_3_13;
+      br_snapshots_14_14 <= remap_table_3_14;
+      br_snapshots_14_15 <= remap_table_3_15;
+      br_snapshots_14_16 <= remap_table_3_16;
+      br_snapshots_14_17 <= remap_table_3_17;
+      br_snapshots_14_18 <= remap_table_3_18;
+      br_snapshots_14_19 <= remap_table_3_19;
+      br_snapshots_14_20 <= remap_table_3_20;
+      br_snapshots_14_21 <= remap_table_3_21;
+      br_snapshots_14_22 <= remap_table_3_22;
+      br_snapshots_14_23 <= remap_table_3_23;
+      br_snapshots_14_24 <= remap_table_3_24;
+      br_snapshots_14_25 <= remap_table_3_25;
+      br_snapshots_14_26 <= remap_table_3_26;
+      br_snapshots_14_27 <= remap_table_3_27;
+      br_snapshots_14_28 <= remap_table_3_28;
+      br_snapshots_14_29 <= remap_table_3_29;
+      br_snapshots_14_30 <= remap_table_3_30;
+      br_snapshots_14_31 <= remap_table_3_31;
     end
     else if (io_ren_br_tags_1_valid & io_ren_br_tags_1_bits == 5'hE) begin
-      if (_GEN_0[0])
-        br_snapshots_14_0 <= io_remap_reqs_1_pdst;
-      else if (_GEN[0])
-        br_snapshots_14_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_0 <= map_table_0;
-      if (_GEN_0[1])
-        br_snapshots_14_1 <= io_remap_reqs_1_pdst;
-      else if (_GEN[1])
-        br_snapshots_14_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_1 <= map_table_1;
-      if (_GEN_0[2])
-        br_snapshots_14_2 <= io_remap_reqs_1_pdst;
-      else if (_GEN[2])
-        br_snapshots_14_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_2 <= map_table_2;
-      if (_GEN_0[3])
-        br_snapshots_14_3 <= io_remap_reqs_1_pdst;
-      else if (_GEN[3])
-        br_snapshots_14_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_3 <= map_table_3;
-      if (_GEN_0[4])
-        br_snapshots_14_4 <= io_remap_reqs_1_pdst;
-      else if (_GEN[4])
-        br_snapshots_14_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_4 <= map_table_4;
-      if (_GEN_0[5])
-        br_snapshots_14_5 <= io_remap_reqs_1_pdst;
-      else if (_GEN[5])
-        br_snapshots_14_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_5 <= map_table_5;
-      if (_GEN_0[6])
-        br_snapshots_14_6 <= io_remap_reqs_1_pdst;
-      else if (_GEN[6])
-        br_snapshots_14_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_6 <= map_table_6;
-      if (_GEN_0[7])
-        br_snapshots_14_7 <= io_remap_reqs_1_pdst;
-      else if (_GEN[7])
-        br_snapshots_14_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_7 <= map_table_7;
-      if (_GEN_0[8])
-        br_snapshots_14_8 <= io_remap_reqs_1_pdst;
-      else if (_GEN[8])
-        br_snapshots_14_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_8 <= map_table_8;
-      if (_GEN_0[9])
-        br_snapshots_14_9 <= io_remap_reqs_1_pdst;
-      else if (_GEN[9])
-        br_snapshots_14_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_9 <= map_table_9;
-      if (_GEN_0[10])
-        br_snapshots_14_10 <= io_remap_reqs_1_pdst;
-      else if (_GEN[10])
-        br_snapshots_14_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_10 <= map_table_10;
-      if (_GEN_0[11])
-        br_snapshots_14_11 <= io_remap_reqs_1_pdst;
-      else if (_GEN[11])
-        br_snapshots_14_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_11 <= map_table_11;
-      if (_GEN_0[12])
-        br_snapshots_14_12 <= io_remap_reqs_1_pdst;
-      else if (_GEN[12])
-        br_snapshots_14_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_12 <= map_table_12;
-      if (_GEN_0[13])
-        br_snapshots_14_13 <= io_remap_reqs_1_pdst;
-      else if (_GEN[13])
-        br_snapshots_14_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_13 <= map_table_13;
-      if (_GEN_0[14])
-        br_snapshots_14_14 <= io_remap_reqs_1_pdst;
-      else if (_GEN[14])
-        br_snapshots_14_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_14 <= map_table_14;
-      if (_GEN_0[15])
-        br_snapshots_14_15 <= io_remap_reqs_1_pdst;
-      else if (_GEN[15])
-        br_snapshots_14_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_15 <= map_table_15;
-      if (_GEN_0[16])
-        br_snapshots_14_16 <= io_remap_reqs_1_pdst;
-      else if (_GEN[16])
-        br_snapshots_14_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_16 <= map_table_16;
-      if (_GEN_0[17])
-        br_snapshots_14_17 <= io_remap_reqs_1_pdst;
-      else if (_GEN[17])
-        br_snapshots_14_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_17 <= map_table_17;
-      if (_GEN_0[18])
-        br_snapshots_14_18 <= io_remap_reqs_1_pdst;
-      else if (_GEN[18])
-        br_snapshots_14_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_18 <= map_table_18;
-      if (_GEN_0[19])
-        br_snapshots_14_19 <= io_remap_reqs_1_pdst;
-      else if (_GEN[19])
-        br_snapshots_14_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_19 <= map_table_19;
-      if (_GEN_0[20])
-        br_snapshots_14_20 <= io_remap_reqs_1_pdst;
-      else if (_GEN[20])
-        br_snapshots_14_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_20 <= map_table_20;
-      if (_GEN_0[21])
-        br_snapshots_14_21 <= io_remap_reqs_1_pdst;
-      else if (_GEN[21])
-        br_snapshots_14_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_21 <= map_table_21;
-      if (_GEN_0[22])
-        br_snapshots_14_22 <= io_remap_reqs_1_pdst;
-      else if (_GEN[22])
-        br_snapshots_14_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_22 <= map_table_22;
-      if (_GEN_0[23])
-        br_snapshots_14_23 <= io_remap_reqs_1_pdst;
-      else if (_GEN[23])
-        br_snapshots_14_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_23 <= map_table_23;
-      if (_GEN_0[24])
-        br_snapshots_14_24 <= io_remap_reqs_1_pdst;
-      else if (_GEN[24])
-        br_snapshots_14_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_24 <= map_table_24;
-      if (_GEN_0[25])
-        br_snapshots_14_25 <= io_remap_reqs_1_pdst;
-      else if (_GEN[25])
-        br_snapshots_14_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_25 <= map_table_25;
-      if (_GEN_0[26])
-        br_snapshots_14_26 <= io_remap_reqs_1_pdst;
-      else if (_GEN[26])
-        br_snapshots_14_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_26 <= map_table_26;
-      if (_GEN_0[27])
-        br_snapshots_14_27 <= io_remap_reqs_1_pdst;
-      else if (_GEN[27])
-        br_snapshots_14_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_27 <= map_table_27;
-      if (_GEN_0[28])
-        br_snapshots_14_28 <= io_remap_reqs_1_pdst;
-      else if (_GEN[28])
-        br_snapshots_14_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_28 <= map_table_28;
-      if (_GEN_0[29])
-        br_snapshots_14_29 <= io_remap_reqs_1_pdst;
-      else if (_GEN[29])
-        br_snapshots_14_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_29 <= map_table_29;
-      if (_GEN_0[30])
-        br_snapshots_14_30 <= io_remap_reqs_1_pdst;
-      else if (_GEN[30])
-        br_snapshots_14_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_30 <= map_table_30;
-      if (_GEN_0[31])
-        br_snapshots_14_31 <= io_remap_reqs_1_pdst;
-      else if (_GEN[31])
-        br_snapshots_14_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_31 <= map_table_31;
+      br_snapshots_14_0 <= remap_table_2_0;
+      br_snapshots_14_1 <= remap_table_2_1;
+      br_snapshots_14_2 <= remap_table_2_2;
+      br_snapshots_14_3 <= remap_table_2_3;
+      br_snapshots_14_4 <= remap_table_2_4;
+      br_snapshots_14_5 <= remap_table_2_5;
+      br_snapshots_14_6 <= remap_table_2_6;
+      br_snapshots_14_7 <= remap_table_2_7;
+      br_snapshots_14_8 <= remap_table_2_8;
+      br_snapshots_14_9 <= remap_table_2_9;
+      br_snapshots_14_10 <= remap_table_2_10;
+      br_snapshots_14_11 <= remap_table_2_11;
+      br_snapshots_14_12 <= remap_table_2_12;
+      br_snapshots_14_13 <= remap_table_2_13;
+      br_snapshots_14_14 <= remap_table_2_14;
+      br_snapshots_14_15 <= remap_table_2_15;
+      br_snapshots_14_16 <= remap_table_2_16;
+      br_snapshots_14_17 <= remap_table_2_17;
+      br_snapshots_14_18 <= remap_table_2_18;
+      br_snapshots_14_19 <= remap_table_2_19;
+      br_snapshots_14_20 <= remap_table_2_20;
+      br_snapshots_14_21 <= remap_table_2_21;
+      br_snapshots_14_22 <= remap_table_2_22;
+      br_snapshots_14_23 <= remap_table_2_23;
+      br_snapshots_14_24 <= remap_table_2_24;
+      br_snapshots_14_25 <= remap_table_2_25;
+      br_snapshots_14_26 <= remap_table_2_26;
+      br_snapshots_14_27 <= remap_table_2_27;
+      br_snapshots_14_28 <= remap_table_2_28;
+      br_snapshots_14_29 <= remap_table_2_29;
+      br_snapshots_14_30 <= remap_table_2_30;
+      br_snapshots_14_31 <= remap_table_2_31;
     end
     else if (io_ren_br_tags_0_valid & io_ren_br_tags_0_bits == 5'hE) begin
-      if (_GEN[0])
-        br_snapshots_14_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_0 <= map_table_0;
-      if (_GEN[1])
-        br_snapshots_14_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_1 <= map_table_1;
-      if (_GEN[2])
-        br_snapshots_14_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_2 <= map_table_2;
-      if (_GEN[3])
-        br_snapshots_14_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_3 <= map_table_3;
-      if (_GEN[4])
-        br_snapshots_14_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_4 <= map_table_4;
-      if (_GEN[5])
-        br_snapshots_14_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_5 <= map_table_5;
-      if (_GEN[6])
-        br_snapshots_14_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_6 <= map_table_6;
-      if (_GEN[7])
-        br_snapshots_14_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_7 <= map_table_7;
-      if (_GEN[8])
-        br_snapshots_14_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_8 <= map_table_8;
-      if (_GEN[9])
-        br_snapshots_14_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_9 <= map_table_9;
-      if (_GEN[10])
-        br_snapshots_14_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_10 <= map_table_10;
-      if (_GEN[11])
-        br_snapshots_14_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_11 <= map_table_11;
-      if (_GEN[12])
-        br_snapshots_14_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_12 <= map_table_12;
-      if (_GEN[13])
-        br_snapshots_14_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_13 <= map_table_13;
-      if (_GEN[14])
-        br_snapshots_14_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_14 <= map_table_14;
-      if (_GEN[15])
-        br_snapshots_14_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_15 <= map_table_15;
-      if (_GEN[16])
-        br_snapshots_14_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_16 <= map_table_16;
-      if (_GEN[17])
-        br_snapshots_14_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_17 <= map_table_17;
-      if (_GEN[18])
-        br_snapshots_14_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_18 <= map_table_18;
-      if (_GEN[19])
-        br_snapshots_14_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_19 <= map_table_19;
-      if (_GEN[20])
-        br_snapshots_14_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_20 <= map_table_20;
-      if (_GEN[21])
-        br_snapshots_14_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_21 <= map_table_21;
-      if (_GEN[22])
-        br_snapshots_14_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_22 <= map_table_22;
-      if (_GEN[23])
-        br_snapshots_14_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_23 <= map_table_23;
-      if (_GEN[24])
-        br_snapshots_14_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_24 <= map_table_24;
-      if (_GEN[25])
-        br_snapshots_14_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_25 <= map_table_25;
-      if (_GEN[26])
-        br_snapshots_14_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_26 <= map_table_26;
-      if (_GEN[27])
-        br_snapshots_14_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_27 <= map_table_27;
-      if (_GEN[28])
-        br_snapshots_14_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_28 <= map_table_28;
-      if (_GEN[29])
-        br_snapshots_14_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_29 <= map_table_29;
-      if (_GEN[30])
-        br_snapshots_14_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_30 <= map_table_30;
-      if (_GEN[31])
-        br_snapshots_14_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_14_31 <= map_table_31;
+      br_snapshots_14_0 <= remap_table_1_0;
+      br_snapshots_14_1 <= remap_table_1_1;
+      br_snapshots_14_2 <= remap_table_1_2;
+      br_snapshots_14_3 <= remap_table_1_3;
+      br_snapshots_14_4 <= remap_table_1_4;
+      br_snapshots_14_5 <= remap_table_1_5;
+      br_snapshots_14_6 <= remap_table_1_6;
+      br_snapshots_14_7 <= remap_table_1_7;
+      br_snapshots_14_8 <= remap_table_1_8;
+      br_snapshots_14_9 <= remap_table_1_9;
+      br_snapshots_14_10 <= remap_table_1_10;
+      br_snapshots_14_11 <= remap_table_1_11;
+      br_snapshots_14_12 <= remap_table_1_12;
+      br_snapshots_14_13 <= remap_table_1_13;
+      br_snapshots_14_14 <= remap_table_1_14;
+      br_snapshots_14_15 <= remap_table_1_15;
+      br_snapshots_14_16 <= remap_table_1_16;
+      br_snapshots_14_17 <= remap_table_1_17;
+      br_snapshots_14_18 <= remap_table_1_18;
+      br_snapshots_14_19 <= remap_table_1_19;
+      br_snapshots_14_20 <= remap_table_1_20;
+      br_snapshots_14_21 <= remap_table_1_21;
+      br_snapshots_14_22 <= remap_table_1_22;
+      br_snapshots_14_23 <= remap_table_1_23;
+      br_snapshots_14_24 <= remap_table_1_24;
+      br_snapshots_14_25 <= remap_table_1_25;
+      br_snapshots_14_26 <= remap_table_1_26;
+      br_snapshots_14_27 <= remap_table_1_27;
+      br_snapshots_14_28 <= remap_table_1_28;
+      br_snapshots_14_29 <= remap_table_1_29;
+      br_snapshots_14_30 <= remap_table_1_30;
+      br_snapshots_14_31 <= remap_table_1_31;
     end
     if (io_ren_br_tags_3_valid & io_ren_br_tags_3_bits == 5'hF) begin
-      if (_GEN_2[0])
-        br_snapshots_15_0 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[0])
-        br_snapshots_15_0 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[0])
-        br_snapshots_15_0 <= io_remap_reqs_1_pdst;
-      else if (_GEN[0])
-        br_snapshots_15_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_0 <= map_table_0;
-      if (_GEN_2[1])
-        br_snapshots_15_1 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[1])
-        br_snapshots_15_1 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[1])
-        br_snapshots_15_1 <= io_remap_reqs_1_pdst;
-      else if (_GEN[1])
-        br_snapshots_15_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_1 <= map_table_1;
-      if (_GEN_2[2])
-        br_snapshots_15_2 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[2])
-        br_snapshots_15_2 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[2])
-        br_snapshots_15_2 <= io_remap_reqs_1_pdst;
-      else if (_GEN[2])
-        br_snapshots_15_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_2 <= map_table_2;
-      if (_GEN_2[3])
-        br_snapshots_15_3 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[3])
-        br_snapshots_15_3 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[3])
-        br_snapshots_15_3 <= io_remap_reqs_1_pdst;
-      else if (_GEN[3])
-        br_snapshots_15_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_3 <= map_table_3;
-      if (_GEN_2[4])
-        br_snapshots_15_4 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[4])
-        br_snapshots_15_4 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[4])
-        br_snapshots_15_4 <= io_remap_reqs_1_pdst;
-      else if (_GEN[4])
-        br_snapshots_15_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_4 <= map_table_4;
-      if (_GEN_2[5])
-        br_snapshots_15_5 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[5])
-        br_snapshots_15_5 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[5])
-        br_snapshots_15_5 <= io_remap_reqs_1_pdst;
-      else if (_GEN[5])
-        br_snapshots_15_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_5 <= map_table_5;
-      if (_GEN_2[6])
-        br_snapshots_15_6 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[6])
-        br_snapshots_15_6 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[6])
-        br_snapshots_15_6 <= io_remap_reqs_1_pdst;
-      else if (_GEN[6])
-        br_snapshots_15_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_6 <= map_table_6;
-      if (_GEN_2[7])
-        br_snapshots_15_7 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[7])
-        br_snapshots_15_7 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[7])
-        br_snapshots_15_7 <= io_remap_reqs_1_pdst;
-      else if (_GEN[7])
-        br_snapshots_15_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_7 <= map_table_7;
-      if (_GEN_2[8])
-        br_snapshots_15_8 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[8])
-        br_snapshots_15_8 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[8])
-        br_snapshots_15_8 <= io_remap_reqs_1_pdst;
-      else if (_GEN[8])
-        br_snapshots_15_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_8 <= map_table_8;
-      if (_GEN_2[9])
-        br_snapshots_15_9 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[9])
-        br_snapshots_15_9 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[9])
-        br_snapshots_15_9 <= io_remap_reqs_1_pdst;
-      else if (_GEN[9])
-        br_snapshots_15_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_9 <= map_table_9;
-      if (_GEN_2[10])
-        br_snapshots_15_10 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[10])
-        br_snapshots_15_10 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[10])
-        br_snapshots_15_10 <= io_remap_reqs_1_pdst;
-      else if (_GEN[10])
-        br_snapshots_15_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_10 <= map_table_10;
-      if (_GEN_2[11])
-        br_snapshots_15_11 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[11])
-        br_snapshots_15_11 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[11])
-        br_snapshots_15_11 <= io_remap_reqs_1_pdst;
-      else if (_GEN[11])
-        br_snapshots_15_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_11 <= map_table_11;
-      if (_GEN_2[12])
-        br_snapshots_15_12 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[12])
-        br_snapshots_15_12 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[12])
-        br_snapshots_15_12 <= io_remap_reqs_1_pdst;
-      else if (_GEN[12])
-        br_snapshots_15_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_12 <= map_table_12;
-      if (_GEN_2[13])
-        br_snapshots_15_13 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[13])
-        br_snapshots_15_13 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[13])
-        br_snapshots_15_13 <= io_remap_reqs_1_pdst;
-      else if (_GEN[13])
-        br_snapshots_15_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_13 <= map_table_13;
-      if (_GEN_2[14])
-        br_snapshots_15_14 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[14])
-        br_snapshots_15_14 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[14])
-        br_snapshots_15_14 <= io_remap_reqs_1_pdst;
-      else if (_GEN[14])
-        br_snapshots_15_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_14 <= map_table_14;
-      if (_GEN_2[15])
-        br_snapshots_15_15 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[15])
-        br_snapshots_15_15 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[15])
-        br_snapshots_15_15 <= io_remap_reqs_1_pdst;
-      else if (_GEN[15])
-        br_snapshots_15_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_15 <= map_table_15;
-      if (_GEN_2[16])
-        br_snapshots_15_16 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[16])
-        br_snapshots_15_16 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[16])
-        br_snapshots_15_16 <= io_remap_reqs_1_pdst;
-      else if (_GEN[16])
-        br_snapshots_15_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_16 <= map_table_16;
-      if (_GEN_2[17])
-        br_snapshots_15_17 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[17])
-        br_snapshots_15_17 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[17])
-        br_snapshots_15_17 <= io_remap_reqs_1_pdst;
-      else if (_GEN[17])
-        br_snapshots_15_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_17 <= map_table_17;
-      if (_GEN_2[18])
-        br_snapshots_15_18 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[18])
-        br_snapshots_15_18 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[18])
-        br_snapshots_15_18 <= io_remap_reqs_1_pdst;
-      else if (_GEN[18])
-        br_snapshots_15_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_18 <= map_table_18;
-      if (_GEN_2[19])
-        br_snapshots_15_19 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[19])
-        br_snapshots_15_19 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[19])
-        br_snapshots_15_19 <= io_remap_reqs_1_pdst;
-      else if (_GEN[19])
-        br_snapshots_15_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_19 <= map_table_19;
-      if (_GEN_2[20])
-        br_snapshots_15_20 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[20])
-        br_snapshots_15_20 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[20])
-        br_snapshots_15_20 <= io_remap_reqs_1_pdst;
-      else if (_GEN[20])
-        br_snapshots_15_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_20 <= map_table_20;
-      if (_GEN_2[21])
-        br_snapshots_15_21 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[21])
-        br_snapshots_15_21 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[21])
-        br_snapshots_15_21 <= io_remap_reqs_1_pdst;
-      else if (_GEN[21])
-        br_snapshots_15_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_21 <= map_table_21;
-      if (_GEN_2[22])
-        br_snapshots_15_22 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[22])
-        br_snapshots_15_22 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[22])
-        br_snapshots_15_22 <= io_remap_reqs_1_pdst;
-      else if (_GEN[22])
-        br_snapshots_15_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_22 <= map_table_22;
-      if (_GEN_2[23])
-        br_snapshots_15_23 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[23])
-        br_snapshots_15_23 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[23])
-        br_snapshots_15_23 <= io_remap_reqs_1_pdst;
-      else if (_GEN[23])
-        br_snapshots_15_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_23 <= map_table_23;
-      if (_GEN_2[24])
-        br_snapshots_15_24 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[24])
-        br_snapshots_15_24 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[24])
-        br_snapshots_15_24 <= io_remap_reqs_1_pdst;
-      else if (_GEN[24])
-        br_snapshots_15_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_24 <= map_table_24;
-      if (_GEN_2[25])
-        br_snapshots_15_25 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[25])
-        br_snapshots_15_25 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[25])
-        br_snapshots_15_25 <= io_remap_reqs_1_pdst;
-      else if (_GEN[25])
-        br_snapshots_15_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_25 <= map_table_25;
-      if (_GEN_2[26])
-        br_snapshots_15_26 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[26])
-        br_snapshots_15_26 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[26])
-        br_snapshots_15_26 <= io_remap_reqs_1_pdst;
-      else if (_GEN[26])
-        br_snapshots_15_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_26 <= map_table_26;
-      if (_GEN_2[27])
-        br_snapshots_15_27 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[27])
-        br_snapshots_15_27 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[27])
-        br_snapshots_15_27 <= io_remap_reqs_1_pdst;
-      else if (_GEN[27])
-        br_snapshots_15_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_27 <= map_table_27;
-      if (_GEN_2[28])
-        br_snapshots_15_28 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[28])
-        br_snapshots_15_28 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[28])
-        br_snapshots_15_28 <= io_remap_reqs_1_pdst;
-      else if (_GEN[28])
-        br_snapshots_15_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_28 <= map_table_28;
-      if (_GEN_2[29])
-        br_snapshots_15_29 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[29])
-        br_snapshots_15_29 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[29])
-        br_snapshots_15_29 <= io_remap_reqs_1_pdst;
-      else if (_GEN[29])
-        br_snapshots_15_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_29 <= map_table_29;
-      if (_GEN_2[30])
-        br_snapshots_15_30 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[30])
-        br_snapshots_15_30 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[30])
-        br_snapshots_15_30 <= io_remap_reqs_1_pdst;
-      else if (_GEN[30])
-        br_snapshots_15_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_30 <= map_table_30;
-      if (_GEN_2[31])
-        br_snapshots_15_31 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[31])
-        br_snapshots_15_31 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[31])
-        br_snapshots_15_31 <= io_remap_reqs_1_pdst;
-      else if (_GEN[31])
-        br_snapshots_15_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_31 <= map_table_31;
+      br_snapshots_15_0 <= remap_table_4_0;
+      br_snapshots_15_1 <= remap_table_4_1;
+      br_snapshots_15_2 <= remap_table_4_2;
+      br_snapshots_15_3 <= remap_table_4_3;
+      br_snapshots_15_4 <= remap_table_4_4;
+      br_snapshots_15_5 <= remap_table_4_5;
+      br_snapshots_15_6 <= remap_table_4_6;
+      br_snapshots_15_7 <= remap_table_4_7;
+      br_snapshots_15_8 <= remap_table_4_8;
+      br_snapshots_15_9 <= remap_table_4_9;
+      br_snapshots_15_10 <= remap_table_4_10;
+      br_snapshots_15_11 <= remap_table_4_11;
+      br_snapshots_15_12 <= remap_table_4_12;
+      br_snapshots_15_13 <= remap_table_4_13;
+      br_snapshots_15_14 <= remap_table_4_14;
+      br_snapshots_15_15 <= remap_table_4_15;
+      br_snapshots_15_16 <= remap_table_4_16;
+      br_snapshots_15_17 <= remap_table_4_17;
+      br_snapshots_15_18 <= remap_table_4_18;
+      br_snapshots_15_19 <= remap_table_4_19;
+      br_snapshots_15_20 <= remap_table_4_20;
+      br_snapshots_15_21 <= remap_table_4_21;
+      br_snapshots_15_22 <= remap_table_4_22;
+      br_snapshots_15_23 <= remap_table_4_23;
+      br_snapshots_15_24 <= remap_table_4_24;
+      br_snapshots_15_25 <= remap_table_4_25;
+      br_snapshots_15_26 <= remap_table_4_26;
+      br_snapshots_15_27 <= remap_table_4_27;
+      br_snapshots_15_28 <= remap_table_4_28;
+      br_snapshots_15_29 <= remap_table_4_29;
+      br_snapshots_15_30 <= remap_table_4_30;
+      br_snapshots_15_31 <= remap_table_4_31;
     end
     else if (io_ren_br_tags_2_valid & io_ren_br_tags_2_bits == 5'hF) begin
-      if (_GEN_1[0])
-        br_snapshots_15_0 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[0])
-        br_snapshots_15_0 <= io_remap_reqs_1_pdst;
-      else if (_GEN[0])
-        br_snapshots_15_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_0 <= map_table_0;
-      if (_GEN_1[1])
-        br_snapshots_15_1 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[1])
-        br_snapshots_15_1 <= io_remap_reqs_1_pdst;
-      else if (_GEN[1])
-        br_snapshots_15_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_1 <= map_table_1;
-      if (_GEN_1[2])
-        br_snapshots_15_2 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[2])
-        br_snapshots_15_2 <= io_remap_reqs_1_pdst;
-      else if (_GEN[2])
-        br_snapshots_15_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_2 <= map_table_2;
-      if (_GEN_1[3])
-        br_snapshots_15_3 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[3])
-        br_snapshots_15_3 <= io_remap_reqs_1_pdst;
-      else if (_GEN[3])
-        br_snapshots_15_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_3 <= map_table_3;
-      if (_GEN_1[4])
-        br_snapshots_15_4 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[4])
-        br_snapshots_15_4 <= io_remap_reqs_1_pdst;
-      else if (_GEN[4])
-        br_snapshots_15_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_4 <= map_table_4;
-      if (_GEN_1[5])
-        br_snapshots_15_5 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[5])
-        br_snapshots_15_5 <= io_remap_reqs_1_pdst;
-      else if (_GEN[5])
-        br_snapshots_15_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_5 <= map_table_5;
-      if (_GEN_1[6])
-        br_snapshots_15_6 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[6])
-        br_snapshots_15_6 <= io_remap_reqs_1_pdst;
-      else if (_GEN[6])
-        br_snapshots_15_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_6 <= map_table_6;
-      if (_GEN_1[7])
-        br_snapshots_15_7 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[7])
-        br_snapshots_15_7 <= io_remap_reqs_1_pdst;
-      else if (_GEN[7])
-        br_snapshots_15_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_7 <= map_table_7;
-      if (_GEN_1[8])
-        br_snapshots_15_8 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[8])
-        br_snapshots_15_8 <= io_remap_reqs_1_pdst;
-      else if (_GEN[8])
-        br_snapshots_15_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_8 <= map_table_8;
-      if (_GEN_1[9])
-        br_snapshots_15_9 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[9])
-        br_snapshots_15_9 <= io_remap_reqs_1_pdst;
-      else if (_GEN[9])
-        br_snapshots_15_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_9 <= map_table_9;
-      if (_GEN_1[10])
-        br_snapshots_15_10 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[10])
-        br_snapshots_15_10 <= io_remap_reqs_1_pdst;
-      else if (_GEN[10])
-        br_snapshots_15_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_10 <= map_table_10;
-      if (_GEN_1[11])
-        br_snapshots_15_11 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[11])
-        br_snapshots_15_11 <= io_remap_reqs_1_pdst;
-      else if (_GEN[11])
-        br_snapshots_15_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_11 <= map_table_11;
-      if (_GEN_1[12])
-        br_snapshots_15_12 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[12])
-        br_snapshots_15_12 <= io_remap_reqs_1_pdst;
-      else if (_GEN[12])
-        br_snapshots_15_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_12 <= map_table_12;
-      if (_GEN_1[13])
-        br_snapshots_15_13 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[13])
-        br_snapshots_15_13 <= io_remap_reqs_1_pdst;
-      else if (_GEN[13])
-        br_snapshots_15_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_13 <= map_table_13;
-      if (_GEN_1[14])
-        br_snapshots_15_14 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[14])
-        br_snapshots_15_14 <= io_remap_reqs_1_pdst;
-      else if (_GEN[14])
-        br_snapshots_15_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_14 <= map_table_14;
-      if (_GEN_1[15])
-        br_snapshots_15_15 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[15])
-        br_snapshots_15_15 <= io_remap_reqs_1_pdst;
-      else if (_GEN[15])
-        br_snapshots_15_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_15 <= map_table_15;
-      if (_GEN_1[16])
-        br_snapshots_15_16 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[16])
-        br_snapshots_15_16 <= io_remap_reqs_1_pdst;
-      else if (_GEN[16])
-        br_snapshots_15_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_16 <= map_table_16;
-      if (_GEN_1[17])
-        br_snapshots_15_17 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[17])
-        br_snapshots_15_17 <= io_remap_reqs_1_pdst;
-      else if (_GEN[17])
-        br_snapshots_15_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_17 <= map_table_17;
-      if (_GEN_1[18])
-        br_snapshots_15_18 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[18])
-        br_snapshots_15_18 <= io_remap_reqs_1_pdst;
-      else if (_GEN[18])
-        br_snapshots_15_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_18 <= map_table_18;
-      if (_GEN_1[19])
-        br_snapshots_15_19 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[19])
-        br_snapshots_15_19 <= io_remap_reqs_1_pdst;
-      else if (_GEN[19])
-        br_snapshots_15_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_19 <= map_table_19;
-      if (_GEN_1[20])
-        br_snapshots_15_20 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[20])
-        br_snapshots_15_20 <= io_remap_reqs_1_pdst;
-      else if (_GEN[20])
-        br_snapshots_15_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_20 <= map_table_20;
-      if (_GEN_1[21])
-        br_snapshots_15_21 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[21])
-        br_snapshots_15_21 <= io_remap_reqs_1_pdst;
-      else if (_GEN[21])
-        br_snapshots_15_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_21 <= map_table_21;
-      if (_GEN_1[22])
-        br_snapshots_15_22 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[22])
-        br_snapshots_15_22 <= io_remap_reqs_1_pdst;
-      else if (_GEN[22])
-        br_snapshots_15_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_22 <= map_table_22;
-      if (_GEN_1[23])
-        br_snapshots_15_23 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[23])
-        br_snapshots_15_23 <= io_remap_reqs_1_pdst;
-      else if (_GEN[23])
-        br_snapshots_15_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_23 <= map_table_23;
-      if (_GEN_1[24])
-        br_snapshots_15_24 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[24])
-        br_snapshots_15_24 <= io_remap_reqs_1_pdst;
-      else if (_GEN[24])
-        br_snapshots_15_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_24 <= map_table_24;
-      if (_GEN_1[25])
-        br_snapshots_15_25 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[25])
-        br_snapshots_15_25 <= io_remap_reqs_1_pdst;
-      else if (_GEN[25])
-        br_snapshots_15_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_25 <= map_table_25;
-      if (_GEN_1[26])
-        br_snapshots_15_26 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[26])
-        br_snapshots_15_26 <= io_remap_reqs_1_pdst;
-      else if (_GEN[26])
-        br_snapshots_15_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_26 <= map_table_26;
-      if (_GEN_1[27])
-        br_snapshots_15_27 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[27])
-        br_snapshots_15_27 <= io_remap_reqs_1_pdst;
-      else if (_GEN[27])
-        br_snapshots_15_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_27 <= map_table_27;
-      if (_GEN_1[28])
-        br_snapshots_15_28 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[28])
-        br_snapshots_15_28 <= io_remap_reqs_1_pdst;
-      else if (_GEN[28])
-        br_snapshots_15_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_28 <= map_table_28;
-      if (_GEN_1[29])
-        br_snapshots_15_29 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[29])
-        br_snapshots_15_29 <= io_remap_reqs_1_pdst;
-      else if (_GEN[29])
-        br_snapshots_15_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_29 <= map_table_29;
-      if (_GEN_1[30])
-        br_snapshots_15_30 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[30])
-        br_snapshots_15_30 <= io_remap_reqs_1_pdst;
-      else if (_GEN[30])
-        br_snapshots_15_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_30 <= map_table_30;
-      if (_GEN_1[31])
-        br_snapshots_15_31 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[31])
-        br_snapshots_15_31 <= io_remap_reqs_1_pdst;
-      else if (_GEN[31])
-        br_snapshots_15_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_31 <= map_table_31;
+      br_snapshots_15_0 <= remap_table_3_0;
+      br_snapshots_15_1 <= remap_table_3_1;
+      br_snapshots_15_2 <= remap_table_3_2;
+      br_snapshots_15_3 <= remap_table_3_3;
+      br_snapshots_15_4 <= remap_table_3_4;
+      br_snapshots_15_5 <= remap_table_3_5;
+      br_snapshots_15_6 <= remap_table_3_6;
+      br_snapshots_15_7 <= remap_table_3_7;
+      br_snapshots_15_8 <= remap_table_3_8;
+      br_snapshots_15_9 <= remap_table_3_9;
+      br_snapshots_15_10 <= remap_table_3_10;
+      br_snapshots_15_11 <= remap_table_3_11;
+      br_snapshots_15_12 <= remap_table_3_12;
+      br_snapshots_15_13 <= remap_table_3_13;
+      br_snapshots_15_14 <= remap_table_3_14;
+      br_snapshots_15_15 <= remap_table_3_15;
+      br_snapshots_15_16 <= remap_table_3_16;
+      br_snapshots_15_17 <= remap_table_3_17;
+      br_snapshots_15_18 <= remap_table_3_18;
+      br_snapshots_15_19 <= remap_table_3_19;
+      br_snapshots_15_20 <= remap_table_3_20;
+      br_snapshots_15_21 <= remap_table_3_21;
+      br_snapshots_15_22 <= remap_table_3_22;
+      br_snapshots_15_23 <= remap_table_3_23;
+      br_snapshots_15_24 <= remap_table_3_24;
+      br_snapshots_15_25 <= remap_table_3_25;
+      br_snapshots_15_26 <= remap_table_3_26;
+      br_snapshots_15_27 <= remap_table_3_27;
+      br_snapshots_15_28 <= remap_table_3_28;
+      br_snapshots_15_29 <= remap_table_3_29;
+      br_snapshots_15_30 <= remap_table_3_30;
+      br_snapshots_15_31 <= remap_table_3_31;
     end
     else if (io_ren_br_tags_1_valid & io_ren_br_tags_1_bits == 5'hF) begin
-      if (_GEN_0[0])
-        br_snapshots_15_0 <= io_remap_reqs_1_pdst;
-      else if (_GEN[0])
-        br_snapshots_15_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_0 <= map_table_0;
-      if (_GEN_0[1])
-        br_snapshots_15_1 <= io_remap_reqs_1_pdst;
-      else if (_GEN[1])
-        br_snapshots_15_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_1 <= map_table_1;
-      if (_GEN_0[2])
-        br_snapshots_15_2 <= io_remap_reqs_1_pdst;
-      else if (_GEN[2])
-        br_snapshots_15_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_2 <= map_table_2;
-      if (_GEN_0[3])
-        br_snapshots_15_3 <= io_remap_reqs_1_pdst;
-      else if (_GEN[3])
-        br_snapshots_15_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_3 <= map_table_3;
-      if (_GEN_0[4])
-        br_snapshots_15_4 <= io_remap_reqs_1_pdst;
-      else if (_GEN[4])
-        br_snapshots_15_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_4 <= map_table_4;
-      if (_GEN_0[5])
-        br_snapshots_15_5 <= io_remap_reqs_1_pdst;
-      else if (_GEN[5])
-        br_snapshots_15_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_5 <= map_table_5;
-      if (_GEN_0[6])
-        br_snapshots_15_6 <= io_remap_reqs_1_pdst;
-      else if (_GEN[6])
-        br_snapshots_15_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_6 <= map_table_6;
-      if (_GEN_0[7])
-        br_snapshots_15_7 <= io_remap_reqs_1_pdst;
-      else if (_GEN[7])
-        br_snapshots_15_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_7 <= map_table_7;
-      if (_GEN_0[8])
-        br_snapshots_15_8 <= io_remap_reqs_1_pdst;
-      else if (_GEN[8])
-        br_snapshots_15_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_8 <= map_table_8;
-      if (_GEN_0[9])
-        br_snapshots_15_9 <= io_remap_reqs_1_pdst;
-      else if (_GEN[9])
-        br_snapshots_15_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_9 <= map_table_9;
-      if (_GEN_0[10])
-        br_snapshots_15_10 <= io_remap_reqs_1_pdst;
-      else if (_GEN[10])
-        br_snapshots_15_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_10 <= map_table_10;
-      if (_GEN_0[11])
-        br_snapshots_15_11 <= io_remap_reqs_1_pdst;
-      else if (_GEN[11])
-        br_snapshots_15_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_11 <= map_table_11;
-      if (_GEN_0[12])
-        br_snapshots_15_12 <= io_remap_reqs_1_pdst;
-      else if (_GEN[12])
-        br_snapshots_15_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_12 <= map_table_12;
-      if (_GEN_0[13])
-        br_snapshots_15_13 <= io_remap_reqs_1_pdst;
-      else if (_GEN[13])
-        br_snapshots_15_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_13 <= map_table_13;
-      if (_GEN_0[14])
-        br_snapshots_15_14 <= io_remap_reqs_1_pdst;
-      else if (_GEN[14])
-        br_snapshots_15_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_14 <= map_table_14;
-      if (_GEN_0[15])
-        br_snapshots_15_15 <= io_remap_reqs_1_pdst;
-      else if (_GEN[15])
-        br_snapshots_15_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_15 <= map_table_15;
-      if (_GEN_0[16])
-        br_snapshots_15_16 <= io_remap_reqs_1_pdst;
-      else if (_GEN[16])
-        br_snapshots_15_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_16 <= map_table_16;
-      if (_GEN_0[17])
-        br_snapshots_15_17 <= io_remap_reqs_1_pdst;
-      else if (_GEN[17])
-        br_snapshots_15_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_17 <= map_table_17;
-      if (_GEN_0[18])
-        br_snapshots_15_18 <= io_remap_reqs_1_pdst;
-      else if (_GEN[18])
-        br_snapshots_15_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_18 <= map_table_18;
-      if (_GEN_0[19])
-        br_snapshots_15_19 <= io_remap_reqs_1_pdst;
-      else if (_GEN[19])
-        br_snapshots_15_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_19 <= map_table_19;
-      if (_GEN_0[20])
-        br_snapshots_15_20 <= io_remap_reqs_1_pdst;
-      else if (_GEN[20])
-        br_snapshots_15_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_20 <= map_table_20;
-      if (_GEN_0[21])
-        br_snapshots_15_21 <= io_remap_reqs_1_pdst;
-      else if (_GEN[21])
-        br_snapshots_15_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_21 <= map_table_21;
-      if (_GEN_0[22])
-        br_snapshots_15_22 <= io_remap_reqs_1_pdst;
-      else if (_GEN[22])
-        br_snapshots_15_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_22 <= map_table_22;
-      if (_GEN_0[23])
-        br_snapshots_15_23 <= io_remap_reqs_1_pdst;
-      else if (_GEN[23])
-        br_snapshots_15_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_23 <= map_table_23;
-      if (_GEN_0[24])
-        br_snapshots_15_24 <= io_remap_reqs_1_pdst;
-      else if (_GEN[24])
-        br_snapshots_15_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_24 <= map_table_24;
-      if (_GEN_0[25])
-        br_snapshots_15_25 <= io_remap_reqs_1_pdst;
-      else if (_GEN[25])
-        br_snapshots_15_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_25 <= map_table_25;
-      if (_GEN_0[26])
-        br_snapshots_15_26 <= io_remap_reqs_1_pdst;
-      else if (_GEN[26])
-        br_snapshots_15_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_26 <= map_table_26;
-      if (_GEN_0[27])
-        br_snapshots_15_27 <= io_remap_reqs_1_pdst;
-      else if (_GEN[27])
-        br_snapshots_15_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_27 <= map_table_27;
-      if (_GEN_0[28])
-        br_snapshots_15_28 <= io_remap_reqs_1_pdst;
-      else if (_GEN[28])
-        br_snapshots_15_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_28 <= map_table_28;
-      if (_GEN_0[29])
-        br_snapshots_15_29 <= io_remap_reqs_1_pdst;
-      else if (_GEN[29])
-        br_snapshots_15_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_29 <= map_table_29;
-      if (_GEN_0[30])
-        br_snapshots_15_30 <= io_remap_reqs_1_pdst;
-      else if (_GEN[30])
-        br_snapshots_15_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_30 <= map_table_30;
-      if (_GEN_0[31])
-        br_snapshots_15_31 <= io_remap_reqs_1_pdst;
-      else if (_GEN[31])
-        br_snapshots_15_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_31 <= map_table_31;
+      br_snapshots_15_0 <= remap_table_2_0;
+      br_snapshots_15_1 <= remap_table_2_1;
+      br_snapshots_15_2 <= remap_table_2_2;
+      br_snapshots_15_3 <= remap_table_2_3;
+      br_snapshots_15_4 <= remap_table_2_4;
+      br_snapshots_15_5 <= remap_table_2_5;
+      br_snapshots_15_6 <= remap_table_2_6;
+      br_snapshots_15_7 <= remap_table_2_7;
+      br_snapshots_15_8 <= remap_table_2_8;
+      br_snapshots_15_9 <= remap_table_2_9;
+      br_snapshots_15_10 <= remap_table_2_10;
+      br_snapshots_15_11 <= remap_table_2_11;
+      br_snapshots_15_12 <= remap_table_2_12;
+      br_snapshots_15_13 <= remap_table_2_13;
+      br_snapshots_15_14 <= remap_table_2_14;
+      br_snapshots_15_15 <= remap_table_2_15;
+      br_snapshots_15_16 <= remap_table_2_16;
+      br_snapshots_15_17 <= remap_table_2_17;
+      br_snapshots_15_18 <= remap_table_2_18;
+      br_snapshots_15_19 <= remap_table_2_19;
+      br_snapshots_15_20 <= remap_table_2_20;
+      br_snapshots_15_21 <= remap_table_2_21;
+      br_snapshots_15_22 <= remap_table_2_22;
+      br_snapshots_15_23 <= remap_table_2_23;
+      br_snapshots_15_24 <= remap_table_2_24;
+      br_snapshots_15_25 <= remap_table_2_25;
+      br_snapshots_15_26 <= remap_table_2_26;
+      br_snapshots_15_27 <= remap_table_2_27;
+      br_snapshots_15_28 <= remap_table_2_28;
+      br_snapshots_15_29 <= remap_table_2_29;
+      br_snapshots_15_30 <= remap_table_2_30;
+      br_snapshots_15_31 <= remap_table_2_31;
     end
     else if (io_ren_br_tags_0_valid & io_ren_br_tags_0_bits == 5'hF) begin
-      if (_GEN[0])
-        br_snapshots_15_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_0 <= map_table_0;
-      if (_GEN[1])
-        br_snapshots_15_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_1 <= map_table_1;
-      if (_GEN[2])
-        br_snapshots_15_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_2 <= map_table_2;
-      if (_GEN[3])
-        br_snapshots_15_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_3 <= map_table_3;
-      if (_GEN[4])
-        br_snapshots_15_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_4 <= map_table_4;
-      if (_GEN[5])
-        br_snapshots_15_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_5 <= map_table_5;
-      if (_GEN[6])
-        br_snapshots_15_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_6 <= map_table_6;
-      if (_GEN[7])
-        br_snapshots_15_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_7 <= map_table_7;
-      if (_GEN[8])
-        br_snapshots_15_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_8 <= map_table_8;
-      if (_GEN[9])
-        br_snapshots_15_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_9 <= map_table_9;
-      if (_GEN[10])
-        br_snapshots_15_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_10 <= map_table_10;
-      if (_GEN[11])
-        br_snapshots_15_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_11 <= map_table_11;
-      if (_GEN[12])
-        br_snapshots_15_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_12 <= map_table_12;
-      if (_GEN[13])
-        br_snapshots_15_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_13 <= map_table_13;
-      if (_GEN[14])
-        br_snapshots_15_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_14 <= map_table_14;
-      if (_GEN[15])
-        br_snapshots_15_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_15 <= map_table_15;
-      if (_GEN[16])
-        br_snapshots_15_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_16 <= map_table_16;
-      if (_GEN[17])
-        br_snapshots_15_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_17 <= map_table_17;
-      if (_GEN[18])
-        br_snapshots_15_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_18 <= map_table_18;
-      if (_GEN[19])
-        br_snapshots_15_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_19 <= map_table_19;
-      if (_GEN[20])
-        br_snapshots_15_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_20 <= map_table_20;
-      if (_GEN[21])
-        br_snapshots_15_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_21 <= map_table_21;
-      if (_GEN[22])
-        br_snapshots_15_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_22 <= map_table_22;
-      if (_GEN[23])
-        br_snapshots_15_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_23 <= map_table_23;
-      if (_GEN[24])
-        br_snapshots_15_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_24 <= map_table_24;
-      if (_GEN[25])
-        br_snapshots_15_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_25 <= map_table_25;
-      if (_GEN[26])
-        br_snapshots_15_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_26 <= map_table_26;
-      if (_GEN[27])
-        br_snapshots_15_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_27 <= map_table_27;
-      if (_GEN[28])
-        br_snapshots_15_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_28 <= map_table_28;
-      if (_GEN[29])
-        br_snapshots_15_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_29 <= map_table_29;
-      if (_GEN[30])
-        br_snapshots_15_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_30 <= map_table_30;
-      if (_GEN[31])
-        br_snapshots_15_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_15_31 <= map_table_31;
+      br_snapshots_15_0 <= remap_table_1_0;
+      br_snapshots_15_1 <= remap_table_1_1;
+      br_snapshots_15_2 <= remap_table_1_2;
+      br_snapshots_15_3 <= remap_table_1_3;
+      br_snapshots_15_4 <= remap_table_1_4;
+      br_snapshots_15_5 <= remap_table_1_5;
+      br_snapshots_15_6 <= remap_table_1_6;
+      br_snapshots_15_7 <= remap_table_1_7;
+      br_snapshots_15_8 <= remap_table_1_8;
+      br_snapshots_15_9 <= remap_table_1_9;
+      br_snapshots_15_10 <= remap_table_1_10;
+      br_snapshots_15_11 <= remap_table_1_11;
+      br_snapshots_15_12 <= remap_table_1_12;
+      br_snapshots_15_13 <= remap_table_1_13;
+      br_snapshots_15_14 <= remap_table_1_14;
+      br_snapshots_15_15 <= remap_table_1_15;
+      br_snapshots_15_16 <= remap_table_1_16;
+      br_snapshots_15_17 <= remap_table_1_17;
+      br_snapshots_15_18 <= remap_table_1_18;
+      br_snapshots_15_19 <= remap_table_1_19;
+      br_snapshots_15_20 <= remap_table_1_20;
+      br_snapshots_15_21 <= remap_table_1_21;
+      br_snapshots_15_22 <= remap_table_1_22;
+      br_snapshots_15_23 <= remap_table_1_23;
+      br_snapshots_15_24 <= remap_table_1_24;
+      br_snapshots_15_25 <= remap_table_1_25;
+      br_snapshots_15_26 <= remap_table_1_26;
+      br_snapshots_15_27 <= remap_table_1_27;
+      br_snapshots_15_28 <= remap_table_1_28;
+      br_snapshots_15_29 <= remap_table_1_29;
+      br_snapshots_15_30 <= remap_table_1_30;
+      br_snapshots_15_31 <= remap_table_1_31;
     end
     if (io_ren_br_tags_3_valid & io_ren_br_tags_3_bits == 5'h10) begin
-      if (_GEN_2[0])
-        br_snapshots_16_0 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[0])
-        br_snapshots_16_0 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[0])
-        br_snapshots_16_0 <= io_remap_reqs_1_pdst;
-      else if (_GEN[0])
-        br_snapshots_16_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_0 <= map_table_0;
-      if (_GEN_2[1])
-        br_snapshots_16_1 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[1])
-        br_snapshots_16_1 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[1])
-        br_snapshots_16_1 <= io_remap_reqs_1_pdst;
-      else if (_GEN[1])
-        br_snapshots_16_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_1 <= map_table_1;
-      if (_GEN_2[2])
-        br_snapshots_16_2 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[2])
-        br_snapshots_16_2 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[2])
-        br_snapshots_16_2 <= io_remap_reqs_1_pdst;
-      else if (_GEN[2])
-        br_snapshots_16_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_2 <= map_table_2;
-      if (_GEN_2[3])
-        br_snapshots_16_3 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[3])
-        br_snapshots_16_3 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[3])
-        br_snapshots_16_3 <= io_remap_reqs_1_pdst;
-      else if (_GEN[3])
-        br_snapshots_16_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_3 <= map_table_3;
-      if (_GEN_2[4])
-        br_snapshots_16_4 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[4])
-        br_snapshots_16_4 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[4])
-        br_snapshots_16_4 <= io_remap_reqs_1_pdst;
-      else if (_GEN[4])
-        br_snapshots_16_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_4 <= map_table_4;
-      if (_GEN_2[5])
-        br_snapshots_16_5 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[5])
-        br_snapshots_16_5 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[5])
-        br_snapshots_16_5 <= io_remap_reqs_1_pdst;
-      else if (_GEN[5])
-        br_snapshots_16_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_5 <= map_table_5;
-      if (_GEN_2[6])
-        br_snapshots_16_6 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[6])
-        br_snapshots_16_6 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[6])
-        br_snapshots_16_6 <= io_remap_reqs_1_pdst;
-      else if (_GEN[6])
-        br_snapshots_16_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_6 <= map_table_6;
-      if (_GEN_2[7])
-        br_snapshots_16_7 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[7])
-        br_snapshots_16_7 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[7])
-        br_snapshots_16_7 <= io_remap_reqs_1_pdst;
-      else if (_GEN[7])
-        br_snapshots_16_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_7 <= map_table_7;
-      if (_GEN_2[8])
-        br_snapshots_16_8 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[8])
-        br_snapshots_16_8 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[8])
-        br_snapshots_16_8 <= io_remap_reqs_1_pdst;
-      else if (_GEN[8])
-        br_snapshots_16_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_8 <= map_table_8;
-      if (_GEN_2[9])
-        br_snapshots_16_9 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[9])
-        br_snapshots_16_9 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[9])
-        br_snapshots_16_9 <= io_remap_reqs_1_pdst;
-      else if (_GEN[9])
-        br_snapshots_16_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_9 <= map_table_9;
-      if (_GEN_2[10])
-        br_snapshots_16_10 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[10])
-        br_snapshots_16_10 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[10])
-        br_snapshots_16_10 <= io_remap_reqs_1_pdst;
-      else if (_GEN[10])
-        br_snapshots_16_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_10 <= map_table_10;
-      if (_GEN_2[11])
-        br_snapshots_16_11 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[11])
-        br_snapshots_16_11 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[11])
-        br_snapshots_16_11 <= io_remap_reqs_1_pdst;
-      else if (_GEN[11])
-        br_snapshots_16_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_11 <= map_table_11;
-      if (_GEN_2[12])
-        br_snapshots_16_12 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[12])
-        br_snapshots_16_12 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[12])
-        br_snapshots_16_12 <= io_remap_reqs_1_pdst;
-      else if (_GEN[12])
-        br_snapshots_16_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_12 <= map_table_12;
-      if (_GEN_2[13])
-        br_snapshots_16_13 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[13])
-        br_snapshots_16_13 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[13])
-        br_snapshots_16_13 <= io_remap_reqs_1_pdst;
-      else if (_GEN[13])
-        br_snapshots_16_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_13 <= map_table_13;
-      if (_GEN_2[14])
-        br_snapshots_16_14 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[14])
-        br_snapshots_16_14 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[14])
-        br_snapshots_16_14 <= io_remap_reqs_1_pdst;
-      else if (_GEN[14])
-        br_snapshots_16_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_14 <= map_table_14;
-      if (_GEN_2[15])
-        br_snapshots_16_15 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[15])
-        br_snapshots_16_15 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[15])
-        br_snapshots_16_15 <= io_remap_reqs_1_pdst;
-      else if (_GEN[15])
-        br_snapshots_16_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_15 <= map_table_15;
-      if (_GEN_2[16])
-        br_snapshots_16_16 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[16])
-        br_snapshots_16_16 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[16])
-        br_snapshots_16_16 <= io_remap_reqs_1_pdst;
-      else if (_GEN[16])
-        br_snapshots_16_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_16 <= map_table_16;
-      if (_GEN_2[17])
-        br_snapshots_16_17 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[17])
-        br_snapshots_16_17 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[17])
-        br_snapshots_16_17 <= io_remap_reqs_1_pdst;
-      else if (_GEN[17])
-        br_snapshots_16_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_17 <= map_table_17;
-      if (_GEN_2[18])
-        br_snapshots_16_18 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[18])
-        br_snapshots_16_18 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[18])
-        br_snapshots_16_18 <= io_remap_reqs_1_pdst;
-      else if (_GEN[18])
-        br_snapshots_16_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_18 <= map_table_18;
-      if (_GEN_2[19])
-        br_snapshots_16_19 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[19])
-        br_snapshots_16_19 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[19])
-        br_snapshots_16_19 <= io_remap_reqs_1_pdst;
-      else if (_GEN[19])
-        br_snapshots_16_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_19 <= map_table_19;
-      if (_GEN_2[20])
-        br_snapshots_16_20 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[20])
-        br_snapshots_16_20 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[20])
-        br_snapshots_16_20 <= io_remap_reqs_1_pdst;
-      else if (_GEN[20])
-        br_snapshots_16_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_20 <= map_table_20;
-      if (_GEN_2[21])
-        br_snapshots_16_21 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[21])
-        br_snapshots_16_21 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[21])
-        br_snapshots_16_21 <= io_remap_reqs_1_pdst;
-      else if (_GEN[21])
-        br_snapshots_16_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_21 <= map_table_21;
-      if (_GEN_2[22])
-        br_snapshots_16_22 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[22])
-        br_snapshots_16_22 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[22])
-        br_snapshots_16_22 <= io_remap_reqs_1_pdst;
-      else if (_GEN[22])
-        br_snapshots_16_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_22 <= map_table_22;
-      if (_GEN_2[23])
-        br_snapshots_16_23 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[23])
-        br_snapshots_16_23 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[23])
-        br_snapshots_16_23 <= io_remap_reqs_1_pdst;
-      else if (_GEN[23])
-        br_snapshots_16_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_23 <= map_table_23;
-      if (_GEN_2[24])
-        br_snapshots_16_24 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[24])
-        br_snapshots_16_24 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[24])
-        br_snapshots_16_24 <= io_remap_reqs_1_pdst;
-      else if (_GEN[24])
-        br_snapshots_16_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_24 <= map_table_24;
-      if (_GEN_2[25])
-        br_snapshots_16_25 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[25])
-        br_snapshots_16_25 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[25])
-        br_snapshots_16_25 <= io_remap_reqs_1_pdst;
-      else if (_GEN[25])
-        br_snapshots_16_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_25 <= map_table_25;
-      if (_GEN_2[26])
-        br_snapshots_16_26 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[26])
-        br_snapshots_16_26 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[26])
-        br_snapshots_16_26 <= io_remap_reqs_1_pdst;
-      else if (_GEN[26])
-        br_snapshots_16_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_26 <= map_table_26;
-      if (_GEN_2[27])
-        br_snapshots_16_27 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[27])
-        br_snapshots_16_27 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[27])
-        br_snapshots_16_27 <= io_remap_reqs_1_pdst;
-      else if (_GEN[27])
-        br_snapshots_16_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_27 <= map_table_27;
-      if (_GEN_2[28])
-        br_snapshots_16_28 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[28])
-        br_snapshots_16_28 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[28])
-        br_snapshots_16_28 <= io_remap_reqs_1_pdst;
-      else if (_GEN[28])
-        br_snapshots_16_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_28 <= map_table_28;
-      if (_GEN_2[29])
-        br_snapshots_16_29 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[29])
-        br_snapshots_16_29 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[29])
-        br_snapshots_16_29 <= io_remap_reqs_1_pdst;
-      else if (_GEN[29])
-        br_snapshots_16_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_29 <= map_table_29;
-      if (_GEN_2[30])
-        br_snapshots_16_30 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[30])
-        br_snapshots_16_30 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[30])
-        br_snapshots_16_30 <= io_remap_reqs_1_pdst;
-      else if (_GEN[30])
-        br_snapshots_16_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_30 <= map_table_30;
-      if (_GEN_2[31])
-        br_snapshots_16_31 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[31])
-        br_snapshots_16_31 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[31])
-        br_snapshots_16_31 <= io_remap_reqs_1_pdst;
-      else if (_GEN[31])
-        br_snapshots_16_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_31 <= map_table_31;
+      br_snapshots_16_0 <= remap_table_4_0;
+      br_snapshots_16_1 <= remap_table_4_1;
+      br_snapshots_16_2 <= remap_table_4_2;
+      br_snapshots_16_3 <= remap_table_4_3;
+      br_snapshots_16_4 <= remap_table_4_4;
+      br_snapshots_16_5 <= remap_table_4_5;
+      br_snapshots_16_6 <= remap_table_4_6;
+      br_snapshots_16_7 <= remap_table_4_7;
+      br_snapshots_16_8 <= remap_table_4_8;
+      br_snapshots_16_9 <= remap_table_4_9;
+      br_snapshots_16_10 <= remap_table_4_10;
+      br_snapshots_16_11 <= remap_table_4_11;
+      br_snapshots_16_12 <= remap_table_4_12;
+      br_snapshots_16_13 <= remap_table_4_13;
+      br_snapshots_16_14 <= remap_table_4_14;
+      br_snapshots_16_15 <= remap_table_4_15;
+      br_snapshots_16_16 <= remap_table_4_16;
+      br_snapshots_16_17 <= remap_table_4_17;
+      br_snapshots_16_18 <= remap_table_4_18;
+      br_snapshots_16_19 <= remap_table_4_19;
+      br_snapshots_16_20 <= remap_table_4_20;
+      br_snapshots_16_21 <= remap_table_4_21;
+      br_snapshots_16_22 <= remap_table_4_22;
+      br_snapshots_16_23 <= remap_table_4_23;
+      br_snapshots_16_24 <= remap_table_4_24;
+      br_snapshots_16_25 <= remap_table_4_25;
+      br_snapshots_16_26 <= remap_table_4_26;
+      br_snapshots_16_27 <= remap_table_4_27;
+      br_snapshots_16_28 <= remap_table_4_28;
+      br_snapshots_16_29 <= remap_table_4_29;
+      br_snapshots_16_30 <= remap_table_4_30;
+      br_snapshots_16_31 <= remap_table_4_31;
     end
     else if (io_ren_br_tags_2_valid & io_ren_br_tags_2_bits == 5'h10) begin
-      if (_GEN_1[0])
-        br_snapshots_16_0 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[0])
-        br_snapshots_16_0 <= io_remap_reqs_1_pdst;
-      else if (_GEN[0])
-        br_snapshots_16_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_0 <= map_table_0;
-      if (_GEN_1[1])
-        br_snapshots_16_1 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[1])
-        br_snapshots_16_1 <= io_remap_reqs_1_pdst;
-      else if (_GEN[1])
-        br_snapshots_16_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_1 <= map_table_1;
-      if (_GEN_1[2])
-        br_snapshots_16_2 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[2])
-        br_snapshots_16_2 <= io_remap_reqs_1_pdst;
-      else if (_GEN[2])
-        br_snapshots_16_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_2 <= map_table_2;
-      if (_GEN_1[3])
-        br_snapshots_16_3 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[3])
-        br_snapshots_16_3 <= io_remap_reqs_1_pdst;
-      else if (_GEN[3])
-        br_snapshots_16_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_3 <= map_table_3;
-      if (_GEN_1[4])
-        br_snapshots_16_4 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[4])
-        br_snapshots_16_4 <= io_remap_reqs_1_pdst;
-      else if (_GEN[4])
-        br_snapshots_16_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_4 <= map_table_4;
-      if (_GEN_1[5])
-        br_snapshots_16_5 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[5])
-        br_snapshots_16_5 <= io_remap_reqs_1_pdst;
-      else if (_GEN[5])
-        br_snapshots_16_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_5 <= map_table_5;
-      if (_GEN_1[6])
-        br_snapshots_16_6 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[6])
-        br_snapshots_16_6 <= io_remap_reqs_1_pdst;
-      else if (_GEN[6])
-        br_snapshots_16_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_6 <= map_table_6;
-      if (_GEN_1[7])
-        br_snapshots_16_7 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[7])
-        br_snapshots_16_7 <= io_remap_reqs_1_pdst;
-      else if (_GEN[7])
-        br_snapshots_16_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_7 <= map_table_7;
-      if (_GEN_1[8])
-        br_snapshots_16_8 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[8])
-        br_snapshots_16_8 <= io_remap_reqs_1_pdst;
-      else if (_GEN[8])
-        br_snapshots_16_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_8 <= map_table_8;
-      if (_GEN_1[9])
-        br_snapshots_16_9 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[9])
-        br_snapshots_16_9 <= io_remap_reqs_1_pdst;
-      else if (_GEN[9])
-        br_snapshots_16_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_9 <= map_table_9;
-      if (_GEN_1[10])
-        br_snapshots_16_10 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[10])
-        br_snapshots_16_10 <= io_remap_reqs_1_pdst;
-      else if (_GEN[10])
-        br_snapshots_16_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_10 <= map_table_10;
-      if (_GEN_1[11])
-        br_snapshots_16_11 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[11])
-        br_snapshots_16_11 <= io_remap_reqs_1_pdst;
-      else if (_GEN[11])
-        br_snapshots_16_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_11 <= map_table_11;
-      if (_GEN_1[12])
-        br_snapshots_16_12 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[12])
-        br_snapshots_16_12 <= io_remap_reqs_1_pdst;
-      else if (_GEN[12])
-        br_snapshots_16_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_12 <= map_table_12;
-      if (_GEN_1[13])
-        br_snapshots_16_13 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[13])
-        br_snapshots_16_13 <= io_remap_reqs_1_pdst;
-      else if (_GEN[13])
-        br_snapshots_16_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_13 <= map_table_13;
-      if (_GEN_1[14])
-        br_snapshots_16_14 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[14])
-        br_snapshots_16_14 <= io_remap_reqs_1_pdst;
-      else if (_GEN[14])
-        br_snapshots_16_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_14 <= map_table_14;
-      if (_GEN_1[15])
-        br_snapshots_16_15 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[15])
-        br_snapshots_16_15 <= io_remap_reqs_1_pdst;
-      else if (_GEN[15])
-        br_snapshots_16_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_15 <= map_table_15;
-      if (_GEN_1[16])
-        br_snapshots_16_16 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[16])
-        br_snapshots_16_16 <= io_remap_reqs_1_pdst;
-      else if (_GEN[16])
-        br_snapshots_16_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_16 <= map_table_16;
-      if (_GEN_1[17])
-        br_snapshots_16_17 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[17])
-        br_snapshots_16_17 <= io_remap_reqs_1_pdst;
-      else if (_GEN[17])
-        br_snapshots_16_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_17 <= map_table_17;
-      if (_GEN_1[18])
-        br_snapshots_16_18 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[18])
-        br_snapshots_16_18 <= io_remap_reqs_1_pdst;
-      else if (_GEN[18])
-        br_snapshots_16_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_18 <= map_table_18;
-      if (_GEN_1[19])
-        br_snapshots_16_19 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[19])
-        br_snapshots_16_19 <= io_remap_reqs_1_pdst;
-      else if (_GEN[19])
-        br_snapshots_16_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_19 <= map_table_19;
-      if (_GEN_1[20])
-        br_snapshots_16_20 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[20])
-        br_snapshots_16_20 <= io_remap_reqs_1_pdst;
-      else if (_GEN[20])
-        br_snapshots_16_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_20 <= map_table_20;
-      if (_GEN_1[21])
-        br_snapshots_16_21 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[21])
-        br_snapshots_16_21 <= io_remap_reqs_1_pdst;
-      else if (_GEN[21])
-        br_snapshots_16_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_21 <= map_table_21;
-      if (_GEN_1[22])
-        br_snapshots_16_22 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[22])
-        br_snapshots_16_22 <= io_remap_reqs_1_pdst;
-      else if (_GEN[22])
-        br_snapshots_16_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_22 <= map_table_22;
-      if (_GEN_1[23])
-        br_snapshots_16_23 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[23])
-        br_snapshots_16_23 <= io_remap_reqs_1_pdst;
-      else if (_GEN[23])
-        br_snapshots_16_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_23 <= map_table_23;
-      if (_GEN_1[24])
-        br_snapshots_16_24 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[24])
-        br_snapshots_16_24 <= io_remap_reqs_1_pdst;
-      else if (_GEN[24])
-        br_snapshots_16_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_24 <= map_table_24;
-      if (_GEN_1[25])
-        br_snapshots_16_25 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[25])
-        br_snapshots_16_25 <= io_remap_reqs_1_pdst;
-      else if (_GEN[25])
-        br_snapshots_16_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_25 <= map_table_25;
-      if (_GEN_1[26])
-        br_snapshots_16_26 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[26])
-        br_snapshots_16_26 <= io_remap_reqs_1_pdst;
-      else if (_GEN[26])
-        br_snapshots_16_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_26 <= map_table_26;
-      if (_GEN_1[27])
-        br_snapshots_16_27 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[27])
-        br_snapshots_16_27 <= io_remap_reqs_1_pdst;
-      else if (_GEN[27])
-        br_snapshots_16_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_27 <= map_table_27;
-      if (_GEN_1[28])
-        br_snapshots_16_28 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[28])
-        br_snapshots_16_28 <= io_remap_reqs_1_pdst;
-      else if (_GEN[28])
-        br_snapshots_16_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_28 <= map_table_28;
-      if (_GEN_1[29])
-        br_snapshots_16_29 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[29])
-        br_snapshots_16_29 <= io_remap_reqs_1_pdst;
-      else if (_GEN[29])
-        br_snapshots_16_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_29 <= map_table_29;
-      if (_GEN_1[30])
-        br_snapshots_16_30 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[30])
-        br_snapshots_16_30 <= io_remap_reqs_1_pdst;
-      else if (_GEN[30])
-        br_snapshots_16_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_30 <= map_table_30;
-      if (_GEN_1[31])
-        br_snapshots_16_31 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[31])
-        br_snapshots_16_31 <= io_remap_reqs_1_pdst;
-      else if (_GEN[31])
-        br_snapshots_16_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_31 <= map_table_31;
+      br_snapshots_16_0 <= remap_table_3_0;
+      br_snapshots_16_1 <= remap_table_3_1;
+      br_snapshots_16_2 <= remap_table_3_2;
+      br_snapshots_16_3 <= remap_table_3_3;
+      br_snapshots_16_4 <= remap_table_3_4;
+      br_snapshots_16_5 <= remap_table_3_5;
+      br_snapshots_16_6 <= remap_table_3_6;
+      br_snapshots_16_7 <= remap_table_3_7;
+      br_snapshots_16_8 <= remap_table_3_8;
+      br_snapshots_16_9 <= remap_table_3_9;
+      br_snapshots_16_10 <= remap_table_3_10;
+      br_snapshots_16_11 <= remap_table_3_11;
+      br_snapshots_16_12 <= remap_table_3_12;
+      br_snapshots_16_13 <= remap_table_3_13;
+      br_snapshots_16_14 <= remap_table_3_14;
+      br_snapshots_16_15 <= remap_table_3_15;
+      br_snapshots_16_16 <= remap_table_3_16;
+      br_snapshots_16_17 <= remap_table_3_17;
+      br_snapshots_16_18 <= remap_table_3_18;
+      br_snapshots_16_19 <= remap_table_3_19;
+      br_snapshots_16_20 <= remap_table_3_20;
+      br_snapshots_16_21 <= remap_table_3_21;
+      br_snapshots_16_22 <= remap_table_3_22;
+      br_snapshots_16_23 <= remap_table_3_23;
+      br_snapshots_16_24 <= remap_table_3_24;
+      br_snapshots_16_25 <= remap_table_3_25;
+      br_snapshots_16_26 <= remap_table_3_26;
+      br_snapshots_16_27 <= remap_table_3_27;
+      br_snapshots_16_28 <= remap_table_3_28;
+      br_snapshots_16_29 <= remap_table_3_29;
+      br_snapshots_16_30 <= remap_table_3_30;
+      br_snapshots_16_31 <= remap_table_3_31;
     end
     else if (io_ren_br_tags_1_valid & io_ren_br_tags_1_bits == 5'h10) begin
-      if (_GEN_0[0])
-        br_snapshots_16_0 <= io_remap_reqs_1_pdst;
-      else if (_GEN[0])
-        br_snapshots_16_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_0 <= map_table_0;
-      if (_GEN_0[1])
-        br_snapshots_16_1 <= io_remap_reqs_1_pdst;
-      else if (_GEN[1])
-        br_snapshots_16_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_1 <= map_table_1;
-      if (_GEN_0[2])
-        br_snapshots_16_2 <= io_remap_reqs_1_pdst;
-      else if (_GEN[2])
-        br_snapshots_16_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_2 <= map_table_2;
-      if (_GEN_0[3])
-        br_snapshots_16_3 <= io_remap_reqs_1_pdst;
-      else if (_GEN[3])
-        br_snapshots_16_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_3 <= map_table_3;
-      if (_GEN_0[4])
-        br_snapshots_16_4 <= io_remap_reqs_1_pdst;
-      else if (_GEN[4])
-        br_snapshots_16_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_4 <= map_table_4;
-      if (_GEN_0[5])
-        br_snapshots_16_5 <= io_remap_reqs_1_pdst;
-      else if (_GEN[5])
-        br_snapshots_16_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_5 <= map_table_5;
-      if (_GEN_0[6])
-        br_snapshots_16_6 <= io_remap_reqs_1_pdst;
-      else if (_GEN[6])
-        br_snapshots_16_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_6 <= map_table_6;
-      if (_GEN_0[7])
-        br_snapshots_16_7 <= io_remap_reqs_1_pdst;
-      else if (_GEN[7])
-        br_snapshots_16_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_7 <= map_table_7;
-      if (_GEN_0[8])
-        br_snapshots_16_8 <= io_remap_reqs_1_pdst;
-      else if (_GEN[8])
-        br_snapshots_16_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_8 <= map_table_8;
-      if (_GEN_0[9])
-        br_snapshots_16_9 <= io_remap_reqs_1_pdst;
-      else if (_GEN[9])
-        br_snapshots_16_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_9 <= map_table_9;
-      if (_GEN_0[10])
-        br_snapshots_16_10 <= io_remap_reqs_1_pdst;
-      else if (_GEN[10])
-        br_snapshots_16_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_10 <= map_table_10;
-      if (_GEN_0[11])
-        br_snapshots_16_11 <= io_remap_reqs_1_pdst;
-      else if (_GEN[11])
-        br_snapshots_16_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_11 <= map_table_11;
-      if (_GEN_0[12])
-        br_snapshots_16_12 <= io_remap_reqs_1_pdst;
-      else if (_GEN[12])
-        br_snapshots_16_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_12 <= map_table_12;
-      if (_GEN_0[13])
-        br_snapshots_16_13 <= io_remap_reqs_1_pdst;
-      else if (_GEN[13])
-        br_snapshots_16_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_13 <= map_table_13;
-      if (_GEN_0[14])
-        br_snapshots_16_14 <= io_remap_reqs_1_pdst;
-      else if (_GEN[14])
-        br_snapshots_16_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_14 <= map_table_14;
-      if (_GEN_0[15])
-        br_snapshots_16_15 <= io_remap_reqs_1_pdst;
-      else if (_GEN[15])
-        br_snapshots_16_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_15 <= map_table_15;
-      if (_GEN_0[16])
-        br_snapshots_16_16 <= io_remap_reqs_1_pdst;
-      else if (_GEN[16])
-        br_snapshots_16_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_16 <= map_table_16;
-      if (_GEN_0[17])
-        br_snapshots_16_17 <= io_remap_reqs_1_pdst;
-      else if (_GEN[17])
-        br_snapshots_16_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_17 <= map_table_17;
-      if (_GEN_0[18])
-        br_snapshots_16_18 <= io_remap_reqs_1_pdst;
-      else if (_GEN[18])
-        br_snapshots_16_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_18 <= map_table_18;
-      if (_GEN_0[19])
-        br_snapshots_16_19 <= io_remap_reqs_1_pdst;
-      else if (_GEN[19])
-        br_snapshots_16_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_19 <= map_table_19;
-      if (_GEN_0[20])
-        br_snapshots_16_20 <= io_remap_reqs_1_pdst;
-      else if (_GEN[20])
-        br_snapshots_16_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_20 <= map_table_20;
-      if (_GEN_0[21])
-        br_snapshots_16_21 <= io_remap_reqs_1_pdst;
-      else if (_GEN[21])
-        br_snapshots_16_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_21 <= map_table_21;
-      if (_GEN_0[22])
-        br_snapshots_16_22 <= io_remap_reqs_1_pdst;
-      else if (_GEN[22])
-        br_snapshots_16_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_22 <= map_table_22;
-      if (_GEN_0[23])
-        br_snapshots_16_23 <= io_remap_reqs_1_pdst;
-      else if (_GEN[23])
-        br_snapshots_16_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_23 <= map_table_23;
-      if (_GEN_0[24])
-        br_snapshots_16_24 <= io_remap_reqs_1_pdst;
-      else if (_GEN[24])
-        br_snapshots_16_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_24 <= map_table_24;
-      if (_GEN_0[25])
-        br_snapshots_16_25 <= io_remap_reqs_1_pdst;
-      else if (_GEN[25])
-        br_snapshots_16_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_25 <= map_table_25;
-      if (_GEN_0[26])
-        br_snapshots_16_26 <= io_remap_reqs_1_pdst;
-      else if (_GEN[26])
-        br_snapshots_16_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_26 <= map_table_26;
-      if (_GEN_0[27])
-        br_snapshots_16_27 <= io_remap_reqs_1_pdst;
-      else if (_GEN[27])
-        br_snapshots_16_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_27 <= map_table_27;
-      if (_GEN_0[28])
-        br_snapshots_16_28 <= io_remap_reqs_1_pdst;
-      else if (_GEN[28])
-        br_snapshots_16_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_28 <= map_table_28;
-      if (_GEN_0[29])
-        br_snapshots_16_29 <= io_remap_reqs_1_pdst;
-      else if (_GEN[29])
-        br_snapshots_16_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_29 <= map_table_29;
-      if (_GEN_0[30])
-        br_snapshots_16_30 <= io_remap_reqs_1_pdst;
-      else if (_GEN[30])
-        br_snapshots_16_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_30 <= map_table_30;
-      if (_GEN_0[31])
-        br_snapshots_16_31 <= io_remap_reqs_1_pdst;
-      else if (_GEN[31])
-        br_snapshots_16_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_31 <= map_table_31;
+      br_snapshots_16_0 <= remap_table_2_0;
+      br_snapshots_16_1 <= remap_table_2_1;
+      br_snapshots_16_2 <= remap_table_2_2;
+      br_snapshots_16_3 <= remap_table_2_3;
+      br_snapshots_16_4 <= remap_table_2_4;
+      br_snapshots_16_5 <= remap_table_2_5;
+      br_snapshots_16_6 <= remap_table_2_6;
+      br_snapshots_16_7 <= remap_table_2_7;
+      br_snapshots_16_8 <= remap_table_2_8;
+      br_snapshots_16_9 <= remap_table_2_9;
+      br_snapshots_16_10 <= remap_table_2_10;
+      br_snapshots_16_11 <= remap_table_2_11;
+      br_snapshots_16_12 <= remap_table_2_12;
+      br_snapshots_16_13 <= remap_table_2_13;
+      br_snapshots_16_14 <= remap_table_2_14;
+      br_snapshots_16_15 <= remap_table_2_15;
+      br_snapshots_16_16 <= remap_table_2_16;
+      br_snapshots_16_17 <= remap_table_2_17;
+      br_snapshots_16_18 <= remap_table_2_18;
+      br_snapshots_16_19 <= remap_table_2_19;
+      br_snapshots_16_20 <= remap_table_2_20;
+      br_snapshots_16_21 <= remap_table_2_21;
+      br_snapshots_16_22 <= remap_table_2_22;
+      br_snapshots_16_23 <= remap_table_2_23;
+      br_snapshots_16_24 <= remap_table_2_24;
+      br_snapshots_16_25 <= remap_table_2_25;
+      br_snapshots_16_26 <= remap_table_2_26;
+      br_snapshots_16_27 <= remap_table_2_27;
+      br_snapshots_16_28 <= remap_table_2_28;
+      br_snapshots_16_29 <= remap_table_2_29;
+      br_snapshots_16_30 <= remap_table_2_30;
+      br_snapshots_16_31 <= remap_table_2_31;
     end
     else if (io_ren_br_tags_0_valid & io_ren_br_tags_0_bits == 5'h10) begin
-      if (_GEN[0])
-        br_snapshots_16_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_0 <= map_table_0;
-      if (_GEN[1])
-        br_snapshots_16_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_1 <= map_table_1;
-      if (_GEN[2])
-        br_snapshots_16_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_2 <= map_table_2;
-      if (_GEN[3])
-        br_snapshots_16_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_3 <= map_table_3;
-      if (_GEN[4])
-        br_snapshots_16_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_4 <= map_table_4;
-      if (_GEN[5])
-        br_snapshots_16_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_5 <= map_table_5;
-      if (_GEN[6])
-        br_snapshots_16_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_6 <= map_table_6;
-      if (_GEN[7])
-        br_snapshots_16_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_7 <= map_table_7;
-      if (_GEN[8])
-        br_snapshots_16_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_8 <= map_table_8;
-      if (_GEN[9])
-        br_snapshots_16_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_9 <= map_table_9;
-      if (_GEN[10])
-        br_snapshots_16_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_10 <= map_table_10;
-      if (_GEN[11])
-        br_snapshots_16_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_11 <= map_table_11;
-      if (_GEN[12])
-        br_snapshots_16_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_12 <= map_table_12;
-      if (_GEN[13])
-        br_snapshots_16_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_13 <= map_table_13;
-      if (_GEN[14])
-        br_snapshots_16_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_14 <= map_table_14;
-      if (_GEN[15])
-        br_snapshots_16_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_15 <= map_table_15;
-      if (_GEN[16])
-        br_snapshots_16_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_16 <= map_table_16;
-      if (_GEN[17])
-        br_snapshots_16_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_17 <= map_table_17;
-      if (_GEN[18])
-        br_snapshots_16_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_18 <= map_table_18;
-      if (_GEN[19])
-        br_snapshots_16_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_19 <= map_table_19;
-      if (_GEN[20])
-        br_snapshots_16_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_20 <= map_table_20;
-      if (_GEN[21])
-        br_snapshots_16_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_21 <= map_table_21;
-      if (_GEN[22])
-        br_snapshots_16_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_22 <= map_table_22;
-      if (_GEN[23])
-        br_snapshots_16_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_23 <= map_table_23;
-      if (_GEN[24])
-        br_snapshots_16_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_24 <= map_table_24;
-      if (_GEN[25])
-        br_snapshots_16_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_25 <= map_table_25;
-      if (_GEN[26])
-        br_snapshots_16_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_26 <= map_table_26;
-      if (_GEN[27])
-        br_snapshots_16_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_27 <= map_table_27;
-      if (_GEN[28])
-        br_snapshots_16_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_28 <= map_table_28;
-      if (_GEN[29])
-        br_snapshots_16_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_29 <= map_table_29;
-      if (_GEN[30])
-        br_snapshots_16_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_30 <= map_table_30;
-      if (_GEN[31])
-        br_snapshots_16_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_16_31 <= map_table_31;
+      br_snapshots_16_0 <= remap_table_1_0;
+      br_snapshots_16_1 <= remap_table_1_1;
+      br_snapshots_16_2 <= remap_table_1_2;
+      br_snapshots_16_3 <= remap_table_1_3;
+      br_snapshots_16_4 <= remap_table_1_4;
+      br_snapshots_16_5 <= remap_table_1_5;
+      br_snapshots_16_6 <= remap_table_1_6;
+      br_snapshots_16_7 <= remap_table_1_7;
+      br_snapshots_16_8 <= remap_table_1_8;
+      br_snapshots_16_9 <= remap_table_1_9;
+      br_snapshots_16_10 <= remap_table_1_10;
+      br_snapshots_16_11 <= remap_table_1_11;
+      br_snapshots_16_12 <= remap_table_1_12;
+      br_snapshots_16_13 <= remap_table_1_13;
+      br_snapshots_16_14 <= remap_table_1_14;
+      br_snapshots_16_15 <= remap_table_1_15;
+      br_snapshots_16_16 <= remap_table_1_16;
+      br_snapshots_16_17 <= remap_table_1_17;
+      br_snapshots_16_18 <= remap_table_1_18;
+      br_snapshots_16_19 <= remap_table_1_19;
+      br_snapshots_16_20 <= remap_table_1_20;
+      br_snapshots_16_21 <= remap_table_1_21;
+      br_snapshots_16_22 <= remap_table_1_22;
+      br_snapshots_16_23 <= remap_table_1_23;
+      br_snapshots_16_24 <= remap_table_1_24;
+      br_snapshots_16_25 <= remap_table_1_25;
+      br_snapshots_16_26 <= remap_table_1_26;
+      br_snapshots_16_27 <= remap_table_1_27;
+      br_snapshots_16_28 <= remap_table_1_28;
+      br_snapshots_16_29 <= remap_table_1_29;
+      br_snapshots_16_30 <= remap_table_1_30;
+      br_snapshots_16_31 <= remap_table_1_31;
     end
     if (io_ren_br_tags_3_valid & io_ren_br_tags_3_bits == 5'h11) begin
-      if (_GEN_2[0])
-        br_snapshots_17_0 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[0])
-        br_snapshots_17_0 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[0])
-        br_snapshots_17_0 <= io_remap_reqs_1_pdst;
-      else if (_GEN[0])
-        br_snapshots_17_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_0 <= map_table_0;
-      if (_GEN_2[1])
-        br_snapshots_17_1 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[1])
-        br_snapshots_17_1 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[1])
-        br_snapshots_17_1 <= io_remap_reqs_1_pdst;
-      else if (_GEN[1])
-        br_snapshots_17_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_1 <= map_table_1;
-      if (_GEN_2[2])
-        br_snapshots_17_2 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[2])
-        br_snapshots_17_2 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[2])
-        br_snapshots_17_2 <= io_remap_reqs_1_pdst;
-      else if (_GEN[2])
-        br_snapshots_17_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_2 <= map_table_2;
-      if (_GEN_2[3])
-        br_snapshots_17_3 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[3])
-        br_snapshots_17_3 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[3])
-        br_snapshots_17_3 <= io_remap_reqs_1_pdst;
-      else if (_GEN[3])
-        br_snapshots_17_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_3 <= map_table_3;
-      if (_GEN_2[4])
-        br_snapshots_17_4 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[4])
-        br_snapshots_17_4 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[4])
-        br_snapshots_17_4 <= io_remap_reqs_1_pdst;
-      else if (_GEN[4])
-        br_snapshots_17_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_4 <= map_table_4;
-      if (_GEN_2[5])
-        br_snapshots_17_5 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[5])
-        br_snapshots_17_5 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[5])
-        br_snapshots_17_5 <= io_remap_reqs_1_pdst;
-      else if (_GEN[5])
-        br_snapshots_17_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_5 <= map_table_5;
-      if (_GEN_2[6])
-        br_snapshots_17_6 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[6])
-        br_snapshots_17_6 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[6])
-        br_snapshots_17_6 <= io_remap_reqs_1_pdst;
-      else if (_GEN[6])
-        br_snapshots_17_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_6 <= map_table_6;
-      if (_GEN_2[7])
-        br_snapshots_17_7 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[7])
-        br_snapshots_17_7 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[7])
-        br_snapshots_17_7 <= io_remap_reqs_1_pdst;
-      else if (_GEN[7])
-        br_snapshots_17_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_7 <= map_table_7;
-      if (_GEN_2[8])
-        br_snapshots_17_8 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[8])
-        br_snapshots_17_8 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[8])
-        br_snapshots_17_8 <= io_remap_reqs_1_pdst;
-      else if (_GEN[8])
-        br_snapshots_17_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_8 <= map_table_8;
-      if (_GEN_2[9])
-        br_snapshots_17_9 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[9])
-        br_snapshots_17_9 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[9])
-        br_snapshots_17_9 <= io_remap_reqs_1_pdst;
-      else if (_GEN[9])
-        br_snapshots_17_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_9 <= map_table_9;
-      if (_GEN_2[10])
-        br_snapshots_17_10 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[10])
-        br_snapshots_17_10 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[10])
-        br_snapshots_17_10 <= io_remap_reqs_1_pdst;
-      else if (_GEN[10])
-        br_snapshots_17_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_10 <= map_table_10;
-      if (_GEN_2[11])
-        br_snapshots_17_11 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[11])
-        br_snapshots_17_11 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[11])
-        br_snapshots_17_11 <= io_remap_reqs_1_pdst;
-      else if (_GEN[11])
-        br_snapshots_17_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_11 <= map_table_11;
-      if (_GEN_2[12])
-        br_snapshots_17_12 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[12])
-        br_snapshots_17_12 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[12])
-        br_snapshots_17_12 <= io_remap_reqs_1_pdst;
-      else if (_GEN[12])
-        br_snapshots_17_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_12 <= map_table_12;
-      if (_GEN_2[13])
-        br_snapshots_17_13 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[13])
-        br_snapshots_17_13 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[13])
-        br_snapshots_17_13 <= io_remap_reqs_1_pdst;
-      else if (_GEN[13])
-        br_snapshots_17_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_13 <= map_table_13;
-      if (_GEN_2[14])
-        br_snapshots_17_14 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[14])
-        br_snapshots_17_14 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[14])
-        br_snapshots_17_14 <= io_remap_reqs_1_pdst;
-      else if (_GEN[14])
-        br_snapshots_17_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_14 <= map_table_14;
-      if (_GEN_2[15])
-        br_snapshots_17_15 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[15])
-        br_snapshots_17_15 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[15])
-        br_snapshots_17_15 <= io_remap_reqs_1_pdst;
-      else if (_GEN[15])
-        br_snapshots_17_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_15 <= map_table_15;
-      if (_GEN_2[16])
-        br_snapshots_17_16 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[16])
-        br_snapshots_17_16 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[16])
-        br_snapshots_17_16 <= io_remap_reqs_1_pdst;
-      else if (_GEN[16])
-        br_snapshots_17_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_16 <= map_table_16;
-      if (_GEN_2[17])
-        br_snapshots_17_17 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[17])
-        br_snapshots_17_17 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[17])
-        br_snapshots_17_17 <= io_remap_reqs_1_pdst;
-      else if (_GEN[17])
-        br_snapshots_17_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_17 <= map_table_17;
-      if (_GEN_2[18])
-        br_snapshots_17_18 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[18])
-        br_snapshots_17_18 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[18])
-        br_snapshots_17_18 <= io_remap_reqs_1_pdst;
-      else if (_GEN[18])
-        br_snapshots_17_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_18 <= map_table_18;
-      if (_GEN_2[19])
-        br_snapshots_17_19 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[19])
-        br_snapshots_17_19 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[19])
-        br_snapshots_17_19 <= io_remap_reqs_1_pdst;
-      else if (_GEN[19])
-        br_snapshots_17_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_19 <= map_table_19;
-      if (_GEN_2[20])
-        br_snapshots_17_20 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[20])
-        br_snapshots_17_20 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[20])
-        br_snapshots_17_20 <= io_remap_reqs_1_pdst;
-      else if (_GEN[20])
-        br_snapshots_17_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_20 <= map_table_20;
-      if (_GEN_2[21])
-        br_snapshots_17_21 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[21])
-        br_snapshots_17_21 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[21])
-        br_snapshots_17_21 <= io_remap_reqs_1_pdst;
-      else if (_GEN[21])
-        br_snapshots_17_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_21 <= map_table_21;
-      if (_GEN_2[22])
-        br_snapshots_17_22 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[22])
-        br_snapshots_17_22 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[22])
-        br_snapshots_17_22 <= io_remap_reqs_1_pdst;
-      else if (_GEN[22])
-        br_snapshots_17_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_22 <= map_table_22;
-      if (_GEN_2[23])
-        br_snapshots_17_23 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[23])
-        br_snapshots_17_23 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[23])
-        br_snapshots_17_23 <= io_remap_reqs_1_pdst;
-      else if (_GEN[23])
-        br_snapshots_17_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_23 <= map_table_23;
-      if (_GEN_2[24])
-        br_snapshots_17_24 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[24])
-        br_snapshots_17_24 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[24])
-        br_snapshots_17_24 <= io_remap_reqs_1_pdst;
-      else if (_GEN[24])
-        br_snapshots_17_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_24 <= map_table_24;
-      if (_GEN_2[25])
-        br_snapshots_17_25 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[25])
-        br_snapshots_17_25 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[25])
-        br_snapshots_17_25 <= io_remap_reqs_1_pdst;
-      else if (_GEN[25])
-        br_snapshots_17_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_25 <= map_table_25;
-      if (_GEN_2[26])
-        br_snapshots_17_26 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[26])
-        br_snapshots_17_26 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[26])
-        br_snapshots_17_26 <= io_remap_reqs_1_pdst;
-      else if (_GEN[26])
-        br_snapshots_17_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_26 <= map_table_26;
-      if (_GEN_2[27])
-        br_snapshots_17_27 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[27])
-        br_snapshots_17_27 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[27])
-        br_snapshots_17_27 <= io_remap_reqs_1_pdst;
-      else if (_GEN[27])
-        br_snapshots_17_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_27 <= map_table_27;
-      if (_GEN_2[28])
-        br_snapshots_17_28 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[28])
-        br_snapshots_17_28 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[28])
-        br_snapshots_17_28 <= io_remap_reqs_1_pdst;
-      else if (_GEN[28])
-        br_snapshots_17_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_28 <= map_table_28;
-      if (_GEN_2[29])
-        br_snapshots_17_29 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[29])
-        br_snapshots_17_29 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[29])
-        br_snapshots_17_29 <= io_remap_reqs_1_pdst;
-      else if (_GEN[29])
-        br_snapshots_17_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_29 <= map_table_29;
-      if (_GEN_2[30])
-        br_snapshots_17_30 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[30])
-        br_snapshots_17_30 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[30])
-        br_snapshots_17_30 <= io_remap_reqs_1_pdst;
-      else if (_GEN[30])
-        br_snapshots_17_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_30 <= map_table_30;
-      if (_GEN_2[31])
-        br_snapshots_17_31 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[31])
-        br_snapshots_17_31 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[31])
-        br_snapshots_17_31 <= io_remap_reqs_1_pdst;
-      else if (_GEN[31])
-        br_snapshots_17_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_31 <= map_table_31;
+      br_snapshots_17_0 <= remap_table_4_0;
+      br_snapshots_17_1 <= remap_table_4_1;
+      br_snapshots_17_2 <= remap_table_4_2;
+      br_snapshots_17_3 <= remap_table_4_3;
+      br_snapshots_17_4 <= remap_table_4_4;
+      br_snapshots_17_5 <= remap_table_4_5;
+      br_snapshots_17_6 <= remap_table_4_6;
+      br_snapshots_17_7 <= remap_table_4_7;
+      br_snapshots_17_8 <= remap_table_4_8;
+      br_snapshots_17_9 <= remap_table_4_9;
+      br_snapshots_17_10 <= remap_table_4_10;
+      br_snapshots_17_11 <= remap_table_4_11;
+      br_snapshots_17_12 <= remap_table_4_12;
+      br_snapshots_17_13 <= remap_table_4_13;
+      br_snapshots_17_14 <= remap_table_4_14;
+      br_snapshots_17_15 <= remap_table_4_15;
+      br_snapshots_17_16 <= remap_table_4_16;
+      br_snapshots_17_17 <= remap_table_4_17;
+      br_snapshots_17_18 <= remap_table_4_18;
+      br_snapshots_17_19 <= remap_table_4_19;
+      br_snapshots_17_20 <= remap_table_4_20;
+      br_snapshots_17_21 <= remap_table_4_21;
+      br_snapshots_17_22 <= remap_table_4_22;
+      br_snapshots_17_23 <= remap_table_4_23;
+      br_snapshots_17_24 <= remap_table_4_24;
+      br_snapshots_17_25 <= remap_table_4_25;
+      br_snapshots_17_26 <= remap_table_4_26;
+      br_snapshots_17_27 <= remap_table_4_27;
+      br_snapshots_17_28 <= remap_table_4_28;
+      br_snapshots_17_29 <= remap_table_4_29;
+      br_snapshots_17_30 <= remap_table_4_30;
+      br_snapshots_17_31 <= remap_table_4_31;
     end
     else if (io_ren_br_tags_2_valid & io_ren_br_tags_2_bits == 5'h11) begin
-      if (_GEN_1[0])
-        br_snapshots_17_0 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[0])
-        br_snapshots_17_0 <= io_remap_reqs_1_pdst;
-      else if (_GEN[0])
-        br_snapshots_17_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_0 <= map_table_0;
-      if (_GEN_1[1])
-        br_snapshots_17_1 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[1])
-        br_snapshots_17_1 <= io_remap_reqs_1_pdst;
-      else if (_GEN[1])
-        br_snapshots_17_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_1 <= map_table_1;
-      if (_GEN_1[2])
-        br_snapshots_17_2 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[2])
-        br_snapshots_17_2 <= io_remap_reqs_1_pdst;
-      else if (_GEN[2])
-        br_snapshots_17_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_2 <= map_table_2;
-      if (_GEN_1[3])
-        br_snapshots_17_3 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[3])
-        br_snapshots_17_3 <= io_remap_reqs_1_pdst;
-      else if (_GEN[3])
-        br_snapshots_17_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_3 <= map_table_3;
-      if (_GEN_1[4])
-        br_snapshots_17_4 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[4])
-        br_snapshots_17_4 <= io_remap_reqs_1_pdst;
-      else if (_GEN[4])
-        br_snapshots_17_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_4 <= map_table_4;
-      if (_GEN_1[5])
-        br_snapshots_17_5 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[5])
-        br_snapshots_17_5 <= io_remap_reqs_1_pdst;
-      else if (_GEN[5])
-        br_snapshots_17_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_5 <= map_table_5;
-      if (_GEN_1[6])
-        br_snapshots_17_6 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[6])
-        br_snapshots_17_6 <= io_remap_reqs_1_pdst;
-      else if (_GEN[6])
-        br_snapshots_17_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_6 <= map_table_6;
-      if (_GEN_1[7])
-        br_snapshots_17_7 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[7])
-        br_snapshots_17_7 <= io_remap_reqs_1_pdst;
-      else if (_GEN[7])
-        br_snapshots_17_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_7 <= map_table_7;
-      if (_GEN_1[8])
-        br_snapshots_17_8 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[8])
-        br_snapshots_17_8 <= io_remap_reqs_1_pdst;
-      else if (_GEN[8])
-        br_snapshots_17_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_8 <= map_table_8;
-      if (_GEN_1[9])
-        br_snapshots_17_9 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[9])
-        br_snapshots_17_9 <= io_remap_reqs_1_pdst;
-      else if (_GEN[9])
-        br_snapshots_17_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_9 <= map_table_9;
-      if (_GEN_1[10])
-        br_snapshots_17_10 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[10])
-        br_snapshots_17_10 <= io_remap_reqs_1_pdst;
-      else if (_GEN[10])
-        br_snapshots_17_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_10 <= map_table_10;
-      if (_GEN_1[11])
-        br_snapshots_17_11 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[11])
-        br_snapshots_17_11 <= io_remap_reqs_1_pdst;
-      else if (_GEN[11])
-        br_snapshots_17_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_11 <= map_table_11;
-      if (_GEN_1[12])
-        br_snapshots_17_12 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[12])
-        br_snapshots_17_12 <= io_remap_reqs_1_pdst;
-      else if (_GEN[12])
-        br_snapshots_17_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_12 <= map_table_12;
-      if (_GEN_1[13])
-        br_snapshots_17_13 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[13])
-        br_snapshots_17_13 <= io_remap_reqs_1_pdst;
-      else if (_GEN[13])
-        br_snapshots_17_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_13 <= map_table_13;
-      if (_GEN_1[14])
-        br_snapshots_17_14 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[14])
-        br_snapshots_17_14 <= io_remap_reqs_1_pdst;
-      else if (_GEN[14])
-        br_snapshots_17_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_14 <= map_table_14;
-      if (_GEN_1[15])
-        br_snapshots_17_15 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[15])
-        br_snapshots_17_15 <= io_remap_reqs_1_pdst;
-      else if (_GEN[15])
-        br_snapshots_17_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_15 <= map_table_15;
-      if (_GEN_1[16])
-        br_snapshots_17_16 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[16])
-        br_snapshots_17_16 <= io_remap_reqs_1_pdst;
-      else if (_GEN[16])
-        br_snapshots_17_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_16 <= map_table_16;
-      if (_GEN_1[17])
-        br_snapshots_17_17 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[17])
-        br_snapshots_17_17 <= io_remap_reqs_1_pdst;
-      else if (_GEN[17])
-        br_snapshots_17_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_17 <= map_table_17;
-      if (_GEN_1[18])
-        br_snapshots_17_18 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[18])
-        br_snapshots_17_18 <= io_remap_reqs_1_pdst;
-      else if (_GEN[18])
-        br_snapshots_17_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_18 <= map_table_18;
-      if (_GEN_1[19])
-        br_snapshots_17_19 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[19])
-        br_snapshots_17_19 <= io_remap_reqs_1_pdst;
-      else if (_GEN[19])
-        br_snapshots_17_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_19 <= map_table_19;
-      if (_GEN_1[20])
-        br_snapshots_17_20 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[20])
-        br_snapshots_17_20 <= io_remap_reqs_1_pdst;
-      else if (_GEN[20])
-        br_snapshots_17_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_20 <= map_table_20;
-      if (_GEN_1[21])
-        br_snapshots_17_21 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[21])
-        br_snapshots_17_21 <= io_remap_reqs_1_pdst;
-      else if (_GEN[21])
-        br_snapshots_17_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_21 <= map_table_21;
-      if (_GEN_1[22])
-        br_snapshots_17_22 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[22])
-        br_snapshots_17_22 <= io_remap_reqs_1_pdst;
-      else if (_GEN[22])
-        br_snapshots_17_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_22 <= map_table_22;
-      if (_GEN_1[23])
-        br_snapshots_17_23 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[23])
-        br_snapshots_17_23 <= io_remap_reqs_1_pdst;
-      else if (_GEN[23])
-        br_snapshots_17_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_23 <= map_table_23;
-      if (_GEN_1[24])
-        br_snapshots_17_24 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[24])
-        br_snapshots_17_24 <= io_remap_reqs_1_pdst;
-      else if (_GEN[24])
-        br_snapshots_17_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_24 <= map_table_24;
-      if (_GEN_1[25])
-        br_snapshots_17_25 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[25])
-        br_snapshots_17_25 <= io_remap_reqs_1_pdst;
-      else if (_GEN[25])
-        br_snapshots_17_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_25 <= map_table_25;
-      if (_GEN_1[26])
-        br_snapshots_17_26 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[26])
-        br_snapshots_17_26 <= io_remap_reqs_1_pdst;
-      else if (_GEN[26])
-        br_snapshots_17_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_26 <= map_table_26;
-      if (_GEN_1[27])
-        br_snapshots_17_27 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[27])
-        br_snapshots_17_27 <= io_remap_reqs_1_pdst;
-      else if (_GEN[27])
-        br_snapshots_17_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_27 <= map_table_27;
-      if (_GEN_1[28])
-        br_snapshots_17_28 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[28])
-        br_snapshots_17_28 <= io_remap_reqs_1_pdst;
-      else if (_GEN[28])
-        br_snapshots_17_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_28 <= map_table_28;
-      if (_GEN_1[29])
-        br_snapshots_17_29 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[29])
-        br_snapshots_17_29 <= io_remap_reqs_1_pdst;
-      else if (_GEN[29])
-        br_snapshots_17_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_29 <= map_table_29;
-      if (_GEN_1[30])
-        br_snapshots_17_30 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[30])
-        br_snapshots_17_30 <= io_remap_reqs_1_pdst;
-      else if (_GEN[30])
-        br_snapshots_17_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_30 <= map_table_30;
-      if (_GEN_1[31])
-        br_snapshots_17_31 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[31])
-        br_snapshots_17_31 <= io_remap_reqs_1_pdst;
-      else if (_GEN[31])
-        br_snapshots_17_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_31 <= map_table_31;
+      br_snapshots_17_0 <= remap_table_3_0;
+      br_snapshots_17_1 <= remap_table_3_1;
+      br_snapshots_17_2 <= remap_table_3_2;
+      br_snapshots_17_3 <= remap_table_3_3;
+      br_snapshots_17_4 <= remap_table_3_4;
+      br_snapshots_17_5 <= remap_table_3_5;
+      br_snapshots_17_6 <= remap_table_3_6;
+      br_snapshots_17_7 <= remap_table_3_7;
+      br_snapshots_17_8 <= remap_table_3_8;
+      br_snapshots_17_9 <= remap_table_3_9;
+      br_snapshots_17_10 <= remap_table_3_10;
+      br_snapshots_17_11 <= remap_table_3_11;
+      br_snapshots_17_12 <= remap_table_3_12;
+      br_snapshots_17_13 <= remap_table_3_13;
+      br_snapshots_17_14 <= remap_table_3_14;
+      br_snapshots_17_15 <= remap_table_3_15;
+      br_snapshots_17_16 <= remap_table_3_16;
+      br_snapshots_17_17 <= remap_table_3_17;
+      br_snapshots_17_18 <= remap_table_3_18;
+      br_snapshots_17_19 <= remap_table_3_19;
+      br_snapshots_17_20 <= remap_table_3_20;
+      br_snapshots_17_21 <= remap_table_3_21;
+      br_snapshots_17_22 <= remap_table_3_22;
+      br_snapshots_17_23 <= remap_table_3_23;
+      br_snapshots_17_24 <= remap_table_3_24;
+      br_snapshots_17_25 <= remap_table_3_25;
+      br_snapshots_17_26 <= remap_table_3_26;
+      br_snapshots_17_27 <= remap_table_3_27;
+      br_snapshots_17_28 <= remap_table_3_28;
+      br_snapshots_17_29 <= remap_table_3_29;
+      br_snapshots_17_30 <= remap_table_3_30;
+      br_snapshots_17_31 <= remap_table_3_31;
     end
     else if (io_ren_br_tags_1_valid & io_ren_br_tags_1_bits == 5'h11) begin
-      if (_GEN_0[0])
-        br_snapshots_17_0 <= io_remap_reqs_1_pdst;
-      else if (_GEN[0])
-        br_snapshots_17_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_0 <= map_table_0;
-      if (_GEN_0[1])
-        br_snapshots_17_1 <= io_remap_reqs_1_pdst;
-      else if (_GEN[1])
-        br_snapshots_17_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_1 <= map_table_1;
-      if (_GEN_0[2])
-        br_snapshots_17_2 <= io_remap_reqs_1_pdst;
-      else if (_GEN[2])
-        br_snapshots_17_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_2 <= map_table_2;
-      if (_GEN_0[3])
-        br_snapshots_17_3 <= io_remap_reqs_1_pdst;
-      else if (_GEN[3])
-        br_snapshots_17_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_3 <= map_table_3;
-      if (_GEN_0[4])
-        br_snapshots_17_4 <= io_remap_reqs_1_pdst;
-      else if (_GEN[4])
-        br_snapshots_17_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_4 <= map_table_4;
-      if (_GEN_0[5])
-        br_snapshots_17_5 <= io_remap_reqs_1_pdst;
-      else if (_GEN[5])
-        br_snapshots_17_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_5 <= map_table_5;
-      if (_GEN_0[6])
-        br_snapshots_17_6 <= io_remap_reqs_1_pdst;
-      else if (_GEN[6])
-        br_snapshots_17_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_6 <= map_table_6;
-      if (_GEN_0[7])
-        br_snapshots_17_7 <= io_remap_reqs_1_pdst;
-      else if (_GEN[7])
-        br_snapshots_17_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_7 <= map_table_7;
-      if (_GEN_0[8])
-        br_snapshots_17_8 <= io_remap_reqs_1_pdst;
-      else if (_GEN[8])
-        br_snapshots_17_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_8 <= map_table_8;
-      if (_GEN_0[9])
-        br_snapshots_17_9 <= io_remap_reqs_1_pdst;
-      else if (_GEN[9])
-        br_snapshots_17_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_9 <= map_table_9;
-      if (_GEN_0[10])
-        br_snapshots_17_10 <= io_remap_reqs_1_pdst;
-      else if (_GEN[10])
-        br_snapshots_17_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_10 <= map_table_10;
-      if (_GEN_0[11])
-        br_snapshots_17_11 <= io_remap_reqs_1_pdst;
-      else if (_GEN[11])
-        br_snapshots_17_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_11 <= map_table_11;
-      if (_GEN_0[12])
-        br_snapshots_17_12 <= io_remap_reqs_1_pdst;
-      else if (_GEN[12])
-        br_snapshots_17_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_12 <= map_table_12;
-      if (_GEN_0[13])
-        br_snapshots_17_13 <= io_remap_reqs_1_pdst;
-      else if (_GEN[13])
-        br_snapshots_17_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_13 <= map_table_13;
-      if (_GEN_0[14])
-        br_snapshots_17_14 <= io_remap_reqs_1_pdst;
-      else if (_GEN[14])
-        br_snapshots_17_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_14 <= map_table_14;
-      if (_GEN_0[15])
-        br_snapshots_17_15 <= io_remap_reqs_1_pdst;
-      else if (_GEN[15])
-        br_snapshots_17_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_15 <= map_table_15;
-      if (_GEN_0[16])
-        br_snapshots_17_16 <= io_remap_reqs_1_pdst;
-      else if (_GEN[16])
-        br_snapshots_17_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_16 <= map_table_16;
-      if (_GEN_0[17])
-        br_snapshots_17_17 <= io_remap_reqs_1_pdst;
-      else if (_GEN[17])
-        br_snapshots_17_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_17 <= map_table_17;
-      if (_GEN_0[18])
-        br_snapshots_17_18 <= io_remap_reqs_1_pdst;
-      else if (_GEN[18])
-        br_snapshots_17_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_18 <= map_table_18;
-      if (_GEN_0[19])
-        br_snapshots_17_19 <= io_remap_reqs_1_pdst;
-      else if (_GEN[19])
-        br_snapshots_17_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_19 <= map_table_19;
-      if (_GEN_0[20])
-        br_snapshots_17_20 <= io_remap_reqs_1_pdst;
-      else if (_GEN[20])
-        br_snapshots_17_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_20 <= map_table_20;
-      if (_GEN_0[21])
-        br_snapshots_17_21 <= io_remap_reqs_1_pdst;
-      else if (_GEN[21])
-        br_snapshots_17_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_21 <= map_table_21;
-      if (_GEN_0[22])
-        br_snapshots_17_22 <= io_remap_reqs_1_pdst;
-      else if (_GEN[22])
-        br_snapshots_17_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_22 <= map_table_22;
-      if (_GEN_0[23])
-        br_snapshots_17_23 <= io_remap_reqs_1_pdst;
-      else if (_GEN[23])
-        br_snapshots_17_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_23 <= map_table_23;
-      if (_GEN_0[24])
-        br_snapshots_17_24 <= io_remap_reqs_1_pdst;
-      else if (_GEN[24])
-        br_snapshots_17_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_24 <= map_table_24;
-      if (_GEN_0[25])
-        br_snapshots_17_25 <= io_remap_reqs_1_pdst;
-      else if (_GEN[25])
-        br_snapshots_17_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_25 <= map_table_25;
-      if (_GEN_0[26])
-        br_snapshots_17_26 <= io_remap_reqs_1_pdst;
-      else if (_GEN[26])
-        br_snapshots_17_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_26 <= map_table_26;
-      if (_GEN_0[27])
-        br_snapshots_17_27 <= io_remap_reqs_1_pdst;
-      else if (_GEN[27])
-        br_snapshots_17_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_27 <= map_table_27;
-      if (_GEN_0[28])
-        br_snapshots_17_28 <= io_remap_reqs_1_pdst;
-      else if (_GEN[28])
-        br_snapshots_17_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_28 <= map_table_28;
-      if (_GEN_0[29])
-        br_snapshots_17_29 <= io_remap_reqs_1_pdst;
-      else if (_GEN[29])
-        br_snapshots_17_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_29 <= map_table_29;
-      if (_GEN_0[30])
-        br_snapshots_17_30 <= io_remap_reqs_1_pdst;
-      else if (_GEN[30])
-        br_snapshots_17_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_30 <= map_table_30;
-      if (_GEN_0[31])
-        br_snapshots_17_31 <= io_remap_reqs_1_pdst;
-      else if (_GEN[31])
-        br_snapshots_17_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_31 <= map_table_31;
+      br_snapshots_17_0 <= remap_table_2_0;
+      br_snapshots_17_1 <= remap_table_2_1;
+      br_snapshots_17_2 <= remap_table_2_2;
+      br_snapshots_17_3 <= remap_table_2_3;
+      br_snapshots_17_4 <= remap_table_2_4;
+      br_snapshots_17_5 <= remap_table_2_5;
+      br_snapshots_17_6 <= remap_table_2_6;
+      br_snapshots_17_7 <= remap_table_2_7;
+      br_snapshots_17_8 <= remap_table_2_8;
+      br_snapshots_17_9 <= remap_table_2_9;
+      br_snapshots_17_10 <= remap_table_2_10;
+      br_snapshots_17_11 <= remap_table_2_11;
+      br_snapshots_17_12 <= remap_table_2_12;
+      br_snapshots_17_13 <= remap_table_2_13;
+      br_snapshots_17_14 <= remap_table_2_14;
+      br_snapshots_17_15 <= remap_table_2_15;
+      br_snapshots_17_16 <= remap_table_2_16;
+      br_snapshots_17_17 <= remap_table_2_17;
+      br_snapshots_17_18 <= remap_table_2_18;
+      br_snapshots_17_19 <= remap_table_2_19;
+      br_snapshots_17_20 <= remap_table_2_20;
+      br_snapshots_17_21 <= remap_table_2_21;
+      br_snapshots_17_22 <= remap_table_2_22;
+      br_snapshots_17_23 <= remap_table_2_23;
+      br_snapshots_17_24 <= remap_table_2_24;
+      br_snapshots_17_25 <= remap_table_2_25;
+      br_snapshots_17_26 <= remap_table_2_26;
+      br_snapshots_17_27 <= remap_table_2_27;
+      br_snapshots_17_28 <= remap_table_2_28;
+      br_snapshots_17_29 <= remap_table_2_29;
+      br_snapshots_17_30 <= remap_table_2_30;
+      br_snapshots_17_31 <= remap_table_2_31;
     end
     else if (io_ren_br_tags_0_valid & io_ren_br_tags_0_bits == 5'h11) begin
-      if (_GEN[0])
-        br_snapshots_17_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_0 <= map_table_0;
-      if (_GEN[1])
-        br_snapshots_17_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_1 <= map_table_1;
-      if (_GEN[2])
-        br_snapshots_17_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_2 <= map_table_2;
-      if (_GEN[3])
-        br_snapshots_17_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_3 <= map_table_3;
-      if (_GEN[4])
-        br_snapshots_17_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_4 <= map_table_4;
-      if (_GEN[5])
-        br_snapshots_17_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_5 <= map_table_5;
-      if (_GEN[6])
-        br_snapshots_17_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_6 <= map_table_6;
-      if (_GEN[7])
-        br_snapshots_17_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_7 <= map_table_7;
-      if (_GEN[8])
-        br_snapshots_17_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_8 <= map_table_8;
-      if (_GEN[9])
-        br_snapshots_17_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_9 <= map_table_9;
-      if (_GEN[10])
-        br_snapshots_17_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_10 <= map_table_10;
-      if (_GEN[11])
-        br_snapshots_17_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_11 <= map_table_11;
-      if (_GEN[12])
-        br_snapshots_17_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_12 <= map_table_12;
-      if (_GEN[13])
-        br_snapshots_17_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_13 <= map_table_13;
-      if (_GEN[14])
-        br_snapshots_17_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_14 <= map_table_14;
-      if (_GEN[15])
-        br_snapshots_17_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_15 <= map_table_15;
-      if (_GEN[16])
-        br_snapshots_17_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_16 <= map_table_16;
-      if (_GEN[17])
-        br_snapshots_17_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_17 <= map_table_17;
-      if (_GEN[18])
-        br_snapshots_17_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_18 <= map_table_18;
-      if (_GEN[19])
-        br_snapshots_17_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_19 <= map_table_19;
-      if (_GEN[20])
-        br_snapshots_17_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_20 <= map_table_20;
-      if (_GEN[21])
-        br_snapshots_17_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_21 <= map_table_21;
-      if (_GEN[22])
-        br_snapshots_17_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_22 <= map_table_22;
-      if (_GEN[23])
-        br_snapshots_17_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_23 <= map_table_23;
-      if (_GEN[24])
-        br_snapshots_17_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_24 <= map_table_24;
-      if (_GEN[25])
-        br_snapshots_17_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_25 <= map_table_25;
-      if (_GEN[26])
-        br_snapshots_17_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_26 <= map_table_26;
-      if (_GEN[27])
-        br_snapshots_17_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_27 <= map_table_27;
-      if (_GEN[28])
-        br_snapshots_17_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_28 <= map_table_28;
-      if (_GEN[29])
-        br_snapshots_17_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_29 <= map_table_29;
-      if (_GEN[30])
-        br_snapshots_17_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_30 <= map_table_30;
-      if (_GEN[31])
-        br_snapshots_17_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_17_31 <= map_table_31;
+      br_snapshots_17_0 <= remap_table_1_0;
+      br_snapshots_17_1 <= remap_table_1_1;
+      br_snapshots_17_2 <= remap_table_1_2;
+      br_snapshots_17_3 <= remap_table_1_3;
+      br_snapshots_17_4 <= remap_table_1_4;
+      br_snapshots_17_5 <= remap_table_1_5;
+      br_snapshots_17_6 <= remap_table_1_6;
+      br_snapshots_17_7 <= remap_table_1_7;
+      br_snapshots_17_8 <= remap_table_1_8;
+      br_snapshots_17_9 <= remap_table_1_9;
+      br_snapshots_17_10 <= remap_table_1_10;
+      br_snapshots_17_11 <= remap_table_1_11;
+      br_snapshots_17_12 <= remap_table_1_12;
+      br_snapshots_17_13 <= remap_table_1_13;
+      br_snapshots_17_14 <= remap_table_1_14;
+      br_snapshots_17_15 <= remap_table_1_15;
+      br_snapshots_17_16 <= remap_table_1_16;
+      br_snapshots_17_17 <= remap_table_1_17;
+      br_snapshots_17_18 <= remap_table_1_18;
+      br_snapshots_17_19 <= remap_table_1_19;
+      br_snapshots_17_20 <= remap_table_1_20;
+      br_snapshots_17_21 <= remap_table_1_21;
+      br_snapshots_17_22 <= remap_table_1_22;
+      br_snapshots_17_23 <= remap_table_1_23;
+      br_snapshots_17_24 <= remap_table_1_24;
+      br_snapshots_17_25 <= remap_table_1_25;
+      br_snapshots_17_26 <= remap_table_1_26;
+      br_snapshots_17_27 <= remap_table_1_27;
+      br_snapshots_17_28 <= remap_table_1_28;
+      br_snapshots_17_29 <= remap_table_1_29;
+      br_snapshots_17_30 <= remap_table_1_30;
+      br_snapshots_17_31 <= remap_table_1_31;
     end
     if (io_ren_br_tags_3_valid & io_ren_br_tags_3_bits == 5'h12) begin
-      if (_GEN_2[0])
-        br_snapshots_18_0 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[0])
-        br_snapshots_18_0 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[0])
-        br_snapshots_18_0 <= io_remap_reqs_1_pdst;
-      else if (_GEN[0])
-        br_snapshots_18_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_0 <= map_table_0;
-      if (_GEN_2[1])
-        br_snapshots_18_1 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[1])
-        br_snapshots_18_1 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[1])
-        br_snapshots_18_1 <= io_remap_reqs_1_pdst;
-      else if (_GEN[1])
-        br_snapshots_18_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_1 <= map_table_1;
-      if (_GEN_2[2])
-        br_snapshots_18_2 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[2])
-        br_snapshots_18_2 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[2])
-        br_snapshots_18_2 <= io_remap_reqs_1_pdst;
-      else if (_GEN[2])
-        br_snapshots_18_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_2 <= map_table_2;
-      if (_GEN_2[3])
-        br_snapshots_18_3 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[3])
-        br_snapshots_18_3 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[3])
-        br_snapshots_18_3 <= io_remap_reqs_1_pdst;
-      else if (_GEN[3])
-        br_snapshots_18_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_3 <= map_table_3;
-      if (_GEN_2[4])
-        br_snapshots_18_4 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[4])
-        br_snapshots_18_4 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[4])
-        br_snapshots_18_4 <= io_remap_reqs_1_pdst;
-      else if (_GEN[4])
-        br_snapshots_18_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_4 <= map_table_4;
-      if (_GEN_2[5])
-        br_snapshots_18_5 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[5])
-        br_snapshots_18_5 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[5])
-        br_snapshots_18_5 <= io_remap_reqs_1_pdst;
-      else if (_GEN[5])
-        br_snapshots_18_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_5 <= map_table_5;
-      if (_GEN_2[6])
-        br_snapshots_18_6 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[6])
-        br_snapshots_18_6 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[6])
-        br_snapshots_18_6 <= io_remap_reqs_1_pdst;
-      else if (_GEN[6])
-        br_snapshots_18_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_6 <= map_table_6;
-      if (_GEN_2[7])
-        br_snapshots_18_7 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[7])
-        br_snapshots_18_7 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[7])
-        br_snapshots_18_7 <= io_remap_reqs_1_pdst;
-      else if (_GEN[7])
-        br_snapshots_18_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_7 <= map_table_7;
-      if (_GEN_2[8])
-        br_snapshots_18_8 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[8])
-        br_snapshots_18_8 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[8])
-        br_snapshots_18_8 <= io_remap_reqs_1_pdst;
-      else if (_GEN[8])
-        br_snapshots_18_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_8 <= map_table_8;
-      if (_GEN_2[9])
-        br_snapshots_18_9 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[9])
-        br_snapshots_18_9 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[9])
-        br_snapshots_18_9 <= io_remap_reqs_1_pdst;
-      else if (_GEN[9])
-        br_snapshots_18_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_9 <= map_table_9;
-      if (_GEN_2[10])
-        br_snapshots_18_10 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[10])
-        br_snapshots_18_10 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[10])
-        br_snapshots_18_10 <= io_remap_reqs_1_pdst;
-      else if (_GEN[10])
-        br_snapshots_18_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_10 <= map_table_10;
-      if (_GEN_2[11])
-        br_snapshots_18_11 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[11])
-        br_snapshots_18_11 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[11])
-        br_snapshots_18_11 <= io_remap_reqs_1_pdst;
-      else if (_GEN[11])
-        br_snapshots_18_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_11 <= map_table_11;
-      if (_GEN_2[12])
-        br_snapshots_18_12 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[12])
-        br_snapshots_18_12 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[12])
-        br_snapshots_18_12 <= io_remap_reqs_1_pdst;
-      else if (_GEN[12])
-        br_snapshots_18_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_12 <= map_table_12;
-      if (_GEN_2[13])
-        br_snapshots_18_13 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[13])
-        br_snapshots_18_13 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[13])
-        br_snapshots_18_13 <= io_remap_reqs_1_pdst;
-      else if (_GEN[13])
-        br_snapshots_18_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_13 <= map_table_13;
-      if (_GEN_2[14])
-        br_snapshots_18_14 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[14])
-        br_snapshots_18_14 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[14])
-        br_snapshots_18_14 <= io_remap_reqs_1_pdst;
-      else if (_GEN[14])
-        br_snapshots_18_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_14 <= map_table_14;
-      if (_GEN_2[15])
-        br_snapshots_18_15 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[15])
-        br_snapshots_18_15 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[15])
-        br_snapshots_18_15 <= io_remap_reqs_1_pdst;
-      else if (_GEN[15])
-        br_snapshots_18_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_15 <= map_table_15;
-      if (_GEN_2[16])
-        br_snapshots_18_16 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[16])
-        br_snapshots_18_16 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[16])
-        br_snapshots_18_16 <= io_remap_reqs_1_pdst;
-      else if (_GEN[16])
-        br_snapshots_18_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_16 <= map_table_16;
-      if (_GEN_2[17])
-        br_snapshots_18_17 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[17])
-        br_snapshots_18_17 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[17])
-        br_snapshots_18_17 <= io_remap_reqs_1_pdst;
-      else if (_GEN[17])
-        br_snapshots_18_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_17 <= map_table_17;
-      if (_GEN_2[18])
-        br_snapshots_18_18 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[18])
-        br_snapshots_18_18 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[18])
-        br_snapshots_18_18 <= io_remap_reqs_1_pdst;
-      else if (_GEN[18])
-        br_snapshots_18_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_18 <= map_table_18;
-      if (_GEN_2[19])
-        br_snapshots_18_19 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[19])
-        br_snapshots_18_19 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[19])
-        br_snapshots_18_19 <= io_remap_reqs_1_pdst;
-      else if (_GEN[19])
-        br_snapshots_18_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_19 <= map_table_19;
-      if (_GEN_2[20])
-        br_snapshots_18_20 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[20])
-        br_snapshots_18_20 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[20])
-        br_snapshots_18_20 <= io_remap_reqs_1_pdst;
-      else if (_GEN[20])
-        br_snapshots_18_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_20 <= map_table_20;
-      if (_GEN_2[21])
-        br_snapshots_18_21 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[21])
-        br_snapshots_18_21 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[21])
-        br_snapshots_18_21 <= io_remap_reqs_1_pdst;
-      else if (_GEN[21])
-        br_snapshots_18_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_21 <= map_table_21;
-      if (_GEN_2[22])
-        br_snapshots_18_22 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[22])
-        br_snapshots_18_22 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[22])
-        br_snapshots_18_22 <= io_remap_reqs_1_pdst;
-      else if (_GEN[22])
-        br_snapshots_18_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_22 <= map_table_22;
-      if (_GEN_2[23])
-        br_snapshots_18_23 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[23])
-        br_snapshots_18_23 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[23])
-        br_snapshots_18_23 <= io_remap_reqs_1_pdst;
-      else if (_GEN[23])
-        br_snapshots_18_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_23 <= map_table_23;
-      if (_GEN_2[24])
-        br_snapshots_18_24 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[24])
-        br_snapshots_18_24 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[24])
-        br_snapshots_18_24 <= io_remap_reqs_1_pdst;
-      else if (_GEN[24])
-        br_snapshots_18_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_24 <= map_table_24;
-      if (_GEN_2[25])
-        br_snapshots_18_25 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[25])
-        br_snapshots_18_25 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[25])
-        br_snapshots_18_25 <= io_remap_reqs_1_pdst;
-      else if (_GEN[25])
-        br_snapshots_18_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_25 <= map_table_25;
-      if (_GEN_2[26])
-        br_snapshots_18_26 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[26])
-        br_snapshots_18_26 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[26])
-        br_snapshots_18_26 <= io_remap_reqs_1_pdst;
-      else if (_GEN[26])
-        br_snapshots_18_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_26 <= map_table_26;
-      if (_GEN_2[27])
-        br_snapshots_18_27 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[27])
-        br_snapshots_18_27 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[27])
-        br_snapshots_18_27 <= io_remap_reqs_1_pdst;
-      else if (_GEN[27])
-        br_snapshots_18_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_27 <= map_table_27;
-      if (_GEN_2[28])
-        br_snapshots_18_28 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[28])
-        br_snapshots_18_28 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[28])
-        br_snapshots_18_28 <= io_remap_reqs_1_pdst;
-      else if (_GEN[28])
-        br_snapshots_18_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_28 <= map_table_28;
-      if (_GEN_2[29])
-        br_snapshots_18_29 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[29])
-        br_snapshots_18_29 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[29])
-        br_snapshots_18_29 <= io_remap_reqs_1_pdst;
-      else if (_GEN[29])
-        br_snapshots_18_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_29 <= map_table_29;
-      if (_GEN_2[30])
-        br_snapshots_18_30 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[30])
-        br_snapshots_18_30 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[30])
-        br_snapshots_18_30 <= io_remap_reqs_1_pdst;
-      else if (_GEN[30])
-        br_snapshots_18_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_30 <= map_table_30;
-      if (_GEN_2[31])
-        br_snapshots_18_31 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[31])
-        br_snapshots_18_31 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[31])
-        br_snapshots_18_31 <= io_remap_reqs_1_pdst;
-      else if (_GEN[31])
-        br_snapshots_18_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_31 <= map_table_31;
+      br_snapshots_18_0 <= remap_table_4_0;
+      br_snapshots_18_1 <= remap_table_4_1;
+      br_snapshots_18_2 <= remap_table_4_2;
+      br_snapshots_18_3 <= remap_table_4_3;
+      br_snapshots_18_4 <= remap_table_4_4;
+      br_snapshots_18_5 <= remap_table_4_5;
+      br_snapshots_18_6 <= remap_table_4_6;
+      br_snapshots_18_7 <= remap_table_4_7;
+      br_snapshots_18_8 <= remap_table_4_8;
+      br_snapshots_18_9 <= remap_table_4_9;
+      br_snapshots_18_10 <= remap_table_4_10;
+      br_snapshots_18_11 <= remap_table_4_11;
+      br_snapshots_18_12 <= remap_table_4_12;
+      br_snapshots_18_13 <= remap_table_4_13;
+      br_snapshots_18_14 <= remap_table_4_14;
+      br_snapshots_18_15 <= remap_table_4_15;
+      br_snapshots_18_16 <= remap_table_4_16;
+      br_snapshots_18_17 <= remap_table_4_17;
+      br_snapshots_18_18 <= remap_table_4_18;
+      br_snapshots_18_19 <= remap_table_4_19;
+      br_snapshots_18_20 <= remap_table_4_20;
+      br_snapshots_18_21 <= remap_table_4_21;
+      br_snapshots_18_22 <= remap_table_4_22;
+      br_snapshots_18_23 <= remap_table_4_23;
+      br_snapshots_18_24 <= remap_table_4_24;
+      br_snapshots_18_25 <= remap_table_4_25;
+      br_snapshots_18_26 <= remap_table_4_26;
+      br_snapshots_18_27 <= remap_table_4_27;
+      br_snapshots_18_28 <= remap_table_4_28;
+      br_snapshots_18_29 <= remap_table_4_29;
+      br_snapshots_18_30 <= remap_table_4_30;
+      br_snapshots_18_31 <= remap_table_4_31;
     end
     else if (io_ren_br_tags_2_valid & io_ren_br_tags_2_bits == 5'h12) begin
-      if (_GEN_1[0])
-        br_snapshots_18_0 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[0])
-        br_snapshots_18_0 <= io_remap_reqs_1_pdst;
-      else if (_GEN[0])
-        br_snapshots_18_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_0 <= map_table_0;
-      if (_GEN_1[1])
-        br_snapshots_18_1 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[1])
-        br_snapshots_18_1 <= io_remap_reqs_1_pdst;
-      else if (_GEN[1])
-        br_snapshots_18_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_1 <= map_table_1;
-      if (_GEN_1[2])
-        br_snapshots_18_2 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[2])
-        br_snapshots_18_2 <= io_remap_reqs_1_pdst;
-      else if (_GEN[2])
-        br_snapshots_18_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_2 <= map_table_2;
-      if (_GEN_1[3])
-        br_snapshots_18_3 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[3])
-        br_snapshots_18_3 <= io_remap_reqs_1_pdst;
-      else if (_GEN[3])
-        br_snapshots_18_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_3 <= map_table_3;
-      if (_GEN_1[4])
-        br_snapshots_18_4 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[4])
-        br_snapshots_18_4 <= io_remap_reqs_1_pdst;
-      else if (_GEN[4])
-        br_snapshots_18_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_4 <= map_table_4;
-      if (_GEN_1[5])
-        br_snapshots_18_5 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[5])
-        br_snapshots_18_5 <= io_remap_reqs_1_pdst;
-      else if (_GEN[5])
-        br_snapshots_18_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_5 <= map_table_5;
-      if (_GEN_1[6])
-        br_snapshots_18_6 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[6])
-        br_snapshots_18_6 <= io_remap_reqs_1_pdst;
-      else if (_GEN[6])
-        br_snapshots_18_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_6 <= map_table_6;
-      if (_GEN_1[7])
-        br_snapshots_18_7 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[7])
-        br_snapshots_18_7 <= io_remap_reqs_1_pdst;
-      else if (_GEN[7])
-        br_snapshots_18_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_7 <= map_table_7;
-      if (_GEN_1[8])
-        br_snapshots_18_8 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[8])
-        br_snapshots_18_8 <= io_remap_reqs_1_pdst;
-      else if (_GEN[8])
-        br_snapshots_18_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_8 <= map_table_8;
-      if (_GEN_1[9])
-        br_snapshots_18_9 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[9])
-        br_snapshots_18_9 <= io_remap_reqs_1_pdst;
-      else if (_GEN[9])
-        br_snapshots_18_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_9 <= map_table_9;
-      if (_GEN_1[10])
-        br_snapshots_18_10 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[10])
-        br_snapshots_18_10 <= io_remap_reqs_1_pdst;
-      else if (_GEN[10])
-        br_snapshots_18_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_10 <= map_table_10;
-      if (_GEN_1[11])
-        br_snapshots_18_11 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[11])
-        br_snapshots_18_11 <= io_remap_reqs_1_pdst;
-      else if (_GEN[11])
-        br_snapshots_18_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_11 <= map_table_11;
-      if (_GEN_1[12])
-        br_snapshots_18_12 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[12])
-        br_snapshots_18_12 <= io_remap_reqs_1_pdst;
-      else if (_GEN[12])
-        br_snapshots_18_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_12 <= map_table_12;
-      if (_GEN_1[13])
-        br_snapshots_18_13 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[13])
-        br_snapshots_18_13 <= io_remap_reqs_1_pdst;
-      else if (_GEN[13])
-        br_snapshots_18_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_13 <= map_table_13;
-      if (_GEN_1[14])
-        br_snapshots_18_14 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[14])
-        br_snapshots_18_14 <= io_remap_reqs_1_pdst;
-      else if (_GEN[14])
-        br_snapshots_18_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_14 <= map_table_14;
-      if (_GEN_1[15])
-        br_snapshots_18_15 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[15])
-        br_snapshots_18_15 <= io_remap_reqs_1_pdst;
-      else if (_GEN[15])
-        br_snapshots_18_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_15 <= map_table_15;
-      if (_GEN_1[16])
-        br_snapshots_18_16 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[16])
-        br_snapshots_18_16 <= io_remap_reqs_1_pdst;
-      else if (_GEN[16])
-        br_snapshots_18_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_16 <= map_table_16;
-      if (_GEN_1[17])
-        br_snapshots_18_17 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[17])
-        br_snapshots_18_17 <= io_remap_reqs_1_pdst;
-      else if (_GEN[17])
-        br_snapshots_18_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_17 <= map_table_17;
-      if (_GEN_1[18])
-        br_snapshots_18_18 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[18])
-        br_snapshots_18_18 <= io_remap_reqs_1_pdst;
-      else if (_GEN[18])
-        br_snapshots_18_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_18 <= map_table_18;
-      if (_GEN_1[19])
-        br_snapshots_18_19 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[19])
-        br_snapshots_18_19 <= io_remap_reqs_1_pdst;
-      else if (_GEN[19])
-        br_snapshots_18_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_19 <= map_table_19;
-      if (_GEN_1[20])
-        br_snapshots_18_20 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[20])
-        br_snapshots_18_20 <= io_remap_reqs_1_pdst;
-      else if (_GEN[20])
-        br_snapshots_18_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_20 <= map_table_20;
-      if (_GEN_1[21])
-        br_snapshots_18_21 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[21])
-        br_snapshots_18_21 <= io_remap_reqs_1_pdst;
-      else if (_GEN[21])
-        br_snapshots_18_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_21 <= map_table_21;
-      if (_GEN_1[22])
-        br_snapshots_18_22 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[22])
-        br_snapshots_18_22 <= io_remap_reqs_1_pdst;
-      else if (_GEN[22])
-        br_snapshots_18_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_22 <= map_table_22;
-      if (_GEN_1[23])
-        br_snapshots_18_23 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[23])
-        br_snapshots_18_23 <= io_remap_reqs_1_pdst;
-      else if (_GEN[23])
-        br_snapshots_18_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_23 <= map_table_23;
-      if (_GEN_1[24])
-        br_snapshots_18_24 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[24])
-        br_snapshots_18_24 <= io_remap_reqs_1_pdst;
-      else if (_GEN[24])
-        br_snapshots_18_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_24 <= map_table_24;
-      if (_GEN_1[25])
-        br_snapshots_18_25 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[25])
-        br_snapshots_18_25 <= io_remap_reqs_1_pdst;
-      else if (_GEN[25])
-        br_snapshots_18_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_25 <= map_table_25;
-      if (_GEN_1[26])
-        br_snapshots_18_26 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[26])
-        br_snapshots_18_26 <= io_remap_reqs_1_pdst;
-      else if (_GEN[26])
-        br_snapshots_18_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_26 <= map_table_26;
-      if (_GEN_1[27])
-        br_snapshots_18_27 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[27])
-        br_snapshots_18_27 <= io_remap_reqs_1_pdst;
-      else if (_GEN[27])
-        br_snapshots_18_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_27 <= map_table_27;
-      if (_GEN_1[28])
-        br_snapshots_18_28 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[28])
-        br_snapshots_18_28 <= io_remap_reqs_1_pdst;
-      else if (_GEN[28])
-        br_snapshots_18_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_28 <= map_table_28;
-      if (_GEN_1[29])
-        br_snapshots_18_29 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[29])
-        br_snapshots_18_29 <= io_remap_reqs_1_pdst;
-      else if (_GEN[29])
-        br_snapshots_18_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_29 <= map_table_29;
-      if (_GEN_1[30])
-        br_snapshots_18_30 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[30])
-        br_snapshots_18_30 <= io_remap_reqs_1_pdst;
-      else if (_GEN[30])
-        br_snapshots_18_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_30 <= map_table_30;
-      if (_GEN_1[31])
-        br_snapshots_18_31 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[31])
-        br_snapshots_18_31 <= io_remap_reqs_1_pdst;
-      else if (_GEN[31])
-        br_snapshots_18_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_31 <= map_table_31;
+      br_snapshots_18_0 <= remap_table_3_0;
+      br_snapshots_18_1 <= remap_table_3_1;
+      br_snapshots_18_2 <= remap_table_3_2;
+      br_snapshots_18_3 <= remap_table_3_3;
+      br_snapshots_18_4 <= remap_table_3_4;
+      br_snapshots_18_5 <= remap_table_3_5;
+      br_snapshots_18_6 <= remap_table_3_6;
+      br_snapshots_18_7 <= remap_table_3_7;
+      br_snapshots_18_8 <= remap_table_3_8;
+      br_snapshots_18_9 <= remap_table_3_9;
+      br_snapshots_18_10 <= remap_table_3_10;
+      br_snapshots_18_11 <= remap_table_3_11;
+      br_snapshots_18_12 <= remap_table_3_12;
+      br_snapshots_18_13 <= remap_table_3_13;
+      br_snapshots_18_14 <= remap_table_3_14;
+      br_snapshots_18_15 <= remap_table_3_15;
+      br_snapshots_18_16 <= remap_table_3_16;
+      br_snapshots_18_17 <= remap_table_3_17;
+      br_snapshots_18_18 <= remap_table_3_18;
+      br_snapshots_18_19 <= remap_table_3_19;
+      br_snapshots_18_20 <= remap_table_3_20;
+      br_snapshots_18_21 <= remap_table_3_21;
+      br_snapshots_18_22 <= remap_table_3_22;
+      br_snapshots_18_23 <= remap_table_3_23;
+      br_snapshots_18_24 <= remap_table_3_24;
+      br_snapshots_18_25 <= remap_table_3_25;
+      br_snapshots_18_26 <= remap_table_3_26;
+      br_snapshots_18_27 <= remap_table_3_27;
+      br_snapshots_18_28 <= remap_table_3_28;
+      br_snapshots_18_29 <= remap_table_3_29;
+      br_snapshots_18_30 <= remap_table_3_30;
+      br_snapshots_18_31 <= remap_table_3_31;
     end
     else if (io_ren_br_tags_1_valid & io_ren_br_tags_1_bits == 5'h12) begin
-      if (_GEN_0[0])
-        br_snapshots_18_0 <= io_remap_reqs_1_pdst;
-      else if (_GEN[0])
-        br_snapshots_18_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_0 <= map_table_0;
-      if (_GEN_0[1])
-        br_snapshots_18_1 <= io_remap_reqs_1_pdst;
-      else if (_GEN[1])
-        br_snapshots_18_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_1 <= map_table_1;
-      if (_GEN_0[2])
-        br_snapshots_18_2 <= io_remap_reqs_1_pdst;
-      else if (_GEN[2])
-        br_snapshots_18_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_2 <= map_table_2;
-      if (_GEN_0[3])
-        br_snapshots_18_3 <= io_remap_reqs_1_pdst;
-      else if (_GEN[3])
-        br_snapshots_18_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_3 <= map_table_3;
-      if (_GEN_0[4])
-        br_snapshots_18_4 <= io_remap_reqs_1_pdst;
-      else if (_GEN[4])
-        br_snapshots_18_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_4 <= map_table_4;
-      if (_GEN_0[5])
-        br_snapshots_18_5 <= io_remap_reqs_1_pdst;
-      else if (_GEN[5])
-        br_snapshots_18_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_5 <= map_table_5;
-      if (_GEN_0[6])
-        br_snapshots_18_6 <= io_remap_reqs_1_pdst;
-      else if (_GEN[6])
-        br_snapshots_18_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_6 <= map_table_6;
-      if (_GEN_0[7])
-        br_snapshots_18_7 <= io_remap_reqs_1_pdst;
-      else if (_GEN[7])
-        br_snapshots_18_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_7 <= map_table_7;
-      if (_GEN_0[8])
-        br_snapshots_18_8 <= io_remap_reqs_1_pdst;
-      else if (_GEN[8])
-        br_snapshots_18_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_8 <= map_table_8;
-      if (_GEN_0[9])
-        br_snapshots_18_9 <= io_remap_reqs_1_pdst;
-      else if (_GEN[9])
-        br_snapshots_18_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_9 <= map_table_9;
-      if (_GEN_0[10])
-        br_snapshots_18_10 <= io_remap_reqs_1_pdst;
-      else if (_GEN[10])
-        br_snapshots_18_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_10 <= map_table_10;
-      if (_GEN_0[11])
-        br_snapshots_18_11 <= io_remap_reqs_1_pdst;
-      else if (_GEN[11])
-        br_snapshots_18_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_11 <= map_table_11;
-      if (_GEN_0[12])
-        br_snapshots_18_12 <= io_remap_reqs_1_pdst;
-      else if (_GEN[12])
-        br_snapshots_18_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_12 <= map_table_12;
-      if (_GEN_0[13])
-        br_snapshots_18_13 <= io_remap_reqs_1_pdst;
-      else if (_GEN[13])
-        br_snapshots_18_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_13 <= map_table_13;
-      if (_GEN_0[14])
-        br_snapshots_18_14 <= io_remap_reqs_1_pdst;
-      else if (_GEN[14])
-        br_snapshots_18_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_14 <= map_table_14;
-      if (_GEN_0[15])
-        br_snapshots_18_15 <= io_remap_reqs_1_pdst;
-      else if (_GEN[15])
-        br_snapshots_18_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_15 <= map_table_15;
-      if (_GEN_0[16])
-        br_snapshots_18_16 <= io_remap_reqs_1_pdst;
-      else if (_GEN[16])
-        br_snapshots_18_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_16 <= map_table_16;
-      if (_GEN_0[17])
-        br_snapshots_18_17 <= io_remap_reqs_1_pdst;
-      else if (_GEN[17])
-        br_snapshots_18_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_17 <= map_table_17;
-      if (_GEN_0[18])
-        br_snapshots_18_18 <= io_remap_reqs_1_pdst;
-      else if (_GEN[18])
-        br_snapshots_18_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_18 <= map_table_18;
-      if (_GEN_0[19])
-        br_snapshots_18_19 <= io_remap_reqs_1_pdst;
-      else if (_GEN[19])
-        br_snapshots_18_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_19 <= map_table_19;
-      if (_GEN_0[20])
-        br_snapshots_18_20 <= io_remap_reqs_1_pdst;
-      else if (_GEN[20])
-        br_snapshots_18_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_20 <= map_table_20;
-      if (_GEN_0[21])
-        br_snapshots_18_21 <= io_remap_reqs_1_pdst;
-      else if (_GEN[21])
-        br_snapshots_18_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_21 <= map_table_21;
-      if (_GEN_0[22])
-        br_snapshots_18_22 <= io_remap_reqs_1_pdst;
-      else if (_GEN[22])
-        br_snapshots_18_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_22 <= map_table_22;
-      if (_GEN_0[23])
-        br_snapshots_18_23 <= io_remap_reqs_1_pdst;
-      else if (_GEN[23])
-        br_snapshots_18_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_23 <= map_table_23;
-      if (_GEN_0[24])
-        br_snapshots_18_24 <= io_remap_reqs_1_pdst;
-      else if (_GEN[24])
-        br_snapshots_18_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_24 <= map_table_24;
-      if (_GEN_0[25])
-        br_snapshots_18_25 <= io_remap_reqs_1_pdst;
-      else if (_GEN[25])
-        br_snapshots_18_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_25 <= map_table_25;
-      if (_GEN_0[26])
-        br_snapshots_18_26 <= io_remap_reqs_1_pdst;
-      else if (_GEN[26])
-        br_snapshots_18_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_26 <= map_table_26;
-      if (_GEN_0[27])
-        br_snapshots_18_27 <= io_remap_reqs_1_pdst;
-      else if (_GEN[27])
-        br_snapshots_18_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_27 <= map_table_27;
-      if (_GEN_0[28])
-        br_snapshots_18_28 <= io_remap_reqs_1_pdst;
-      else if (_GEN[28])
-        br_snapshots_18_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_28 <= map_table_28;
-      if (_GEN_0[29])
-        br_snapshots_18_29 <= io_remap_reqs_1_pdst;
-      else if (_GEN[29])
-        br_snapshots_18_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_29 <= map_table_29;
-      if (_GEN_0[30])
-        br_snapshots_18_30 <= io_remap_reqs_1_pdst;
-      else if (_GEN[30])
-        br_snapshots_18_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_30 <= map_table_30;
-      if (_GEN_0[31])
-        br_snapshots_18_31 <= io_remap_reqs_1_pdst;
-      else if (_GEN[31])
-        br_snapshots_18_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_31 <= map_table_31;
+      br_snapshots_18_0 <= remap_table_2_0;
+      br_snapshots_18_1 <= remap_table_2_1;
+      br_snapshots_18_2 <= remap_table_2_2;
+      br_snapshots_18_3 <= remap_table_2_3;
+      br_snapshots_18_4 <= remap_table_2_4;
+      br_snapshots_18_5 <= remap_table_2_5;
+      br_snapshots_18_6 <= remap_table_2_6;
+      br_snapshots_18_7 <= remap_table_2_7;
+      br_snapshots_18_8 <= remap_table_2_8;
+      br_snapshots_18_9 <= remap_table_2_9;
+      br_snapshots_18_10 <= remap_table_2_10;
+      br_snapshots_18_11 <= remap_table_2_11;
+      br_snapshots_18_12 <= remap_table_2_12;
+      br_snapshots_18_13 <= remap_table_2_13;
+      br_snapshots_18_14 <= remap_table_2_14;
+      br_snapshots_18_15 <= remap_table_2_15;
+      br_snapshots_18_16 <= remap_table_2_16;
+      br_snapshots_18_17 <= remap_table_2_17;
+      br_snapshots_18_18 <= remap_table_2_18;
+      br_snapshots_18_19 <= remap_table_2_19;
+      br_snapshots_18_20 <= remap_table_2_20;
+      br_snapshots_18_21 <= remap_table_2_21;
+      br_snapshots_18_22 <= remap_table_2_22;
+      br_snapshots_18_23 <= remap_table_2_23;
+      br_snapshots_18_24 <= remap_table_2_24;
+      br_snapshots_18_25 <= remap_table_2_25;
+      br_snapshots_18_26 <= remap_table_2_26;
+      br_snapshots_18_27 <= remap_table_2_27;
+      br_snapshots_18_28 <= remap_table_2_28;
+      br_snapshots_18_29 <= remap_table_2_29;
+      br_snapshots_18_30 <= remap_table_2_30;
+      br_snapshots_18_31 <= remap_table_2_31;
     end
     else if (io_ren_br_tags_0_valid & io_ren_br_tags_0_bits == 5'h12) begin
-      if (_GEN[0])
-        br_snapshots_18_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_0 <= map_table_0;
-      if (_GEN[1])
-        br_snapshots_18_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_1 <= map_table_1;
-      if (_GEN[2])
-        br_snapshots_18_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_2 <= map_table_2;
-      if (_GEN[3])
-        br_snapshots_18_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_3 <= map_table_3;
-      if (_GEN[4])
-        br_snapshots_18_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_4 <= map_table_4;
-      if (_GEN[5])
-        br_snapshots_18_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_5 <= map_table_5;
-      if (_GEN[6])
-        br_snapshots_18_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_6 <= map_table_6;
-      if (_GEN[7])
-        br_snapshots_18_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_7 <= map_table_7;
-      if (_GEN[8])
-        br_snapshots_18_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_8 <= map_table_8;
-      if (_GEN[9])
-        br_snapshots_18_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_9 <= map_table_9;
-      if (_GEN[10])
-        br_snapshots_18_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_10 <= map_table_10;
-      if (_GEN[11])
-        br_snapshots_18_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_11 <= map_table_11;
-      if (_GEN[12])
-        br_snapshots_18_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_12 <= map_table_12;
-      if (_GEN[13])
-        br_snapshots_18_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_13 <= map_table_13;
-      if (_GEN[14])
-        br_snapshots_18_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_14 <= map_table_14;
-      if (_GEN[15])
-        br_snapshots_18_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_15 <= map_table_15;
-      if (_GEN[16])
-        br_snapshots_18_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_16 <= map_table_16;
-      if (_GEN[17])
-        br_snapshots_18_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_17 <= map_table_17;
-      if (_GEN[18])
-        br_snapshots_18_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_18 <= map_table_18;
-      if (_GEN[19])
-        br_snapshots_18_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_19 <= map_table_19;
-      if (_GEN[20])
-        br_snapshots_18_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_20 <= map_table_20;
-      if (_GEN[21])
-        br_snapshots_18_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_21 <= map_table_21;
-      if (_GEN[22])
-        br_snapshots_18_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_22 <= map_table_22;
-      if (_GEN[23])
-        br_snapshots_18_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_23 <= map_table_23;
-      if (_GEN[24])
-        br_snapshots_18_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_24 <= map_table_24;
-      if (_GEN[25])
-        br_snapshots_18_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_25 <= map_table_25;
-      if (_GEN[26])
-        br_snapshots_18_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_26 <= map_table_26;
-      if (_GEN[27])
-        br_snapshots_18_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_27 <= map_table_27;
-      if (_GEN[28])
-        br_snapshots_18_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_28 <= map_table_28;
-      if (_GEN[29])
-        br_snapshots_18_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_29 <= map_table_29;
-      if (_GEN[30])
-        br_snapshots_18_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_30 <= map_table_30;
-      if (_GEN[31])
-        br_snapshots_18_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_18_31 <= map_table_31;
+      br_snapshots_18_0 <= remap_table_1_0;
+      br_snapshots_18_1 <= remap_table_1_1;
+      br_snapshots_18_2 <= remap_table_1_2;
+      br_snapshots_18_3 <= remap_table_1_3;
+      br_snapshots_18_4 <= remap_table_1_4;
+      br_snapshots_18_5 <= remap_table_1_5;
+      br_snapshots_18_6 <= remap_table_1_6;
+      br_snapshots_18_7 <= remap_table_1_7;
+      br_snapshots_18_8 <= remap_table_1_8;
+      br_snapshots_18_9 <= remap_table_1_9;
+      br_snapshots_18_10 <= remap_table_1_10;
+      br_snapshots_18_11 <= remap_table_1_11;
+      br_snapshots_18_12 <= remap_table_1_12;
+      br_snapshots_18_13 <= remap_table_1_13;
+      br_snapshots_18_14 <= remap_table_1_14;
+      br_snapshots_18_15 <= remap_table_1_15;
+      br_snapshots_18_16 <= remap_table_1_16;
+      br_snapshots_18_17 <= remap_table_1_17;
+      br_snapshots_18_18 <= remap_table_1_18;
+      br_snapshots_18_19 <= remap_table_1_19;
+      br_snapshots_18_20 <= remap_table_1_20;
+      br_snapshots_18_21 <= remap_table_1_21;
+      br_snapshots_18_22 <= remap_table_1_22;
+      br_snapshots_18_23 <= remap_table_1_23;
+      br_snapshots_18_24 <= remap_table_1_24;
+      br_snapshots_18_25 <= remap_table_1_25;
+      br_snapshots_18_26 <= remap_table_1_26;
+      br_snapshots_18_27 <= remap_table_1_27;
+      br_snapshots_18_28 <= remap_table_1_28;
+      br_snapshots_18_29 <= remap_table_1_29;
+      br_snapshots_18_30 <= remap_table_1_30;
+      br_snapshots_18_31 <= remap_table_1_31;
     end
     if (io_ren_br_tags_3_valid & io_ren_br_tags_3_bits == 5'h13) begin
-      if (_GEN_2[0])
-        br_snapshots_19_0 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[0])
-        br_snapshots_19_0 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[0])
-        br_snapshots_19_0 <= io_remap_reqs_1_pdst;
-      else if (_GEN[0])
-        br_snapshots_19_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_0 <= map_table_0;
-      if (_GEN_2[1])
-        br_snapshots_19_1 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[1])
-        br_snapshots_19_1 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[1])
-        br_snapshots_19_1 <= io_remap_reqs_1_pdst;
-      else if (_GEN[1])
-        br_snapshots_19_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_1 <= map_table_1;
-      if (_GEN_2[2])
-        br_snapshots_19_2 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[2])
-        br_snapshots_19_2 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[2])
-        br_snapshots_19_2 <= io_remap_reqs_1_pdst;
-      else if (_GEN[2])
-        br_snapshots_19_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_2 <= map_table_2;
-      if (_GEN_2[3])
-        br_snapshots_19_3 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[3])
-        br_snapshots_19_3 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[3])
-        br_snapshots_19_3 <= io_remap_reqs_1_pdst;
-      else if (_GEN[3])
-        br_snapshots_19_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_3 <= map_table_3;
-      if (_GEN_2[4])
-        br_snapshots_19_4 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[4])
-        br_snapshots_19_4 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[4])
-        br_snapshots_19_4 <= io_remap_reqs_1_pdst;
-      else if (_GEN[4])
-        br_snapshots_19_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_4 <= map_table_4;
-      if (_GEN_2[5])
-        br_snapshots_19_5 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[5])
-        br_snapshots_19_5 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[5])
-        br_snapshots_19_5 <= io_remap_reqs_1_pdst;
-      else if (_GEN[5])
-        br_snapshots_19_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_5 <= map_table_5;
-      if (_GEN_2[6])
-        br_snapshots_19_6 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[6])
-        br_snapshots_19_6 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[6])
-        br_snapshots_19_6 <= io_remap_reqs_1_pdst;
-      else if (_GEN[6])
-        br_snapshots_19_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_6 <= map_table_6;
-      if (_GEN_2[7])
-        br_snapshots_19_7 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[7])
-        br_snapshots_19_7 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[7])
-        br_snapshots_19_7 <= io_remap_reqs_1_pdst;
-      else if (_GEN[7])
-        br_snapshots_19_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_7 <= map_table_7;
-      if (_GEN_2[8])
-        br_snapshots_19_8 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[8])
-        br_snapshots_19_8 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[8])
-        br_snapshots_19_8 <= io_remap_reqs_1_pdst;
-      else if (_GEN[8])
-        br_snapshots_19_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_8 <= map_table_8;
-      if (_GEN_2[9])
-        br_snapshots_19_9 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[9])
-        br_snapshots_19_9 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[9])
-        br_snapshots_19_9 <= io_remap_reqs_1_pdst;
-      else if (_GEN[9])
-        br_snapshots_19_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_9 <= map_table_9;
-      if (_GEN_2[10])
-        br_snapshots_19_10 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[10])
-        br_snapshots_19_10 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[10])
-        br_snapshots_19_10 <= io_remap_reqs_1_pdst;
-      else if (_GEN[10])
-        br_snapshots_19_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_10 <= map_table_10;
-      if (_GEN_2[11])
-        br_snapshots_19_11 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[11])
-        br_snapshots_19_11 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[11])
-        br_snapshots_19_11 <= io_remap_reqs_1_pdst;
-      else if (_GEN[11])
-        br_snapshots_19_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_11 <= map_table_11;
-      if (_GEN_2[12])
-        br_snapshots_19_12 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[12])
-        br_snapshots_19_12 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[12])
-        br_snapshots_19_12 <= io_remap_reqs_1_pdst;
-      else if (_GEN[12])
-        br_snapshots_19_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_12 <= map_table_12;
-      if (_GEN_2[13])
-        br_snapshots_19_13 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[13])
-        br_snapshots_19_13 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[13])
-        br_snapshots_19_13 <= io_remap_reqs_1_pdst;
-      else if (_GEN[13])
-        br_snapshots_19_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_13 <= map_table_13;
-      if (_GEN_2[14])
-        br_snapshots_19_14 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[14])
-        br_snapshots_19_14 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[14])
-        br_snapshots_19_14 <= io_remap_reqs_1_pdst;
-      else if (_GEN[14])
-        br_snapshots_19_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_14 <= map_table_14;
-      if (_GEN_2[15])
-        br_snapshots_19_15 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[15])
-        br_snapshots_19_15 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[15])
-        br_snapshots_19_15 <= io_remap_reqs_1_pdst;
-      else if (_GEN[15])
-        br_snapshots_19_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_15 <= map_table_15;
-      if (_GEN_2[16])
-        br_snapshots_19_16 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[16])
-        br_snapshots_19_16 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[16])
-        br_snapshots_19_16 <= io_remap_reqs_1_pdst;
-      else if (_GEN[16])
-        br_snapshots_19_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_16 <= map_table_16;
-      if (_GEN_2[17])
-        br_snapshots_19_17 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[17])
-        br_snapshots_19_17 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[17])
-        br_snapshots_19_17 <= io_remap_reqs_1_pdst;
-      else if (_GEN[17])
-        br_snapshots_19_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_17 <= map_table_17;
-      if (_GEN_2[18])
-        br_snapshots_19_18 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[18])
-        br_snapshots_19_18 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[18])
-        br_snapshots_19_18 <= io_remap_reqs_1_pdst;
-      else if (_GEN[18])
-        br_snapshots_19_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_18 <= map_table_18;
-      if (_GEN_2[19])
-        br_snapshots_19_19 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[19])
-        br_snapshots_19_19 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[19])
-        br_snapshots_19_19 <= io_remap_reqs_1_pdst;
-      else if (_GEN[19])
-        br_snapshots_19_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_19 <= map_table_19;
-      if (_GEN_2[20])
-        br_snapshots_19_20 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[20])
-        br_snapshots_19_20 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[20])
-        br_snapshots_19_20 <= io_remap_reqs_1_pdst;
-      else if (_GEN[20])
-        br_snapshots_19_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_20 <= map_table_20;
-      if (_GEN_2[21])
-        br_snapshots_19_21 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[21])
-        br_snapshots_19_21 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[21])
-        br_snapshots_19_21 <= io_remap_reqs_1_pdst;
-      else if (_GEN[21])
-        br_snapshots_19_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_21 <= map_table_21;
-      if (_GEN_2[22])
-        br_snapshots_19_22 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[22])
-        br_snapshots_19_22 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[22])
-        br_snapshots_19_22 <= io_remap_reqs_1_pdst;
-      else if (_GEN[22])
-        br_snapshots_19_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_22 <= map_table_22;
-      if (_GEN_2[23])
-        br_snapshots_19_23 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[23])
-        br_snapshots_19_23 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[23])
-        br_snapshots_19_23 <= io_remap_reqs_1_pdst;
-      else if (_GEN[23])
-        br_snapshots_19_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_23 <= map_table_23;
-      if (_GEN_2[24])
-        br_snapshots_19_24 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[24])
-        br_snapshots_19_24 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[24])
-        br_snapshots_19_24 <= io_remap_reqs_1_pdst;
-      else if (_GEN[24])
-        br_snapshots_19_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_24 <= map_table_24;
-      if (_GEN_2[25])
-        br_snapshots_19_25 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[25])
-        br_snapshots_19_25 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[25])
-        br_snapshots_19_25 <= io_remap_reqs_1_pdst;
-      else if (_GEN[25])
-        br_snapshots_19_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_25 <= map_table_25;
-      if (_GEN_2[26])
-        br_snapshots_19_26 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[26])
-        br_snapshots_19_26 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[26])
-        br_snapshots_19_26 <= io_remap_reqs_1_pdst;
-      else if (_GEN[26])
-        br_snapshots_19_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_26 <= map_table_26;
-      if (_GEN_2[27])
-        br_snapshots_19_27 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[27])
-        br_snapshots_19_27 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[27])
-        br_snapshots_19_27 <= io_remap_reqs_1_pdst;
-      else if (_GEN[27])
-        br_snapshots_19_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_27 <= map_table_27;
-      if (_GEN_2[28])
-        br_snapshots_19_28 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[28])
-        br_snapshots_19_28 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[28])
-        br_snapshots_19_28 <= io_remap_reqs_1_pdst;
-      else if (_GEN[28])
-        br_snapshots_19_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_28 <= map_table_28;
-      if (_GEN_2[29])
-        br_snapshots_19_29 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[29])
-        br_snapshots_19_29 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[29])
-        br_snapshots_19_29 <= io_remap_reqs_1_pdst;
-      else if (_GEN[29])
-        br_snapshots_19_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_29 <= map_table_29;
-      if (_GEN_2[30])
-        br_snapshots_19_30 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[30])
-        br_snapshots_19_30 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[30])
-        br_snapshots_19_30 <= io_remap_reqs_1_pdst;
-      else if (_GEN[30])
-        br_snapshots_19_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_30 <= map_table_30;
-      if (_GEN_2[31])
-        br_snapshots_19_31 <= io_remap_reqs_3_pdst;
-      else if (_GEN_1[31])
-        br_snapshots_19_31 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[31])
-        br_snapshots_19_31 <= io_remap_reqs_1_pdst;
-      else if (_GEN[31])
-        br_snapshots_19_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_31 <= map_table_31;
+      br_snapshots_19_0 <= remap_table_4_0;
+      br_snapshots_19_1 <= remap_table_4_1;
+      br_snapshots_19_2 <= remap_table_4_2;
+      br_snapshots_19_3 <= remap_table_4_3;
+      br_snapshots_19_4 <= remap_table_4_4;
+      br_snapshots_19_5 <= remap_table_4_5;
+      br_snapshots_19_6 <= remap_table_4_6;
+      br_snapshots_19_7 <= remap_table_4_7;
+      br_snapshots_19_8 <= remap_table_4_8;
+      br_snapshots_19_9 <= remap_table_4_9;
+      br_snapshots_19_10 <= remap_table_4_10;
+      br_snapshots_19_11 <= remap_table_4_11;
+      br_snapshots_19_12 <= remap_table_4_12;
+      br_snapshots_19_13 <= remap_table_4_13;
+      br_snapshots_19_14 <= remap_table_4_14;
+      br_snapshots_19_15 <= remap_table_4_15;
+      br_snapshots_19_16 <= remap_table_4_16;
+      br_snapshots_19_17 <= remap_table_4_17;
+      br_snapshots_19_18 <= remap_table_4_18;
+      br_snapshots_19_19 <= remap_table_4_19;
+      br_snapshots_19_20 <= remap_table_4_20;
+      br_snapshots_19_21 <= remap_table_4_21;
+      br_snapshots_19_22 <= remap_table_4_22;
+      br_snapshots_19_23 <= remap_table_4_23;
+      br_snapshots_19_24 <= remap_table_4_24;
+      br_snapshots_19_25 <= remap_table_4_25;
+      br_snapshots_19_26 <= remap_table_4_26;
+      br_snapshots_19_27 <= remap_table_4_27;
+      br_snapshots_19_28 <= remap_table_4_28;
+      br_snapshots_19_29 <= remap_table_4_29;
+      br_snapshots_19_30 <= remap_table_4_30;
+      br_snapshots_19_31 <= remap_table_4_31;
     end
     else if (io_ren_br_tags_2_valid & io_ren_br_tags_2_bits == 5'h13) begin
-      if (_GEN_1[0])
-        br_snapshots_19_0 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[0])
-        br_snapshots_19_0 <= io_remap_reqs_1_pdst;
-      else if (_GEN[0])
-        br_snapshots_19_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_0 <= map_table_0;
-      if (_GEN_1[1])
-        br_snapshots_19_1 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[1])
-        br_snapshots_19_1 <= io_remap_reqs_1_pdst;
-      else if (_GEN[1])
-        br_snapshots_19_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_1 <= map_table_1;
-      if (_GEN_1[2])
-        br_snapshots_19_2 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[2])
-        br_snapshots_19_2 <= io_remap_reqs_1_pdst;
-      else if (_GEN[2])
-        br_snapshots_19_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_2 <= map_table_2;
-      if (_GEN_1[3])
-        br_snapshots_19_3 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[3])
-        br_snapshots_19_3 <= io_remap_reqs_1_pdst;
-      else if (_GEN[3])
-        br_snapshots_19_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_3 <= map_table_3;
-      if (_GEN_1[4])
-        br_snapshots_19_4 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[4])
-        br_snapshots_19_4 <= io_remap_reqs_1_pdst;
-      else if (_GEN[4])
-        br_snapshots_19_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_4 <= map_table_4;
-      if (_GEN_1[5])
-        br_snapshots_19_5 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[5])
-        br_snapshots_19_5 <= io_remap_reqs_1_pdst;
-      else if (_GEN[5])
-        br_snapshots_19_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_5 <= map_table_5;
-      if (_GEN_1[6])
-        br_snapshots_19_6 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[6])
-        br_snapshots_19_6 <= io_remap_reqs_1_pdst;
-      else if (_GEN[6])
-        br_snapshots_19_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_6 <= map_table_6;
-      if (_GEN_1[7])
-        br_snapshots_19_7 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[7])
-        br_snapshots_19_7 <= io_remap_reqs_1_pdst;
-      else if (_GEN[7])
-        br_snapshots_19_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_7 <= map_table_7;
-      if (_GEN_1[8])
-        br_snapshots_19_8 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[8])
-        br_snapshots_19_8 <= io_remap_reqs_1_pdst;
-      else if (_GEN[8])
-        br_snapshots_19_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_8 <= map_table_8;
-      if (_GEN_1[9])
-        br_snapshots_19_9 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[9])
-        br_snapshots_19_9 <= io_remap_reqs_1_pdst;
-      else if (_GEN[9])
-        br_snapshots_19_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_9 <= map_table_9;
-      if (_GEN_1[10])
-        br_snapshots_19_10 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[10])
-        br_snapshots_19_10 <= io_remap_reqs_1_pdst;
-      else if (_GEN[10])
-        br_snapshots_19_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_10 <= map_table_10;
-      if (_GEN_1[11])
-        br_snapshots_19_11 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[11])
-        br_snapshots_19_11 <= io_remap_reqs_1_pdst;
-      else if (_GEN[11])
-        br_snapshots_19_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_11 <= map_table_11;
-      if (_GEN_1[12])
-        br_snapshots_19_12 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[12])
-        br_snapshots_19_12 <= io_remap_reqs_1_pdst;
-      else if (_GEN[12])
-        br_snapshots_19_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_12 <= map_table_12;
-      if (_GEN_1[13])
-        br_snapshots_19_13 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[13])
-        br_snapshots_19_13 <= io_remap_reqs_1_pdst;
-      else if (_GEN[13])
-        br_snapshots_19_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_13 <= map_table_13;
-      if (_GEN_1[14])
-        br_snapshots_19_14 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[14])
-        br_snapshots_19_14 <= io_remap_reqs_1_pdst;
-      else if (_GEN[14])
-        br_snapshots_19_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_14 <= map_table_14;
-      if (_GEN_1[15])
-        br_snapshots_19_15 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[15])
-        br_snapshots_19_15 <= io_remap_reqs_1_pdst;
-      else if (_GEN[15])
-        br_snapshots_19_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_15 <= map_table_15;
-      if (_GEN_1[16])
-        br_snapshots_19_16 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[16])
-        br_snapshots_19_16 <= io_remap_reqs_1_pdst;
-      else if (_GEN[16])
-        br_snapshots_19_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_16 <= map_table_16;
-      if (_GEN_1[17])
-        br_snapshots_19_17 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[17])
-        br_snapshots_19_17 <= io_remap_reqs_1_pdst;
-      else if (_GEN[17])
-        br_snapshots_19_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_17 <= map_table_17;
-      if (_GEN_1[18])
-        br_snapshots_19_18 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[18])
-        br_snapshots_19_18 <= io_remap_reqs_1_pdst;
-      else if (_GEN[18])
-        br_snapshots_19_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_18 <= map_table_18;
-      if (_GEN_1[19])
-        br_snapshots_19_19 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[19])
-        br_snapshots_19_19 <= io_remap_reqs_1_pdst;
-      else if (_GEN[19])
-        br_snapshots_19_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_19 <= map_table_19;
-      if (_GEN_1[20])
-        br_snapshots_19_20 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[20])
-        br_snapshots_19_20 <= io_remap_reqs_1_pdst;
-      else if (_GEN[20])
-        br_snapshots_19_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_20 <= map_table_20;
-      if (_GEN_1[21])
-        br_snapshots_19_21 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[21])
-        br_snapshots_19_21 <= io_remap_reqs_1_pdst;
-      else if (_GEN[21])
-        br_snapshots_19_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_21 <= map_table_21;
-      if (_GEN_1[22])
-        br_snapshots_19_22 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[22])
-        br_snapshots_19_22 <= io_remap_reqs_1_pdst;
-      else if (_GEN[22])
-        br_snapshots_19_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_22 <= map_table_22;
-      if (_GEN_1[23])
-        br_snapshots_19_23 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[23])
-        br_snapshots_19_23 <= io_remap_reqs_1_pdst;
-      else if (_GEN[23])
-        br_snapshots_19_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_23 <= map_table_23;
-      if (_GEN_1[24])
-        br_snapshots_19_24 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[24])
-        br_snapshots_19_24 <= io_remap_reqs_1_pdst;
-      else if (_GEN[24])
-        br_snapshots_19_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_24 <= map_table_24;
-      if (_GEN_1[25])
-        br_snapshots_19_25 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[25])
-        br_snapshots_19_25 <= io_remap_reqs_1_pdst;
-      else if (_GEN[25])
-        br_snapshots_19_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_25 <= map_table_25;
-      if (_GEN_1[26])
-        br_snapshots_19_26 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[26])
-        br_snapshots_19_26 <= io_remap_reqs_1_pdst;
-      else if (_GEN[26])
-        br_snapshots_19_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_26 <= map_table_26;
-      if (_GEN_1[27])
-        br_snapshots_19_27 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[27])
-        br_snapshots_19_27 <= io_remap_reqs_1_pdst;
-      else if (_GEN[27])
-        br_snapshots_19_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_27 <= map_table_27;
-      if (_GEN_1[28])
-        br_snapshots_19_28 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[28])
-        br_snapshots_19_28 <= io_remap_reqs_1_pdst;
-      else if (_GEN[28])
-        br_snapshots_19_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_28 <= map_table_28;
-      if (_GEN_1[29])
-        br_snapshots_19_29 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[29])
-        br_snapshots_19_29 <= io_remap_reqs_1_pdst;
-      else if (_GEN[29])
-        br_snapshots_19_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_29 <= map_table_29;
-      if (_GEN_1[30])
-        br_snapshots_19_30 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[30])
-        br_snapshots_19_30 <= io_remap_reqs_1_pdst;
-      else if (_GEN[30])
-        br_snapshots_19_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_30 <= map_table_30;
-      if (_GEN_1[31])
-        br_snapshots_19_31 <= io_remap_reqs_2_pdst;
-      else if (_GEN_0[31])
-        br_snapshots_19_31 <= io_remap_reqs_1_pdst;
-      else if (_GEN[31])
-        br_snapshots_19_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_31 <= map_table_31;
+      br_snapshots_19_0 <= remap_table_3_0;
+      br_snapshots_19_1 <= remap_table_3_1;
+      br_snapshots_19_2 <= remap_table_3_2;
+      br_snapshots_19_3 <= remap_table_3_3;
+      br_snapshots_19_4 <= remap_table_3_4;
+      br_snapshots_19_5 <= remap_table_3_5;
+      br_snapshots_19_6 <= remap_table_3_6;
+      br_snapshots_19_7 <= remap_table_3_7;
+      br_snapshots_19_8 <= remap_table_3_8;
+      br_snapshots_19_9 <= remap_table_3_9;
+      br_snapshots_19_10 <= remap_table_3_10;
+      br_snapshots_19_11 <= remap_table_3_11;
+      br_snapshots_19_12 <= remap_table_3_12;
+      br_snapshots_19_13 <= remap_table_3_13;
+      br_snapshots_19_14 <= remap_table_3_14;
+      br_snapshots_19_15 <= remap_table_3_15;
+      br_snapshots_19_16 <= remap_table_3_16;
+      br_snapshots_19_17 <= remap_table_3_17;
+      br_snapshots_19_18 <= remap_table_3_18;
+      br_snapshots_19_19 <= remap_table_3_19;
+      br_snapshots_19_20 <= remap_table_3_20;
+      br_snapshots_19_21 <= remap_table_3_21;
+      br_snapshots_19_22 <= remap_table_3_22;
+      br_snapshots_19_23 <= remap_table_3_23;
+      br_snapshots_19_24 <= remap_table_3_24;
+      br_snapshots_19_25 <= remap_table_3_25;
+      br_snapshots_19_26 <= remap_table_3_26;
+      br_snapshots_19_27 <= remap_table_3_27;
+      br_snapshots_19_28 <= remap_table_3_28;
+      br_snapshots_19_29 <= remap_table_3_29;
+      br_snapshots_19_30 <= remap_table_3_30;
+      br_snapshots_19_31 <= remap_table_3_31;
     end
     else if (io_ren_br_tags_1_valid & io_ren_br_tags_1_bits == 5'h13) begin
-      if (_GEN_0[0])
-        br_snapshots_19_0 <= io_remap_reqs_1_pdst;
-      else if (_GEN[0])
-        br_snapshots_19_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_0 <= map_table_0;
-      if (_GEN_0[1])
-        br_snapshots_19_1 <= io_remap_reqs_1_pdst;
-      else if (_GEN[1])
-        br_snapshots_19_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_1 <= map_table_1;
-      if (_GEN_0[2])
-        br_snapshots_19_2 <= io_remap_reqs_1_pdst;
-      else if (_GEN[2])
-        br_snapshots_19_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_2 <= map_table_2;
-      if (_GEN_0[3])
-        br_snapshots_19_3 <= io_remap_reqs_1_pdst;
-      else if (_GEN[3])
-        br_snapshots_19_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_3 <= map_table_3;
-      if (_GEN_0[4])
-        br_snapshots_19_4 <= io_remap_reqs_1_pdst;
-      else if (_GEN[4])
-        br_snapshots_19_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_4 <= map_table_4;
-      if (_GEN_0[5])
-        br_snapshots_19_5 <= io_remap_reqs_1_pdst;
-      else if (_GEN[5])
-        br_snapshots_19_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_5 <= map_table_5;
-      if (_GEN_0[6])
-        br_snapshots_19_6 <= io_remap_reqs_1_pdst;
-      else if (_GEN[6])
-        br_snapshots_19_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_6 <= map_table_6;
-      if (_GEN_0[7])
-        br_snapshots_19_7 <= io_remap_reqs_1_pdst;
-      else if (_GEN[7])
-        br_snapshots_19_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_7 <= map_table_7;
-      if (_GEN_0[8])
-        br_snapshots_19_8 <= io_remap_reqs_1_pdst;
-      else if (_GEN[8])
-        br_snapshots_19_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_8 <= map_table_8;
-      if (_GEN_0[9])
-        br_snapshots_19_9 <= io_remap_reqs_1_pdst;
-      else if (_GEN[9])
-        br_snapshots_19_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_9 <= map_table_9;
-      if (_GEN_0[10])
-        br_snapshots_19_10 <= io_remap_reqs_1_pdst;
-      else if (_GEN[10])
-        br_snapshots_19_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_10 <= map_table_10;
-      if (_GEN_0[11])
-        br_snapshots_19_11 <= io_remap_reqs_1_pdst;
-      else if (_GEN[11])
-        br_snapshots_19_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_11 <= map_table_11;
-      if (_GEN_0[12])
-        br_snapshots_19_12 <= io_remap_reqs_1_pdst;
-      else if (_GEN[12])
-        br_snapshots_19_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_12 <= map_table_12;
-      if (_GEN_0[13])
-        br_snapshots_19_13 <= io_remap_reqs_1_pdst;
-      else if (_GEN[13])
-        br_snapshots_19_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_13 <= map_table_13;
-      if (_GEN_0[14])
-        br_snapshots_19_14 <= io_remap_reqs_1_pdst;
-      else if (_GEN[14])
-        br_snapshots_19_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_14 <= map_table_14;
-      if (_GEN_0[15])
-        br_snapshots_19_15 <= io_remap_reqs_1_pdst;
-      else if (_GEN[15])
-        br_snapshots_19_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_15 <= map_table_15;
-      if (_GEN_0[16])
-        br_snapshots_19_16 <= io_remap_reqs_1_pdst;
-      else if (_GEN[16])
-        br_snapshots_19_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_16 <= map_table_16;
-      if (_GEN_0[17])
-        br_snapshots_19_17 <= io_remap_reqs_1_pdst;
-      else if (_GEN[17])
-        br_snapshots_19_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_17 <= map_table_17;
-      if (_GEN_0[18])
-        br_snapshots_19_18 <= io_remap_reqs_1_pdst;
-      else if (_GEN[18])
-        br_snapshots_19_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_18 <= map_table_18;
-      if (_GEN_0[19])
-        br_snapshots_19_19 <= io_remap_reqs_1_pdst;
-      else if (_GEN[19])
-        br_snapshots_19_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_19 <= map_table_19;
-      if (_GEN_0[20])
-        br_snapshots_19_20 <= io_remap_reqs_1_pdst;
-      else if (_GEN[20])
-        br_snapshots_19_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_20 <= map_table_20;
-      if (_GEN_0[21])
-        br_snapshots_19_21 <= io_remap_reqs_1_pdst;
-      else if (_GEN[21])
-        br_snapshots_19_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_21 <= map_table_21;
-      if (_GEN_0[22])
-        br_snapshots_19_22 <= io_remap_reqs_1_pdst;
-      else if (_GEN[22])
-        br_snapshots_19_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_22 <= map_table_22;
-      if (_GEN_0[23])
-        br_snapshots_19_23 <= io_remap_reqs_1_pdst;
-      else if (_GEN[23])
-        br_snapshots_19_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_23 <= map_table_23;
-      if (_GEN_0[24])
-        br_snapshots_19_24 <= io_remap_reqs_1_pdst;
-      else if (_GEN[24])
-        br_snapshots_19_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_24 <= map_table_24;
-      if (_GEN_0[25])
-        br_snapshots_19_25 <= io_remap_reqs_1_pdst;
-      else if (_GEN[25])
-        br_snapshots_19_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_25 <= map_table_25;
-      if (_GEN_0[26])
-        br_snapshots_19_26 <= io_remap_reqs_1_pdst;
-      else if (_GEN[26])
-        br_snapshots_19_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_26 <= map_table_26;
-      if (_GEN_0[27])
-        br_snapshots_19_27 <= io_remap_reqs_1_pdst;
-      else if (_GEN[27])
-        br_snapshots_19_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_27 <= map_table_27;
-      if (_GEN_0[28])
-        br_snapshots_19_28 <= io_remap_reqs_1_pdst;
-      else if (_GEN[28])
-        br_snapshots_19_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_28 <= map_table_28;
-      if (_GEN_0[29])
-        br_snapshots_19_29 <= io_remap_reqs_1_pdst;
-      else if (_GEN[29])
-        br_snapshots_19_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_29 <= map_table_29;
-      if (_GEN_0[30])
-        br_snapshots_19_30 <= io_remap_reqs_1_pdst;
-      else if (_GEN[30])
-        br_snapshots_19_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_30 <= map_table_30;
-      if (_GEN_0[31])
-        br_snapshots_19_31 <= io_remap_reqs_1_pdst;
-      else if (_GEN[31])
-        br_snapshots_19_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_31 <= map_table_31;
+      br_snapshots_19_0 <= remap_table_2_0;
+      br_snapshots_19_1 <= remap_table_2_1;
+      br_snapshots_19_2 <= remap_table_2_2;
+      br_snapshots_19_3 <= remap_table_2_3;
+      br_snapshots_19_4 <= remap_table_2_4;
+      br_snapshots_19_5 <= remap_table_2_5;
+      br_snapshots_19_6 <= remap_table_2_6;
+      br_snapshots_19_7 <= remap_table_2_7;
+      br_snapshots_19_8 <= remap_table_2_8;
+      br_snapshots_19_9 <= remap_table_2_9;
+      br_snapshots_19_10 <= remap_table_2_10;
+      br_snapshots_19_11 <= remap_table_2_11;
+      br_snapshots_19_12 <= remap_table_2_12;
+      br_snapshots_19_13 <= remap_table_2_13;
+      br_snapshots_19_14 <= remap_table_2_14;
+      br_snapshots_19_15 <= remap_table_2_15;
+      br_snapshots_19_16 <= remap_table_2_16;
+      br_snapshots_19_17 <= remap_table_2_17;
+      br_snapshots_19_18 <= remap_table_2_18;
+      br_snapshots_19_19 <= remap_table_2_19;
+      br_snapshots_19_20 <= remap_table_2_20;
+      br_snapshots_19_21 <= remap_table_2_21;
+      br_snapshots_19_22 <= remap_table_2_22;
+      br_snapshots_19_23 <= remap_table_2_23;
+      br_snapshots_19_24 <= remap_table_2_24;
+      br_snapshots_19_25 <= remap_table_2_25;
+      br_snapshots_19_26 <= remap_table_2_26;
+      br_snapshots_19_27 <= remap_table_2_27;
+      br_snapshots_19_28 <= remap_table_2_28;
+      br_snapshots_19_29 <= remap_table_2_29;
+      br_snapshots_19_30 <= remap_table_2_30;
+      br_snapshots_19_31 <= remap_table_2_31;
     end
     else if (io_ren_br_tags_0_valid & io_ren_br_tags_0_bits == 5'h13) begin
-      if (_GEN[0])
-        br_snapshots_19_0 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_0 <= map_table_0;
-      if (_GEN[1])
-        br_snapshots_19_1 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_1 <= map_table_1;
-      if (_GEN[2])
-        br_snapshots_19_2 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_2 <= map_table_2;
-      if (_GEN[3])
-        br_snapshots_19_3 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_3 <= map_table_3;
-      if (_GEN[4])
-        br_snapshots_19_4 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_4 <= map_table_4;
-      if (_GEN[5])
-        br_snapshots_19_5 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_5 <= map_table_5;
-      if (_GEN[6])
-        br_snapshots_19_6 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_6 <= map_table_6;
-      if (_GEN[7])
-        br_snapshots_19_7 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_7 <= map_table_7;
-      if (_GEN[8])
-        br_snapshots_19_8 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_8 <= map_table_8;
-      if (_GEN[9])
-        br_snapshots_19_9 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_9 <= map_table_9;
-      if (_GEN[10])
-        br_snapshots_19_10 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_10 <= map_table_10;
-      if (_GEN[11])
-        br_snapshots_19_11 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_11 <= map_table_11;
-      if (_GEN[12])
-        br_snapshots_19_12 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_12 <= map_table_12;
-      if (_GEN[13])
-        br_snapshots_19_13 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_13 <= map_table_13;
-      if (_GEN[14])
-        br_snapshots_19_14 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_14 <= map_table_14;
-      if (_GEN[15])
-        br_snapshots_19_15 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_15 <= map_table_15;
-      if (_GEN[16])
-        br_snapshots_19_16 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_16 <= map_table_16;
-      if (_GEN[17])
-        br_snapshots_19_17 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_17 <= map_table_17;
-      if (_GEN[18])
-        br_snapshots_19_18 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_18 <= map_table_18;
-      if (_GEN[19])
-        br_snapshots_19_19 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_19 <= map_table_19;
-      if (_GEN[20])
-        br_snapshots_19_20 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_20 <= map_table_20;
-      if (_GEN[21])
-        br_snapshots_19_21 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_21 <= map_table_21;
-      if (_GEN[22])
-        br_snapshots_19_22 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_22 <= map_table_22;
-      if (_GEN[23])
-        br_snapshots_19_23 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_23 <= map_table_23;
-      if (_GEN[24])
-        br_snapshots_19_24 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_24 <= map_table_24;
-      if (_GEN[25])
-        br_snapshots_19_25 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_25 <= map_table_25;
-      if (_GEN[26])
-        br_snapshots_19_26 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_26 <= map_table_26;
-      if (_GEN[27])
-        br_snapshots_19_27 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_27 <= map_table_27;
-      if (_GEN[28])
-        br_snapshots_19_28 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_28 <= map_table_28;
-      if (_GEN[29])
-        br_snapshots_19_29 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_29 <= map_table_29;
-      if (_GEN[30])
-        br_snapshots_19_30 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_30 <= map_table_30;
-      if (_GEN[31])
-        br_snapshots_19_31 <= io_remap_reqs_0_pdst;
-      else
-        br_snapshots_19_31 <= map_table_31;
+      br_snapshots_19_0 <= remap_table_1_0;
+      br_snapshots_19_1 <= remap_table_1_1;
+      br_snapshots_19_2 <= remap_table_1_2;
+      br_snapshots_19_3 <= remap_table_1_3;
+      br_snapshots_19_4 <= remap_table_1_4;
+      br_snapshots_19_5 <= remap_table_1_5;
+      br_snapshots_19_6 <= remap_table_1_6;
+      br_snapshots_19_7 <= remap_table_1_7;
+      br_snapshots_19_8 <= remap_table_1_8;
+      br_snapshots_19_9 <= remap_table_1_9;
+      br_snapshots_19_10 <= remap_table_1_10;
+      br_snapshots_19_11 <= remap_table_1_11;
+      br_snapshots_19_12 <= remap_table_1_12;
+      br_snapshots_19_13 <= remap_table_1_13;
+      br_snapshots_19_14 <= remap_table_1_14;
+      br_snapshots_19_15 <= remap_table_1_15;
+      br_snapshots_19_16 <= remap_table_1_16;
+      br_snapshots_19_17 <= remap_table_1_17;
+      br_snapshots_19_18 <= remap_table_1_18;
+      br_snapshots_19_19 <= remap_table_1_19;
+      br_snapshots_19_20 <= remap_table_1_20;
+      br_snapshots_19_21 <= remap_table_1_21;
+      br_snapshots_19_22 <= remap_table_1_22;
+      br_snapshots_19_23 <= remap_table_1_23;
+      br_snapshots_19_24 <= remap_table_1_24;
+      br_snapshots_19_25 <= remap_table_1_25;
+      br_snapshots_19_26 <= remap_table_1_26;
+      br_snapshots_19_27 <= remap_table_1_27;
+      br_snapshots_19_28 <= remap_table_1_28;
+      br_snapshots_19_29 <= remap_table_1_29;
+      br_snapshots_19_30 <= remap_table_1_30;
+      br_snapshots_19_31 <= remap_table_1_31;
     end
   end // always @(posedge)
-  assign io_map_resps_0_prs1 = casez_tmp;
-  assign io_map_resps_0_prs2 = casez_tmp_0;
-  assign io_map_resps_0_prs3 = casez_tmp_1;
-  assign io_map_resps_0_stale_pdst = casez_tmp_2;
-  assign io_map_resps_1_prs1 = casez_tmp_3;
-  assign io_map_resps_1_prs2 = casez_tmp_4;
-  assign io_map_resps_1_prs3 = casez_tmp_5;
-  assign io_map_resps_1_stale_pdst = casez_tmp_6;
-  assign io_map_resps_2_prs1 = casez_tmp_7;
-  assign io_map_resps_2_prs2 = casez_tmp_8;
-  assign io_map_resps_2_prs3 = casez_tmp_9;
-  assign io_map_resps_2_stale_pdst = casez_tmp_10;
-  assign io_map_resps_3_prs1 = casez_tmp_11;
-  assign io_map_resps_3_prs2 = casez_tmp_12;
-  assign io_map_resps_3_prs3 = casez_tmp_13;
-  assign io_map_resps_3_stale_pdst = casez_tmp_14;
+  assign io_map_resps_0_prs1 = casez_tmp_31;
+  assign io_map_resps_0_prs2 = casez_tmp_32;
+  assign io_map_resps_0_prs3 = casez_tmp_33;
+  assign io_map_resps_0_stale_pdst = casez_tmp_34;
+  assign io_map_resps_1_prs1 = casez_tmp_35;
+  assign io_map_resps_1_prs2 = casez_tmp_36;
+  assign io_map_resps_1_prs3 = casez_tmp_37;
+  assign io_map_resps_1_stale_pdst = casez_tmp_38;
+  assign io_map_resps_2_prs1 = casez_tmp_39;
+  assign io_map_resps_2_prs2 = casez_tmp_40;
+  assign io_map_resps_2_prs3 = casez_tmp_41;
+  assign io_map_resps_2_stale_pdst = casez_tmp_42;
+  assign io_map_resps_3_prs1 = casez_tmp_43;
+  assign io_map_resps_3_prs2 = casez_tmp_44;
+  assign io_map_resps_3_prs3 = casez_tmp_45;
+  assign io_map_resps_3_stale_pdst = casez_tmp_46;
 endmodule
 
