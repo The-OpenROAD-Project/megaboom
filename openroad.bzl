@@ -207,11 +207,11 @@ def build_openroad(
     stage_sources['route'] = stage_sources.get('route', []) + outs['cts']
 
     [run_binary(
-        name = target_name + "_" + stage + "_print",
+        name = target_name + "_" + stage + "_orfs",
         tool = ":orfs",
-        srcs = ["bazel-print.mk"] + all_sources,
-        args = ["make"] + base_args + wrap_args(stage_args.get(stage, [])) + ["bazel-" + stage + "-print"],
-        outs = ["logs/" + platform + "/%s/%s/%s.txt" %(output_folder_name, variant, stage)],
+        srcs = ["bazel-orfs.mk"] + all_sources,
+        args = ["make"] + base_args + wrap_args(stage_args.get(stage, [])) + ["bazel-" + stage + "-orfs"],
+        outs = ["logs/" + platform + "/%s/%s/%s.sh" %(output_folder_name, variant, stage)],
     ) for stage in stages]
 
     for stage in name_to_stage:

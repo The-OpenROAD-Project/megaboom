@@ -170,7 +170,7 @@ ORFS on the command line.
 
 The TL;DR to create a floorplan.tcl issue is:
 
-  bazelisk build L1MetadataArray_test_floorplan_print
+  bazelisk build L1MetadataArray_test_floorplan_orfs
   cat bazel-bin/logs/asap7/L1MetadataArray/test/floorplan.txt
 
 This shows the ORFS make command line, after which the normal make

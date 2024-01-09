@@ -5,7 +5,7 @@ export PLATFORM=asap7
 export WORK_HOME_READ?=$(WORK_HOME)
 
 -include bazel-clock_period.mk
--include bazel-print.mk
+-include bazel-orfs.mk
 -include bazel-synth.mk
 -include bazel-synth_sdc.mk
 -include bazel-floorplan.mk
