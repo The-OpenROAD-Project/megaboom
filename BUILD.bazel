@@ -1967,7 +1967,9 @@ build_openroad(
         macros=digital_top_srams + boom_tile_rams + boom_regfile_rams + boom_tile_small_srams +
         ["BranchPredictor", "FpPipeline", "ICache", "BoomNonBlockingDCache", "InclusiveCache"] +
         big_rams,
-        stage_sources={'synth': ["constraints-chiptop.sdc"]},
+        stage_sources={'clock_period': ["constraints-sram.sdc", "util.tcl"],
+        'synth_sdc': ["constraints-sram.sdc"],
+        'floorplan': ["util.tcl"]},
         stage_args={
                 'synth': ['SYNTH_HIERARCHICAL=1'],
                 'floorplan': [
