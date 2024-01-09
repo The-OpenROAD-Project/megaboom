@@ -2,22 +2,23 @@
 
 import subprocess
 import json
+import re
 import sys
 
 
-USER = "google-cloud-username"
-
-
 def get_gcloud_auth_token():
-    try:
-        # Run gcloud command to get the authentication token
-        result = subprocess.run(
-            ["gcloud", "auth", "print-access-token", USER],
-            capture_output=True, text=True, check=True)
-        token = result.stdout.strip()
-        return token
-    except subprocess.CalledProcessError as e:
-        sys.exit(f"Error running gcloud command: {e}")
+    with open(".bazelrc") as f:
+        all = f.read()
+    # The username is in the .bazelrc file as "# user: <username>"
+    # fish it out using a regex
+    USER = re.search(r"# user: (.*)", all).group(1)
+
+    # Run gcloud command to get the authentication token
+    result = subprocess.run(
+        ["gcloud", "auth", "print-access-token", USER],
+        capture_output=True, text=True, check=True)
+    token = result.stdout.strip()
+    return token
 
 
 def generate_credentials():
@@ -30,7 +31,6 @@ def generate_credentials():
             "Authorization": [f"Bearer {bearer_token}"]
         }
     }
-
     return credentials
 
 
@@ -44,4 +44,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
