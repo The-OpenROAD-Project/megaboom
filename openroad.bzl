@@ -144,7 +144,8 @@ def build_openroad(
     'generate_abstract': ['generate_abstract']
     }
 
-    SDC_FILE = list(filter(stage_sources.get('synth', []), lambda s: s.endswith(".sdc")))[0]
+    SDC_FILE = list(filter(set([item for sublist in stage_sources.values()
+    for item in sublist]), lambda s: s.endswith(".sdc")))[0]
     stage_args['clock_period'] = [
         "SDC_FILE=" + SDC_FILE
         ]
