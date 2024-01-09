@@ -15,4 +15,3 @@ tmp-clearbox/
 MODULE.*
 .bazelrc
 .vscode/
-cred_helper.py
