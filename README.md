@@ -264,7 +264,7 @@ stage on a machine, `./out` is in this project to "stare at logs":
 Downloading the immediate dependencies of a target
 --------------------------------------------------
 
-  bazel build $(bazel query 'deps(BoomTile_floorplan, 1)' --noimplicit_deps)
+  bazelisk build $(bazelisk query 'deps(ChipTop_synth, 1)' --noimplicit_deps)
 
 MegaBoom RTL code
 =================
