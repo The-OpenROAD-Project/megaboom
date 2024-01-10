@@ -194,15 +194,16 @@ module TLXbar_5(
   input         auto_out_0_d_bits_corrupt
 );
 
-  wire        requestAIO_0_0 = {auto_in_a_bits_address[27], auto_in_a_bits_address[25], auto_in_a_bits_address[20], auto_in_a_bits_address[17:16], ~(auto_in_a_bits_address[13:12])} == 7'h0;
+  wire        requestAIO_0_0 = {auto_in_a_bits_address[28:27], auto_in_a_bits_address[25], auto_in_a_bits_address[20], auto_in_a_bits_address[16], ~(auto_in_a_bits_address[13:12])} == 7'h0;
   wire [9:0]  _GEN = auto_in_a_bits_address[25:16] ^ 10'h201;
-  wire        requestAIO_0_1 = {auto_in_a_bits_address[27], _GEN[9], auto_in_a_bits_address[20], _GEN[1:0], auto_in_a_bits_address[13:12]} == 7'h0;
-  wire        requestAIO_0_2 = {auto_in_a_bits_address[27], auto_in_a_bits_address[25], auto_in_a_bits_address[20], auto_in_a_bits_address[17:16], auto_in_a_bits_address[13], ~(auto_in_a_bits_address[12])} == 7'h0 | {auto_in_a_bits_address[27], auto_in_a_bits_address[25], auto_in_a_bits_address[20], auto_in_a_bits_address[17:16] ^ 2'h2, auto_in_a_bits_address[13:12]} == 7'h0;
-  wire        requestAIO_0_4 = {auto_in_a_bits_address[27], ~(auto_in_a_bits_address[25]), auto_in_a_bits_address[20], auto_in_a_bits_address[17:16]} == 5'h0;
-  wire        requestAIO_0_5 = {auto_in_a_bits_address[27], auto_in_a_bits_address[25], auto_in_a_bits_address[20], auto_in_a_bits_address[17:16], auto_in_a_bits_address[13:12]} == 7'h0;
-  wire        requestAIO_0_6 = {auto_in_a_bits_address[27], auto_in_a_bits_address[25], auto_in_a_bits_address[20], auto_in_a_bits_address[17], ~(auto_in_a_bits_address[16])} == 5'h0;
-  wire        requestAIO_0_7 = {auto_in_a_bits_address[27], auto_in_a_bits_address[25], ~(auto_in_a_bits_address[20]), auto_in_a_bits_address[13:12]} == 5'h0;
-  wire        _portsAOI_in_0_a_ready_WIRE = requestAIO_0_0 & auto_out_0_a_ready | requestAIO_0_1 & auto_out_1_a_ready | requestAIO_0_2 & auto_out_2_a_ready | auto_in_a_bits_address[27] & auto_out_3_a_ready | requestAIO_0_4 & auto_out_4_a_ready | requestAIO_0_5 & auto_out_5_a_ready | requestAIO_0_6 & auto_out_6_a_ready | requestAIO_0_7 & auto_out_7_a_ready;
+  wire        requestAIO_0_1 = {auto_in_a_bits_address[28:27], _GEN[9], auto_in_a_bits_address[20], _GEN[0], auto_in_a_bits_address[13:12]} == 7'h0;
+  wire        requestAIO_0_2 = {auto_in_a_bits_address[28:27], auto_in_a_bits_address[25], auto_in_a_bits_address[20], auto_in_a_bits_address[16], auto_in_a_bits_address[13], ~(auto_in_a_bits_address[12])} == 7'h0 | {auto_in_a_bits_address[28:27] ^ 2'h2, auto_in_a_bits_address[25], auto_in_a_bits_address[20], auto_in_a_bits_address[16], auto_in_a_bits_address[13:12]} == 7'h0;
+  wire        requestAIO_0_3 = {auto_in_a_bits_address[28], ~(auto_in_a_bits_address[27])} == 2'h0;
+  wire        requestAIO_0_4 = {auto_in_a_bits_address[28:27], ~(auto_in_a_bits_address[25]), auto_in_a_bits_address[20], auto_in_a_bits_address[16]} == 5'h0;
+  wire        requestAIO_0_5 = {auto_in_a_bits_address[28:27], auto_in_a_bits_address[25], auto_in_a_bits_address[20], auto_in_a_bits_address[16], auto_in_a_bits_address[13:12]} == 7'h0;
+  wire        requestAIO_0_6 = {auto_in_a_bits_address[28:27], auto_in_a_bits_address[25], auto_in_a_bits_address[20], ~(auto_in_a_bits_address[16])} == 5'h0;
+  wire        requestAIO_0_7 = {auto_in_a_bits_address[28:27], auto_in_a_bits_address[25], ~(auto_in_a_bits_address[20]), auto_in_a_bits_address[13:12]} == 6'h0;
+  wire        _portsAOI_in_0_a_ready_WIRE = requestAIO_0_0 & auto_out_0_a_ready | requestAIO_0_1 & auto_out_1_a_ready | requestAIO_0_2 & auto_out_2_a_ready | requestAIO_0_3 & auto_out_3_a_ready | requestAIO_0_4 & auto_out_4_a_ready | requestAIO_0_5 & auto_out_5_a_ready | requestAIO_0_6 & auto_out_6_a_ready | requestAIO_0_7 & auto_out_7_a_ready;
   reg  [8:0]  beatsLeft;
   wire        idle = beatsLeft == 9'h0;
   wire [7:0]  readys_valid = {auto_out_7_d_valid, auto_out_6_d_valid, auto_out_5_d_valid, auto_out_4_d_valid, auto_out_3_d_valid, auto_out_2_d_valid, auto_out_1_d_valid, auto_out_0_d_valid};
@@ -382,7 +383,7 @@ module TLXbar_5(
   assign auto_out_4_a_bits_data = auto_in_a_bits_data;
   assign auto_out_4_a_bits_corrupt = auto_in_a_bits_corrupt;
   assign auto_out_4_d_ready = auto_in_d_ready & (idle ? readys_readys[4] : state_4);
-  assign auto_out_3_a_valid = auto_in_a_valid & auto_in_a_bits_address[27];
+  assign auto_out_3_a_valid = auto_in_a_valid & requestAIO_0_3;
   assign auto_out_3_a_bits_opcode = auto_in_a_bits_opcode;
   assign auto_out_3_a_bits_param = auto_in_a_bits_param;
   assign auto_out_3_a_bits_size = auto_in_a_bits_size[2:0];

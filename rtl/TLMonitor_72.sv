@@ -190,7 +190,7 @@ module TLMonitor_72(
     wire         _GEN_6 = io_in_a_bits_param > 3'h2;
     wire         _GEN_7 = io_in_a_bits_mask != 8'hFF;
     wire         _GEN_8 = io_in_a_valid & (&io_in_a_bits_opcode) & ~reset;
-    wire         _GEN_9 = io_in_a_bits_size != 3'h7 & ({io_in_a_bits_address[32], ~(io_in_a_bits_address[31])} == 2'h0 | io_in_a_bits_address[32:31] == 2'h2);
+    wire         _GEN_9 = io_in_a_bits_size != 3'h7 & io_in_a_bits_address[32:31] == 2'h2;
     wire         _GEN_10 = io_in_a_valid & io_in_a_bits_opcode == 3'h4 & ~reset;
     wire         _GEN_11 = io_in_a_bits_mask != mask;
     wire         _GEN_12 = io_in_a_valid & io_in_a_bits_opcode == 3'h0 & ~reset;
@@ -225,477 +225,477 @@ module TLMonitor_72(
     always @(posedge clock) begin
       if (_GEN_5) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'A' channel carries AcquireBlock type which is unexpected using diplomatic parameters (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:42 assert(cond, message)\n");
+          $error("Assertion failed: 'A' channel carries AcquireBlock type which is unexpected using diplomatic parameters (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:42 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'A' channel carries AcquireBlock from a client which does not support Probe (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:42 assert(cond, message)\n");
+          $error("Assertion failed: 'A' channel carries AcquireBlock from a client which does not support Probe (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:42 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_5 & ~_mask_T) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'A' channel AcquireBlock smaller than a beat (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:42 assert(cond, message)\n");
+          $error("Assertion failed: 'A' channel AcquireBlock smaller than a beat (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:42 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_5 & (|_GEN_4)) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'A' channel AcquireBlock address not aligned to size (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:42 assert(cond, message)\n");
+          $error("Assertion failed: 'A' channel AcquireBlock address not aligned to size (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:42 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_5 & _GEN_6) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'A' channel AcquireBlock carries invalid grow param (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:42 assert(cond, message)\n");
+          $error("Assertion failed: 'A' channel AcquireBlock carries invalid grow param (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:42 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_5 & _GEN_7) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'A' channel AcquireBlock contains invalid mask (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:42 assert(cond, message)\n");
+          $error("Assertion failed: 'A' channel AcquireBlock contains invalid mask (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:42 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_8) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'A' channel carries AcquirePerm type which is unexpected using diplomatic parameters (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:42 assert(cond, message)\n");
+          $error("Assertion failed: 'A' channel carries AcquirePerm type which is unexpected using diplomatic parameters (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:42 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'A' channel carries AcquirePerm from a client which does not support Probe (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:42 assert(cond, message)\n");
+          $error("Assertion failed: 'A' channel carries AcquirePerm from a client which does not support Probe (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:42 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_8 & ~_mask_T) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'A' channel AcquirePerm smaller than a beat (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:42 assert(cond, message)\n");
+          $error("Assertion failed: 'A' channel AcquirePerm smaller than a beat (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:42 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_8 & (|_GEN_4)) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'A' channel AcquirePerm address not aligned to size (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:42 assert(cond, message)\n");
+          $error("Assertion failed: 'A' channel AcquirePerm address not aligned to size (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:42 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_8 & _GEN_6) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'A' channel AcquirePerm carries invalid grow param (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:42 assert(cond, message)\n");
+          $error("Assertion failed: 'A' channel AcquirePerm carries invalid grow param (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:42 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_8 & ~(|io_in_a_bits_param)) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'A' channel AcquirePerm requests NtoB (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:42 assert(cond, message)\n");
+          $error("Assertion failed: 'A' channel AcquirePerm requests NtoB (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:42 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_8 & _GEN_7) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'A' channel AcquirePerm contains invalid mask (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:42 assert(cond, message)\n");
+          $error("Assertion failed: 'A' channel AcquirePerm contains invalid mask (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:42 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_10 & ~_GEN_9) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'A' channel carries Get type which slave claims it can't support (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:42 assert(cond, message)\n");
+          $error("Assertion failed: 'A' channel carries Get type which slave claims it can't support (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:42 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_10 & (|_GEN_4)) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'A' channel Get address not aligned to size (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:42 assert(cond, message)\n");
+          $error("Assertion failed: 'A' channel Get address not aligned to size (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:42 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_10 & (|io_in_a_bits_param)) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'A' channel Get carries invalid param (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:42 assert(cond, message)\n");
+          $error("Assertion failed: 'A' channel Get carries invalid param (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:42 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_10 & _GEN_11) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'A' channel Get contains invalid mask (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:42 assert(cond, message)\n");
+          $error("Assertion failed: 'A' channel Get contains invalid mask (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:42 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_12 & ~_GEN_9) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'A' channel carries PutFull type which is unexpected using diplomatic parameters (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:42 assert(cond, message)\n");
+          $error("Assertion failed: 'A' channel carries PutFull type which is unexpected using diplomatic parameters (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:42 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_12 & (|_GEN_4)) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'A' channel PutFull address not aligned to size (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:42 assert(cond, message)\n");
+          $error("Assertion failed: 'A' channel PutFull address not aligned to size (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:42 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_12 & (|io_in_a_bits_param)) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'A' channel PutFull carries invalid param (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:42 assert(cond, message)\n");
+          $error("Assertion failed: 'A' channel PutFull carries invalid param (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:42 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_12 & _GEN_11) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'A' channel PutFull contains invalid mask (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:42 assert(cond, message)\n");
+          $error("Assertion failed: 'A' channel PutFull contains invalid mask (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:42 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_13 & ~_GEN_9) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'A' channel carries PutPartial type which is unexpected using diplomatic parameters (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:42 assert(cond, message)\n");
+          $error("Assertion failed: 'A' channel carries PutPartial type which is unexpected using diplomatic parameters (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:42 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_13 & (|_GEN_4)) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'A' channel PutPartial address not aligned to size (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:42 assert(cond, message)\n");
+          $error("Assertion failed: 'A' channel PutPartial address not aligned to size (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:42 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_13 & (|io_in_a_bits_param)) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'A' channel PutPartial carries invalid param (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:42 assert(cond, message)\n");
+          $error("Assertion failed: 'A' channel PutPartial carries invalid param (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:42 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_13 & (|(io_in_a_bits_mask & ~mask))) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'A' channel PutPartial contains invalid mask (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:42 assert(cond, message)\n");
+          $error("Assertion failed: 'A' channel PutPartial contains invalid mask (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:42 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_14) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'A' channel carries Arithmetic type which is unexpected using diplomatic parameters (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:42 assert(cond, message)\n");
+          $error("Assertion failed: 'A' channel carries Arithmetic type which is unexpected using diplomatic parameters (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:42 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_14 & (|_GEN_4)) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'A' channel Arithmetic address not aligned to size (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:42 assert(cond, message)\n");
+          $error("Assertion failed: 'A' channel Arithmetic address not aligned to size (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:42 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_14 & io_in_a_bits_param > 3'h4) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'A' channel Arithmetic carries invalid opcode param (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:42 assert(cond, message)\n");
+          $error("Assertion failed: 'A' channel Arithmetic carries invalid opcode param (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:42 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_14 & _GEN_11) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'A' channel Arithmetic contains invalid mask (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:42 assert(cond, message)\n");
+          $error("Assertion failed: 'A' channel Arithmetic contains invalid mask (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:42 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_15) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'A' channel carries Logical type which is unexpected using diplomatic parameters (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:42 assert(cond, message)\n");
+          $error("Assertion failed: 'A' channel carries Logical type which is unexpected using diplomatic parameters (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:42 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_15 & (|_GEN_4)) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'A' channel Logical address not aligned to size (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:42 assert(cond, message)\n");
+          $error("Assertion failed: 'A' channel Logical address not aligned to size (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:42 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_15 & io_in_a_bits_param[2]) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'A' channel Logical carries invalid opcode param (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:42 assert(cond, message)\n");
+          $error("Assertion failed: 'A' channel Logical carries invalid opcode param (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:42 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_15 & _GEN_11) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'A' channel Logical contains invalid mask (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:42 assert(cond, message)\n");
+          $error("Assertion failed: 'A' channel Logical contains invalid mask (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:42 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_16) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'A' channel carries Hint type which is unexpected using diplomatic parameters (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:42 assert(cond, message)\n");
+          $error("Assertion failed: 'A' channel carries Hint type which is unexpected using diplomatic parameters (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:42 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_16 & (|_GEN_4)) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'A' channel Hint address not aligned to size (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:42 assert(cond, message)\n");
+          $error("Assertion failed: 'A' channel Hint address not aligned to size (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:42 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_16 & (|(io_in_a_bits_param[2:1]))) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'A' channel Hint carries invalid opcode param (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:42 assert(cond, message)\n");
+          $error("Assertion failed: 'A' channel Hint carries invalid opcode param (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:42 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_16 & _GEN_11) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'A' channel Hint contains invalid mask (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:42 assert(cond, message)\n");
+          $error("Assertion failed: 'A' channel Hint contains invalid mask (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:42 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (io_in_d_valid & ~reset & (&io_in_d_bits_opcode)) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'D' channel has invalid opcode (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:49 assert(cond, message)\n");
+          $error("Assertion failed: 'D' channel has invalid opcode (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:49 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_17 & _GEN_18) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'D' channel ReleaseAck smaller than a beat (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:49 assert(cond, message)\n");
+          $error("Assertion failed: 'D' channel ReleaseAck smaller than a beat (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:49 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_17 & (|io_in_d_bits_param)) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'D' channel ReleaseeAck carries invalid param (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:49 assert(cond, message)\n");
+          $error("Assertion failed: 'D' channel ReleaseeAck carries invalid param (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:49 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_17 & io_in_d_bits_corrupt) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'D' channel ReleaseAck is corrupt (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:49 assert(cond, message)\n");
+          $error("Assertion failed: 'D' channel ReleaseAck is corrupt (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:49 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_17 & io_in_d_bits_denied) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'D' channel ReleaseAck is denied (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:49 assert(cond, message)\n");
+          $error("Assertion failed: 'D' channel ReleaseAck is denied (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:49 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_19) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'D' channel Grant carries invalid sink ID (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:49 assert(cond, message)\n");
+          $error("Assertion failed: 'D' channel Grant carries invalid sink ID (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:49 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_19 & _GEN_18) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'D' channel Grant smaller than a beat (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:49 assert(cond, message)\n");
+          $error("Assertion failed: 'D' channel Grant smaller than a beat (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:49 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_19 & (&io_in_d_bits_param)) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'D' channel Grant carries invalid cap param (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:49 assert(cond, message)\n");
+          $error("Assertion failed: 'D' channel Grant carries invalid cap param (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:49 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_19 & _GEN_20) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'D' channel Grant carries toN param (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:49 assert(cond, message)\n");
+          $error("Assertion failed: 'D' channel Grant carries toN param (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:49 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_19 & io_in_d_bits_corrupt) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'D' channel Grant is corrupt (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:49 assert(cond, message)\n");
+          $error("Assertion failed: 'D' channel Grant is corrupt (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:49 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_19 & io_in_d_bits_denied) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'D' channel Grant is denied (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:49 assert(cond, message)\n");
+          $error("Assertion failed: 'D' channel Grant is denied (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:49 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_21) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'D' channel GrantData carries invalid sink ID (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:49 assert(cond, message)\n");
+          $error("Assertion failed: 'D' channel GrantData carries invalid sink ID (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:49 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_21 & _GEN_18) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'D' channel GrantData smaller than a beat (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:49 assert(cond, message)\n");
+          $error("Assertion failed: 'D' channel GrantData smaller than a beat (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:49 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_21 & (&io_in_d_bits_param)) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'D' channel GrantData carries invalid cap param (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:49 assert(cond, message)\n");
+          $error("Assertion failed: 'D' channel GrantData carries invalid cap param (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:49 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_21 & _GEN_20) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'D' channel GrantData carries toN param (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:49 assert(cond, message)\n");
+          $error("Assertion failed: 'D' channel GrantData carries toN param (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:49 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_21 & ~_GEN_22) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'D' channel GrantData is denied but not corrupt (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:49 assert(cond, message)\n");
+          $error("Assertion failed: 'D' channel GrantData is denied but not corrupt (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:49 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_21 & io_in_d_bits_denied) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'D' channel GrantData is denied (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:49 assert(cond, message)\n");
+          $error("Assertion failed: 'D' channel GrantData is denied (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:49 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_23 & (|io_in_d_bits_param)) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'D' channel AccessAck carries invalid param (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:49 assert(cond, message)\n");
+          $error("Assertion failed: 'D' channel AccessAck carries invalid param (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:49 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_23 & io_in_d_bits_corrupt) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'D' channel AccessAck is corrupt (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:49 assert(cond, message)\n");
+          $error("Assertion failed: 'D' channel AccessAck is corrupt (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:49 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_23 & io_in_d_bits_denied) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'D' channel AccessAck is denied (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:49 assert(cond, message)\n");
+          $error("Assertion failed: 'D' channel AccessAck is denied (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:49 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_24 & (|io_in_d_bits_param)) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'D' channel AccessAckData carries invalid param (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:49 assert(cond, message)\n");
+          $error("Assertion failed: 'D' channel AccessAckData carries invalid param (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:49 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_24 & ~_GEN_22) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'D' channel AccessAckData is denied but not corrupt (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:49 assert(cond, message)\n");
+          $error("Assertion failed: 'D' channel AccessAckData is denied but not corrupt (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:49 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_24 & io_in_d_bits_denied) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'D' channel AccessAckData is denied (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:49 assert(cond, message)\n");
+          $error("Assertion failed: 'D' channel AccessAckData is denied (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:49 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_25 & (|io_in_d_bits_param)) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'D' channel HintAck carries invalid param (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:49 assert(cond, message)\n");
+          $error("Assertion failed: 'D' channel HintAck carries invalid param (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:49 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_25 & io_in_d_bits_corrupt) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'D' channel HintAck is corrupt (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:49 assert(cond, message)\n");
+          $error("Assertion failed: 'D' channel HintAck is corrupt (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:49 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_25 & io_in_d_bits_denied) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'D' channel HintAck is denied (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:49 assert(cond, message)\n");
+          $error("Assertion failed: 'D' channel HintAck is denied (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:49 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_26 & io_in_a_bits_opcode != opcode) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'A' channel opcode changed within multibeat operation (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:42 assert(cond, message)\n");
+          $error("Assertion failed: 'A' channel opcode changed within multibeat operation (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:42 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_26 & io_in_a_bits_param != param) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'A' channel param changed within multibeat operation (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:42 assert(cond, message)\n");
+          $error("Assertion failed: 'A' channel param changed within multibeat operation (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:42 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_26 & io_in_a_bits_size != size) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'A' channel size changed within multibeat operation (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:42 assert(cond, message)\n");
+          $error("Assertion failed: 'A' channel size changed within multibeat operation (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:42 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_26 & io_in_a_bits_source != source) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'A' channel source changed within multibeat operation (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:42 assert(cond, message)\n");
+          $error("Assertion failed: 'A' channel source changed within multibeat operation (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:42 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_26 & io_in_a_bits_address != address) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'A' channel address changed with multibeat operation (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:42 assert(cond, message)\n");
+          $error("Assertion failed: 'A' channel address changed with multibeat operation (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:42 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_27 & io_in_d_bits_opcode != opcode_1) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'D' channel opcode changed within multibeat operation (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:49 assert(cond, message)\n");
+          $error("Assertion failed: 'D' channel opcode changed within multibeat operation (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:49 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_27 & io_in_d_bits_param != param_1) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'D' channel param changed within multibeat operation (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:49 assert(cond, message)\n");
+          $error("Assertion failed: 'D' channel param changed within multibeat operation (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:49 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_27 & io_in_d_bits_size != size_1) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'D' channel size changed within multibeat operation (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:49 assert(cond, message)\n");
+          $error("Assertion failed: 'D' channel size changed within multibeat operation (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:49 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_27 & io_in_d_bits_source != source_1) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'D' channel source changed within multibeat operation (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:49 assert(cond, message)\n");
+          $error("Assertion failed: 'D' channel source changed within multibeat operation (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:49 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_27 & io_in_d_bits_sink != sink) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'D' channel sink changed with multibeat operation (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:49 assert(cond, message)\n");
+          $error("Assertion failed: 'D' channel sink changed with multibeat operation (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:49 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_27 & io_in_d_bits_denied != denied) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'D' channel denied changed with multibeat operation (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:49 assert(cond, message)\n");
+          $error("Assertion failed: 'D' channel denied changed with multibeat operation (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:49 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_2 & ~reset & _GEN_33[0]) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'A' channel re-used a source ID (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:42 assert(cond, message)\n");
+          $error("Assertion failed: 'A' channel re-used a source ID (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:42 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_29 & ~reset & ~(_GEN_34[0] | same_cycle_resp)) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'D' channel acknowledged for nothing inflight (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:49 assert(cond, message)\n");
+          $error("Assertion failed: 'D' channel acknowledged for nothing inflight (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:49 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_30 & ~(io_in_d_bits_opcode == casez_tmp | io_in_d_bits_opcode == casez_tmp_0)) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'D' channel contains improper opcode response (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:49 assert(cond, message)\n");
+          $error("Assertion failed: 'D' channel contains improper opcode response (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:49 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_30 & io_in_a_bits_size != io_in_d_bits_size) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'D' channel contains improper response size (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:49 assert(cond, message)\n");
+          $error("Assertion failed: 'D' channel contains improper response size (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:49 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_31 & ~(io_in_d_bits_opcode == casez_tmp_1 | io_in_d_bits_opcode == casez_tmp_2)) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'D' channel contains improper opcode response (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:49 assert(cond, message)\n");
+          $error("Assertion failed: 'D' channel contains improper opcode response (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:49 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_31 & io_in_d_bits_size != _a_size_lookup_T_1[3:1]) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'D' channel contains improper response size (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:49 assert(cond, message)\n");
+          $error("Assertion failed: 'D' channel contains improper response size (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:49 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
@@ -707,31 +707,31 @@ module TLMonitor_72(
       end
       if (~reset & ~(a_set_wo_ready != (_GEN_29 ? 64'h1 << _GEN_3 : 64'h0) | a_set_wo_ready == 64'h0)) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'A' and 'D' concurrent, despite minlatency 3 (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:49 assert(cond, message)\n");
+          $error("Assertion failed: 'A' and 'D' concurrent, despite minlatency 3 (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:49 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (~reset & ~(inflight == 64'h0 | _plusarg_reader_out == 32'h0 | watchdog < _plusarg_reader_out)) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: TileLink timeout expired (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:42 assert(cond, message)\n");
+          $error("Assertion failed: TileLink timeout expired (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:42 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_32 & ~(_GEN_35[0])) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'D' channel acknowledged for nothing inflight (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:49 assert(cond, message)\n");
+          $error("Assertion failed: 'D' channel acknowledged for nothing inflight (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:49 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (_GEN_32 & io_in_d_bits_size != _c_size_lookup_T_1[3:1]) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: 'D' channel contains improper response size (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:49 assert(cond, message)\n");
+          $error("Assertion failed: 'D' channel contains improper response size (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:49 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
       if (~reset & ~(inflight_1 == 64'h0 | _plusarg_reader_1_out == 32'h0 | watchdog_1 < _plusarg_reader_1_out)) begin
         if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: TileLink timeout expired (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:106:10)\n    at Monitor.scala:42 assert(cond, message)\n");
+          $error("Assertion failed: TileLink timeout expired (connected at generators/testchipip/src/main/scala/tsi/TSIHarness.scala:94:94)\n    at Monitor.scala:42 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end

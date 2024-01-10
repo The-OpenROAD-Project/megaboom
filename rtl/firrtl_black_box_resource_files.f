@@ -1,6 +1,4 @@
-ClockSourceAtFreqFromPlusArgpll_freq_mhz.v
 ClockSourceAtFreqMHz.v
-ClockUtil.v
 EICG_wrapper.v
 GenericDigitalInIOCell.v
 GenericDigitalOutIOCell.v

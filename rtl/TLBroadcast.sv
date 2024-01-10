@@ -261,7 +261,7 @@ module TLBroadcast(
     if (d_first)
       d_trackerOH_r <= _d_trackerOH_T_8;
   end // always @(posedge)
-  TLMonitor_79 monitor (
+  TLMonitor_73 monitor (
     .clock                (clock),
     .reset                (reset),
     .io_in_a_ready        (|_GEN),

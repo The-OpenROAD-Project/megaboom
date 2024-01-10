@@ -129,7 +129,7 @@ module TLSerdesser_1(
       end
     end
   end // always @(posedge)
-  TLMonitor_70 monitor (
+  TLMonitor_64 monitor (
     .clock                (clock),
     .reset                (reset),
     .io_in_a_ready        (_outArb_io_in_4_ready),

@@ -154,10 +154,10 @@ module TLXbar(
   wire [5:0]  portsAOI_filtered_1_1_bits_source = {1'h0, auto_in_1_a_bits_source};
   wire [2:0]  portsDIO_filtered_1_bits_sink = {2'h0, auto_out_0_d_bits_sink};
   wire [3:0]  portsDIO_filtered_1_1_bits_size = {1'h0, auto_out_1_d_bits_size};
-  wire        requestAIO_0_0 = {auto_in_0_a_bits_address[32:31], auto_in_0_a_bits_address[27:25]} == 5'h0 | {auto_in_0_a_bits_address[32:31], auto_in_0_a_bits_address[27:26], ~(auto_in_0_a_bits_address[25]), auto_in_0_a_bits_address[20]} == 6'h0 | {auto_in_0_a_bits_address[32:31], ~(auto_in_0_a_bits_address[27:26])} == 4'h0;
-  wire        requestAIO_0_1 = {auto_in_0_a_bits_address[32:31], auto_in_0_a_bits_address[27:25] ^ 3'h4, auto_in_0_a_bits_address[20]} == 6'h0 | {auto_in_0_a_bits_address[32], ~(auto_in_0_a_bits_address[31])} == 2'h0 | auto_in_0_a_bits_address[32:31] == 2'h2;
-  wire        requestAIO_1_0 = {auto_in_1_a_bits_address[32:31], auto_in_1_a_bits_address[27:25]} == 5'h0 | {auto_in_1_a_bits_address[32:31], auto_in_1_a_bits_address[27:26], ~(auto_in_1_a_bits_address[25]), auto_in_1_a_bits_address[20]} == 6'h0 | {auto_in_1_a_bits_address[32:31], ~(auto_in_1_a_bits_address[27:26])} == 4'h0;
-  wire        requestAIO_1_1 = {auto_in_1_a_bits_address[32:31], auto_in_1_a_bits_address[27:25] ^ 3'h4, auto_in_1_a_bits_address[20]} == 6'h0 | {auto_in_1_a_bits_address[32], ~(auto_in_1_a_bits_address[31])} == 2'h0 | auto_in_1_a_bits_address[32:31] == 2'h2;
+  wire        requestAIO_0_0 = {auto_in_0_a_bits_address[32:31], auto_in_0_a_bits_address[27:26]} == 4'h0 | {auto_in_0_a_bits_address[32:31], auto_in_0_a_bits_address[27:26], ~(auto_in_0_a_bits_address[16]), auto_in_0_a_bits_address[12]} == 6'h0 | {auto_in_0_a_bits_address[32:31], ~(auto_in_0_a_bits_address[27:26])} == 4'h0;
+  wire        requestAIO_0_1 = {auto_in_0_a_bits_address[32:31], auto_in_0_a_bits_address[27:26] ^ 2'h2, auto_in_0_a_bits_address[16]} == 5'h0 | {auto_in_0_a_bits_address[32], ~(auto_in_0_a_bits_address[31])} == 2'h0 | auto_in_0_a_bits_address[32:31] == 2'h2;
+  wire        requestAIO_1_0 = {auto_in_1_a_bits_address[32:31], auto_in_1_a_bits_address[27:26]} == 4'h0 | {auto_in_1_a_bits_address[32:31], auto_in_1_a_bits_address[27:26], ~(auto_in_1_a_bits_address[16]), auto_in_1_a_bits_address[12]} == 6'h0 | {auto_in_1_a_bits_address[32:31], ~(auto_in_1_a_bits_address[27:26])} == 4'h0;
+  wire        requestAIO_1_1 = {auto_in_1_a_bits_address[32:31], auto_in_1_a_bits_address[27:26] ^ 2'h2, auto_in_1_a_bits_address[16]} == 5'h0 | {auto_in_1_a_bits_address[32], ~(auto_in_1_a_bits_address[31])} == 2'h0 | auto_in_1_a_bits_address[32:31] == 2'h2;
   wire        requestDOI_0_0 = auto_out_0_d_bits_source[5:4] == 2'h2;
   wire        requestDOI_1_0 = auto_out_1_d_bits_source[5:4] == 2'h2;
   wire        portsAOI_filtered_0_valid = auto_in_0_a_valid & requestAIO_0_0;

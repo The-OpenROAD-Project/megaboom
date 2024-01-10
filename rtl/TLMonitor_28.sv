@@ -184,7 +184,7 @@ module TLMonitor_28(
     wire [7:0]   mask = {mask_acc_5 | mask_eq_5 & io_in_a_bits_address[0], mask_acc_5 | mask_eq_5 & ~(io_in_a_bits_address[0]), mask_acc_4 | mask_eq_4 & io_in_a_bits_address[0], mask_acc_4 | mask_eq_4 & ~(io_in_a_bits_address[0]), mask_acc_3 | mask_eq_3 & io_in_a_bits_address[0], mask_acc_3 | mask_eq_3 & ~(io_in_a_bits_address[0]), mask_acc_2 | mask_eq_2 & io_in_a_bits_address[0], mask_acc_2 | mask_eq_2 & ~(io_in_a_bits_address[0])};
     wire         _GEN_3 = io_in_a_valid & io_in_a_bits_opcode == 3'h6 & ~reset;
     wire         _GEN_4 = io_in_a_bits_size == 3'h6;
-    wire         _GEN_5 = {io_in_a_bits_address[20:18] ^ 3'h4, io_in_a_bits_address[15:12]} == 7'h0 | io_in_a_bits_address[20:12] == 9'h140;
+    wire         _GEN_5 = {io_in_a_bits_address[20:17] ^ 4'h8, io_in_a_bits_address[15:12]} == 8'h0;
     wire         _GEN_6 = io_in_a_bits_param > 3'h2;
     wire         _GEN_7 = io_in_a_bits_mask != 8'hFF;
     wire         _GEN_8 = io_in_a_valid & (&io_in_a_bits_opcode) & ~reset;

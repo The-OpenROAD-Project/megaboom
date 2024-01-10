@@ -38,8 +38,7 @@ module IntSyncCrossingSource_1(
     .clock (clock),
     .reset (reset),
     .io_d  (auto_in_0),
-    .io_q  (auto_out_sync_0),
-    .io_en (1'h1)
+    .io_q  (auto_out_sync_0)
   );
 endmodule
 

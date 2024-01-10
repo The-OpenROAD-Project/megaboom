@@ -76,7 +76,7 @@ module TLBuffer_22(
   wire       _nodeIn_d_q_io_deq_bits_denied;
   wire       _nodeIn_d_q_io_deq_bits_corrupt;
   wire       _nodeOut_a_q_io_enq_ready;
-  TLMonitor_77 monitor (
+  TLMonitor_71 monitor (
     .clock                (clock),
     .reset                (reset),
     .io_in_a_ready        (_nodeOut_a_q_io_enq_ready),

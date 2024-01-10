@@ -31,15 +31,14 @@ module AsyncResetRegVec_w1_i0(
   input  clock,
          reset,
          io_d,
-  output io_q,
-  input  io_en
+  output io_q
 );
 
   reg reg_0;
   always @(posedge clock or posedge reset) begin
     if (reset)
       reg_0 <= 1'h0;
-    else if (io_en)
+    else
       reg_0 <= io_d;
   end // always @(posedge, posedge)
   `ifdef ENABLE_INITIAL_REG_

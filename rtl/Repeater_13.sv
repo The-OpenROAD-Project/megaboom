@@ -27,7 +27,7 @@
   `endif // STOP_COND
 `endif // not def STOP_COND_
 
-module Repeater_17(
+module Repeater_13(
   input         clock,
                 reset,
                 io_repeat,
@@ -38,7 +38,7 @@ module Repeater_17(
                 io_enq_bits_param,
                 io_enq_bits_size,
   input  [5:0]  io_enq_bits_source,
-  input  [32:0] io_enq_bits_address,
+  input  [31:0] io_enq_bits_address,
   input  [7:0]  io_enq_bits_mask,
   input         io_deq_ready,
   output        io_deq_valid,
@@ -46,7 +46,7 @@ module Repeater_17(
                 io_deq_bits_param,
                 io_deq_bits_size,
   output [5:0]  io_deq_bits_source,
-  output [32:0] io_deq_bits_address,
+  output [31:0] io_deq_bits_address,
   output [7:0]  io_deq_bits_mask
 );
 
@@ -55,7 +55,7 @@ module Repeater_17(
   reg  [2:0]  saved_param;
   reg  [2:0]  saved_size;
   reg  [5:0]  saved_source;
-  reg  [32:0] saved_address;
+  reg  [31:0] saved_address;
   reg  [7:0]  saved_mask;
   wire        _io_deq_valid_output = io_enq_valid | full;
   wire        _io_enq_ready_output = io_deq_ready & ~full;

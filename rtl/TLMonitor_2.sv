@@ -201,46 +201,45 @@ module TLMonitor_2(
     wire         _GEN_16 = _GEN_4 & _GEN_15;
     wire         _GEN_17 = io_in_a_bits_size < 4'h7;
     wire         _GEN_18 = io_in_a_bits_address[32:13] == 20'h0;
-    wire         _GEN_19 = {io_in_a_bits_address[32:21], io_in_a_bits_address[20:18] ^ 3'h4, io_in_a_bits_address[15:12]} == 19'h0;
-    wire         _GEN_20 = {io_in_a_bits_address[32:21], io_in_a_bits_address[20:12] ^ 9'h140} == 21'h0;
-    wire         _GEN_21 = {io_in_a_bits_address[32:26], io_in_a_bits_address[25:16] ^ 10'h200} == 17'h0;
-    wire         _GEN_22 = {io_in_a_bits_address[32:26], io_in_a_bits_address[25:12] ^ 14'h2010} == 21'h0;
-    wire         _GEN_23 = {io_in_a_bits_address[32:28], ~(io_in_a_bits_address[27:26])} == 7'h0;
-    wire         _GEN_24 = {io_in_a_bits_address[32:29], io_in_a_bits_address[28:12] ^ 17'h10020} == 21'h0;
-    wire         _GEN_25 = io_in_a_bits_mask != mask;
-    wire         _GEN_26 = _GEN_4 & (_GEN_16 | _GEN_17 & (_GEN_18 | _GEN_19 | _GEN_20 | _GEN_21 | _GEN_22 | _GEN_5 | _GEN_23 | _GEN_24 | _GEN_6 | _GEN_7));
-    wire         _GEN_27 = io_in_a_valid & io_in_a_bits_opcode == 3'h0 & ~reset;
-    wire         _GEN_28 = io_in_a_valid & io_in_a_bits_opcode == 3'h1 & ~reset;
-    wire         _GEN_29 = _GEN_4 & io_in_a_bits_size < 4'h4 & (_GEN_18 | _GEN_15 | _GEN_19 | _GEN_20 | _GEN_21 | _GEN_22 | _GEN_5 | _GEN_23 | _GEN_24 | _GEN_6 | _GEN_7);
-    wire         _GEN_30 = io_in_a_valid & io_in_a_bits_opcode == 3'h2 & ~reset;
-    wire         _GEN_31 = io_in_a_valid & io_in_a_bits_opcode == 3'h3 & ~reset;
-    wire         _GEN_32 = io_in_a_valid & io_in_a_bits_opcode == 3'h5 & ~reset;
-    wire         _GEN_33 = io_in_d_valid & io_in_d_bits_opcode == 3'h6 & ~reset;
-    wire         _GEN_34 = io_in_d_bits_size < 4'h3;
-    wire         _GEN_35 = io_in_d_valid & io_in_d_bits_opcode == 3'h4 & ~reset;
-    wire         _GEN_36 = io_in_d_bits_param == 2'h2;
-    wire         _GEN_37 = io_in_d_valid & io_in_d_bits_opcode == 3'h5 & ~reset;
-    wire         _GEN_38 = ~io_in_d_bits_denied | io_in_d_bits_corrupt;
-    wire         _GEN_39 = io_in_d_valid & io_in_d_bits_opcode == 3'h0 & ~reset;
-    wire         _GEN_40 = io_in_d_valid & io_in_d_bits_opcode == 3'h1 & ~reset;
-    wire         _GEN_41 = io_in_d_valid & io_in_d_bits_opcode == 3'h2 & ~reset;
-    wire         _GEN_42 = io_in_a_valid & (|a_first_counter) & ~reset;
-    wire         _GEN_43 = io_in_d_valid & (|d_first_counter) & ~reset;
-    wire [127:0] _GEN_44 = {121'h0, io_in_d_bits_source, 3'h0};
+    wire         _GEN_19 = {io_in_a_bits_address[32:21], io_in_a_bits_address[20:17] ^ 4'h8, io_in_a_bits_address[15:12]} == 20'h0;
+    wire         _GEN_20 = {io_in_a_bits_address[32:26], io_in_a_bits_address[25:16] ^ 10'h200} == 17'h0;
+    wire         _GEN_21 = {io_in_a_bits_address[32:26], io_in_a_bits_address[25:12] ^ 14'h2010} == 21'h0;
+    wire         _GEN_22 = {io_in_a_bits_address[32:28], ~(io_in_a_bits_address[27:26])} == 7'h0;
+    wire         _GEN_23 = {io_in_a_bits_address[32:29], io_in_a_bits_address[28:12] ^ 17'h10020} == 21'h0;
+    wire         _GEN_24 = io_in_a_bits_mask != mask;
+    wire         _GEN_25 = _GEN_4 & (_GEN_16 | _GEN_17 & (_GEN_18 | _GEN_19 | _GEN_20 | _GEN_21 | _GEN_5 | _GEN_22 | _GEN_23 | _GEN_6 | _GEN_7));
+    wire         _GEN_26 = io_in_a_valid & io_in_a_bits_opcode == 3'h0 & ~reset;
+    wire         _GEN_27 = io_in_a_valid & io_in_a_bits_opcode == 3'h1 & ~reset;
+    wire         _GEN_28 = _GEN_4 & io_in_a_bits_size < 4'h4 & (_GEN_18 | _GEN_15 | _GEN_19 | _GEN_20 | _GEN_21 | _GEN_5 | _GEN_22 | _GEN_23 | _GEN_6 | _GEN_7);
+    wire         _GEN_29 = io_in_a_valid & io_in_a_bits_opcode == 3'h2 & ~reset;
+    wire         _GEN_30 = io_in_a_valid & io_in_a_bits_opcode == 3'h3 & ~reset;
+    wire         _GEN_31 = io_in_a_valid & io_in_a_bits_opcode == 3'h5 & ~reset;
+    wire         _GEN_32 = io_in_d_valid & io_in_d_bits_opcode == 3'h6 & ~reset;
+    wire         _GEN_33 = io_in_d_bits_size < 4'h3;
+    wire         _GEN_34 = io_in_d_valid & io_in_d_bits_opcode == 3'h4 & ~reset;
+    wire         _GEN_35 = io_in_d_bits_param == 2'h2;
+    wire         _GEN_36 = io_in_d_valid & io_in_d_bits_opcode == 3'h5 & ~reset;
+    wire         _GEN_37 = ~io_in_d_bits_denied | io_in_d_bits_corrupt;
+    wire         _GEN_38 = io_in_d_valid & io_in_d_bits_opcode == 3'h0 & ~reset;
+    wire         _GEN_39 = io_in_d_valid & io_in_d_bits_opcode == 3'h1 & ~reset;
+    wire         _GEN_40 = io_in_d_valid & io_in_d_bits_opcode == 3'h2 & ~reset;
+    wire         _GEN_41 = io_in_a_valid & (|a_first_counter) & ~reset;
+    wire         _GEN_42 = io_in_d_valid & (|d_first_counter) & ~reset;
+    wire [127:0] _GEN_43 = {121'h0, io_in_d_bits_source, 3'h0};
     wire         _same_cycle_resp_T_1 = io_in_a_valid & a_first_1;
     wire [15:0]  a_set_wo_ready = _same_cycle_resp_T_1 ? 16'h1 << _GEN_0 : 16'h0;
-    wire         _GEN_45 = io_in_d_valid & d_first_1;
-    wire         _GEN_46 = _GEN_45 & ~d_release_ack;
+    wire         _GEN_44 = io_in_d_valid & d_first_1;
+    wire         _GEN_45 = _GEN_44 & ~d_release_ack;
     wire         same_cycle_resp = _same_cycle_resp_T_1 & io_in_a_bits_source == io_in_d_bits_source;
-    wire         _GEN_47 = _GEN_46 & same_cycle_resp & ~reset;
-    wire         _GEN_48 = _GEN_46 & ~same_cycle_resp & ~reset;
-    wire [7:0]   _GEN_49 = {4'h0, io_in_d_bits_size};
-    wire         _GEN_50 = io_in_d_valid & d_first_2 & d_release_ack & ~reset;
-    wire [15:0]  _GEN_51 = inflight >> _GEN_0;
-    wire [15:0]  _GEN_52 = inflight >> _GEN_2;
-    wire [127:0] _a_size_lookup_T_1 = inflight_sizes >> _GEN_44;
-    wire [15:0]  _GEN_53 = inflight_1 >> _GEN_2;
-    wire [127:0] _c_size_lookup_T_1 = inflight_sizes_1 >> _GEN_44;
+    wire         _GEN_46 = _GEN_45 & same_cycle_resp & ~reset;
+    wire         _GEN_47 = _GEN_45 & ~same_cycle_resp & ~reset;
+    wire [7:0]   _GEN_48 = {4'h0, io_in_d_bits_size};
+    wire         _GEN_49 = io_in_d_valid & d_first_2 & d_release_ack & ~reset;
+    wire [15:0]  _GEN_50 = inflight >> _GEN_0;
+    wire [15:0]  _GEN_51 = inflight >> _GEN_2;
+    wire [127:0] _a_size_lookup_T_1 = inflight_sizes >> _GEN_43;
+    wire [15:0]  _GEN_52 = inflight_1 >> _GEN_2;
+    wire [127:0] _c_size_lookup_T_1 = inflight_sizes_1 >> _GEN_43;
     always @(posedge clock) begin
       if (_GEN_10 & ~_GEN_9) begin
         if (`ASSERT_VERBOSE_COND_)
@@ -338,7 +337,7 @@ module TLMonitor_2(
         if (`STOP_COND_)
           $fatal;
       end
-      if (_GEN_14 & ~(_GEN_16 | _GEN_17 & (_GEN_18 | {io_in_a_bits_address[32:17], ~(io_in_a_bits_address[16])} == 17'h0 | _GEN_19 | _GEN_20 | _GEN_21 | _GEN_22 | _GEN_5 | _GEN_23 | _GEN_24 | _GEN_6 | _GEN_7))) begin
+      if (_GEN_14 & ~(_GEN_16 | _GEN_17 & (_GEN_18 | {io_in_a_bits_address[32:17], ~(io_in_a_bits_address[16])} == 17'h0 | _GEN_19 | _GEN_20 | _GEN_21 | _GEN_5 | _GEN_22 | _GEN_23 | _GEN_6 | _GEN_7))) begin
         if (`ASSERT_VERBOSE_COND_)
           $error("Assertion failed: 'A' channel carries Get type which slave claims it can't support (connected at generators/rocket-chip/src/main/scala/subsystem/SystemBus.scala:41:96)\n    at Monitor.scala:42 assert(cond, message)\n");
         if (`STOP_COND_)
@@ -356,7 +355,7 @@ module TLMonitor_2(
         if (`STOP_COND_)
           $fatal;
       end
-      if (_GEN_14 & _GEN_25) begin
+      if (_GEN_14 & _GEN_24) begin
         if (`ASSERT_VERBOSE_COND_)
           $error("Assertion failed: 'A' channel Get contains invalid mask (connected at generators/rocket-chip/src/main/scala/subsystem/SystemBus.scala:41:96)\n    at Monitor.scala:42 assert(cond, message)\n");
         if (`STOP_COND_)
@@ -368,127 +367,127 @@ module TLMonitor_2(
         if (`STOP_COND_)
           $fatal;
       end
-      if (_GEN_27 & ~_GEN_26) begin
+      if (_GEN_26 & ~_GEN_25) begin
         if (`ASSERT_VERBOSE_COND_)
           $error("Assertion failed: 'A' channel carries PutFull type which is unexpected using diplomatic parameters (connected at generators/rocket-chip/src/main/scala/subsystem/SystemBus.scala:41:96)\n    at Monitor.scala:42 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
-      if (_GEN_27 & (|_GEN_3)) begin
+      if (_GEN_26 & (|_GEN_3)) begin
         if (`ASSERT_VERBOSE_COND_)
           $error("Assertion failed: 'A' channel PutFull address not aligned to size (connected at generators/rocket-chip/src/main/scala/subsystem/SystemBus.scala:41:96)\n    at Monitor.scala:42 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
-      if (_GEN_27 & (|io_in_a_bits_param)) begin
+      if (_GEN_26 & (|io_in_a_bits_param)) begin
         if (`ASSERT_VERBOSE_COND_)
           $error("Assertion failed: 'A' channel PutFull carries invalid param (connected at generators/rocket-chip/src/main/scala/subsystem/SystemBus.scala:41:96)\n    at Monitor.scala:42 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
-      if (_GEN_27 & _GEN_25) begin
+      if (_GEN_26 & _GEN_24) begin
         if (`ASSERT_VERBOSE_COND_)
           $error("Assertion failed: 'A' channel PutFull contains invalid mask (connected at generators/rocket-chip/src/main/scala/subsystem/SystemBus.scala:41:96)\n    at Monitor.scala:42 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
-      if (_GEN_28 & ~_GEN_26) begin
+      if (_GEN_27 & ~_GEN_25) begin
         if (`ASSERT_VERBOSE_COND_)
           $error("Assertion failed: 'A' channel carries PutPartial type which is unexpected using diplomatic parameters (connected at generators/rocket-chip/src/main/scala/subsystem/SystemBus.scala:41:96)\n    at Monitor.scala:42 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
-      if (_GEN_28 & (|_GEN_3)) begin
+      if (_GEN_27 & (|_GEN_3)) begin
         if (`ASSERT_VERBOSE_COND_)
           $error("Assertion failed: 'A' channel PutPartial address not aligned to size (connected at generators/rocket-chip/src/main/scala/subsystem/SystemBus.scala:41:96)\n    at Monitor.scala:42 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
-      if (_GEN_28 & (|io_in_a_bits_param)) begin
+      if (_GEN_27 & (|io_in_a_bits_param)) begin
         if (`ASSERT_VERBOSE_COND_)
           $error("Assertion failed: 'A' channel PutPartial carries invalid param (connected at generators/rocket-chip/src/main/scala/subsystem/SystemBus.scala:41:96)\n    at Monitor.scala:42 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
-      if (_GEN_28 & (|(io_in_a_bits_mask & ~mask))) begin
+      if (_GEN_27 & (|(io_in_a_bits_mask & ~mask))) begin
         if (`ASSERT_VERBOSE_COND_)
           $error("Assertion failed: 'A' channel PutPartial contains invalid mask (connected at generators/rocket-chip/src/main/scala/subsystem/SystemBus.scala:41:96)\n    at Monitor.scala:42 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
-      if (_GEN_30 & ~_GEN_29) begin
+      if (_GEN_29 & ~_GEN_28) begin
         if (`ASSERT_VERBOSE_COND_)
           $error("Assertion failed: 'A' channel carries Arithmetic type which is unexpected using diplomatic parameters (connected at generators/rocket-chip/src/main/scala/subsystem/SystemBus.scala:41:96)\n    at Monitor.scala:42 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
-      if (_GEN_30 & (|_GEN_3)) begin
+      if (_GEN_29 & (|_GEN_3)) begin
         if (`ASSERT_VERBOSE_COND_)
           $error("Assertion failed: 'A' channel Arithmetic address not aligned to size (connected at generators/rocket-chip/src/main/scala/subsystem/SystemBus.scala:41:96)\n    at Monitor.scala:42 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
-      if (_GEN_30 & io_in_a_bits_param > 3'h4) begin
+      if (_GEN_29 & io_in_a_bits_param > 3'h4) begin
         if (`ASSERT_VERBOSE_COND_)
           $error("Assertion failed: 'A' channel Arithmetic carries invalid opcode param (connected at generators/rocket-chip/src/main/scala/subsystem/SystemBus.scala:41:96)\n    at Monitor.scala:42 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
-      if (_GEN_30 & _GEN_25) begin
+      if (_GEN_29 & _GEN_24) begin
         if (`ASSERT_VERBOSE_COND_)
           $error("Assertion failed: 'A' channel Arithmetic contains invalid mask (connected at generators/rocket-chip/src/main/scala/subsystem/SystemBus.scala:41:96)\n    at Monitor.scala:42 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
-      if (_GEN_31 & ~_GEN_29) begin
+      if (_GEN_30 & ~_GEN_28) begin
         if (`ASSERT_VERBOSE_COND_)
           $error("Assertion failed: 'A' channel carries Logical type which is unexpected using diplomatic parameters (connected at generators/rocket-chip/src/main/scala/subsystem/SystemBus.scala:41:96)\n    at Monitor.scala:42 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
-      if (_GEN_31 & (|_GEN_3)) begin
+      if (_GEN_30 & (|_GEN_3)) begin
         if (`ASSERT_VERBOSE_COND_)
           $error("Assertion failed: 'A' channel Logical address not aligned to size (connected at generators/rocket-chip/src/main/scala/subsystem/SystemBus.scala:41:96)\n    at Monitor.scala:42 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
-      if (_GEN_31 & io_in_a_bits_param[2]) begin
+      if (_GEN_30 & io_in_a_bits_param[2]) begin
         if (`ASSERT_VERBOSE_COND_)
           $error("Assertion failed: 'A' channel Logical carries invalid opcode param (connected at generators/rocket-chip/src/main/scala/subsystem/SystemBus.scala:41:96)\n    at Monitor.scala:42 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
-      if (_GEN_31 & _GEN_25) begin
+      if (_GEN_30 & _GEN_24) begin
         if (`ASSERT_VERBOSE_COND_)
           $error("Assertion failed: 'A' channel Logical contains invalid mask (connected at generators/rocket-chip/src/main/scala/subsystem/SystemBus.scala:41:96)\n    at Monitor.scala:42 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
-      if (_GEN_32 & ~(_GEN_4 & (_GEN_16 | _GEN_17 & _GEN_8))) begin
+      if (_GEN_31 & ~(_GEN_4 & (_GEN_16 | _GEN_17 & _GEN_8))) begin
         if (`ASSERT_VERBOSE_COND_)
           $error("Assertion failed: 'A' channel carries Hint type which is unexpected using diplomatic parameters (connected at generators/rocket-chip/src/main/scala/subsystem/SystemBus.scala:41:96)\n    at Monitor.scala:42 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
-      if (_GEN_32 & (|_GEN_3)) begin
+      if (_GEN_31 & (|_GEN_3)) begin
         if (`ASSERT_VERBOSE_COND_)
           $error("Assertion failed: 'A' channel Hint address not aligned to size (connected at generators/rocket-chip/src/main/scala/subsystem/SystemBus.scala:41:96)\n    at Monitor.scala:42 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
-      if (_GEN_32 & (|(io_in_a_bits_param[2:1]))) begin
+      if (_GEN_31 & (|(io_in_a_bits_param[2:1]))) begin
         if (`ASSERT_VERBOSE_COND_)
           $error("Assertion failed: 'A' channel Hint carries invalid opcode param (connected at generators/rocket-chip/src/main/scala/subsystem/SystemBus.scala:41:96)\n    at Monitor.scala:42 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
-      if (_GEN_32 & _GEN_25) begin
+      if (_GEN_31 & _GEN_24) begin
         if (`ASSERT_VERBOSE_COND_)
           $error("Assertion failed: 'A' channel Hint contains invalid mask (connected at generators/rocket-chip/src/main/scala/subsystem/SystemBus.scala:41:96)\n    at Monitor.scala:42 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
-      if (_GEN_32 & io_in_a_bits_corrupt) begin
+      if (_GEN_31 & io_in_a_bits_corrupt) begin
         if (`ASSERT_VERBOSE_COND_)
           $error("Assertion failed: 'A' channel Hint is corrupt (connected at generators/rocket-chip/src/main/scala/subsystem/SystemBus.scala:41:96)\n    at Monitor.scala:42 assert(cond, message)\n");
         if (`STOP_COND_)
@@ -500,223 +499,223 @@ module TLMonitor_2(
         if (`STOP_COND_)
           $fatal;
       end
-      if (_GEN_33 & _GEN_34) begin
+      if (_GEN_32 & _GEN_33) begin
         if (`ASSERT_VERBOSE_COND_)
           $error("Assertion failed: 'D' channel ReleaseAck smaller than a beat (connected at generators/rocket-chip/src/main/scala/subsystem/SystemBus.scala:41:96)\n    at Monitor.scala:49 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
-      if (_GEN_33 & (|io_in_d_bits_param)) begin
+      if (_GEN_32 & (|io_in_d_bits_param)) begin
         if (`ASSERT_VERBOSE_COND_)
           $error("Assertion failed: 'D' channel ReleaseeAck carries invalid param (connected at generators/rocket-chip/src/main/scala/subsystem/SystemBus.scala:41:96)\n    at Monitor.scala:49 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
-      if (_GEN_33 & io_in_d_bits_corrupt) begin
+      if (_GEN_32 & io_in_d_bits_corrupt) begin
         if (`ASSERT_VERBOSE_COND_)
           $error("Assertion failed: 'D' channel ReleaseAck is corrupt (connected at generators/rocket-chip/src/main/scala/subsystem/SystemBus.scala:41:96)\n    at Monitor.scala:49 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
-      if (_GEN_33 & io_in_d_bits_denied) begin
+      if (_GEN_32 & io_in_d_bits_denied) begin
         if (`ASSERT_VERBOSE_COND_)
           $error("Assertion failed: 'D' channel ReleaseAck is denied (connected at generators/rocket-chip/src/main/scala/subsystem/SystemBus.scala:41:96)\n    at Monitor.scala:49 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
-      if (_GEN_35 & _GEN_34) begin
+      if (_GEN_34 & _GEN_33) begin
         if (`ASSERT_VERBOSE_COND_)
           $error("Assertion failed: 'D' channel Grant smaller than a beat (connected at generators/rocket-chip/src/main/scala/subsystem/SystemBus.scala:41:96)\n    at Monitor.scala:49 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
-      if (_GEN_35 & (&io_in_d_bits_param)) begin
+      if (_GEN_34 & (&io_in_d_bits_param)) begin
         if (`ASSERT_VERBOSE_COND_)
           $error("Assertion failed: 'D' channel Grant carries invalid cap param (connected at generators/rocket-chip/src/main/scala/subsystem/SystemBus.scala:41:96)\n    at Monitor.scala:49 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
-      if (_GEN_35 & _GEN_36) begin
+      if (_GEN_34 & _GEN_35) begin
         if (`ASSERT_VERBOSE_COND_)
           $error("Assertion failed: 'D' channel Grant carries toN param (connected at generators/rocket-chip/src/main/scala/subsystem/SystemBus.scala:41:96)\n    at Monitor.scala:49 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
-      if (_GEN_35 & io_in_d_bits_corrupt) begin
+      if (_GEN_34 & io_in_d_bits_corrupt) begin
         if (`ASSERT_VERBOSE_COND_)
           $error("Assertion failed: 'D' channel Grant is corrupt (connected at generators/rocket-chip/src/main/scala/subsystem/SystemBus.scala:41:96)\n    at Monitor.scala:49 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
-      if (_GEN_37 & _GEN_34) begin
+      if (_GEN_36 & _GEN_33) begin
         if (`ASSERT_VERBOSE_COND_)
           $error("Assertion failed: 'D' channel GrantData smaller than a beat (connected at generators/rocket-chip/src/main/scala/subsystem/SystemBus.scala:41:96)\n    at Monitor.scala:49 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
-      if (_GEN_37 & (&io_in_d_bits_param)) begin
+      if (_GEN_36 & (&io_in_d_bits_param)) begin
         if (`ASSERT_VERBOSE_COND_)
           $error("Assertion failed: 'D' channel GrantData carries invalid cap param (connected at generators/rocket-chip/src/main/scala/subsystem/SystemBus.scala:41:96)\n    at Monitor.scala:49 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
-      if (_GEN_37 & _GEN_36) begin
+      if (_GEN_36 & _GEN_35) begin
         if (`ASSERT_VERBOSE_COND_)
           $error("Assertion failed: 'D' channel GrantData carries toN param (connected at generators/rocket-chip/src/main/scala/subsystem/SystemBus.scala:41:96)\n    at Monitor.scala:49 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
-      if (_GEN_37 & ~_GEN_38) begin
+      if (_GEN_36 & ~_GEN_37) begin
         if (`ASSERT_VERBOSE_COND_)
           $error("Assertion failed: 'D' channel GrantData is denied but not corrupt (connected at generators/rocket-chip/src/main/scala/subsystem/SystemBus.scala:41:96)\n    at Monitor.scala:49 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
-      if (_GEN_39 & (|io_in_d_bits_param)) begin
+      if (_GEN_38 & (|io_in_d_bits_param)) begin
         if (`ASSERT_VERBOSE_COND_)
           $error("Assertion failed: 'D' channel AccessAck carries invalid param (connected at generators/rocket-chip/src/main/scala/subsystem/SystemBus.scala:41:96)\n    at Monitor.scala:49 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
-      if (_GEN_39 & io_in_d_bits_corrupt) begin
+      if (_GEN_38 & io_in_d_bits_corrupt) begin
         if (`ASSERT_VERBOSE_COND_)
           $error("Assertion failed: 'D' channel AccessAck is corrupt (connected at generators/rocket-chip/src/main/scala/subsystem/SystemBus.scala:41:96)\n    at Monitor.scala:49 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
-      if (_GEN_40 & (|io_in_d_bits_param)) begin
+      if (_GEN_39 & (|io_in_d_bits_param)) begin
         if (`ASSERT_VERBOSE_COND_)
           $error("Assertion failed: 'D' channel AccessAckData carries invalid param (connected at generators/rocket-chip/src/main/scala/subsystem/SystemBus.scala:41:96)\n    at Monitor.scala:49 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
-      if (_GEN_40 & ~_GEN_38) begin
+      if (_GEN_39 & ~_GEN_37) begin
         if (`ASSERT_VERBOSE_COND_)
           $error("Assertion failed: 'D' channel AccessAckData is denied but not corrupt (connected at generators/rocket-chip/src/main/scala/subsystem/SystemBus.scala:41:96)\n    at Monitor.scala:49 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
-      if (_GEN_41 & (|io_in_d_bits_param)) begin
+      if (_GEN_40 & (|io_in_d_bits_param)) begin
         if (`ASSERT_VERBOSE_COND_)
           $error("Assertion failed: 'D' channel HintAck carries invalid param (connected at generators/rocket-chip/src/main/scala/subsystem/SystemBus.scala:41:96)\n    at Monitor.scala:49 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
-      if (_GEN_41 & io_in_d_bits_corrupt) begin
+      if (_GEN_40 & io_in_d_bits_corrupt) begin
         if (`ASSERT_VERBOSE_COND_)
           $error("Assertion failed: 'D' channel HintAck is corrupt (connected at generators/rocket-chip/src/main/scala/subsystem/SystemBus.scala:41:96)\n    at Monitor.scala:49 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
-      if (_GEN_42 & io_in_a_bits_opcode != opcode) begin
+      if (_GEN_41 & io_in_a_bits_opcode != opcode) begin
         if (`ASSERT_VERBOSE_COND_)
           $error("Assertion failed: 'A' channel opcode changed within multibeat operation (connected at generators/rocket-chip/src/main/scala/subsystem/SystemBus.scala:41:96)\n    at Monitor.scala:42 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
-      if (_GEN_42 & io_in_a_bits_param != param) begin
+      if (_GEN_41 & io_in_a_bits_param != param) begin
         if (`ASSERT_VERBOSE_COND_)
           $error("Assertion failed: 'A' channel param changed within multibeat operation (connected at generators/rocket-chip/src/main/scala/subsystem/SystemBus.scala:41:96)\n    at Monitor.scala:42 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
-      if (_GEN_42 & io_in_a_bits_size != size) begin
+      if (_GEN_41 & io_in_a_bits_size != size) begin
         if (`ASSERT_VERBOSE_COND_)
           $error("Assertion failed: 'A' channel size changed within multibeat operation (connected at generators/rocket-chip/src/main/scala/subsystem/SystemBus.scala:41:96)\n    at Monitor.scala:42 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
-      if (_GEN_42 & io_in_a_bits_source != source) begin
+      if (_GEN_41 & io_in_a_bits_source != source) begin
         if (`ASSERT_VERBOSE_COND_)
           $error("Assertion failed: 'A' channel source changed within multibeat operation (connected at generators/rocket-chip/src/main/scala/subsystem/SystemBus.scala:41:96)\n    at Monitor.scala:42 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
-      if (_GEN_42 & io_in_a_bits_address != address) begin
+      if (_GEN_41 & io_in_a_bits_address != address) begin
         if (`ASSERT_VERBOSE_COND_)
           $error("Assertion failed: 'A' channel address changed with multibeat operation (connected at generators/rocket-chip/src/main/scala/subsystem/SystemBus.scala:41:96)\n    at Monitor.scala:42 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
-      if (_GEN_43 & io_in_d_bits_opcode != opcode_1) begin
+      if (_GEN_42 & io_in_d_bits_opcode != opcode_1) begin
         if (`ASSERT_VERBOSE_COND_)
           $error("Assertion failed: 'D' channel opcode changed within multibeat operation (connected at generators/rocket-chip/src/main/scala/subsystem/SystemBus.scala:41:96)\n    at Monitor.scala:49 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
-      if (_GEN_43 & io_in_d_bits_param != param_1) begin
+      if (_GEN_42 & io_in_d_bits_param != param_1) begin
         if (`ASSERT_VERBOSE_COND_)
           $error("Assertion failed: 'D' channel param changed within multibeat operation (connected at generators/rocket-chip/src/main/scala/subsystem/SystemBus.scala:41:96)\n    at Monitor.scala:49 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
-      if (_GEN_43 & io_in_d_bits_size != size_1) begin
+      if (_GEN_42 & io_in_d_bits_size != size_1) begin
         if (`ASSERT_VERBOSE_COND_)
           $error("Assertion failed: 'D' channel size changed within multibeat operation (connected at generators/rocket-chip/src/main/scala/subsystem/SystemBus.scala:41:96)\n    at Monitor.scala:49 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
-      if (_GEN_43 & io_in_d_bits_source != source_1) begin
+      if (_GEN_42 & io_in_d_bits_source != source_1) begin
         if (`ASSERT_VERBOSE_COND_)
           $error("Assertion failed: 'D' channel source changed within multibeat operation (connected at generators/rocket-chip/src/main/scala/subsystem/SystemBus.scala:41:96)\n    at Monitor.scala:49 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
-      if (_GEN_43 & io_in_d_bits_sink != sink) begin
+      if (_GEN_42 & io_in_d_bits_sink != sink) begin
         if (`ASSERT_VERBOSE_COND_)
           $error("Assertion failed: 'D' channel sink changed with multibeat operation (connected at generators/rocket-chip/src/main/scala/subsystem/SystemBus.scala:41:96)\n    at Monitor.scala:49 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
-      if (_GEN_43 & io_in_d_bits_denied != denied) begin
+      if (_GEN_42 & io_in_d_bits_denied != denied) begin
         if (`ASSERT_VERBOSE_COND_)
           $error("Assertion failed: 'D' channel denied changed with multibeat operation (connected at generators/rocket-chip/src/main/scala/subsystem/SystemBus.scala:41:96)\n    at Monitor.scala:49 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
-      if (_GEN_1 & ~reset & _GEN_51[0]) begin
+      if (_GEN_1 & ~reset & _GEN_50[0]) begin
         if (`ASSERT_VERBOSE_COND_)
           $error("Assertion failed: 'A' channel re-used a source ID (connected at generators/rocket-chip/src/main/scala/subsystem/SystemBus.scala:41:96)\n    at Monitor.scala:42 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
-      if (_GEN_46 & ~reset & ~(_GEN_52[0] | same_cycle_resp)) begin
+      if (_GEN_45 & ~reset & ~(_GEN_51[0] | same_cycle_resp)) begin
         if (`ASSERT_VERBOSE_COND_)
           $error("Assertion failed: 'D' channel acknowledged for nothing inflight (connected at generators/rocket-chip/src/main/scala/subsystem/SystemBus.scala:41:96)\n    at Monitor.scala:49 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
-      if (_GEN_47 & ~(io_in_d_bits_opcode == casez_tmp | io_in_d_bits_opcode == casez_tmp_0)) begin
+      if (_GEN_46 & ~(io_in_d_bits_opcode == casez_tmp | io_in_d_bits_opcode == casez_tmp_0)) begin
         if (`ASSERT_VERBOSE_COND_)
           $error("Assertion failed: 'D' channel contains improper opcode response (connected at generators/rocket-chip/src/main/scala/subsystem/SystemBus.scala:41:96)\n    at Monitor.scala:49 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
-      if (_GEN_47 & io_in_a_bits_size != io_in_d_bits_size) begin
+      if (_GEN_46 & io_in_a_bits_size != io_in_d_bits_size) begin
         if (`ASSERT_VERBOSE_COND_)
           $error("Assertion failed: 'D' channel contains improper response size (connected at generators/rocket-chip/src/main/scala/subsystem/SystemBus.scala:41:96)\n    at Monitor.scala:49 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
-      if (_GEN_48 & ~(io_in_d_bits_opcode == casez_tmp_1 | io_in_d_bits_opcode == casez_tmp_2)) begin
+      if (_GEN_47 & ~(io_in_d_bits_opcode == casez_tmp_1 | io_in_d_bits_opcode == casez_tmp_2)) begin
         if (`ASSERT_VERBOSE_COND_)
           $error("Assertion failed: 'D' channel contains improper opcode response (connected at generators/rocket-chip/src/main/scala/subsystem/SystemBus.scala:41:96)\n    at Monitor.scala:49 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
-      if (_GEN_48 & _GEN_49 != {1'h0, _a_size_lookup_T_1[7:1]}) begin
+      if (_GEN_47 & _GEN_48 != {1'h0, _a_size_lookup_T_1[7:1]}) begin
         if (`ASSERT_VERBOSE_COND_)
           $error("Assertion failed: 'D' channel contains improper response size (connected at generators/rocket-chip/src/main/scala/subsystem/SystemBus.scala:41:96)\n    at Monitor.scala:49 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
-      if (_GEN_45 & a_first_1 & io_in_a_valid & io_in_a_bits_source == io_in_d_bits_source & ~d_release_ack & ~reset & ~(~io_in_d_ready | io_in_a_ready)) begin
+      if (_GEN_44 & a_first_1 & io_in_a_valid & io_in_a_bits_source == io_in_d_bits_source & ~d_release_ack & ~reset & ~(~io_in_d_ready | io_in_a_ready)) begin
         if (`ASSERT_VERBOSE_COND_)
           $error("Assertion failed: ready check\n    at Monitor.scala:49 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
-      if (~reset & ~(a_set_wo_ready != (_GEN_46 ? 16'h1 << _GEN_2 : 16'h0) | a_set_wo_ready == 16'h0)) begin
+      if (~reset & ~(a_set_wo_ready != (_GEN_45 ? 16'h1 << _GEN_2 : 16'h0) | a_set_wo_ready == 16'h0)) begin
         if (`ASSERT_VERBOSE_COND_)
           $error("Assertion failed: 'A' and 'D' concurrent, despite minlatency 2 (connected at generators/rocket-chip/src/main/scala/subsystem/SystemBus.scala:41:96)\n    at Monitor.scala:49 assert(cond, message)\n");
         if (`STOP_COND_)
@@ -728,13 +727,13 @@ module TLMonitor_2(
         if (`STOP_COND_)
           $fatal;
       end
-      if (_GEN_50 & ~(_GEN_53[0])) begin
+      if (_GEN_49 & ~(_GEN_52[0])) begin
         if (`ASSERT_VERBOSE_COND_)
           $error("Assertion failed: 'D' channel acknowledged for nothing inflight (connected at generators/rocket-chip/src/main/scala/subsystem/SystemBus.scala:41:96)\n    at Monitor.scala:49 assert(cond, message)\n");
         if (`STOP_COND_)
           $fatal;
       end
-      if (_GEN_50 & _GEN_49 != {1'h0, _c_size_lookup_T_1[7:1]}) begin
+      if (_GEN_49 & _GEN_48 != {1'h0, _c_size_lookup_T_1[7:1]}) begin
         if (`ASSERT_VERBOSE_COND_)
           $error("Assertion failed: 'D' channel contains improper response size (connected at generators/rocket-chip/src/main/scala/subsystem/SystemBus.scala:41:96)\n    at Monitor.scala:49 assert(cond, message)\n");
         if (`STOP_COND_)
@@ -750,19 +749,19 @@ module TLMonitor_2(
   `endif // not def SYNTHESIS
   wire [26:0]  _a_first_beats1_decode_T_1 = 27'hFFF << _GEN;
   wire [26:0]  _a_first_beats1_decode_T_5 = 27'hFFF << _GEN;
-  wire [26:0]  _GEN_54 = {23'h0, io_in_d_bits_size};
-  wire [26:0]  _d_first_beats1_decode_T_1 = 27'hFFF << _GEN_54;
-  wire [26:0]  _d_first_beats1_decode_T_5 = 27'hFFF << _GEN_54;
-  wire [26:0]  _d_first_beats1_decode_T_9 = 27'hFFF << _GEN_54;
-  wire [142:0] _GEN_55 = {136'h0, io_in_d_bits_source, 3'h0};
+  wire [26:0]  _GEN_53 = {23'h0, io_in_d_bits_size};
+  wire [26:0]  _d_first_beats1_decode_T_1 = 27'hFFF << _GEN_53;
+  wire [26:0]  _d_first_beats1_decode_T_5 = 27'hFFF << _GEN_53;
+  wire [26:0]  _d_first_beats1_decode_T_9 = 27'hFFF << _GEN_53;
+  wire [142:0] _GEN_54 = {136'h0, io_in_d_bits_source, 3'h0};
   wire [142:0] _d_opcodes_clr_T_5 = 143'hF << {137'h0, io_in_d_bits_source, 2'h0};
   wire [130:0] _a_opcodes_set_T_1 = {127'h0, _GEN_1 ? {io_in_a_bits_opcode, 1'h1} : 4'h0} << {125'h0, io_in_a_bits_source, 2'h0};
-  wire [142:0] _d_sizes_clr_T_5 = 143'hFF << _GEN_55;
+  wire [142:0] _d_sizes_clr_T_5 = 143'hFF << _GEN_54;
   wire [131:0] _a_sizes_set_T_1 = {127'h0, _GEN_1 ? {io_in_a_bits_size, 1'h1} : 5'h0} << {125'h0, io_in_a_bits_source, 3'h0};
-  wire [142:0] _d_sizes_clr_T_11 = 143'hFF << _GEN_55;
+  wire [142:0] _d_sizes_clr_T_11 = 143'hFF << _GEN_54;
   wire         _d_first_T_2 = io_in_d_ready & io_in_d_valid;
-  wire         _GEN_56 = _d_first_T_2 & d_first_1 & ~d_release_ack;
-  wire         _GEN_57 = _d_first_T_2 & d_first_2 & d_release_ack;
+  wire         _GEN_55 = _d_first_T_2 & d_first_1 & ~d_release_ack;
+  wire         _GEN_56 = _d_first_T_2 & d_first_2 & d_release_ack;
   always @(posedge clock) begin
     if (reset) begin
       a_first_counter <= 9'h0;
@@ -806,15 +805,15 @@ module TLMonitor_2(
       end
       else
         watchdog_1 <= watchdog_1 + 32'h1;
-      inflight <= (inflight | (_GEN_1 ? 16'h1 << _GEN_0 : 16'h0)) & ~(_GEN_56 ? 16'h1 << _GEN_2 : 16'h0);
-      inflight_opcodes <= (inflight_opcodes | (_GEN_1 ? _a_opcodes_set_T_1[63:0] : 64'h0)) & ~(_GEN_56 ? _d_opcodes_clr_T_5[63:0] : 64'h0);
-      inflight_sizes <= (inflight_sizes | (_GEN_1 ? _a_sizes_set_T_1[127:0] : 128'h0)) & ~(_GEN_56 ? _d_sizes_clr_T_5[127:0] : 128'h0);
+      inflight <= (inflight | (_GEN_1 ? 16'h1 << _GEN_0 : 16'h0)) & ~(_GEN_55 ? 16'h1 << _GEN_2 : 16'h0);
+      inflight_opcodes <= (inflight_opcodes | (_GEN_1 ? _a_opcodes_set_T_1[63:0] : 64'h0)) & ~(_GEN_55 ? _d_opcodes_clr_T_5[63:0] : 64'h0);
+      inflight_sizes <= (inflight_sizes | (_GEN_1 ? _a_sizes_set_T_1[127:0] : 128'h0)) & ~(_GEN_55 ? _d_sizes_clr_T_5[127:0] : 128'h0);
       if (_a_first_T_1 | _d_first_T_2)
         watchdog <= 32'h0;
       else
         watchdog <= watchdog + 32'h1;
-      inflight_1 <= inflight_1 & ~(_GEN_57 ? 16'h1 << _GEN_2 : 16'h0);
-      inflight_sizes_1 <= inflight_sizes_1 & ~(_GEN_57 ? _d_sizes_clr_T_11[127:0] : 128'h0);
+      inflight_1 <= inflight_1 & ~(_GEN_56 ? 16'h1 << _GEN_2 : 16'h0);
+      inflight_sizes_1 <= inflight_sizes_1 & ~(_GEN_56 ? _d_sizes_clr_T_11[127:0] : 128'h0);
     end
     if (_a_first_T_1 & ~(|a_first_counter)) begin
       opcode <= io_in_a_bits_opcode;
