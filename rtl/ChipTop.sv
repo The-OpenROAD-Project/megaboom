@@ -28,8 +28,8 @@
 `endif // not def STOP_COND_
 
 module ChipTop(
-  input        clock,
-               reset,
+  input        reset_io,
+               clock_uncore,
                serial_tl_0_clock,
   output       serial_tl_0_bits_in_ready,
   input        serial_tl_0_bits_in_valid,
@@ -66,13 +66,8 @@ module ChipTop(
   wire       _iocell_serial_tl_0_bits_out_bits_2_pad;
   wire       _iocell_serial_tl_0_bits_out_bits_1_pad;
   wire       _iocell_serial_tl_0_bits_out_bits_pad;
-  wire       _fake_pll_clk;
-  wire       _iocell_reset_i;
-  wire       _iocell_clock_i;
   wire       _system_auto_implicitClockGrouper_out_clock;
   wire       _system_auto_implicitClockGrouper_out_reset;
-  wire       _system_auto_prci_ctrl_domain_pllCtrl_ctrl_out_gate;
-  wire       _system_auto_prci_ctrl_domain_pllCtrl_ctrl_out_power;
   wire       _system_auto_subsystem_cbus_fixedClockNode_out_clock;
   wire       _system_auto_subsystem_cbus_fixedClockNode_out_reset;
   wire       _system_debug_systemjtag_jtag_TDO_data;
@@ -102,52 +97,34 @@ module ChipTop(
     `endif // FIRRTL_AFTER_INITIAL
   `endif // ENABLE_INITIAL_REG_
   DigitalTop system (
-    .clock                                                (_system_auto_implicitClockGrouper_out_clock),
-    .reset                                                (_system_auto_implicitClockGrouper_out_reset),
-    .auto_implicitClockGrouper_out_clock                  (_system_auto_implicitClockGrouper_out_clock),
-    .auto_implicitClockGrouper_out_reset                  (_system_auto_implicitClockGrouper_out_reset),
-    .auto_prci_ctrl_domain_pllCtrl_ctrl_out_gate          (_system_auto_prci_ctrl_domain_pllCtrl_ctrl_out_gate),
-    .auto_prci_ctrl_domain_pllCtrl_ctrl_out_power         (_system_auto_prci_ctrl_domain_pllCtrl_ctrl_out_power),
-    .auto_prci_ctrl_domain_clockSelector_clock_in_1_clock (_fake_pll_clk),
-    .auto_prci_ctrl_domain_clockSelector_clock_in_0_clock (_iocell_clock_i),
-    .auto_prci_ctrl_domain_clockSelector_clock_in_0_reset (_iocell_reset_i),
-    .auto_subsystem_cbus_fixedClockNode_out_clock         (_system_auto_subsystem_cbus_fixedClockNode_out_clock),
-    .auto_subsystem_cbus_fixedClockNode_out_reset         (_system_auto_subsystem_cbus_fixedClockNode_out_reset),
-    .resetctrl_hartIsInReset_0                            (_system_auto_subsystem_cbus_fixedClockNode_out_reset),
-    .debug_clock                                          (_gated_clock_debug_clock_gate_out),
-    .debug_reset                                          (debug_reset),
-    .debug_systemjtag_jtag_TCK                            (_iocell_jtag_TCK_i),
-    .debug_systemjtag_jtag_TMS                            (_iocell_jtag_TMS_i),
-    .debug_systemjtag_jtag_TDI                            (_iocell_jtag_TDI_i),
-    .debug_systemjtag_jtag_TDO_data                       (_system_debug_systemjtag_jtag_TDO_data),
-    .debug_systemjtag_reset                               (_system_debug_systemjtag_reset_catcher_io_sync_reset),
-    .debug_dmactive                                       (_system_debug_dmactive),
-    .debug_dmactiveAck                                    (_dmactiveAck_dmactiveAck_io_q),
-    .custom_boot                                          (_iocell_custom_boot_i),
-    .serial_tl_0_clock                                    (_iocell_serial_tl_0_clock_i),
-    .serial_tl_0_bits_in_ready                            (_system_serial_tl_0_bits_in_ready),
-    .serial_tl_0_bits_in_valid                            (_iocell_serial_tl_0_bits_in_valid_i),
-    .serial_tl_0_bits_in_bits                             ({_iocell_serial_tl_0_bits_in_bits_3_i, _iocell_serial_tl_0_bits_in_bits_2_i, _iocell_serial_tl_0_bits_in_bits_1_i, _iocell_serial_tl_0_bits_in_bits_i}),
-    .serial_tl_0_bits_out_ready                           (_iocell_serial_tl_0_bits_out_ready_i),
-    .serial_tl_0_bits_out_valid                           (_system_serial_tl_0_bits_out_valid),
-    .serial_tl_0_bits_out_bits                            (_system_serial_tl_0_bits_out_bits),
-    .uart_0_txd                                           (_system_uart_0_txd),
-    .uart_0_rxd                                           (_iocell_uart_0_rxd_i)
-  );
-  GenericDigitalInIOCell iocell_clock (
-    .pad (clock),
-    .i   (_iocell_clock_i),
-    .ie  (1'h1)
-  );
-  GenericDigitalInIOCell iocell_reset (
-    .pad (reset),
-    .i   (_iocell_reset_i),
-    .ie  (1'h1)
-  );
-  ClockSourceAtFreqFromPlusArgpll_freq_mhz fake_pll (
-    .power (_system_auto_prci_ctrl_domain_pllCtrl_ctrl_out_power),
-    .gate  (_system_auto_prci_ctrl_domain_pllCtrl_ctrl_out_gate),
-    .clk   (_fake_pll_clk)
+    .clock                                                                     (_system_auto_implicitClockGrouper_out_clock),
+    .reset                                                                     (_system_auto_implicitClockGrouper_out_reset),
+    .auto_implicitClockGrouper_out_clock                                       (_system_auto_implicitClockGrouper_out_clock),
+    .auto_implicitClockGrouper_out_reset                                       (_system_auto_implicitClockGrouper_out_reset),
+    .auto_prci_ctrl_domain_reset_setter_clock_in_member_allClocks_uncore_clock (clock_uncore),
+    .auto_prci_ctrl_domain_reset_setter_clock_in_member_allClocks_uncore_reset (reset_io),
+    .auto_subsystem_cbus_fixedClockNode_out_clock                              (_system_auto_subsystem_cbus_fixedClockNode_out_clock),
+    .auto_subsystem_cbus_fixedClockNode_out_reset                              (_system_auto_subsystem_cbus_fixedClockNode_out_reset),
+    .resetctrl_hartIsInReset_0                                                 (_system_auto_subsystem_cbus_fixedClockNode_out_reset),
+    .debug_clock                                                               (_gated_clock_debug_clock_gate_out),
+    .debug_reset                                                               (debug_reset),
+    .debug_systemjtag_jtag_TCK                                                 (_iocell_jtag_TCK_i),
+    .debug_systemjtag_jtag_TMS                                                 (_iocell_jtag_TMS_i),
+    .debug_systemjtag_jtag_TDI                                                 (_iocell_jtag_TDI_i),
+    .debug_systemjtag_jtag_TDO_data                                            (_system_debug_systemjtag_jtag_TDO_data),
+    .debug_systemjtag_reset                                                    (_system_debug_systemjtag_reset_catcher_io_sync_reset),
+    .debug_dmactive                                                            (_system_debug_dmactive),
+    .debug_dmactiveAck                                                         (_dmactiveAck_dmactiveAck_io_q),
+    .custom_boot                                                               (_iocell_custom_boot_i),
+    .serial_tl_0_clock                                                         (_iocell_serial_tl_0_clock_i),
+    .serial_tl_0_bits_in_ready                                                 (_system_serial_tl_0_bits_in_ready),
+    .serial_tl_0_bits_in_valid                                                 (_iocell_serial_tl_0_bits_in_valid_i),
+    .serial_tl_0_bits_in_bits                                                  ({_iocell_serial_tl_0_bits_in_bits_3_i, _iocell_serial_tl_0_bits_in_bits_2_i, _iocell_serial_tl_0_bits_in_bits_1_i, _iocell_serial_tl_0_bits_in_bits_i}),
+    .serial_tl_0_bits_out_ready                                                (_iocell_serial_tl_0_bits_out_ready_i),
+    .serial_tl_0_bits_out_valid                                                (_system_serial_tl_0_bits_out_valid),
+    .serial_tl_0_bits_out_bits                                                 (_system_serial_tl_0_bits_out_bits),
+    .uart_0_txd                                                                (_system_uart_0_txd),
+    .uart_0_rxd                                                                (_iocell_uart_0_rxd_i)
   );
   GenericDigitalOutIOCell iocell_serial_tl_0_bits_out_bits (
     .pad (_iocell_serial_tl_0_bits_out_bits_pad),

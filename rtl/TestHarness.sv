@@ -77,8 +77,8 @@ module TestHarness(
     end // always @(posedge)
   `endif // not def SYNTHESIS
   ChipTop chiptop0 (
-    .clock                      (_source_clk),
-    .reset                      (reset),
+    .reset_io                   (reset),
+    .clock_uncore               (_source_clk),
     .serial_tl_0_clock          (_source_1_clk),
     .serial_tl_0_bits_in_ready  (_chiptop0_serial_tl_0_bits_in_ready),
     .serial_tl_0_bits_in_valid  (_ram_io_ser_in_valid),
@@ -162,7 +162,7 @@ module TestHarness(
     .io_sync_reset (_harnessBinderReset_catcher_io_sync_reset)
   );
   ClockSourceAtFreqMHz #(
-    .PERIOD(1.000000e+01)
+    .PERIOD(2.000000e+00)
   ) source (
     .power (1'h1),
     .gate  (1'h0),

@@ -89,8 +89,8 @@ module TLAtomicAutomata_1(
   wire        cam_free_0 = cam_s_0_state == 2'h0;
   wire        winner_0 = cam_s_0_state == 2'h2;
   wire        _a_canArithmetic_T_3 = auto_in_a_bits_size < 4'h4;
-  wire [5:0]  _GEN = {auto_in_a_bits_address[28:27], auto_in_a_bits_address[25], auto_in_a_bits_address[20], auto_in_a_bits_address[16], ~(auto_in_a_bits_address[12])};
-  wire [5:0]  _GEN_0 = {auto_in_a_bits_address[28:27] ^ 2'h2, auto_in_a_bits_address[25], auto_in_a_bits_address[20], auto_in_a_bits_address[16], auto_in_a_bits_address[12]};
+  wire [4:0]  _GEN = {auto_in_a_bits_address[28:27], auto_in_a_bits_address[25], auto_in_a_bits_address[16], ~(auto_in_a_bits_address[12])};
+  wire [4:0]  _GEN_0 = {auto_in_a_bits_address[28:27] ^ 2'h2, auto_in_a_bits_address[25], auto_in_a_bits_address[16], auto_in_a_bits_address[12]};
   wire        a_isSupported = auto_in_a_bits_opcode == 3'h3 ? _a_canArithmetic_T_3 & (~(|_GEN) | ~(|_GEN_0)) : auto_in_a_bits_opcode != 3'h2 | _a_canArithmetic_T_3 & (~(|_GEN) | ~(|_GEN_0));
   wire [3:0]  _logic_out_T = cam_a_0_lut >> {2'h0, cam_a_0_bits_data[0], cam_d_0_data[0]};
   wire [3:0]  _logic_out_T_2 = cam_a_0_lut >> {2'h0, cam_a_0_bits_data[1], cam_d_0_data[1]};

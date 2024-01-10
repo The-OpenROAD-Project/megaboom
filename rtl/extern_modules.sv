@@ -33,21 +33,11 @@
 
 // external module plusarg_reader
 
-// external module ClockFlop
-
-// external module ClockInverter
-
-// external module ClockSignalNor2
-
-// external module EICG_wrapper
-
-// external module ClockOr2
+// external module GenericDigitalOutIOCell
 
 // external module GenericDigitalInIOCell
 
-// external module ClockSourceAtFreqFromPlusArgpll_freq_mhz
-
-// external module GenericDigitalOutIOCell
+// external module EICG_wrapper
 
 // external module SimUART
 
@@ -58,6 +48,8 @@
 // external module SimJTAG
 
 // external module plusarg_reader
+
+// external module ClockSourceAtFreqMHz
 
 // external module ClockSourceAtFreqMHz
 

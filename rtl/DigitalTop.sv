@@ -32,11 +32,8 @@ module DigitalTop(
                reset,
   output       auto_implicitClockGrouper_out_clock,
                auto_implicitClockGrouper_out_reset,
-               auto_prci_ctrl_domain_pllCtrl_ctrl_out_gate,
-               auto_prci_ctrl_domain_pllCtrl_ctrl_out_power,
-  input        auto_prci_ctrl_domain_clockSelector_clock_in_1_clock,
-               auto_prci_ctrl_domain_clockSelector_clock_in_0_clock,
-               auto_prci_ctrl_domain_clockSelector_clock_in_0_reset,
+  input        auto_prci_ctrl_domain_reset_setter_clock_in_member_allClocks_uncore_clock,
+               auto_prci_ctrl_domain_reset_setter_clock_in_member_allClocks_uncore_reset,
   output       auto_subsystem_cbus_fixedClockNode_out_clock,
                auto_subsystem_cbus_fixedClockNode_out_reset,
   input        resetctrl_hartIsInReset_0,
@@ -1387,11 +1384,8 @@ module DigitalTop(
     .auto_out_0     (_intsink_4_auto_out_0)
   );
   ClockSinkDomain_4 prci_ctrl_domain (
-    .auto_pllCtrl_ctrl_out_gate                               (auto_prci_ctrl_domain_pllCtrl_ctrl_out_gate),
-    .auto_pllCtrl_ctrl_out_power                              (auto_prci_ctrl_domain_pllCtrl_ctrl_out_power),
-    .auto_clockSelector_clock_in_1_clock                      (auto_prci_ctrl_domain_clockSelector_clock_in_1_clock),
-    .auto_clockSelector_clock_in_0_clock                      (auto_prci_ctrl_domain_clockSelector_clock_in_0_clock),
-    .auto_clockSelector_clock_in_0_reset                      (auto_prci_ctrl_domain_clockSelector_clock_in_0_reset),
+    .auto_reset_setter_clock_in_member_allClocks_uncore_clock (auto_prci_ctrl_domain_reset_setter_clock_in_member_allClocks_uncore_clock),
+    .auto_reset_setter_clock_in_member_allClocks_uncore_reset (auto_prci_ctrl_domain_reset_setter_clock_in_member_allClocks_uncore_reset),
     .auto_resetSynchronizer_out_member_allClocks_uncore_clock (_prci_ctrl_domain_auto_resetSynchronizer_out_member_allClocks_uncore_clock),
     .auto_resetSynchronizer_out_member_allClocks_uncore_reset (_prci_ctrl_domain_auto_resetSynchronizer_out_member_allClocks_uncore_reset),
     .auto_xbar_in_a_ready                                     (_prci_ctrl_domain_auto_xbar_in_a_ready),

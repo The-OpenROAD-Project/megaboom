@@ -136,7 +136,7 @@ module TLMonitor_16(
     wire [7:0] _GEN_14 = {4'h0, io_in_d_bits_size};
     wire       _GEN_15 = d_clr_1 & ~reset;
     always @(posedge clock) begin
-      if (_GEN_0 & ~({io_in_a_bits_address[28:14], ~(io_in_a_bits_address[13:12])} == 17'h0 | io_in_a_bits_address[28:13] == 16'h0 | {io_in_a_bits_address[28:21], io_in_a_bits_address[20:18] ^ 3'h4, io_in_a_bits_address[15:12]} == 15'h0 | {io_in_a_bits_address[28:21], io_in_a_bits_address[20:12] ^ 9'h140} == 17'h0 | {io_in_a_bits_address[28:26], io_in_a_bits_address[25:16] ^ 10'h200} == 13'h0 | {io_in_a_bits_address[28:26], io_in_a_bits_address[25:12] ^ 14'h2010} == 17'h0 | {io_in_a_bits_address[28], ~(io_in_a_bits_address[27:26])} == 3'h0 | io_in_a_bits_address[28:12] == 17'h10020)) begin
+      if (_GEN_0 & ~({io_in_a_bits_address[28:14], ~(io_in_a_bits_address[13:12])} == 17'h0 | io_in_a_bits_address[28:13] == 16'h0 | {io_in_a_bits_address[28:21], io_in_a_bits_address[20:17] ^ 4'h8, io_in_a_bits_address[15:12]} == 16'h0 | {io_in_a_bits_address[28:26], io_in_a_bits_address[25:16] ^ 10'h200} == 13'h0 | {io_in_a_bits_address[28:26], io_in_a_bits_address[25:12] ^ 14'h2010} == 17'h0 | {io_in_a_bits_address[28], ~(io_in_a_bits_address[27:26])} == 3'h0 | io_in_a_bits_address[28:12] == 17'h10020)) begin
         if (`ASSERT_VERBOSE_COND_)
           $error("Assertion failed: 'A' channel carries PutFull type which is unexpected using diplomatic parameters (connected at generators/rocket-chip/src/main/scala/tilelink/BusWrapper.scala:90:33)\n    at Monitor.scala:42 assert(cond, message)\n");
         if (`STOP_COND_)

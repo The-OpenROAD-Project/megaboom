@@ -38,14 +38,12 @@ module TLFragmenter_9(
   input  [6:0]  auto_in_a_bits_source,
   input  [20:0] auto_in_a_bits_address,
   input  [7:0]  auto_in_a_bits_mask,
-  input  [63:0] auto_in_a_bits_data,
   input         auto_in_a_bits_corrupt,
                 auto_in_d_ready,
   output        auto_in_d_valid,
   output [2:0]  auto_in_d_bits_opcode,
                 auto_in_d_bits_size,
   output [6:0]  auto_in_d_bits_source,
-  output [63:0] auto_in_d_bits_data,
   input         auto_out_a_ready,
   output        auto_out_a_valid,
   output [2:0]  auto_out_a_bits_opcode,
@@ -54,14 +52,12 @@ module TLFragmenter_9(
   output [10:0] auto_out_a_bits_source,
   output [20:0] auto_out_a_bits_address,
   output [7:0]  auto_out_a_bits_mask,
-  output [63:0] auto_out_a_bits_data,
   output        auto_out_a_bits_corrupt,
                 auto_out_d_ready,
   input         auto_out_d_valid,
   input  [2:0]  auto_out_d_bits_opcode,
   input  [1:0]  auto_out_d_bits_size,
-  input  [10:0] auto_out_d_bits_source,
-  input  [63:0] auto_out_d_bits_data
+  input  [10:0] auto_out_d_bits_source
 );
 
   wire        _repeater_io_full;
@@ -183,14 +179,12 @@ module TLFragmenter_9(
   assign auto_in_d_bits_opcode = auto_out_d_bits_opcode;
   assign auto_in_d_bits_size = nodeIn_d_bits_size;
   assign auto_in_d_bits_source = auto_out_d_bits_source[10:4];
-  assign auto_in_d_bits_data = auto_out_d_bits_data;
   assign auto_out_a_valid = _repeater_io_deq_valid;
   assign auto_out_a_bits_opcode = _repeater_io_deq_bits_opcode;
   assign auto_out_a_bits_size = _repeater_io_deq_bits_size[2] ? 2'h3 : _repeater_io_deq_bits_size[1:0];
   assign auto_out_a_bits_source = {_repeater_io_deq_bits_source, ~(aFirst ? dToggle : aToggle_r), aFragnum};
   assign auto_out_a_bits_address = {_repeater_io_deq_bits_address[20:6], _repeater_io_deq_bits_address[5:0] | {~(aFragnum | _aOrigOH1_T_1[5:3]), 3'h0}};
   assign auto_out_a_bits_mask = _repeater_io_full ? 8'hFF : auto_in_a_bits_mask;
-  assign auto_out_a_bits_data = auto_in_a_bits_data;
   assign auto_out_d_ready = nodeOut_d_ready;
 endmodule
 

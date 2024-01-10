@@ -42,22 +42,15 @@ module TileResetSetter(
   input  [10:0] auto_tl_in_a_bits_source,
   input  [20:0] auto_tl_in_a_bits_address,
   input  [7:0]  auto_tl_in_a_bits_mask,
-  input  [63:0] auto_tl_in_a_bits_data,
   input         auto_tl_in_a_bits_corrupt,
                 auto_tl_in_d_ready,
   output        auto_tl_in_d_valid,
   output [2:0]  auto_tl_in_d_bits_opcode,
   output [1:0]  auto_tl_in_d_bits_size,
-  output [10:0] auto_tl_in_d_bits_source,
-  output [63:0] auto_tl_in_d_bits_data
+  output [10:0] auto_tl_in_d_bits_source
 );
 
-  wire       _out_wofireMux_T_1;
-  wire       _r_tile_resets_0_io_q;
-  wire       out_front_bits_read = auto_tl_in_a_bits_opcode == 3'h4;
-  wire       _out_out_bits_data_T_1 = auto_tl_in_a_bits_address[11:3] == 9'h0;
-  assign _out_wofireMux_T_1 = ~out_front_bits_read;
-  wire [2:0] tlNodeIn_d_bits_opcode = {2'h0, out_front_bits_read};
+  wire [2:0] tlNodeIn_d_bits_opcode = {2'h0, auto_tl_in_a_bits_opcode == 3'h4};
   TLMonitor_62 monitor (
     .clock                (clock),
     .reset                (reset),
@@ -76,13 +69,6 @@ module TileResetSetter(
     .io_in_d_bits_size    (auto_tl_in_a_bits_size),
     .io_in_d_bits_source  (auto_tl_in_a_bits_source)
   );
-  AsyncResetRegVec_w1_i0_6 r_tile_resets_0 (
-    .clock (clock),
-    .reset (1'h1),
-    .io_d  (auto_tl_in_a_bits_data[0]),
-    .io_q  (_r_tile_resets_0_io_q),
-    .io_en (auto_tl_in_a_valid & auto_tl_in_d_ready & _out_wofireMux_T_1 & _out_out_bits_data_T_1 & auto_tl_in_a_bits_mask[0])
-  );
   assign auto_clock_out_member_allClocks_uncore_clock = auto_clock_in_member_allClocks_uncore_clock;
   assign auto_clock_out_member_allClocks_uncore_reset = auto_clock_in_member_allClocks_uncore_reset;
   assign auto_tl_in_a_ready = auto_tl_in_d_ready;
@@ -90,6 +76,5 @@ module TileResetSetter(
   assign auto_tl_in_d_bits_opcode = tlNodeIn_d_bits_opcode;
   assign auto_tl_in_d_bits_size = auto_tl_in_a_bits_size;
   assign auto_tl_in_d_bits_source = auto_tl_in_a_bits_source;
-  assign auto_tl_in_d_bits_data = {63'h0, _out_out_bits_data_T_1 & _r_tile_resets_0_io_q};
 endmodule
 

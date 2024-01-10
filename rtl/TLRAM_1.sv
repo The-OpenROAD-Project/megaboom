@@ -108,7 +108,7 @@ module TLRAM_1(
       r_7 <= _mem_ext_RW0_rdata[63:56];
     end
   end // always @(posedge)
-  TLMonitor_73 monitor (
+  TLMonitor_67 monitor (
     .clock                (clock),
     .reset                (reset),
     .io_in_a_ready        (nodeIn_a_ready),

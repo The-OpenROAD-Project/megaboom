@@ -149,7 +149,7 @@ module TLXbar_13(
       end
     end
   end // always @(posedge)
-  TLMonitor_72 monitor (
+  TLMonitor_66 monitor (
     .clock                (clock),
     .reset                (reset),
     .io_in_a_ready        (_portsAOI_in_0_a_ready_WIRE),

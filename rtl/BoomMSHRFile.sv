@@ -2434,7 +2434,7 @@ module BoomMSHRFile(
   wire [1:0]   _GEN_82 = io_req_1_valid ? io_req_1_bits_old_meta_coh_state : io_req_0_bits_old_meta_coh_state;
   wire [20:0]  _GEN_83 = io_req_1_valid ? io_req_1_bits_old_meta_tag : io_req_0_bits_old_meta_tag;
   wire [7:0]   _GEN_84 = io_req_1_valid ? io_req_1_bits_way_en : io_req_0_bits_way_en;
-  wire         cacheable = {_cacheable_T_1[32:31], _cacheable_T_1[27:25] ^ 3'h4, _cacheable_T_1[20]} == 6'h0 | {_cacheable_T_1[32], ~(_cacheable_T_1[31])} == 2'h0 | _cacheable_T_1[32:31] == 2'h2;
+  wire         cacheable = {_cacheable_T_1[32:31], _cacheable_T_1[27:26] ^ 2'h2, _cacheable_T_1[16]} == 5'h0 | {_cacheable_T_1[32], ~(_cacheable_T_1[31])} == 2'h0 | _cacheable_T_1[32:31] == 2'h2;
   reg  [16:0]  sdq_val;
   wire [15:0]  _sdq_alloc_id_T_1 = ~(sdq_val[15:0]);
   wire [4:0]   sdq_alloc_id = _sdq_alloc_id_T_1[0] ? 5'h0 : _sdq_alloc_id_T_1[1] ? 5'h1 : _sdq_alloc_id_T_1[2] ? 5'h2 : _sdq_alloc_id_T_1[3] ? 5'h3 : _sdq_alloc_id_T_1[4] ? 5'h4 : _sdq_alloc_id_T_1[5] ? 5'h5 : _sdq_alloc_id_T_1[6] ? 5'h6 : _sdq_alloc_id_T_1[7] ? 5'h7 : _sdq_alloc_id_T_1[8] ? 5'h8 : _sdq_alloc_id_T_1[9] ? 5'h9 : _sdq_alloc_id_T_1[10] ? 5'hA : _sdq_alloc_id_T_1[11] ? 5'hB : _sdq_alloc_id_T_1[12] ? 5'hC : _sdq_alloc_id_T_1[13] ? 5'hD : _sdq_alloc_id_T_1[14] ? 5'hE : _sdq_alloc_id_T_1[15] ? 5'hF : 5'h10;

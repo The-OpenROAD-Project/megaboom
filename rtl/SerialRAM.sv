@@ -463,7 +463,7 @@ module SerialRAM(
     .auto_out_d_bits_source  (_srams_auto_in_d_bits_source),
     .auto_out_d_bits_data    (_srams_auto_in_d_bits_data)
   );
-  TLFragmenter_13 fragmenter (
+  TLFragmenter_10 fragmenter (
     .clock                   (clock),
     .reset                   (reset),
     .auto_in_a_ready         (_fragmenter_auto_in_a_ready),
@@ -544,7 +544,7 @@ module SerialRAM(
     .auto_out_d_bits_source  (_srams_1_auto_in_d_bits_source),
     .auto_out_d_bits_data    (_srams_1_auto_in_d_bits_data)
   );
-  TLFragmenter_14 fragmenter_1 (
+  TLFragmenter_11 fragmenter_1 (
     .clock                   (clock),
     .reset                   (reset),
     .auto_in_a_ready         (_fragmenter_1_auto_in_a_ready),
