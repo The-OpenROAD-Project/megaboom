@@ -678,7 +678,10 @@ build_openroad(
         name = "FpPipeline",
         verilog_files=fpfiles,
         macros=["regfile_128x65"],
-        stage_sources={'synth': ["constraints.sdc"]},
+        io_constraints="io-top.tcl",
+        stage_sources={'synth': ["constraints.sdc"],
+        'floorplan': ["util.tcl"],
+        'place': ["util.tcl"]},
         stage_args={
                 'synth': ['SYNTH_HIERARCHICAL=1'],
                 'floorplan': [
@@ -694,7 +697,7 @@ build_openroad(
                 },
         mock_abstract=True,
         mock_stage='floorplan',
-        mock_area=0.2
+        mock_area=0.6
         )
 
 
@@ -1156,7 +1159,10 @@ build_openroad(
         name = "InclusiveCache",
         verilog_files=all_source_files,
         macros=big_rams + digital_top_srams + boom_tile_rams + boom_regfile_rams + boom_tile_small_srams,
-        stage_sources={'synth': ["constraints-l2.sdc"]},
+        io_constraints="io-top.tcl",
+        stage_sources={'synth': ["constraints-l2.sdc"],
+        'floorplan': ["util.tcl"],
+        'place': ["util.tcl"]},
         stage_args={
                 'synth': ['SYNTH_HIERARCHICAL=1'],
                 'floorplan': [
@@ -1171,7 +1177,7 @@ build_openroad(
                 },
         mock_abstract=True,
         mock_stage='floorplan',
-        mock_area=0.1
+        mock_area=0.3
         )
 
 branch_predictor_files = [
@@ -1223,7 +1229,7 @@ build_openroad(
                 'synth': ['SYNTH_HIERARCHICAL=1'],
                 'floorplan': [
                         'CORE_UTILIZATION=10',
-                        'CORE_ASPECT_RATIO=4',
+                        'CORE_ASPECT_RATIO=1',
                         #"DIE_AREA=0 0 500 500", "CORE_AREA=2 2 498 498",
                         'MACRO_PLACE_HALO=20 20',
                         'RTLMP_FLOW=True'
@@ -1235,7 +1241,7 @@ build_openroad(
         io_constraints="io.tcl",
         mock_abstract=True,
         mock_stage='floorplan',
-        mock_area=0.15
+        mock_area=0.20
         )
 
 build_openroad(
