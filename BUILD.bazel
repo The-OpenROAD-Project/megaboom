@@ -832,9 +832,11 @@ digital_top_srams=["cc_dir_1024x168",
         mock_abstract=True,
         mock_stage='floorplan',
         mock_area={'tag_array_64x184':0.20,
-        'meta_40x240':1,
+        'meta_40x240':0.3,
         'data_data_40x128':1,
-        'lb_32x128':1}.get(ram, 0.5)
+        'ram_256x8':0.2,
+        'lb_32x128':1,
+        'l2_tlb_ram_0_512x45':0.3}.get(ram, 0.5)
         )
  for ram in boom_tile_rams + boom_tile_small_srams + digital_top_srams]
 
