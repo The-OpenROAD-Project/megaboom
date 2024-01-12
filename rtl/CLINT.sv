@@ -1,14 +1,5 @@
 // Standard header to adapt well known macros for prints and assertions.
 
-// Users can define 'PRINTF_COND' to add an extra gate to prints.
-`ifndef PRINTF_COND_
-  `ifdef PRINTF_COND
-    `define PRINTF_COND_ (`PRINTF_COND)
-  `else  // PRINTF_COND
-    `define PRINTF_COND_ 1
-  `endif // PRINTF_COND
-`endif // not def PRINTF_COND_
-
 // Users can define 'ASSERT_VERBOSE_COND' to add an extra gate to assert error printing.
 `ifndef ASSERT_VERBOSE_COND_
   `ifdef ASSERT_VERBOSE_COND
@@ -37,7 +28,7 @@ module CLINT(
   input  [2:0]  auto_in_a_bits_opcode,
                 auto_in_a_bits_param,
   input  [1:0]  auto_in_a_bits_size,
-  input  [10:0] auto_in_a_bits_source,
+  input  [9:0]  auto_in_a_bits_source,
   input  [25:0] auto_in_a_bits_address,
   input  [7:0]  auto_in_a_bits_mask,
   input  [63:0] auto_in_a_bits_data,
@@ -46,7 +37,7 @@ module CLINT(
   output        auto_in_d_valid,
   output [2:0]  auto_in_d_bits_opcode,
   output [1:0]  auto_in_d_bits_size,
-  output [10:0] auto_in_d_bits_source,
+  output [9:0]  auto_in_d_bits_source,
   output [63:0] auto_in_d_bits_data,
   input         io_rtcTick
 );
@@ -120,7 +111,7 @@ module CLINT(
     if (valids_0 | valids_1 | valids_2 | valids_3 | valids_4 | valids_5 | valids_6 | valids_7)
       pad <= {valids_7 ? auto_in_a_bits_data[63:56] : pad[63:56], valids_6 ? auto_in_a_bits_data[55:48] : pad[55:48], valids_5 ? auto_in_a_bits_data[47:40] : pad[47:40], valids_4 ? auto_in_a_bits_data[39:32] : pad[39:32], valids_3 ? auto_in_a_bits_data[31:24] : pad[31:24], valids_2 ? auto_in_a_bits_data[23:16] : pad[23:16], valids_1 ? auto_in_a_bits_data[15:8] : pad[15:8], valids_0 ? auto_in_a_bits_data[7:0] : pad[7:0]};
   end // always @(posedge)
-  TLMonitor_46 monitor (
+  TLMonitor_35 monitor (
     .clock                (clock),
     .reset                (reset),
     .io_in_a_ready        (auto_in_d_ready),

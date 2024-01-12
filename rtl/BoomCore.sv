@@ -1,14 +1,5 @@
 // Standard header to adapt well known macros for prints and assertions.
 
-// Users can define 'PRINTF_COND' to add an extra gate to prints.
-`ifndef PRINTF_COND_
-  `ifdef PRINTF_COND
-    `define PRINTF_COND_ (`PRINTF_COND)
-  `else  // PRINTF_COND
-    `define PRINTF_COND_ 1
-  `endif // PRINTF_COND
-`endif // not def PRINTF_COND_
-
 // Users can define 'ASSERT_VERBOSE_COND' to add an extra gate to assert error printing.
 `ifndef ASSERT_VERBOSE_COND_
   `ifdef ASSERT_VERBOSE_COND
@@ -34,8 +25,6 @@ module BoomCore(
                 io_interrupts_debug,
                 io_interrupts_mtip,
                 io_interrupts_msip,
-                io_interrupts_meip,
-                io_interrupts_seip,
   output        io_ifu_fetchpacket_ready,
   input         io_ifu_fetchpacket_valid,
                 io_ifu_fetchpacket_bits_uops_0_valid,
@@ -8862,8 +8851,6 @@ module BoomCore(
     .io_interrupts_debug        (io_interrupts_debug),
     .io_interrupts_mtip         (io_interrupts_mtip),
     .io_interrupts_msip         (io_interrupts_msip),
-    .io_interrupts_meip         (io_interrupts_meip),
-    .io_interrupts_seip         (io_interrupts_seip),
     .io_hartid                  (io_hartid),
     .io_rw_addr                 (_alu_exe_unit_1_io_iresp_bits_uop_csr_addr),
     .io_rw_cmd                  (_alu_exe_unit_1_io_iresp_bits_uop_ctrl_csr_cmd & {_alu_exe_unit_1_io_iresp_valid, 2'h3}),

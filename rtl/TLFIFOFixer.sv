@@ -1,14 +1,5 @@
 // Standard header to adapt well known macros for prints and assertions.
 
-// Users can define 'PRINTF_COND' to add an extra gate to prints.
-`ifndef PRINTF_COND_
-  `ifdef PRINTF_COND
-    `define PRINTF_COND_ (`PRINTF_COND)
-  `else  // PRINTF_COND
-    `define PRINTF_COND_ 1
-  `endif // PRINTF_COND
-`endif // not def PRINTF_COND_
-
 // Users can define 'ASSERT_VERBOSE_COND' to add an extra gate to assert error printing.
 `ifndef ASSERT_VERBOSE_COND_
   `ifdef ASSERT_VERBOSE_COND
@@ -59,12 +50,12 @@ module TLFIFOFixer(
   output [1:0]  auto_in_1_d_bits_param,
   output [3:0]  auto_in_1_d_bits_size,
   output [4:0]  auto_in_1_d_bits_source,
-  output [2:0]  auto_in_1_d_bits_sink,
+  output [1:0]  auto_in_1_d_bits_sink,
   output        auto_in_1_d_bits_denied,
   output [63:0] auto_in_1_d_bits_data,
   output        auto_in_1_d_bits_corrupt,
   input         auto_in_1_e_valid,
-  input  [2:0]  auto_in_1_e_bits_sink,
+  input  [1:0]  auto_in_1_e_bits_sink,
   output        auto_in_0_a_ready,
   input         auto_in_0_a_valid,
   input  [2:0]  auto_in_0_a_bits_opcode,
@@ -81,7 +72,7 @@ module TLFIFOFixer(
   output [1:0]  auto_in_0_d_bits_param,
   output [3:0]  auto_in_0_d_bits_size,
                 auto_in_0_d_bits_source,
-  output [2:0]  auto_in_0_d_bits_sink,
+  output [1:0]  auto_in_0_d_bits_sink,
   output        auto_in_0_d_bits_denied,
   output [63:0] auto_in_0_d_bits_data,
   output        auto_in_0_d_bits_corrupt,
@@ -114,12 +105,12 @@ module TLFIFOFixer(
   input  [1:0]  auto_out_1_d_bits_param,
   input  [3:0]  auto_out_1_d_bits_size,
   input  [4:0]  auto_out_1_d_bits_source,
-  input  [2:0]  auto_out_1_d_bits_sink,
+  input  [1:0]  auto_out_1_d_bits_sink,
   input         auto_out_1_d_bits_denied,
   input  [63:0] auto_out_1_d_bits_data,
   input         auto_out_1_d_bits_corrupt,
   output        auto_out_1_e_valid,
-  output [2:0]  auto_out_1_e_bits_sink,
+  output [1:0]  auto_out_1_e_bits_sink,
   input         auto_out_0_a_ready,
   output        auto_out_0_a_valid,
   output [2:0]  auto_out_0_a_bits_opcode,
@@ -136,7 +127,7 @@ module TLFIFOFixer(
   input  [1:0]  auto_out_0_d_bits_param,
   input  [3:0]  auto_out_0_d_bits_size,
                 auto_out_0_d_bits_source,
-  input  [2:0]  auto_out_0_d_bits_sink,
+  input  [1:0]  auto_out_0_d_bits_sink,
   input         auto_out_0_d_bits_denied,
   input  [63:0] auto_out_0_d_bits_data,
   input         auto_out_0_d_bits_corrupt

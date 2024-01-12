@@ -1,14 +1,5 @@
 // Standard header to adapt well known macros for prints and assertions.
 
-// Users can define 'PRINTF_COND' to add an extra gate to prints.
-`ifndef PRINTF_COND_
-  `ifdef PRINTF_COND
-    `define PRINTF_COND_ (`PRINTF_COND)
-  `else  // PRINTF_COND
-    `define PRINTF_COND_ 1
-  `endif // PRINTF_COND
-`endif // not def PRINTF_COND_
-
 // Users can define 'ASSERT_VERBOSE_COND' to add an extra gate to assert error printing.
 `ifndef ASSERT_VERBOSE_COND_
   `ifdef ASSERT_VERBOSE_COND
@@ -75,7 +66,7 @@ module TLAsyncCrossingSource(
   wire       _nodeIn_d_sink_io_deq_bits_denied;
   wire       _nodeIn_d_sink_io_deq_bits_corrupt;
   wire       _nodeOut_a_source_io_enq_ready;
-  TLMonitor_51 monitor (
+  TLMonitor_40 monitor (
     .clock                (clock),
     .reset                (reset),
     .io_in_a_ready        (_nodeOut_a_source_io_enq_ready),

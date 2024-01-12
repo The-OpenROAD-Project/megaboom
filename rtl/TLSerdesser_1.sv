@@ -1,14 +1,5 @@
 // Standard header to adapt well known macros for prints and assertions.
 
-// Users can define 'PRINTF_COND' to add an extra gate to prints.
-`ifndef PRINTF_COND_
-  `ifdef PRINTF_COND
-    `define PRINTF_COND_ (`PRINTF_COND)
-  `else  // PRINTF_COND
-    `define PRINTF_COND_ 1
-  `endif // PRINTF_COND
-`endif // not def PRINTF_COND_
-
 // Users can define 'ASSERT_VERBOSE_COND' to add an extra gate to assert error printing.
 `ifndef ASSERT_VERBOSE_COND_
   `ifdef ASSERT_VERBOSE_COND
@@ -46,7 +37,7 @@ module TLSerdesser_1(
   output [1:0]  auto_manager_in_d_bits_param,
   output [3:0]  auto_manager_in_d_bits_size,
   output        auto_manager_in_d_bits_source,
-  output [2:0]  auto_manager_in_d_bits_sink,
+  output [1:0]  auto_manager_in_d_bits_sink,
   output        auto_manager_in_d_bits_denied,
   output [63:0] auto_manager_in_d_bits_data,
   output        auto_manager_in_d_bits_corrupt,
@@ -55,7 +46,7 @@ module TLSerdesser_1(
   output [2:0]  auto_client_out_a_bits_opcode,
                 auto_client_out_a_bits_param,
                 auto_client_out_a_bits_size,
-  output [3:0]  auto_client_out_a_bits_source,
+  output [7:0]  auto_client_out_a_bits_source,
   output [32:0] auto_client_out_a_bits_address,
   output [7:0]  auto_client_out_a_bits_mask,
   output [63:0] auto_client_out_a_bits_data,
@@ -65,7 +56,7 @@ module TLSerdesser_1(
   input  [2:0]  auto_client_out_d_bits_opcode,
   input  [1:0]  auto_client_out_d_bits_param,
   input  [2:0]  auto_client_out_d_bits_size,
-  input  [3:0]  auto_client_out_d_bits_source,
+  input  [7:0]  auto_client_out_d_bits_source,
   input  [1:0]  auto_client_out_d_bits_sink,
   input         auto_client_out_d_bits_denied,
   input  [63:0] auto_client_out_d_bits_data,
@@ -129,7 +120,7 @@ module TLSerdesser_1(
       end
     end
   end // always @(posedge)
-  TLMonitor_64 monitor (
+  TLMonitor_50 monitor (
     .clock                (clock),
     .reset                (reset),
     .io_in_a_ready        (_outArb_io_in_4_ready),
@@ -147,7 +138,7 @@ module TLSerdesser_1(
     .io_in_d_bits_param   (_inDes_io_out_bits_param[1:0]),
     .io_in_d_bits_size    (_inDes_io_out_bits_size[3:0]),
     .io_in_d_bits_source  (_inDes_io_out_bits_source[0]),
-    .io_in_d_bits_sink    (_inDes_io_out_bits_union[3:1]),
+    .io_in_d_bits_sink    (_inDes_io_out_bits_union[2:1]),
     .io_in_d_bits_denied  (_inDes_io_out_bits_union[0]),
     .io_in_d_bits_corrupt (_inDes_io_out_bits_corrupt)
   );
@@ -159,7 +150,7 @@ module TLSerdesser_1(
     .io_in_1_bits_opcode  (auto_client_out_d_bits_opcode),
     .io_in_1_bits_param   ({1'h0, auto_client_out_d_bits_param}),
     .io_in_1_bits_size    ({5'h0, auto_client_out_d_bits_size}),
-    .io_in_1_bits_source  ({4'h0, auto_client_out_d_bits_source}),
+    .io_in_1_bits_source  (auto_client_out_d_bits_source),
     .io_in_1_bits_data    (auto_client_out_d_bits_data),
     .io_in_1_bits_corrupt (auto_client_out_d_bits_corrupt),
     .io_in_1_bits_union   ({6'h0, auto_client_out_d_bits_sink, auto_client_out_d_bits_denied}),
@@ -231,7 +222,7 @@ module TLSerdesser_1(
   assign auto_manager_in_d_bits_param = _inDes_io_out_bits_param[1:0];
   assign auto_manager_in_d_bits_size = _inDes_io_out_bits_size[3:0];
   assign auto_manager_in_d_bits_source = _inDes_io_out_bits_source[0];
-  assign auto_manager_in_d_bits_sink = _inDes_io_out_bits_union[3:1];
+  assign auto_manager_in_d_bits_sink = _inDes_io_out_bits_union[2:1];
   assign auto_manager_in_d_bits_denied = _inDes_io_out_bits_union[0];
   assign auto_manager_in_d_bits_data = _inDes_io_out_bits_data;
   assign auto_manager_in_d_bits_corrupt = _inDes_io_out_bits_corrupt;
@@ -239,7 +230,7 @@ module TLSerdesser_1(
   assign auto_client_out_a_bits_opcode = _inDes_io_out_bits_opcode;
   assign auto_client_out_a_bits_param = _inDes_io_out_bits_param;
   assign auto_client_out_a_bits_size = _inDes_io_out_bits_size[2:0];
-  assign auto_client_out_a_bits_source = _inDes_io_out_bits_source[3:0];
+  assign auto_client_out_a_bits_source = _inDes_io_out_bits_source;
   assign auto_client_out_a_bits_address = _inDes_io_out_bits_address[32:0];
   assign auto_client_out_a_bits_mask = _inDes_io_out_bits_union[7:0];
   assign auto_client_out_a_bits_data = _inDes_io_out_bits_data;

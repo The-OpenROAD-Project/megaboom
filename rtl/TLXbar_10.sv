@@ -1,14 +1,5 @@
 // Standard header to adapt well known macros for prints and assertions.
 
-// Users can define 'PRINTF_COND' to add an extra gate to prints.
-`ifndef PRINTF_COND_
-  `ifdef PRINTF_COND
-    `define PRINTF_COND_ (`PRINTF_COND)
-  `else  // PRINTF_COND
-    `define PRINTF_COND_ 1
-  `endif // PRINTF_COND
-`endif // not def PRINTF_COND_
-
 // Users can define 'ASSERT_VERBOSE_COND' to add an extra gate to assert error printing.
 `ifndef ASSERT_VERBOSE_COND_
   `ifdef ASSERT_VERBOSE_COND
@@ -121,7 +112,7 @@ module TLXbar_10(
       end
     end
   end // always @(posedge)
-  TLMonitor_47 monitor (
+  TLMonitor_36 monitor (
     .clock                (clock),
     .reset                (reset),
     .io_in_a_ready        (_portsAOI_in_0_a_ready_WIRE),

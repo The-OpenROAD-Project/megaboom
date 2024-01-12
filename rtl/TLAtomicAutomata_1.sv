@@ -1,14 +1,5 @@
 // Standard header to adapt well known macros for prints and assertions.
 
-// Users can define 'PRINTF_COND' to add an extra gate to prints.
-`ifndef PRINTF_COND_
-  `ifdef PRINTF_COND
-    `define PRINTF_COND_ (`PRINTF_COND)
-  `else  // PRINTF_COND
-    `define PRINTF_COND_ 1
-  `endif // PRINTF_COND
-`endif // not def PRINTF_COND_
-
 // Users can define 'ASSERT_VERBOSE_COND' to add an extra gate to assert error printing.
 `ifndef ASSERT_VERBOSE_COND_
   `ifdef ASSERT_VERBOSE_COND
@@ -35,8 +26,8 @@ module TLAtomicAutomata_1(
   input  [2:0]  auto_in_a_bits_opcode,
                 auto_in_a_bits_param,
   input  [3:0]  auto_in_a_bits_size,
-  input  [6:0]  auto_in_a_bits_source,
-  input  [28:0] auto_in_a_bits_address,
+  input  [5:0]  auto_in_a_bits_source,
+  input  [27:0] auto_in_a_bits_address,
   input  [7:0]  auto_in_a_bits_mask,
   input  [63:0] auto_in_a_bits_data,
   input         auto_in_a_bits_corrupt,
@@ -45,7 +36,7 @@ module TLAtomicAutomata_1(
   output [2:0]  auto_in_d_bits_opcode,
   output [1:0]  auto_in_d_bits_param,
   output [3:0]  auto_in_d_bits_size,
-  output [6:0]  auto_in_d_bits_source,
+  output [5:0]  auto_in_d_bits_source,
   output        auto_in_d_bits_sink,
                 auto_in_d_bits_denied,
   output [63:0] auto_in_d_bits_data,
@@ -55,8 +46,8 @@ module TLAtomicAutomata_1(
   output [2:0]  auto_out_a_bits_opcode,
                 auto_out_a_bits_param,
   output [3:0]  auto_out_a_bits_size,
-  output [6:0]  auto_out_a_bits_source,
-  output [28:0] auto_out_a_bits_address,
+  output [5:0]  auto_out_a_bits_source,
+  output [27:0] auto_out_a_bits_address,
   output [7:0]  auto_out_a_bits_mask,
   output [63:0] auto_out_a_bits_data,
   output        auto_out_a_bits_corrupt,
@@ -65,7 +56,7 @@ module TLAtomicAutomata_1(
   input  [2:0]  auto_out_d_bits_opcode,
   input  [1:0]  auto_out_d_bits_param,
   input  [3:0]  auto_out_d_bits_size,
-  input  [6:0]  auto_out_d_bits_source,
+  input  [5:0]  auto_out_d_bits_source,
   input         auto_out_d_bits_sink,
                 auto_out_d_bits_denied,
   input  [63:0] auto_out_d_bits_data,
@@ -77,8 +68,8 @@ module TLAtomicAutomata_1(
   reg  [2:0]  cam_a_0_bits_opcode;
   reg  [2:0]  cam_a_0_bits_param;
   reg  [3:0]  cam_a_0_bits_size;
-  reg  [6:0]  cam_a_0_bits_source;
-  reg  [28:0] cam_a_0_bits_address;
+  reg  [5:0]  cam_a_0_bits_source;
+  reg  [27:0] cam_a_0_bits_address;
   reg  [7:0]  cam_a_0_bits_mask;
   reg  [63:0] cam_a_0_bits_data;
   reg         cam_a_0_bits_corrupt;
@@ -89,9 +80,8 @@ module TLAtomicAutomata_1(
   wire        cam_free_0 = cam_s_0_state == 2'h0;
   wire        winner_0 = cam_s_0_state == 2'h2;
   wire        _a_canArithmetic_T_3 = auto_in_a_bits_size < 4'h4;
-  wire [4:0]  _GEN = {auto_in_a_bits_address[28:27], auto_in_a_bits_address[25], auto_in_a_bits_address[16], ~(auto_in_a_bits_address[12])};
-  wire [4:0]  _GEN_0 = {auto_in_a_bits_address[28:27] ^ 2'h2, auto_in_a_bits_address[25], auto_in_a_bits_address[16], auto_in_a_bits_address[12]};
-  wire        a_isSupported = auto_in_a_bits_opcode == 3'h3 ? _a_canArithmetic_T_3 & (~(|_GEN) | ~(|_GEN_0)) : auto_in_a_bits_opcode != 3'h2 | _a_canArithmetic_T_3 & (~(|_GEN) | ~(|_GEN_0));
+  wire [4:0]  _GEN = {auto_in_a_bits_address[27], auto_in_a_bits_address[25], auto_in_a_bits_address[20], auto_in_a_bits_address[16], ~(auto_in_a_bits_address[12])};
+  wire        a_isSupported = auto_in_a_bits_opcode == 3'h3 ? _a_canArithmetic_T_3 & ~(|_GEN) : auto_in_a_bits_opcode != 3'h2 | _a_canArithmetic_T_3 & ~(|_GEN);
   wire [3:0]  _logic_out_T = cam_a_0_lut >> {2'h0, cam_a_0_bits_data[0], cam_d_0_data[0]};
   wire [3:0]  _logic_out_T_2 = cam_a_0_lut >> {2'h0, cam_a_0_bits_data[1], cam_d_0_data[1]};
   wire [3:0]  _logic_out_T_4 = cam_a_0_lut >> {2'h0, cam_a_0_bits_data[2], cam_d_0_data[2]};
@@ -156,18 +146,18 @@ module TLAtomicAutomata_1(
   wire [3:0]  _logic_out_T_122 = cam_a_0_lut >> {2'h0, cam_a_0_bits_data[61], cam_d_0_data[61]};
   wire [3:0]  _logic_out_T_124 = cam_a_0_lut >> {2'h0, cam_a_0_bits_data[62], cam_d_0_data[62]};
   wire [3:0]  _logic_out_T_126 = cam_a_0_lut >> {2'h0, cam_a_0_bits_data[63], cam_d_0_data[63]};
-  wire [6:0]  _GEN_1 = ~(cam_a_0_bits_mask[6:0]) | cam_a_0_bits_mask[7:1];
-  wire [6:0]  _signbit_a_T = {cam_a_0_bits_data[55], cam_a_0_bits_data[47], cam_a_0_bits_data[39], cam_a_0_bits_data[31], cam_a_0_bits_data[23], cam_a_0_bits_data[15], cam_a_0_bits_data[7]} & ~_GEN_1;
-  wire [6:0]  _signbit_d_T = {cam_d_0_data[55], cam_d_0_data[47], cam_d_0_data[39], cam_d_0_data[31], cam_d_0_data[23], cam_d_0_data[15], cam_d_0_data[7]} & ~_GEN_1;
-  wire [5:0]  _GEN_2 = _signbit_a_T[6:1] | _signbit_a_T[5:0];
-  wire [3:0]  _GEN_3 = _GEN_2[5:2] | _GEN_2[3:0];
-  wire        _signext_a_T_24 = _GEN_2[1] | _signbit_a_T[0];
-  wire [5:0]  _GEN_4 = _signbit_d_T[6:1] | _signbit_d_T[5:0];
-  wire [3:0]  _GEN_5 = _GEN_4[5:2] | _GEN_4[3:0];
-  wire        _signext_d_T_24 = _GEN_4[1] | _signbit_d_T[0];
+  wire [6:0]  _GEN_0 = ~(cam_a_0_bits_mask[6:0]) | cam_a_0_bits_mask[7:1];
+  wire [6:0]  _signbit_a_T = {cam_a_0_bits_data[55], cam_a_0_bits_data[47], cam_a_0_bits_data[39], cam_a_0_bits_data[31], cam_a_0_bits_data[23], cam_a_0_bits_data[15], cam_a_0_bits_data[7]} & ~_GEN_0;
+  wire [6:0]  _signbit_d_T = {cam_d_0_data[55], cam_d_0_data[47], cam_d_0_data[39], cam_d_0_data[31], cam_d_0_data[23], cam_d_0_data[15], cam_d_0_data[7]} & ~_GEN_0;
+  wire [5:0]  _GEN_1 = _signbit_a_T[6:1] | _signbit_a_T[5:0];
+  wire [3:0]  _GEN_2 = _GEN_1[5:2] | _GEN_1[3:0];
+  wire        _signext_a_T_24 = _GEN_1[1] | _signbit_a_T[0];
+  wire [5:0]  _GEN_3 = _signbit_d_T[6:1] | _signbit_d_T[5:0];
+  wire [3:0]  _GEN_4 = _GEN_3[5:2] | _GEN_3[3:0];
+  wire        _signext_d_T_24 = _GEN_3[1] | _signbit_d_T[0];
   wire [63:0] wide_mask = {{8{cam_a_0_bits_mask[7]}}, {8{cam_a_0_bits_mask[6]}}, {8{cam_a_0_bits_mask[5]}}, {8{cam_a_0_bits_mask[4]}}, {8{cam_a_0_bits_mask[3]}}, {8{cam_a_0_bits_mask[2]}}, {8{cam_a_0_bits_mask[1]}}, {8{cam_a_0_bits_mask[0]}}};
-  wire [63:0] a_a_ext = cam_a_0_bits_data & wide_mask | {{8{_GEN_3[3] | _signext_a_T_24}}, {8{_GEN_3[2] | _GEN_2[0]}}, {8{_GEN_3[1] | _signbit_a_T[0]}}, {8{_GEN_3[0]}}, {8{_signext_a_T_24}}, {8{_GEN_2[0]}}, {8{_signbit_a_T[0]}}, 8'h0};
-  wire [63:0] a_d_ext = cam_d_0_data & wide_mask | {{8{_GEN_5[3] | _signext_d_T_24}}, {8{_GEN_5[2] | _GEN_4[0]}}, {8{_GEN_5[1] | _signbit_d_T[0]}}, {8{_GEN_5[0]}}, {8{_signext_d_T_24}}, {8{_GEN_4[0]}}, {8{_signbit_d_T[0]}}, 8'h0};
+  wire [63:0] a_a_ext = cam_a_0_bits_data & wide_mask | {{8{_GEN_2[3] | _signext_a_T_24}}, {8{_GEN_2[2] | _GEN_1[0]}}, {8{_GEN_2[1] | _signbit_a_T[0]}}, {8{_GEN_2[0]}}, {8{_signext_a_T_24}}, {8{_GEN_1[0]}}, {8{_signbit_a_T[0]}}, 8'h0};
+  wire [63:0] a_d_ext = cam_d_0_data & wide_mask | {{8{_GEN_4[3] | _signext_d_T_24}}, {8{_GEN_4[2] | _GEN_3[0]}}, {8{_GEN_4[1] | _signbit_d_T[0]}}, {8{_GEN_4[0]}}, {8{_signext_d_T_24}}, {8{_GEN_3[0]}}, {8{_signbit_d_T[0]}}, 8'h0};
   wire [63:0] _adder_out_T = a_a_ext + ({64{~(cam_a_0_bits_param[2])}} ^ a_d_ext);
   wire        a_allow = ~((&cam_s_0_state) | winner_0) & (a_isSupported | cam_free_0);
   wire        nodeIn_a_ready = source_i_ready & a_allow;
@@ -237,9 +227,9 @@ module TLAtomicAutomata_1(
   wire        nodeIn_d_bits_denied = d_replace & cam_d_0_denied | auto_out_d_bits_denied;
   wire [26:0] _decode_T_1 = 27'hFFF << auto_in_a_bits_size;
   wire [26:0] _d_first_beats1_decode_T_1 = 27'hFFF << auto_out_d_bits_size;
-  wire        _GEN_6 = source_i_ready & source_i_valid & ~a_isSupported & cam_free_0;
+  wire        _GEN_5 = source_i_ready & source_i_valid & ~a_isSupported & cam_free_0;
   wire        _d_first_T = nodeOut_d_ready & auto_out_d_valid;
-  wire        _GEN_7 = _d_first_T & d_first;
+  wire        _GEN_6 = _d_first_T & d_first;
   always @(posedge clock) begin
     if (reset) begin
       cam_s_0_state <= 2'h0;
@@ -249,11 +239,11 @@ module TLAtomicAutomata_1(
       d_first_counter <= 9'h0;
     end
     else begin
-      if (_GEN_7 & d_cam_sel_0)
+      if (_GEN_6 & d_cam_sel_0)
         cam_s_0_state <= {d_ackd, 1'h0};
       else if (auto_out_a_ready & (idle | state_0) & winner_0)
         cam_s_0_state <= 2'h1;
-      else if (_GEN_6)
+      else if (_GEN_5)
         cam_s_0_state <= 2'h3;
       if (idle & auto_out_a_ready)
         beatsLeft <= winner_1 & ~(auto_in_a_bits_opcode[2]) ? ~(_decode_T_1[11:3]) : 9'h0;
@@ -270,7 +260,7 @@ module TLAtomicAutomata_1(
           d_first_counter <= d_first_counter - 9'h1;
       end
     end
-    if (_GEN_6) begin
+    if (_GEN_5) begin
       cam_a_0_bits_opcode <= auto_in_a_bits_opcode;
       cam_a_0_bits_param <= auto_in_a_bits_param;
       cam_a_0_bits_size <= auto_in_a_bits_size;
@@ -281,13 +271,13 @@ module TLAtomicAutomata_1(
       cam_a_0_bits_corrupt <= auto_in_a_bits_corrupt;
       cam_a_0_lut <= casez_tmp;
     end
-    if (_GEN_7 & d_cam_sel_0 & d_ackd) begin
+    if (_GEN_6 & d_cam_sel_0 & d_ackd) begin
       cam_d_0_data <= auto_out_d_bits_data;
       cam_d_0_denied <= auto_out_d_bits_denied;
       cam_d_0_corrupt <= auto_out_d_bits_corrupt;
     end
   end // always @(posedge)
-  TLMonitor_19 monitor (
+  TLMonitor_15 monitor (
     .clock                (clock),
     .reset                (reset),
     .io_in_a_ready        (nodeIn_a_ready),
@@ -323,8 +313,8 @@ module TLAtomicAutomata_1(
   assign auto_out_a_bits_opcode = muxState_1 ? (a_isSupported ? auto_in_a_bits_opcode : 3'h4) : 3'h0;
   assign auto_out_a_bits_param = muxState_1 & a_isSupported ? auto_in_a_bits_param : 3'h0;
   assign auto_out_a_bits_size = (muxState_0 ? cam_a_0_bits_size : 4'h0) | (muxState_1 ? auto_in_a_bits_size : 4'h0);
-  assign auto_out_a_bits_source = (muxState_0 ? cam_a_0_bits_source : 7'h0) | (muxState_1 ? auto_in_a_bits_source : 7'h0);
-  assign auto_out_a_bits_address = (muxState_0 ? cam_a_0_bits_address : 29'h0) | (muxState_1 ? auto_in_a_bits_address : 29'h0);
+  assign auto_out_a_bits_source = (muxState_0 ? cam_a_0_bits_source : 6'h0) | (muxState_1 ? auto_in_a_bits_source : 6'h0);
+  assign auto_out_a_bits_address = (muxState_0 ? cam_a_0_bits_address : 28'h0) | (muxState_1 ? auto_in_a_bits_address : 28'h0);
   assign auto_out_a_bits_mask = (muxState_0 ? {source_c_bits_a_mask_acc_5 | source_c_bits_a_mask_eq_5 & cam_a_0_bits_address[0], source_c_bits_a_mask_acc_5 | source_c_bits_a_mask_eq_5 & ~(cam_a_0_bits_address[0]), source_c_bits_a_mask_acc_4 | source_c_bits_a_mask_eq_4 & cam_a_0_bits_address[0], source_c_bits_a_mask_acc_4 | source_c_bits_a_mask_eq_4 & ~(cam_a_0_bits_address[0]), source_c_bits_a_mask_acc_3 | source_c_bits_a_mask_eq_3 & cam_a_0_bits_address[0], source_c_bits_a_mask_acc_3 | source_c_bits_a_mask_eq_3 & ~(cam_a_0_bits_address[0]), source_c_bits_a_mask_acc_2 | source_c_bits_a_mask_eq_2 & cam_a_0_bits_address[0], source_c_bits_a_mask_acc_2 | source_c_bits_a_mask_eq_2 & ~(cam_a_0_bits_address[0])} : 8'h0) | (muxState_1 ? auto_in_a_bits_mask : 8'h0);
   assign auto_out_a_bits_data = (muxState_0 ? (cam_a_0_bits_opcode[0] ? {_logic_out_T_126[0], _logic_out_T_124[0], _logic_out_T_122[0], _logic_out_T_120[0], _logic_out_T_118[0], _logic_out_T_116[0], _logic_out_T_114[0], _logic_out_T_112[0], _logic_out_T_110[0], _logic_out_T_108[0], _logic_out_T_106[0], _logic_out_T_104[0], _logic_out_T_102[0], _logic_out_T_100[0], _logic_out_T_98[0], _logic_out_T_96[0], _logic_out_T_94[0], _logic_out_T_92[0], _logic_out_T_90[0], _logic_out_T_88[0], _logic_out_T_86[0], _logic_out_T_84[0], _logic_out_T_82[0], _logic_out_T_80[0], _logic_out_T_78[0], _logic_out_T_76[0], _logic_out_T_74[0], _logic_out_T_72[0], _logic_out_T_70[0], _logic_out_T_68[0], _logic_out_T_66[0], _logic_out_T_64[0], _logic_out_T_62[0], _logic_out_T_60[0], _logic_out_T_58[0], _logic_out_T_56[0], _logic_out_T_54[0], _logic_out_T_52[0], _logic_out_T_50[0], _logic_out_T_48[0], _logic_out_T_46[0], _logic_out_T_44[0], _logic_out_T_42[0], _logic_out_T_40[0], _logic_out_T_38[0], _logic_out_T_36[0], _logic_out_T_34[0], _logic_out_T_32[0], _logic_out_T_30[0], _logic_out_T_28[0], _logic_out_T_26[0], _logic_out_T_24[0], _logic_out_T_22[0], _logic_out_T_20[0], _logic_out_T_18[0], _logic_out_T_16[0], _logic_out_T_14[0], _logic_out_T_12[0], _logic_out_T_10[0], _logic_out_T_8[0], _logic_out_T_6[0], _logic_out_T_4[0], _logic_out_T_2[0], _logic_out_T[0]} : cam_a_0_bits_param[2] ? _adder_out_T : cam_a_0_bits_param[0] == (a_a_ext[63] == a_d_ext[63] ? ~(_adder_out_T[63]) : cam_a_0_bits_param[1] == a_a_ext[63]) ? cam_a_0_bits_data : cam_d_0_data) : 64'h0) | (muxState_1 ? auto_in_a_bits_data : 64'h0);
   assign auto_out_a_bits_corrupt = muxState_0 & (cam_a_0_bits_corrupt | cam_d_0_corrupt) | muxState_1 & auto_in_a_bits_corrupt;

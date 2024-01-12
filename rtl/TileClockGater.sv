@@ -1,14 +1,5 @@
 // Standard header to adapt well known macros for prints and assertions.
 
-// Users can define 'PRINTF_COND' to add an extra gate to prints.
-`ifndef PRINTF_COND_
-  `ifdef PRINTF_COND
-    `define PRINTF_COND_ (`PRINTF_COND)
-  `else  // PRINTF_COND
-    `define PRINTF_COND_ 1
-  `endif // PRINTF_COND
-`endif // not def PRINTF_COND_
-
 // Users can define 'ASSERT_VERBOSE_COND' to add an extra gate to assert error printing.
 `ifndef ASSERT_VERBOSE_COND_
   `ifdef ASSERT_VERBOSE_COND
@@ -35,7 +26,7 @@ module TileClockGater(
   input  [2:0]  auto_clock_gater_in_1_a_bits_opcode,
                 auto_clock_gater_in_1_a_bits_param,
   input  [1:0]  auto_clock_gater_in_1_a_bits_size,
-  input  [10:0] auto_clock_gater_in_1_a_bits_source,
+  input  [9:0]  auto_clock_gater_in_1_a_bits_source,
   input  [20:0] auto_clock_gater_in_1_a_bits_address,
   input  [7:0]  auto_clock_gater_in_1_a_bits_mask,
   input  [63:0] auto_clock_gater_in_1_a_bits_data,
@@ -44,7 +35,7 @@ module TileClockGater(
   output        auto_clock_gater_in_1_d_valid,
   output [2:0]  auto_clock_gater_in_1_d_bits_opcode,
   output [1:0]  auto_clock_gater_in_1_d_bits_size,
-  output [10:0] auto_clock_gater_in_1_d_bits_source,
+  output [9:0]  auto_clock_gater_in_1_d_bits_source,
   output [63:0] auto_clock_gater_in_1_d_bits_data,
   input         auto_clock_gater_in_0_member_allClocks_uncore_clock,
                 auto_clock_gater_in_0_member_allClocks_uncore_reset,
@@ -58,7 +49,7 @@ module TileClockGater(
   wire       _out_out_bits_data_T_1 = auto_clock_gater_in_1_a_bits_address[11:3] == 9'h0;
   assign _out_wofireMux_T_1 = ~out_front_bits_read;
   wire [2:0] clock_gaterIn_1_d_bits_opcode = {2'h0, out_front_bits_read};
-  TLMonitor_60 monitor (
+  TLMonitor_46 monitor (
     .clock                (clock),
     .reset                (reset),
     .io_in_a_ready        (auto_clock_gater_in_1_d_ready),

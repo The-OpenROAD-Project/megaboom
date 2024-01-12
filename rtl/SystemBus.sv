@@ -1,14 +1,5 @@
 // Standard header to adapt well known macros for prints and assertions.
 
-// Users can define 'PRINTF_COND' to add an extra gate to prints.
-`ifndef PRINTF_COND_
-  `ifdef PRINTF_COND
-    `define PRINTF_COND_ (`PRINTF_COND)
-  `else  // PRINTF_COND
-    `define PRINTF_COND_ 1
-  `endif // PRINTF_COND
-`endif // not def PRINTF_COND_
-
 // Users can define 'ASSERT_VERBOSE_COND' to add an extra gate to assert error printing.
 `ifndef ASSERT_VERBOSE_COND_
   `ifdef ASSERT_VERBOSE_COND
@@ -57,12 +48,12 @@ module SystemBus(
   output [1:0]  auto_coupler_from_boom_tile_tl_master_clock_xing_in_d_bits_param,
   output [3:0]  auto_coupler_from_boom_tile_tl_master_clock_xing_in_d_bits_size,
   output [4:0]  auto_coupler_from_boom_tile_tl_master_clock_xing_in_d_bits_source,
-  output [2:0]  auto_coupler_from_boom_tile_tl_master_clock_xing_in_d_bits_sink,
+  output [1:0]  auto_coupler_from_boom_tile_tl_master_clock_xing_in_d_bits_sink,
   output        auto_coupler_from_boom_tile_tl_master_clock_xing_in_d_bits_denied,
   output [63:0] auto_coupler_from_boom_tile_tl_master_clock_xing_in_d_bits_data,
   output        auto_coupler_from_boom_tile_tl_master_clock_xing_in_d_bits_corrupt,
   input         auto_coupler_from_boom_tile_tl_master_clock_xing_in_e_valid,
-  input  [2:0]  auto_coupler_from_boom_tile_tl_master_clock_xing_in_e_bits_sink,
+  input  [1:0]  auto_coupler_from_boom_tile_tl_master_clock_xing_in_e_bits_sink,
   input         auto_coupler_to_bus_named_subsystem_l2_widget_out_a_ready,
   output        auto_coupler_to_bus_named_subsystem_l2_widget_out_a_valid,
   output [2:0]  auto_coupler_to_bus_named_subsystem_l2_widget_out_a_bits_opcode,
@@ -92,12 +83,12 @@ module SystemBus(
   input  [1:0]  auto_coupler_to_bus_named_subsystem_l2_widget_out_d_bits_param,
   input  [2:0]  auto_coupler_to_bus_named_subsystem_l2_widget_out_d_bits_size,
   input  [5:0]  auto_coupler_to_bus_named_subsystem_l2_widget_out_d_bits_source,
-  input  [2:0]  auto_coupler_to_bus_named_subsystem_l2_widget_out_d_bits_sink,
+  input  [1:0]  auto_coupler_to_bus_named_subsystem_l2_widget_out_d_bits_sink,
   input         auto_coupler_to_bus_named_subsystem_l2_widget_out_d_bits_denied,
   input  [63:0] auto_coupler_to_bus_named_subsystem_l2_widget_out_d_bits_data,
   input         auto_coupler_to_bus_named_subsystem_l2_widget_out_d_bits_corrupt,
   output        auto_coupler_to_bus_named_subsystem_l2_widget_out_e_valid,
-  output [2:0]  auto_coupler_to_bus_named_subsystem_l2_widget_out_e_bits_sink,
+  output [1:0]  auto_coupler_to_bus_named_subsystem_l2_widget_out_e_bits_sink,
   output        auto_coupler_from_bus_named_subsystem_fbus_bus_xing_in_a_ready,
   input         auto_coupler_from_bus_named_subsystem_fbus_bus_xing_in_a_valid,
   input  [2:0]  auto_coupler_from_bus_named_subsystem_fbus_bus_xing_in_a_bits_opcode,
@@ -114,7 +105,7 @@ module SystemBus(
   output [1:0]  auto_coupler_from_bus_named_subsystem_fbus_bus_xing_in_d_bits_param,
   output [3:0]  auto_coupler_from_bus_named_subsystem_fbus_bus_xing_in_d_bits_size,
                 auto_coupler_from_bus_named_subsystem_fbus_bus_xing_in_d_bits_source,
-  output [2:0]  auto_coupler_from_bus_named_subsystem_fbus_bus_xing_in_d_bits_sink,
+  output [1:0]  auto_coupler_from_bus_named_subsystem_fbus_bus_xing_in_d_bits_sink,
   output        auto_coupler_from_bus_named_subsystem_fbus_bus_xing_in_d_bits_denied,
   output [63:0] auto_coupler_from_bus_named_subsystem_fbus_bus_xing_in_d_bits_data,
   output        auto_coupler_from_bus_named_subsystem_fbus_bus_xing_in_d_bits_corrupt,
@@ -124,7 +115,7 @@ module SystemBus(
                 auto_coupler_to_bus_named_subsystem_cbus_bus_xing_out_a_bits_param,
   output [3:0]  auto_coupler_to_bus_named_subsystem_cbus_bus_xing_out_a_bits_size,
   output [5:0]  auto_coupler_to_bus_named_subsystem_cbus_bus_xing_out_a_bits_source,
-  output [28:0] auto_coupler_to_bus_named_subsystem_cbus_bus_xing_out_a_bits_address,
+  output [27:0] auto_coupler_to_bus_named_subsystem_cbus_bus_xing_out_a_bits_address,
   output [7:0]  auto_coupler_to_bus_named_subsystem_cbus_bus_xing_out_a_bits_mask,
   output [63:0] auto_coupler_to_bus_named_subsystem_cbus_bus_xing_out_a_bits_data,
   output        auto_coupler_to_bus_named_subsystem_cbus_bus_xing_out_a_bits_corrupt,
@@ -168,7 +159,7 @@ module SystemBus(
   wire        _fixer_auto_out_1_c_bits_corrupt;
   wire        _fixer_auto_out_1_d_ready;
   wire        _fixer_auto_out_1_e_valid;
-  wire [2:0]  _fixer_auto_out_1_e_bits_sink;
+  wire [1:0]  _fixer_auto_out_1_e_bits_sink;
   wire        _fixer_auto_out_0_a_valid;
   wire [2:0]  _fixer_auto_out_0_a_bits_opcode;
   wire [2:0]  _fixer_auto_out_0_a_bits_param;
@@ -189,7 +180,7 @@ module SystemBus(
   wire [1:0]  _system_bus_xbar_auto_in_1_d_bits_param;
   wire [3:0]  _system_bus_xbar_auto_in_1_d_bits_size;
   wire [4:0]  _system_bus_xbar_auto_in_1_d_bits_source;
-  wire [2:0]  _system_bus_xbar_auto_in_1_d_bits_sink;
+  wire [1:0]  _system_bus_xbar_auto_in_1_d_bits_sink;
   wire        _system_bus_xbar_auto_in_1_d_bits_denied;
   wire [63:0] _system_bus_xbar_auto_in_1_d_bits_data;
   wire        _system_bus_xbar_auto_in_1_d_bits_corrupt;
@@ -199,7 +190,7 @@ module SystemBus(
   wire [1:0]  _system_bus_xbar_auto_in_0_d_bits_param;
   wire [3:0]  _system_bus_xbar_auto_in_0_d_bits_size;
   wire [3:0]  _system_bus_xbar_auto_in_0_d_bits_source;
-  wire [2:0]  _system_bus_xbar_auto_in_0_d_bits_sink;
+  wire [1:0]  _system_bus_xbar_auto_in_0_d_bits_sink;
   wire        _system_bus_xbar_auto_in_0_d_bits_denied;
   wire [63:0] _system_bus_xbar_auto_in_0_d_bits_data;
   wire        _system_bus_xbar_auto_in_0_d_bits_corrupt;

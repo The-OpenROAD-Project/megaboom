@@ -1,14 +1,5 @@
 // Standard header to adapt well known macros for prints and assertions.
 
-// Users can define 'PRINTF_COND' to add an extra gate to prints.
-`ifndef PRINTF_COND_
-  `ifdef PRINTF_COND
-    `define PRINTF_COND_ (`PRINTF_COND)
-  `else  // PRINTF_COND
-    `define PRINTF_COND_ 1
-  `endif // PRINTF_COND
-`endif // not def PRINTF_COND_
-
 // Users can define 'ASSERT_VERBOSE_COND' to add an extra gate to assert error printing.
 `ifndef ASSERT_VERBOSE_COND_
   `ifdef ASSERT_VERBOSE_COND
@@ -37,12 +28,11 @@ module TestHarness(
   wire        _source_1_clk;
   wire        _source_clk;
   wire        _harnessBinderReset_catcher_io_sync_reset;
-  wire [31:0] _plusarg_reader_1_out;
+  wire [31:0] _plusarg_reader_out;
   wire        _jtag_jtag_TCK;
   wire        _jtag_jtag_TMS;
   wire        _jtag_jtag_TDI;
   wire [31:0] _jtag_exit;
-  wire        _plusarg_reader_out;
   wire        _tsi_tsi_in_valid;
   wire [31:0] _tsi_tsi_in_bits;
   wire        _tsi_tsi_out_ready;
@@ -53,12 +43,10 @@ module TestHarness(
   wire        _ram_io_tsi_in_ready;
   wire        _ram_io_tsi_out_valid;
   wire [31:0] _ram_io_tsi_out_bits;
-  wire        _uart_sim_uartno0_io_uart_rxd;
   wire        _chiptop0_serial_tl_0_bits_in_ready;
   wire        _chiptop0_serial_tl_0_bits_out_valid;
   wire [3:0]  _chiptop0_serial_tl_0_bits_out_bits;
   wire        _chiptop0_jtag_TDO;
-  wire        _chiptop0_uart_0_txd;
   assign dtm_success = _jtag_exit == 32'h1;
   `ifndef SYNTHESIS
     always @(posedge _source_1_clk) begin
@@ -86,19 +74,10 @@ module TestHarness(
     .serial_tl_0_bits_out_ready (_ram_io_ser_out_ready),
     .serial_tl_0_bits_out_valid (_chiptop0_serial_tl_0_bits_out_valid),
     .serial_tl_0_bits_out_bits  (_chiptop0_serial_tl_0_bits_out_bits),
-    .custom_boot                (_plusarg_reader_out),
     .jtag_TCK                   (_jtag_jtag_TCK),
     .jtag_TMS                   (_jtag_jtag_TMS),
     .jtag_TDI                   (_jtag_jtag_TDI),
-    .jtag_TDO                   (_chiptop0_jtag_TDO),
-    .uart_0_txd                 (_chiptop0_uart_0_txd),
-    .uart_0_rxd                 (_uart_sim_uartno0_io_uart_rxd)
-  );
-  UARTAdapter uart_sim_uartno0 (
-    .clock       (_source_1_clk),
-    .reset       (_harnessBinderReset_catcher_io_sync_reset),
-    .io_uart_txd (_chiptop0_uart_0_txd),
-    .io_uart_rxd (_uart_sim_uartno0_io_uart_rxd)
+    .jtag_TDO                   (_chiptop0_jtag_TDO)
   );
   SerialRAM ram (
     .clock            (_source_1_clk),
@@ -127,13 +106,6 @@ module TestHarness(
     .tsi_out_bits  (_ram_io_tsi_out_bits),
     .exit          (_tsi_exit)
   );
-  plusarg_reader #(
-    .DEFAULT(0),
-    .FORMAT("custom_boot_pin=%d"),
-    .WIDTH(1)
-  ) plusarg_reader (
-    .out (_plusarg_reader_out)
-  );
   SimJTAG #(
     .TICK_DELAY(3)
   ) jtag (
@@ -145,7 +117,7 @@ module TestHarness(
     .jtag_TDI        (_jtag_jtag_TDI),
     .jtag_TDO_data   (_chiptop0_jtag_TDO),
     .jtag_TDO_driven (1'h1),
-    .enable          (_plusarg_reader_1_out[0]),
+    .enable          (_plusarg_reader_out[0]),
     .init_done       (~_harnessBinderReset_catcher_io_sync_reset),
     .exit            (_jtag_exit)
   );
@@ -153,8 +125,8 @@ module TestHarness(
     .DEFAULT(0),
     .FORMAT("jtag_rbb_enable=%d"),
     .WIDTH(32)
-  ) plusarg_reader_1 (
-    .out (_plusarg_reader_1_out)
+  ) plusarg_reader (
+    .out (_plusarg_reader_out)
   );
   ResetCatchAndSync_d3 harnessBinderReset_catcher (
     .clock         (_source_1_clk),

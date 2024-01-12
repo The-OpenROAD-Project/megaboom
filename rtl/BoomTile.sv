@@ -1,14 +1,5 @@
 // Standard header to adapt well known macros for prints and assertions.
 
-// Users can define 'PRINTF_COND' to add an extra gate to prints.
-`ifndef PRINTF_COND_
-  `ifdef PRINTF_COND
-    `define PRINTF_COND_ (`PRINTF_COND)
-  `else  // PRINTF_COND
-    `define PRINTF_COND_ 1
-  `endif // PRINTF_COND
-`endif // not def PRINTF_COND_
-
 // Users can define 'ASSERT_VERBOSE_COND' to add an extra gate to assert error printing.
 `ifndef ASSERT_VERBOSE_COND_
   `ifdef ASSERT_VERBOSE_COND
@@ -62,16 +53,14 @@ module BoomTile(
   input  [1:0]  auto_buffer_out_d_bits_param,
   input  [3:0]  auto_buffer_out_d_bits_size,
   input  [4:0]  auto_buffer_out_d_bits_source,
-  input  [2:0]  auto_buffer_out_d_bits_sink,
+  input  [1:0]  auto_buffer_out_d_bits_sink,
   input         auto_buffer_out_d_bits_denied,
   input  [63:0] auto_buffer_out_d_bits_data,
   input         auto_buffer_out_d_bits_corrupt,
                 auto_buffer_out_e_ready,
   output        auto_buffer_out_e_valid,
-  output [2:0]  auto_buffer_out_e_bits_sink,
-  input         auto_int_local_in_3_0,
-                auto_int_local_in_2_0,
-                auto_int_local_in_1_0,
+  output [1:0]  auto_buffer_out_e_bits_sink,
+  input         auto_int_local_in_1_0,
                 auto_int_local_in_1_1,
                 auto_int_local_in_0_0,
                 auto_hartid_in
@@ -1203,7 +1192,7 @@ module BoomTile(
   wire [127:0] _dcache_auto_out_c_bits_data;
   wire         _dcache_auto_out_d_ready;
   wire         _dcache_auto_out_e_valid;
-  wire [2:0]   _dcache_auto_out_e_bits_sink;
+  wire [1:0]   _dcache_auto_out_e_bits_sink;
   wire         _dcache_io_lsu_req_ready;
   wire         _dcache_io_lsu_resp_0_valid;
   wire [4:0]   _dcache_io_lsu_resp_0_bits_uop_ldq_idx;
@@ -1248,7 +1237,7 @@ module BoomTile(
   wire [1:0]   _widget_auto_in_d_bits_param;
   wire [3:0]   _widget_auto_in_d_bits_size;
   wire [3:0]   _widget_auto_in_d_bits_source;
-  wire [2:0]   _widget_auto_in_d_bits_sink;
+  wire [1:0]   _widget_auto_in_d_bits_sink;
   wire [127:0] _widget_auto_in_d_bits_data;
   wire         _widget_auto_in_e_ready;
   wire         _widget_auto_out_a_valid;
@@ -1269,18 +1258,16 @@ module BoomTile(
   wire [63:0]  _widget_auto_out_c_bits_data;
   wire         _widget_auto_out_d_ready;
   wire         _widget_auto_out_e_valid;
-  wire [2:0]   _widget_auto_out_e_bits_sink;
+  wire [1:0]   _widget_auto_out_e_bits_sink;
   wire         _intXbar_auto_int_out_0;
   wire         _intXbar_auto_int_out_1;
   wire         _intXbar_auto_int_out_2;
-  wire         _intXbar_auto_int_out_3;
-  wire         _intXbar_auto_int_out_4;
   wire         _tlMasterXbar_auto_in_1_a_ready;
   wire         _tlMasterXbar_auto_in_1_d_valid;
   wire [2:0]   _tlMasterXbar_auto_in_1_d_bits_opcode;
   wire [1:0]   _tlMasterXbar_auto_in_1_d_bits_param;
   wire [3:0]   _tlMasterXbar_auto_in_1_d_bits_size;
-  wire [2:0]   _tlMasterXbar_auto_in_1_d_bits_sink;
+  wire [1:0]   _tlMasterXbar_auto_in_1_d_bits_sink;
   wire         _tlMasterXbar_auto_in_1_d_bits_denied;
   wire [63:0]  _tlMasterXbar_auto_in_1_d_bits_data;
   wire         _tlMasterXbar_auto_in_1_d_bits_corrupt;
@@ -1298,7 +1285,7 @@ module BoomTile(
   wire [1:0]   _tlMasterXbar_auto_in_0_d_bits_param;
   wire [3:0]   _tlMasterXbar_auto_in_0_d_bits_size;
   wire [3:0]   _tlMasterXbar_auto_in_0_d_bits_source;
-  wire [2:0]   _tlMasterXbar_auto_in_0_d_bits_sink;
+  wire [1:0]   _tlMasterXbar_auto_in_0_d_bits_sink;
   wire         _tlMasterXbar_auto_in_0_d_bits_denied;
   wire [63:0]  _tlMasterXbar_auto_in_0_d_bits_data;
   wire         _tlMasterXbar_auto_in_0_d_bits_corrupt;
@@ -1396,16 +1383,12 @@ module BoomTile(
     .auto_out_e_bits_sink     (auto_buffer_out_e_bits_sink)
   );
   IntXbar_1 intXbar (
-    .auto_int_in_3_0 (auto_int_local_in_3_0),
-    .auto_int_in_2_0 (auto_int_local_in_2_0),
     .auto_int_in_1_0 (auto_int_local_in_1_0),
     .auto_int_in_1_1 (auto_int_local_in_1_1),
     .auto_int_in_0_0 (auto_int_local_in_0_0),
     .auto_int_out_0  (_intXbar_auto_int_out_0),
     .auto_int_out_1  (_intXbar_auto_int_out_1),
-    .auto_int_out_2  (_intXbar_auto_int_out_2),
-    .auto_int_out_3  (_intXbar_auto_int_out_3),
-    .auto_int_out_4  (_intXbar_auto_int_out_4)
+    .auto_int_out_2  (_intXbar_auto_int_out_2)
   );
   TLWidthWidget_9 widget (
     .clock                   (clock),
@@ -1952,8 +1935,6 @@ module BoomTile(
     .io_interrupts_debug                                (_intXbar_auto_int_out_0),
     .io_interrupts_mtip                                 (_intXbar_auto_int_out_2),
     .io_interrupts_msip                                 (_intXbar_auto_int_out_1),
-    .io_interrupts_meip                                 (_intXbar_auto_int_out_3),
-    .io_interrupts_seip                                 (_intXbar_auto_int_out_4),
     .io_ifu_fetchpacket_ready                           (_core_io_ifu_fetchpacket_ready),
     .io_ifu_fetchpacket_valid                           (_frontend_io_cpu_fetchpacket_valid),
     .io_ifu_fetchpacket_bits_uops_0_valid               (_frontend_io_cpu_fetchpacket_bits_uops_0_valid),

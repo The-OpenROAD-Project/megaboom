@@ -1,14 +1,5 @@
 // Standard header to adapt well known macros for prints and assertions.
 
-// Users can define 'PRINTF_COND' to add an extra gate to prints.
-`ifndef PRINTF_COND_
-  `ifdef PRINTF_COND
-    `define PRINTF_COND_ (`PRINTF_COND)
-  `else  // PRINTF_COND
-    `define PRINTF_COND_ 1
-  `endif // PRINTF_COND
-`endif // not def PRINTF_COND_
-
 // Users can define 'ASSERT_VERBOSE_COND' to add an extra gate to assert error printing.
 `ifndef ASSERT_VERBOSE_COND_
   `ifdef ASSERT_VERBOSE_COND
@@ -32,27 +23,20 @@ module Queue_25(
                 reset,
   output        io_enq_ready,
   input         io_enq_valid,
-  input  [2:0]  io_enq_bits_opcode,
   input  [1:0]  io_enq_bits_param,
-  input  [2:0]  io_enq_bits_size,
-                io_enq_bits_source,
-                io_enq_bits_sink,
-  input         io_enq_bits_denied,
-  input  [63:0] io_enq_bits_data,
-  input         io_enq_bits_corrupt,
-                io_deq_ready,
+  input  [32:0] io_enq_bits_address,
+  input         io_deq_ready,
   output        io_deq_valid,
   output [2:0]  io_deq_bits_opcode,
   output [1:0]  io_deq_bits_param,
-  output [2:0]  io_deq_bits_size,
-                io_deq_bits_source,
-                io_deq_bits_sink,
-  output        io_deq_bits_denied,
-  output [63:0] io_deq_bits_data,
+  output [3:0]  io_deq_bits_size,
+  output [4:0]  io_deq_bits_source,
+  output [32:0] io_deq_bits_address,
+  output [7:0]  io_deq_bits_mask,
   output        io_deq_bits_corrupt
 );
 
-  wire [79:0] _ram_ext_R0_data;
+  wire [55:0] _ram_ext_R0_data;
   reg         wrap;
   reg         wrap_1;
   reg         maybe_full;
@@ -76,7 +60,7 @@ module Queue_25(
         maybe_full <= do_enq;
     end
   end // always @(posedge)
-  ram_2x80 ram_ext (
+  ram_2x56 ram_ext (
     .R0_addr (wrap_1),
     .R0_en   (1'h1),
     .R0_clk  (clock),
@@ -84,17 +68,16 @@ module Queue_25(
     .W0_addr (wrap),
     .W0_en   (do_enq),
     .W0_clk  (clock),
-    .W0_data ({io_enq_bits_corrupt, io_enq_bits_data, io_enq_bits_denied, io_enq_bits_sink, io_enq_bits_source, io_enq_bits_size, io_enq_bits_param, io_enq_bits_opcode})
+    .W0_data ({9'hFF, io_enq_bits_address, 9'h6, io_enq_bits_param, 3'h6})
   );
   assign io_enq_ready = ~full;
   assign io_deq_valid = ~empty;
   assign io_deq_bits_opcode = _ram_ext_R0_data[2:0];
   assign io_deq_bits_param = _ram_ext_R0_data[4:3];
-  assign io_deq_bits_size = _ram_ext_R0_data[7:5];
-  assign io_deq_bits_source = _ram_ext_R0_data[10:8];
-  assign io_deq_bits_sink = _ram_ext_R0_data[13:11];
-  assign io_deq_bits_denied = _ram_ext_R0_data[14];
-  assign io_deq_bits_data = _ram_ext_R0_data[78:15];
-  assign io_deq_bits_corrupt = _ram_ext_R0_data[79];
+  assign io_deq_bits_size = _ram_ext_R0_data[8:5];
+  assign io_deq_bits_source = _ram_ext_R0_data[13:9];
+  assign io_deq_bits_address = _ram_ext_R0_data[46:14];
+  assign io_deq_bits_mask = _ram_ext_R0_data[54:47];
+  assign io_deq_bits_corrupt = _ram_ext_R0_data[55];
 endmodule
 

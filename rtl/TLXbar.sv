@@ -1,14 +1,5 @@
 // Standard header to adapt well known macros for prints and assertions.
 
-// Users can define 'PRINTF_COND' to add an extra gate to prints.
-`ifndef PRINTF_COND_
-  `ifdef PRINTF_COND
-    `define PRINTF_COND_ (`PRINTF_COND)
-  `else  // PRINTF_COND
-    `define PRINTF_COND_ 1
-  `endif // PRINTF_COND
-`endif // not def PRINTF_COND_
-
 // Users can define 'ASSERT_VERBOSE_COND' to add an extra gate to assert error printing.
 `ifndef ASSERT_VERBOSE_COND_
   `ifdef ASSERT_VERBOSE_COND
@@ -59,12 +50,12 @@ module TLXbar(
   output [1:0]  auto_in_1_d_bits_param,
   output [3:0]  auto_in_1_d_bits_size,
   output [4:0]  auto_in_1_d_bits_source,
-  output [2:0]  auto_in_1_d_bits_sink,
+  output [1:0]  auto_in_1_d_bits_sink,
   output        auto_in_1_d_bits_denied,
   output [63:0] auto_in_1_d_bits_data,
   output        auto_in_1_d_bits_corrupt,
   input         auto_in_1_e_valid,
-  input  [2:0]  auto_in_1_e_bits_sink,
+  input  [1:0]  auto_in_1_e_bits_sink,
   output        auto_in_0_a_ready,
   input         auto_in_0_a_valid,
   input  [2:0]  auto_in_0_a_bits_opcode,
@@ -81,7 +72,7 @@ module TLXbar(
   output [1:0]  auto_in_0_d_bits_param,
   output [3:0]  auto_in_0_d_bits_size,
                 auto_in_0_d_bits_source,
-  output [2:0]  auto_in_0_d_bits_sink,
+  output [1:0]  auto_in_0_d_bits_sink,
   output        auto_in_0_d_bits_denied,
   output [63:0] auto_in_0_d_bits_data,
   output        auto_in_0_d_bits_corrupt,
@@ -114,19 +105,19 @@ module TLXbar(
   input  [1:0]  auto_out_1_d_bits_param,
   input  [2:0]  auto_out_1_d_bits_size,
   input  [5:0]  auto_out_1_d_bits_source,
-  input  [2:0]  auto_out_1_d_bits_sink,
+  input  [1:0]  auto_out_1_d_bits_sink,
   input         auto_out_1_d_bits_denied,
   input  [63:0] auto_out_1_d_bits_data,
   input         auto_out_1_d_bits_corrupt,
   output        auto_out_1_e_valid,
-  output [2:0]  auto_out_1_e_bits_sink,
+  output [1:0]  auto_out_1_e_bits_sink,
   input         auto_out_0_a_ready,
   output        auto_out_0_a_valid,
   output [2:0]  auto_out_0_a_bits_opcode,
                 auto_out_0_a_bits_param,
   output [3:0]  auto_out_0_a_bits_size,
   output [5:0]  auto_out_0_a_bits_source,
-  output [28:0] auto_out_0_a_bits_address,
+  output [27:0] auto_out_0_a_bits_address,
   output [7:0]  auto_out_0_a_bits_mask,
   output [63:0] auto_out_0_a_bits_data,
   output        auto_out_0_a_bits_corrupt,
@@ -152,12 +143,12 @@ module TLXbar(
   wire        allowed_0;
   wire [5:0]  portsAOI_filtered_1_bits_source = {2'h2, auto_in_0_a_bits_source};
   wire [5:0]  portsAOI_filtered_1_1_bits_source = {1'h0, auto_in_1_a_bits_source};
-  wire [2:0]  portsDIO_filtered_1_bits_sink = {2'h0, auto_out_0_d_bits_sink};
+  wire [1:0]  portsDIO_filtered_1_bits_sink = {1'h0, auto_out_0_d_bits_sink};
   wire [3:0]  portsDIO_filtered_1_1_bits_size = {1'h0, auto_out_1_d_bits_size};
-  wire        requestAIO_0_0 = {auto_in_0_a_bits_address[32:31], auto_in_0_a_bits_address[27:26]} == 4'h0 | {auto_in_0_a_bits_address[32:31], auto_in_0_a_bits_address[27:26], ~(auto_in_0_a_bits_address[16]), auto_in_0_a_bits_address[12]} == 6'h0 | {auto_in_0_a_bits_address[32:31], ~(auto_in_0_a_bits_address[27:26])} == 4'h0;
-  wire        requestAIO_0_1 = {auto_in_0_a_bits_address[32:31], auto_in_0_a_bits_address[27:26] ^ 2'h2, auto_in_0_a_bits_address[16]} == 5'h0 | {auto_in_0_a_bits_address[32], ~(auto_in_0_a_bits_address[31])} == 2'h0 | auto_in_0_a_bits_address[32:31] == 2'h2;
-  wire        requestAIO_1_0 = {auto_in_1_a_bits_address[32:31], auto_in_1_a_bits_address[27:26]} == 4'h0 | {auto_in_1_a_bits_address[32:31], auto_in_1_a_bits_address[27:26], ~(auto_in_1_a_bits_address[16]), auto_in_1_a_bits_address[12]} == 6'h0 | {auto_in_1_a_bits_address[32:31], ~(auto_in_1_a_bits_address[27:26])} == 4'h0;
-  wire        requestAIO_1_1 = {auto_in_1_a_bits_address[32:31], auto_in_1_a_bits_address[27:26] ^ 2'h2, auto_in_1_a_bits_address[16]} == 5'h0 | {auto_in_1_a_bits_address[32], ~(auto_in_1_a_bits_address[31])} == 2'h0 | auto_in_1_a_bits_address[32:31] == 2'h2;
+  wire        requestAIO_0_0 = ~(|(auto_in_0_a_bits_address[32:31])) | ~(|(auto_in_0_a_bits_address[32:31]));
+  wire        requestAIO_0_1 = {auto_in_0_a_bits_address[32], ~(auto_in_0_a_bits_address[31])} == 2'h0 | auto_in_0_a_bits_address[32:31] == 2'h2;
+  wire        requestAIO_1_0 = ~(|(auto_in_1_a_bits_address[32:31])) | ~(|(auto_in_1_a_bits_address[32:31]));
+  wire        requestAIO_1_1 = {auto_in_1_a_bits_address[32], ~(auto_in_1_a_bits_address[31])} == 2'h0 | auto_in_1_a_bits_address[32:31] == 2'h2;
   wire        requestDOI_0_0 = auto_out_0_d_bits_source[5:4] == 2'h2;
   wire        requestDOI_1_0 = auto_out_1_d_bits_source[5:4] == 2'h2;
   wire        portsAOI_filtered_0_valid = auto_in_0_a_valid & requestAIO_0_0;
@@ -220,7 +211,7 @@ module TLXbar(
   wire        in_0_d_valid = idle_2 ? _in_0_d_valid_T : state_2_0 & portsDIO_filtered_0_valid | state_2_1 & portsDIO_filtered_1_0_valid;
   wire        _in_0_d_bits_WIRE_1 = muxState_2_0 & auto_out_0_d_bits_corrupt | muxState_2_1 & auto_out_1_d_bits_corrupt;
   wire        _in_0_d_bits_WIRE_5 = muxState_2_0 & auto_out_0_d_bits_denied | muxState_2_1 & auto_out_1_d_bits_denied;
-  wire [2:0]  _in_0_d_bits_WIRE_6 = (muxState_2_0 ? portsDIO_filtered_1_bits_sink : 3'h0) | (muxState_2_1 ? auto_out_1_d_bits_sink : 3'h0);
+  wire [1:0]  _in_0_d_bits_WIRE_6 = (muxState_2_0 ? portsDIO_filtered_1_bits_sink : 2'h0) | (muxState_2_1 ? auto_out_1_d_bits_sink : 2'h0);
   wire [3:0]  _in_0_d_bits_WIRE_7 = (muxState_2_0 ? auto_out_0_d_bits_source[3:0] : 4'h0) | (muxState_2_1 ? auto_out_1_d_bits_source[3:0] : 4'h0);
   wire [3:0]  _in_0_d_bits_WIRE_8 = (muxState_2_0 ? auto_out_0_d_bits_size : 4'h0) | (muxState_2_1 ? portsDIO_filtered_1_1_bits_size : 4'h0);
   wire [1:0]  _in_0_d_bits_WIRE_9 = (muxState_2_0 ? auto_out_0_d_bits_param : 2'h0) | (muxState_2_1 ? auto_out_1_d_bits_param : 2'h0);
@@ -295,7 +286,7 @@ module TLXbar(
   wire        in_1_d_valid = idle_3 ? _in_1_d_valid_T : state_3_0 & portsDIO_filtered_1_valid | state_3_1 & portsDIO_filtered_1_1_valid;
   wire        _in_1_d_bits_WIRE_1 = muxState_3_0 & auto_out_0_d_bits_corrupt | muxState_3_1 & auto_out_1_d_bits_corrupt;
   wire        _in_1_d_bits_WIRE_5 = muxState_3_0 & auto_out_0_d_bits_denied | muxState_3_1 & auto_out_1_d_bits_denied;
-  wire [2:0]  _in_1_d_bits_WIRE_6 = (muxState_3_0 ? portsDIO_filtered_1_bits_sink : 3'h0) | (muxState_3_1 ? auto_out_1_d_bits_sink : 3'h0);
+  wire [1:0]  _in_1_d_bits_WIRE_6 = (muxState_3_0 ? portsDIO_filtered_1_bits_sink : 2'h0) | (muxState_3_1 ? auto_out_1_d_bits_sink : 2'h0);
   wire [4:0]  _in_1_d_bits_WIRE_7 = (muxState_3_0 ? auto_out_0_d_bits_source[4:0] : 5'h0) | (muxState_3_1 ? auto_out_1_d_bits_source[4:0] : 5'h0);
   wire [3:0]  _in_1_d_bits_WIRE_8 = (muxState_3_0 ? auto_out_0_d_bits_size : 4'h0) | (muxState_3_1 ? portsDIO_filtered_1_1_bits_size : 4'h0);
   wire [1:0]  _in_1_d_bits_WIRE_9 = (muxState_3_0 ? auto_out_0_d_bits_param : 2'h0) | (muxState_3_1 ? auto_out_1_d_bits_param : 2'h0);
@@ -484,7 +475,7 @@ module TLXbar(
   assign auto_out_0_a_bits_param = (muxState_0 ? auto_in_0_a_bits_param : 3'h0) | (muxState_1 ? auto_in_1_a_bits_param : 3'h0);
   assign auto_out_0_a_bits_size = (muxState_0 ? auto_in_0_a_bits_size : 4'h0) | (muxState_1 ? auto_in_1_a_bits_size : 4'h0);
   assign auto_out_0_a_bits_source = (muxState_0 ? portsAOI_filtered_1_bits_source : 6'h0) | (muxState_1 ? portsAOI_filtered_1_1_bits_source : 6'h0);
-  assign auto_out_0_a_bits_address = (muxState_0 ? auto_in_0_a_bits_address[28:0] : 29'h0) | (muxState_1 ? auto_in_1_a_bits_address[28:0] : 29'h0);
+  assign auto_out_0_a_bits_address = (muxState_0 ? auto_in_0_a_bits_address[27:0] : 28'h0) | (muxState_1 ? auto_in_1_a_bits_address[27:0] : 28'h0);
   assign auto_out_0_a_bits_mask = (muxState_0 ? auto_in_0_a_bits_mask : 8'h0) | (muxState_1 ? auto_in_1_a_bits_mask : 8'h0);
   assign auto_out_0_a_bits_data = (muxState_0 ? auto_in_0_a_bits_data : 64'h0) | (muxState_1 ? auto_in_1_a_bits_data : 64'h0);
   assign auto_out_0_a_bits_corrupt = muxState_0 & auto_in_0_a_bits_corrupt | muxState_1 & auto_in_1_a_bits_corrupt;

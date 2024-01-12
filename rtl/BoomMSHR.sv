@@ -1,14 +1,5 @@
 // Standard header to adapt well known macros for prints and assertions.
 
-// Users can define 'PRINTF_COND' to add an extra gate to prints.
-`ifndef PRINTF_COND_
-  `ifdef PRINTF_COND
-    `define PRINTF_COND_ (`PRINTF_COND)
-  `else  // PRINTF_COND
-    `define PRINTF_COND_ 1
-  `endif // PRINTF_COND
-`endif // not def PRINTF_COND_
-
 // Users can define 'ASSERT_VERBOSE_COND' to add an extra gate to assert error printing.
 `ifndef ASSERT_VERBOSE_COND_
   `ifdef ASSERT_VERBOSE_COND
@@ -143,11 +134,11 @@ module BoomMSHR(
   input  [2:0]   io_mem_grant_bits_opcode,
   input  [1:0]   io_mem_grant_bits_param,
   input  [3:0]   io_mem_grant_bits_size,
-  input  [2:0]   io_mem_grant_bits_sink,
+  input  [1:0]   io_mem_grant_bits_sink,
   input  [127:0] io_mem_grant_bits_data,
   input          io_mem_finish_ready,
   output         io_mem_finish_valid,
-  output [2:0]   io_mem_finish_bits_sink,
+  output [1:0]   io_mem_finish_bits_sink,
   input          io_prober_state_valid,
   input  [39:0]  io_prober_state_bits,
   input          io_refill_ready,
@@ -616,7 +607,7 @@ module BoomMSHR(
   wire         _rpq_io_enq_valid_T_1 = io_req_sec_val & _io_req_sec_rdy_output;
   wire         _rpq_io_enq_valid_T_7 = (_rpq_io_enq_valid_T | _rpq_io_enq_valid_T_1) & ~(io_req_uop_mem_cmd == 5'h2 | _state_c_cat_T_96);
   reg          grantack_valid;
-  reg  [2:0]   grantack_bits_sink;
+  reg  [1:0]   grantack_bits_sink;
   reg  [1:0]   refill_ctr;
   reg          commit_line;
   reg          grant_had_data;

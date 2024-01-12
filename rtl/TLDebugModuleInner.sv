@@ -1,14 +1,5 @@
 // Standard header to adapt well known macros for prints and assertions.
 
-// Users can define 'PRINTF_COND' to add an extra gate to prints.
-`ifndef PRINTF_COND_
-  `ifdef PRINTF_COND
-    `define PRINTF_COND_ (`PRINTF_COND)
-  `else  // PRINTF_COND
-    `define PRINTF_COND_ 1
-  `endif // PRINTF_COND
-`endif // not def PRINTF_COND_
-
 // Users can define 'ASSERT_VERBOSE_COND' to add an extra gate to assert error printing.
 `ifndef ASSERT_VERBOSE_COND_
   `ifdef ASSERT_VERBOSE_COND
@@ -35,7 +26,7 @@ module TLDebugModuleInner(
   input  [2:0]  auto_tl_in_a_bits_opcode,
                 auto_tl_in_a_bits_param,
   input  [1:0]  auto_tl_in_a_bits_size,
-  input  [10:0] auto_tl_in_a_bits_source,
+  input  [9:0]  auto_tl_in_a_bits_source,
   input  [11:0] auto_tl_in_a_bits_address,
   input  [7:0]  auto_tl_in_a_bits_mask,
   input  [63:0] auto_tl_in_a_bits_data,
@@ -44,7 +35,7 @@ module TLDebugModuleInner(
   output        auto_tl_in_d_valid,
   output [2:0]  auto_tl_in_d_bits_opcode,
   output [1:0]  auto_tl_in_d_bits_size,
-  output [10:0] auto_tl_in_d_bits_source,
+  output [9:0]  auto_tl_in_d_bits_source,
   output [63:0] auto_tl_in_d_bits_data,
   output        auto_dmi_in_a_ready,
   input         auto_dmi_in_a_valid,
@@ -2100,7 +2091,7 @@ module TLDebugModuleInner(
       `FIRRTL_AFTER_INITIAL
     `endif // FIRRTL_AFTER_INITIAL
   `endif // ENABLE_INITIAL_REG_
-  TLMonitor_52 monitor (
+  TLMonitor_41 monitor (
     .clock                (clock),
     .reset                (reset),
     .io_in_a_ready        (auto_dmi_in_d_ready),
@@ -2118,7 +2109,7 @@ module TLDebugModuleInner(
     .io_in_d_bits_size    (auto_dmi_in_a_bits_size),
     .io_in_d_bits_source  (auto_dmi_in_a_bits_source)
   );
-  TLMonitor_53 monitor_1 (
+  TLMonitor_42 monitor_1 (
     .clock                (clock),
     .reset                (reset),
     .io_in_a_ready        (auto_tl_in_d_ready),

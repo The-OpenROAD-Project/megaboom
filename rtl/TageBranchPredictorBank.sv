@@ -1,14 +1,5 @@
 // Standard header to adapt well known macros for prints and assertions.
 
-// Users can define 'PRINTF_COND' to add an extra gate to prints.
-`ifndef PRINTF_COND_
-  `ifdef PRINTF_COND
-    `define PRINTF_COND_ (`PRINTF_COND)
-  `else  // PRINTF_COND
-    `define PRINTF_COND_ 1
-  `endif // PRINTF_COND
-`endif // not def PRINTF_COND_
-
 // Users can define 'ASSERT_VERBOSE_COND' to add an extra gate to assert error printing.
 `ifndef ASSERT_VERBOSE_COND_
   `ifdef ASSERT_VERBOSE_COND
@@ -1319,7 +1310,7 @@ module TageBranchPredictorBank(
     .io_update_u_2         (t_io_update_u_2_REG_5),
     .io_update_u_3         (t_io_update_u_3_REG_5)
   );
-  MaxPeriodFibonacciLFSR_3 alloc_lfsr_prng (
+  MaxPeriodFibonacciLFSR_2 alloc_lfsr_prng (
     .clock    (clock),
     .reset    (reset),
     .io_out_0 (_alloc_lfsr_prng_io_out_0),
@@ -1329,7 +1320,7 @@ module TageBranchPredictorBank(
     .io_out_4 (_alloc_lfsr_prng_io_out_4),
     .io_out_5 (_alloc_lfsr_prng_io_out_5)
   );
-  MaxPeriodFibonacciLFSR_3 alloc_lfsr_prng_1 (
+  MaxPeriodFibonacciLFSR_2 alloc_lfsr_prng_1 (
     .clock    (clock),
     .reset    (reset),
     .io_out_0 (_alloc_lfsr_prng_1_io_out_0),
@@ -1339,7 +1330,7 @@ module TageBranchPredictorBank(
     .io_out_4 (_alloc_lfsr_prng_1_io_out_4),
     .io_out_5 (_alloc_lfsr_prng_1_io_out_5)
   );
-  MaxPeriodFibonacciLFSR_3 alloc_lfsr_prng_2 (
+  MaxPeriodFibonacciLFSR_2 alloc_lfsr_prng_2 (
     .clock    (clock),
     .reset    (reset),
     .io_out_0 (_alloc_lfsr_prng_2_io_out_0),
@@ -1349,7 +1340,7 @@ module TageBranchPredictorBank(
     .io_out_4 (_alloc_lfsr_prng_2_io_out_4),
     .io_out_5 (_alloc_lfsr_prng_2_io_out_5)
   );
-  MaxPeriodFibonacciLFSR_3 alloc_lfsr_prng_3 (
+  MaxPeriodFibonacciLFSR_2 alloc_lfsr_prng_3 (
     .clock    (clock),
     .reset    (reset),
     .io_out_0 (_alloc_lfsr_prng_3_io_out_0),

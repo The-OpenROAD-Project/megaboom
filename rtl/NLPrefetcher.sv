@@ -1,14 +1,5 @@
 // Standard header to adapt well known macros for prints and assertions.
 
-// Users can define 'PRINTF_COND' to add an extra gate to prints.
-`ifndef PRINTF_COND_
-  `ifdef PRINTF_COND
-    `define PRINTF_COND_ (`PRINTF_COND)
-  `else  // PRINTF_COND
-    `define PRINTF_COND_ 1
-  `endif // PRINTF_COND
-`endif // not def PRINTF_COND_
-
 // Users can define 'ASSERT_VERBOSE_COND' to add an extra gate to assert error printing.
 `ifndef ASSERT_VERBOSE_COND_
   `ifdef ASSERT_VERBOSE_COND
@@ -45,7 +36,7 @@ module NLPrefetcher(
   reg  [4:0]  req_cmd;
   wire        _io_prefetch_valid_output = req_valid & io_mshr_avail;
   wire [39:0] _mshr_req_addr_T = io_req_addr + 40'h40;
-  wire        _GEN = io_req_val & ({_mshr_req_addr_T[39:28], _mshr_req_addr_T[27:16] ^ 12'h800} == 24'h0 | {_mshr_req_addr_T[39:32], ~(_mshr_req_addr_T[31])} == 9'h0 | {_mshr_req_addr_T[39:33], _mshr_req_addr_T[32:31] ^ 2'h2} == 9'h0);
+  wire        _GEN = io_req_val & ({_mshr_req_addr_T[39:32], ~(_mshr_req_addr_T[31])} == 9'h0 | {_mshr_req_addr_T[39:33], _mshr_req_addr_T[32:31] ^ 2'h2} == 9'h0);
   always @(posedge clock) begin
     if (reset)
       req_valid <= 1'h0;

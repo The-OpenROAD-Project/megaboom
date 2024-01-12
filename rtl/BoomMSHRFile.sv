@@ -1,14 +1,5 @@
 // Standard header to adapt well known macros for prints and assertions.
 
-// Users can define 'PRINTF_COND' to add an extra gate to prints.
-`ifndef PRINTF_COND_
-  `ifdef PRINTF_COND
-    `define PRINTF_COND_ (`PRINTF_COND)
-  `else  // PRINTF_COND
-    `define PRINTF_COND_ 1
-  `endif // PRINTF_COND
-`endif // not def PRINTF_COND_
-
 // Users can define 'ASSERT_VERBOSE_COND' to add an extra gate to assert error printing.
 `ifndef ASSERT_VERBOSE_COND_
   `ifdef ASSERT_VERBOSE_COND
@@ -240,11 +231,11 @@ module BoomMSHRFile(
   input  [1:0]   io_mem_grant_bits_param,
   input  [3:0]   io_mem_grant_bits_size,
                  io_mem_grant_bits_source,
-  input  [2:0]   io_mem_grant_bits_sink,
+  input  [1:0]   io_mem_grant_bits_sink,
   input  [127:0] io_mem_grant_bits_data,
   input          io_mem_finish_ready,
   output         io_mem_finish_valid,
-  output [2:0]   io_mem_finish_bits_sink,
+  output [1:0]   io_mem_finish_bits_sink,
   input          io_refill_ready,
   output         io_refill_valid,
   output [7:0]   io_refill_bits_way_en,
@@ -524,7 +515,7 @@ module BoomMSHRFile(
   wire [32:0]  _mshrs_7_io_mem_acquire_bits_address;
   wire         _mshrs_7_io_mem_grant_ready;
   wire         _mshrs_7_io_mem_finish_valid;
-  wire [2:0]   _mshrs_7_io_mem_finish_bits_sink;
+  wire [1:0]   _mshrs_7_io_mem_finish_bits_sink;
   wire         _mshrs_7_io_refill_valid;
   wire [7:0]   _mshrs_7_io_refill_bits_way_en;
   wire [11:0]  _mshrs_7_io_refill_bits_addr;
@@ -734,7 +725,7 @@ module BoomMSHRFile(
   wire [32:0]  _mshrs_6_io_mem_acquire_bits_address;
   wire         _mshrs_6_io_mem_grant_ready;
   wire         _mshrs_6_io_mem_finish_valid;
-  wire [2:0]   _mshrs_6_io_mem_finish_bits_sink;
+  wire [1:0]   _mshrs_6_io_mem_finish_bits_sink;
   wire         _mshrs_6_io_refill_valid;
   wire [7:0]   _mshrs_6_io_refill_bits_way_en;
   wire [11:0]  _mshrs_6_io_refill_bits_addr;
@@ -944,7 +935,7 @@ module BoomMSHRFile(
   wire [32:0]  _mshrs_5_io_mem_acquire_bits_address;
   wire         _mshrs_5_io_mem_grant_ready;
   wire         _mshrs_5_io_mem_finish_valid;
-  wire [2:0]   _mshrs_5_io_mem_finish_bits_sink;
+  wire [1:0]   _mshrs_5_io_mem_finish_bits_sink;
   wire         _mshrs_5_io_refill_valid;
   wire [7:0]   _mshrs_5_io_refill_bits_way_en;
   wire [11:0]  _mshrs_5_io_refill_bits_addr;
@@ -1154,7 +1145,7 @@ module BoomMSHRFile(
   wire [32:0]  _mshrs_4_io_mem_acquire_bits_address;
   wire         _mshrs_4_io_mem_grant_ready;
   wire         _mshrs_4_io_mem_finish_valid;
-  wire [2:0]   _mshrs_4_io_mem_finish_bits_sink;
+  wire [1:0]   _mshrs_4_io_mem_finish_bits_sink;
   wire         _mshrs_4_io_refill_valid;
   wire [7:0]   _mshrs_4_io_refill_bits_way_en;
   wire [11:0]  _mshrs_4_io_refill_bits_addr;
@@ -1364,7 +1355,7 @@ module BoomMSHRFile(
   wire [32:0]  _mshrs_3_io_mem_acquire_bits_address;
   wire         _mshrs_3_io_mem_grant_ready;
   wire         _mshrs_3_io_mem_finish_valid;
-  wire [2:0]   _mshrs_3_io_mem_finish_bits_sink;
+  wire [1:0]   _mshrs_3_io_mem_finish_bits_sink;
   wire         _mshrs_3_io_refill_valid;
   wire [7:0]   _mshrs_3_io_refill_bits_way_en;
   wire [11:0]  _mshrs_3_io_refill_bits_addr;
@@ -1574,7 +1565,7 @@ module BoomMSHRFile(
   wire [32:0]  _mshrs_2_io_mem_acquire_bits_address;
   wire         _mshrs_2_io_mem_grant_ready;
   wire         _mshrs_2_io_mem_finish_valid;
-  wire [2:0]   _mshrs_2_io_mem_finish_bits_sink;
+  wire [1:0]   _mshrs_2_io_mem_finish_bits_sink;
   wire         _mshrs_2_io_refill_valid;
   wire [7:0]   _mshrs_2_io_refill_bits_way_en;
   wire [11:0]  _mshrs_2_io_refill_bits_addr;
@@ -1784,7 +1775,7 @@ module BoomMSHRFile(
   wire [32:0]  _mshrs_1_io_mem_acquire_bits_address;
   wire         _mshrs_1_io_mem_grant_ready;
   wire         _mshrs_1_io_mem_finish_valid;
-  wire [2:0]   _mshrs_1_io_mem_finish_bits_sink;
+  wire [1:0]   _mshrs_1_io_mem_finish_bits_sink;
   wire         _mshrs_1_io_refill_valid;
   wire [7:0]   _mshrs_1_io_refill_bits_way_en;
   wire [11:0]  _mshrs_1_io_refill_bits_addr;
@@ -1994,7 +1985,7 @@ module BoomMSHRFile(
   wire [32:0]  _mshrs_0_io_mem_acquire_bits_address;
   wire         _mshrs_0_io_mem_grant_ready;
   wire         _mshrs_0_io_mem_finish_valid;
-  wire [2:0]   _mshrs_0_io_mem_finish_bits_sink;
+  wire [1:0]   _mshrs_0_io_mem_finish_bits_sink;
   wire         _mshrs_0_io_refill_valid;
   wire [7:0]   _mshrs_0_io_refill_bits_way_en;
   wire [11:0]  _mshrs_0_io_refill_bits_addr;
@@ -2427,14 +2418,14 @@ module BoomMSHRFile(
   wire         _GEN_76 = io_req_1_valid ? io_req_1_bits_uop_bp_xcpt_if : io_req_0_bits_uop_bp_xcpt_if;
   wire [1:0]   _GEN_77 = io_req_1_valid ? io_req_1_bits_uop_debug_fsrc : io_req_0_bits_uop_debug_fsrc;
   wire [1:0]   _GEN_78 = io_req_1_valid ? io_req_1_bits_uop_debug_tsrc : io_req_0_bits_uop_debug_tsrc;
-  wire [39:0]  _cacheable_T_1 = io_req_1_valid ? io_req_1_bits_addr : io_req_0_bits_addr;
+  wire [39:0]  _cacheable_T_6 = io_req_1_valid ? io_req_1_bits_addr : io_req_0_bits_addr;
   wire [63:0]  _GEN_79 = io_req_1_valid ? io_req_1_bits_data : io_req_0_bits_data;
   wire         _GEN_80 = io_req_1_valid ? io_req_1_bits_is_hella : io_req_0_bits_is_hella;
   wire         _GEN_81 = io_req_1_valid ? io_req_1_bits_tag_match : io_req_0_bits_tag_match;
   wire [1:0]   _GEN_82 = io_req_1_valid ? io_req_1_bits_old_meta_coh_state : io_req_0_bits_old_meta_coh_state;
   wire [20:0]  _GEN_83 = io_req_1_valid ? io_req_1_bits_old_meta_tag : io_req_0_bits_old_meta_tag;
   wire [7:0]   _GEN_84 = io_req_1_valid ? io_req_1_bits_way_en : io_req_0_bits_way_en;
-  wire         cacheable = {_cacheable_T_1[32:31], _cacheable_T_1[27:26] ^ 2'h2, _cacheable_T_1[16]} == 5'h0 | {_cacheable_T_1[32], ~(_cacheable_T_1[31])} == 2'h0 | _cacheable_T_1[32:31] == 2'h2;
+  wire         cacheable = {_cacheable_T_6[32], ~(_cacheable_T_6[31])} == 2'h0 | _cacheable_T_6[32:31] == 2'h2;
   reg  [16:0]  sdq_val;
   wire [15:0]  _sdq_alloc_id_T_1 = ~(sdq_val[15:0]);
   wire [4:0]   sdq_alloc_id = _sdq_alloc_id_T_1[0] ? 5'h0 : _sdq_alloc_id_T_1[1] ? 5'h1 : _sdq_alloc_id_T_1[2] ? 5'h2 : _sdq_alloc_id_T_1[3] ? 5'h3 : _sdq_alloc_id_T_1[4] ? 5'h4 : _sdq_alloc_id_T_1[5] ? 5'h5 : _sdq_alloc_id_T_1[6] ? 5'h6 : _sdq_alloc_id_T_1[7] ? 5'h7 : _sdq_alloc_id_T_1[8] ? 5'h8 : _sdq_alloc_id_T_1[9] ? 5'h9 : _sdq_alloc_id_T_1[10] ? 5'hA : _sdq_alloc_id_T_1[11] ? 5'hB : _sdq_alloc_id_T_1[12] ? 5'hC : _sdq_alloc_id_T_1[13] ? 5'hD : _sdq_alloc_id_T_1[14] ? 5'hE : _sdq_alloc_id_T_1[15] ? 5'hF : 5'h10;
@@ -4738,7 +4729,7 @@ module BoomMSHRFile(
     .io_req_uop_bp_xcpt_if              (_GEN_76),
     .io_req_uop_debug_fsrc              (_GEN_77),
     .io_req_uop_debug_tsrc              (_GEN_78),
-    .io_req_addr                        (_cacheable_T_1),
+    .io_req_addr                        (_cacheable_T_6),
     .io_req_data                        (_GEN_79),
     .io_req_is_hella                    (_GEN_80),
     .io_req_tag_match                   (_GEN_81),
@@ -5069,7 +5060,7 @@ module BoomMSHRFile(
     .io_req_uop_bp_xcpt_if              (_GEN_76),
     .io_req_uop_debug_fsrc              (_GEN_77),
     .io_req_uop_debug_tsrc              (_GEN_78),
-    .io_req_addr                        (_cacheable_T_1),
+    .io_req_addr                        (_cacheable_T_6),
     .io_req_data                        (_GEN_79),
     .io_req_is_hella                    (_GEN_80),
     .io_req_tag_match                   (_GEN_81),
@@ -5400,7 +5391,7 @@ module BoomMSHRFile(
     .io_req_uop_bp_xcpt_if              (_GEN_76),
     .io_req_uop_debug_fsrc              (_GEN_77),
     .io_req_uop_debug_tsrc              (_GEN_78),
-    .io_req_addr                        (_cacheable_T_1),
+    .io_req_addr                        (_cacheable_T_6),
     .io_req_data                        (_GEN_79),
     .io_req_is_hella                    (_GEN_80),
     .io_req_tag_match                   (_GEN_81),
@@ -5731,7 +5722,7 @@ module BoomMSHRFile(
     .io_req_uop_bp_xcpt_if              (_GEN_76),
     .io_req_uop_debug_fsrc              (_GEN_77),
     .io_req_uop_debug_tsrc              (_GEN_78),
-    .io_req_addr                        (_cacheable_T_1),
+    .io_req_addr                        (_cacheable_T_6),
     .io_req_data                        (_GEN_79),
     .io_req_is_hella                    (_GEN_80),
     .io_req_tag_match                   (_GEN_81),
@@ -6062,7 +6053,7 @@ module BoomMSHRFile(
     .io_req_uop_bp_xcpt_if              (_GEN_76),
     .io_req_uop_debug_fsrc              (_GEN_77),
     .io_req_uop_debug_tsrc              (_GEN_78),
-    .io_req_addr                        (_cacheable_T_1),
+    .io_req_addr                        (_cacheable_T_6),
     .io_req_data                        (_GEN_79),
     .io_req_is_hella                    (_GEN_80),
     .io_req_tag_match                   (_GEN_81),
@@ -6393,7 +6384,7 @@ module BoomMSHRFile(
     .io_req_uop_bp_xcpt_if              (_GEN_76),
     .io_req_uop_debug_fsrc              (_GEN_77),
     .io_req_uop_debug_tsrc              (_GEN_78),
-    .io_req_addr                        (_cacheable_T_1),
+    .io_req_addr                        (_cacheable_T_6),
     .io_req_data                        (_GEN_79),
     .io_req_is_hella                    (_GEN_80),
     .io_req_tag_match                   (_GEN_81),
@@ -6724,7 +6715,7 @@ module BoomMSHRFile(
     .io_req_uop_bp_xcpt_if              (_GEN_76),
     .io_req_uop_debug_fsrc              (_GEN_77),
     .io_req_uop_debug_tsrc              (_GEN_78),
-    .io_req_addr                        (_cacheable_T_1),
+    .io_req_addr                        (_cacheable_T_6),
     .io_req_data                        (_GEN_79),
     .io_req_is_hella                    (_GEN_80),
     .io_req_tag_match                   (_GEN_81),
@@ -7055,7 +7046,7 @@ module BoomMSHRFile(
     .io_req_uop_bp_xcpt_if              (_GEN_76),
     .io_req_uop_debug_fsrc              (_GEN_77),
     .io_req_uop_debug_tsrc              (_GEN_78),
-    .io_req_addr                        (_cacheable_T_1),
+    .io_req_addr                        (_cacheable_T_6),
     .io_req_data                        (_GEN_79),
     .io_req_is_hella                    (_GEN_80),
     .io_req_tag_match                   (_GEN_81),
@@ -7383,7 +7374,7 @@ module BoomMSHRFile(
     .io_req_bits_uop_bp_xcpt_if       (_GEN_76),
     .io_req_bits_uop_debug_fsrc       (_GEN_77),
     .io_req_bits_uop_debug_tsrc       (_GEN_78),
-    .io_req_bits_addr                 (_cacheable_T_1),
+    .io_req_bits_addr                 (_cacheable_T_6),
     .io_req_bits_data                 (_GEN_79),
     .io_req_bits_is_hella             (_GEN_80),
     .io_resp_ready                    (_resp_arb_io_in_8_ready),
@@ -7597,7 +7588,7 @@ module BoomMSHRFile(
   assign io_mem_acquire_bits_data = muxState_8 ? _mmios_0_io_mem_access_bits_data : 128'h0;
   assign io_mem_grant_ready = _mshr_io_mem_ack_valid_T | (_GEN_102 ? _mshrs_7_io_mem_grant_ready : _GEN_101 ? _mshrs_6_io_mem_grant_ready : _GEN_100 ? _mshrs_5_io_mem_grant_ready : _GEN_99 ? _mshrs_4_io_mem_grant_ready : _GEN_98 ? _mshrs_3_io_mem_grant_ready : _GEN_97 ? _mshrs_2_io_mem_grant_ready : _GEN_96 ? _mshrs_1_io_mem_grant_ready : _GEN_95 & _mshrs_0_io_mem_grant_ready);
   assign io_mem_finish_valid = _io_mem_finish_valid_output;
-  assign io_mem_finish_bits_sink = ((beatsLeft_1 ? state_1_0 : _mshrs_0_io_mem_finish_valid) ? _mshrs_0_io_mem_finish_bits_sink : 3'h0) | ((beatsLeft_1 ? state_1_1 : winner_1_1) ? _mshrs_1_io_mem_finish_bits_sink : 3'h0) | ((beatsLeft_1 ? state_1_2 : winner_1_2) ? _mshrs_2_io_mem_finish_bits_sink : 3'h0) | ((beatsLeft_1 ? state_1_3 : winner_1_3) ? _mshrs_3_io_mem_finish_bits_sink : 3'h0) | ((beatsLeft_1 ? state_1_4 : winner_1_4) ? _mshrs_4_io_mem_finish_bits_sink : 3'h0) | ((beatsLeft_1 ? state_1_5 : winner_1_5) ? _mshrs_5_io_mem_finish_bits_sink : 3'h0) | ((beatsLeft_1 ? state_1_6 : winner_1_6) ? _mshrs_6_io_mem_finish_bits_sink : 3'h0) | ((beatsLeft_1 ? state_1_7 : winner_1_7) ? _mshrs_7_io_mem_finish_bits_sink : 3'h0);
+  assign io_mem_finish_bits_sink = ((beatsLeft_1 ? state_1_0 : _mshrs_0_io_mem_finish_valid) ? _mshrs_0_io_mem_finish_bits_sink : 2'h0) | ((beatsLeft_1 ? state_1_1 : winner_1_1) ? _mshrs_1_io_mem_finish_bits_sink : 2'h0) | ((beatsLeft_1 ? state_1_2 : winner_1_2) ? _mshrs_2_io_mem_finish_bits_sink : 2'h0) | ((beatsLeft_1 ? state_1_3 : winner_1_3) ? _mshrs_3_io_mem_finish_bits_sink : 2'h0) | ((beatsLeft_1 ? state_1_4 : winner_1_4) ? _mshrs_4_io_mem_finish_bits_sink : 2'h0) | ((beatsLeft_1 ? state_1_5 : winner_1_5) ? _mshrs_5_io_mem_finish_bits_sink : 2'h0) | ((beatsLeft_1 ? state_1_6 : winner_1_6) ? _mshrs_6_io_mem_finish_bits_sink : 2'h0) | ((beatsLeft_1 ? state_1_7 : winner_1_7) ? _mshrs_7_io_mem_finish_bits_sink : 2'h0);
   assign io_replay_valid = _replay_arb_io_out_valid;
   assign io_replay_bits_uop_mem_cmd = _replay_arb_io_out_bits_uop_mem_cmd;
   assign io_fence_rdy = ~(~_mmios_0_io_req_ready | ~_mshrs_7_io_req_pri_rdy | ~_mshrs_6_io_req_pri_rdy | ~_mshrs_5_io_req_pri_rdy | ~_mshrs_4_io_req_pri_rdy | ~_mshrs_3_io_req_pri_rdy | ~_mshrs_2_io_req_pri_rdy | ~_mshrs_1_io_req_pri_rdy | ~_mshrs_0_io_req_pri_rdy);

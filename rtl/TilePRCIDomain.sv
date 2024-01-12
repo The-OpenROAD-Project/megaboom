@@ -1,14 +1,5 @@
 // Standard header to adapt well known macros for prints and assertions.
 
-// Users can define 'PRINTF_COND' to add an extra gate to prints.
-`ifndef PRINTF_COND_
-  `ifdef PRINTF_COND
-    `define PRINTF_COND_ (`PRINTF_COND)
-  `else  // PRINTF_COND
-    `define PRINTF_COND_ 1
-  `endif // PRINTF_COND
-`endif // not def PRINTF_COND_
-
 // Users can define 'ASSERT_VERBOSE_COND' to add an extra gate to assert error printing.
 `ifndef ASSERT_VERBOSE_COND_
   `ifdef ASSERT_VERBOSE_COND
@@ -30,8 +21,6 @@
 module TilePRCIDomain(
   input         auto_intsink_in_sync_0,
                 auto_tile_reset_domain_boom_tile_hartid_in,
-                auto_int_in_clock_xing_in_2_sync_0,
-                auto_int_in_clock_xing_in_1_sync_0,
                 auto_int_in_clock_xing_in_0_sync_0,
                 auto_int_in_clock_xing_in_0_sync_1,
                 auto_tl_master_clock_xing_out_a_ready,
@@ -63,18 +52,16 @@ module TilePRCIDomain(
   input  [1:0]  auto_tl_master_clock_xing_out_d_bits_param,
   input  [3:0]  auto_tl_master_clock_xing_out_d_bits_size,
   input  [4:0]  auto_tl_master_clock_xing_out_d_bits_source,
-  input  [2:0]  auto_tl_master_clock_xing_out_d_bits_sink,
+  input  [1:0]  auto_tl_master_clock_xing_out_d_bits_sink,
   input         auto_tl_master_clock_xing_out_d_bits_denied,
   input  [63:0] auto_tl_master_clock_xing_out_d_bits_data,
   input         auto_tl_master_clock_xing_out_d_bits_corrupt,
   output        auto_tl_master_clock_xing_out_e_valid,
-  output [2:0]  auto_tl_master_clock_xing_out_e_bits_sink,
+  output [1:0]  auto_tl_master_clock_xing_out_e_bits_sink,
   input         auto_tap_clock_in_clock,
                 auto_tap_clock_in_reset
 );
 
-  wire        _intsink_3_auto_out_0;
-  wire        _intsink_2_auto_out_0;
   wire        _intsink_1_auto_out_0;
   wire        _intsink_1_auto_out_1;
   wire        _intsink_auto_out_0;
@@ -93,7 +80,7 @@ module TilePRCIDomain(
   wire [1:0]  _buffer_auto_in_d_bits_param;
   wire [3:0]  _buffer_auto_in_d_bits_size;
   wire [4:0]  _buffer_auto_in_d_bits_source;
-  wire [2:0]  _buffer_auto_in_d_bits_sink;
+  wire [1:0]  _buffer_auto_in_d_bits_sink;
   wire        _buffer_auto_in_d_bits_denied;
   wire [63:0] _buffer_auto_in_d_bits_data;
   wire        _buffer_auto_in_d_bits_corrupt;
@@ -116,7 +103,7 @@ module TilePRCIDomain(
   wire [63:0] _tile_reset_domain_boom_tile_auto_buffer_out_c_bits_data;
   wire        _tile_reset_domain_boom_tile_auto_buffer_out_d_ready;
   wire        _tile_reset_domain_boom_tile_auto_buffer_out_e_valid;
-  wire [2:0]  _tile_reset_domain_boom_tile_auto_buffer_out_e_bits_sink;
+  wire [1:0]  _tile_reset_domain_boom_tile_auto_buffer_out_e_bits_sink;
   BoomTile tile_reset_domain_boom_tile (
     .clock                          (auto_tap_clock_in_clock),
     .reset                          (auto_tap_clock_in_reset),
@@ -159,14 +146,12 @@ module TilePRCIDomain(
     .auto_buffer_out_e_ready        (_buffer_auto_in_e_ready),
     .auto_buffer_out_e_valid        (_tile_reset_domain_boom_tile_auto_buffer_out_e_valid),
     .auto_buffer_out_e_bits_sink    (_tile_reset_domain_boom_tile_auto_buffer_out_e_bits_sink),
-    .auto_int_local_in_3_0          (_intsink_3_auto_out_0),
-    .auto_int_local_in_2_0          (_intsink_2_auto_out_0),
     .auto_int_local_in_1_0          (_intsink_1_auto_out_0),
     .auto_int_local_in_1_1          (_intsink_1_auto_out_1),
     .auto_int_local_in_0_0          (_intsink_auto_out_0),
     .auto_hartid_in                 (auto_tile_reset_domain_boom_tile_hartid_in)
   );
-  TLBuffer_16 buffer (
+  TLBuffer_12 buffer (
     .clock                   (auto_tap_clock_in_clock),
     .reset                   (auto_tap_clock_in_reset),
     .auto_in_a_ready         (_buffer_auto_in_a_ready),
@@ -254,32 +239,6 @@ module TilePRCIDomain(
     .auto_in_sync_1 (auto_int_in_clock_xing_in_0_sync_1),
     .auto_out_0     (_intsink_1_auto_out_0),
     .auto_out_1     (_intsink_1_auto_out_1)
-  );
-  IntSyncSyncCrossingSink_1 intsink_2 (
-    .auto_in_sync_0 (auto_int_in_clock_xing_in_1_sync_0),
-    .auto_out_0     (_intsink_2_auto_out_0)
-  );
-  IntSyncSyncCrossingSink_1 intsink_3 (
-    .auto_in_sync_0 (auto_int_in_clock_xing_in_2_sync_0),
-    .auto_out_0     (_intsink_3_auto_out_0)
-  );
-  IntSyncCrossingSource_1 intsource_1 (
-    .clock           (auto_tap_clock_in_clock),
-    .reset           (auto_tap_clock_in_reset),
-    .auto_in_0       (1'h0),
-    .auto_out_sync_0 (/* unused */)
-  );
-  IntSyncCrossingSource_1 intsource_2 (
-    .clock           (auto_tap_clock_in_clock),
-    .reset           (auto_tap_clock_in_reset),
-    .auto_in_0       (1'h0),
-    .auto_out_sync_0 (/* unused */)
-  );
-  IntSyncCrossingSource_1 intsource_3 (
-    .clock           (auto_tap_clock_in_clock),
-    .reset           (auto_tap_clock_in_reset),
-    .auto_in_0       (1'h0),
-    .auto_out_sync_0 (/* unused */)
   );
 endmodule
 

@@ -1,14 +1,5 @@
 // Standard header to adapt well known macros for prints and assertions.
 
-// Users can define 'PRINTF_COND' to add an extra gate to prints.
-`ifndef PRINTF_COND_
-  `ifdef PRINTF_COND
-    `define PRINTF_COND_ (`PRINTF_COND)
-  `else  // PRINTF_COND
-    `define PRINTF_COND_ 1
-  `endif // PRINTF_COND
-`endif // not def PRINTF_COND_
-
 // Users can define 'ASSERT_VERBOSE_COND' to add an extra gate to assert error printing.
 `ifndef ASSERT_VERBOSE_COND_
   `ifdef ASSERT_VERBOSE_COND
@@ -44,7 +35,7 @@ module TLWidthWidget_10(
   input  [2:0]   auto_out_d_bits_opcode,
   input  [1:0]   auto_out_d_bits_param,
   input  [3:0]   auto_out_d_bits_size,
-  input  [2:0]   auto_out_d_bits_sink,
+  input  [1:0]   auto_out_d_bits_sink,
   input          auto_out_d_bits_denied,
   input  [63:0]  auto_out_d_bits_data,
   input          auto_out_d_bits_corrupt
@@ -77,7 +68,7 @@ module TLWidthWidget_10(
     if (_nodeIn_d_bits_data_T_2 & nodeIn_d_bits_data_masked_enable_0)
       nodeIn_d_bits_data_rdata_0 <= auto_out_d_bits_data;
   end // always @(posedge)
-  TLMonitor_43 monitor (
+  TLMonitor_32 monitor (
     .clock                (clock),
     .reset                (reset),
     .io_in_a_ready        (_repeated_repeater_io_enq_ready),
@@ -91,7 +82,7 @@ module TLWidthWidget_10(
     .io_in_d_bits_denied  (auto_out_d_bits_denied),
     .io_in_d_bits_corrupt (nodeIn_d_bits_corrupt)
   );
-  Repeater_9 repeated_repeater (
+  Repeater_7 repeated_repeater (
     .clock               (clock),
     .reset               (reset),
     .io_enq_ready        (_repeated_repeater_io_enq_ready),

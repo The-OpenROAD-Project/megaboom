@@ -1,14 +1,5 @@
 // Standard header to adapt well known macros for prints and assertions.
 
-// Users can define 'PRINTF_COND' to add an extra gate to prints.
-`ifndef PRINTF_COND_
-  `ifdef PRINTF_COND
-    `define PRINTF_COND_ (`PRINTF_COND)
-  `else  // PRINTF_COND
-    `define PRINTF_COND_ 1
-  `endif // PRINTF_COND
-`endif // not def PRINTF_COND_
-
 // Users can define 'ASSERT_VERBOSE_COND' to add an extra gate to assert error printing.
 `ifndef ASSERT_VERBOSE_COND_
   `ifdef ASSERT_VERBOSE_COND
@@ -28,64 +19,69 @@
 `endif // not def STOP_COND_
 
 module Queue_32(
-  input          clock,
-                 reset,
-  output         io_enq_ready,
-  input          io_enq_valid,
-  input  [39:0]  io_enq_bits_pc,
-  input  [127:0] io_enq_bits_data,
-  input  [7:0]   io_enq_bits_mask,
-  input          io_enq_bits_xcpt_pf_inst,
-                 io_enq_bits_xcpt_gf_inst,
-                 io_enq_bits_xcpt_ae_inst,
-  input  [63:0]  io_enq_bits_ghist_old_history,
-  input          io_enq_bits_ghist_current_saw_branch_not_taken,
-                 io_enq_bits_ghist_new_saw_branch_not_taken,
-                 io_enq_bits_ghist_new_saw_branch_taken,
-  input  [4:0]   io_enq_bits_ghist_ras_idx,
-  input  [1:0]   io_enq_bits_fsrc,
-                 io_enq_bits_tsrc,
-  input          io_deq_ready,
-  output         io_deq_valid,
-  output [39:0]  io_deq_bits_pc,
-  output [127:0] io_deq_bits_data,
-  output [7:0]   io_deq_bits_mask,
-  output         io_deq_bits_xcpt_pf_inst,
-                 io_deq_bits_xcpt_ae_inst,
-  output [63:0]  io_deq_bits_ghist_old_history,
-  output         io_deq_bits_ghist_current_saw_branch_not_taken,
-                 io_deq_bits_ghist_new_saw_branch_not_taken,
-                 io_deq_bits_ghist_new_saw_branch_taken,
-  output [4:0]   io_deq_bits_ghist_ras_idx,
-  output [1:0]   io_deq_bits_fsrc,
-                 io_deq_bits_tsrc
+  input         clock,
+                reset,
+  output        io_enq_ready,
+  input         io_enq_valid,
+  input  [2:0]  io_enq_bits_opcode,
+  input  [1:0]  io_enq_bits_size,
+  input  [13:0] io_enq_bits_source,
+  input  [63:0] io_enq_bits_data,
+  input         io_deq_ready,
+  output        io_deq_valid,
+  output [2:0]  io_deq_bits_opcode,
+  output [1:0]  io_deq_bits_param,
+                io_deq_bits_size,
+  output [13:0] io_deq_bits_source,
+  output        io_deq_bits_sink,
+                io_deq_bits_denied,
+  output [63:0] io_deq_bits_data,
+  output        io_deq_bits_corrupt
 );
 
-  reg  [254:0] ram;
-  reg          full;
-  wire         _io_enq_ready_output = io_deq_ready | ~full;
-  wire         do_enq = _io_enq_ready_output & io_enq_valid;
+  wire [87:0] _ram_ext_R0_data;
+  reg         wrap;
+  reg         wrap_1;
+  reg         maybe_full;
+  wire        ptr_match = wrap == wrap_1;
+  wire        empty = ptr_match & ~maybe_full;
+  wire        full = ptr_match & maybe_full;
+  wire        do_enq = ~full & io_enq_valid;
+  wire        do_deq = io_deq_ready & ~empty;
   always @(posedge clock) begin
-    if (do_enq)
-      ram <= {io_enq_bits_tsrc, io_enq_bits_fsrc, io_enq_bits_ghist_ras_idx, io_enq_bits_ghist_new_saw_branch_taken, io_enq_bits_ghist_new_saw_branch_not_taken, io_enq_bits_ghist_current_saw_branch_not_taken, io_enq_bits_ghist_old_history, io_enq_bits_xcpt_ae_inst, io_enq_bits_xcpt_gf_inst, io_enq_bits_xcpt_pf_inst, io_enq_bits_mask, io_enq_bits_data, io_enq_bits_pc};
-    if (reset)
-      full <= 1'h0;
-    else if (~(do_enq == (io_deq_ready & full)))
-      full <= do_enq;
+    if (reset) begin
+      wrap <= 1'h0;
+      wrap_1 <= 1'h0;
+      maybe_full <= 1'h0;
+    end
+    else begin
+      if (do_enq)
+        wrap <= wrap - 1'h1;
+      if (do_deq)
+        wrap_1 <= wrap_1 - 1'h1;
+      if (~(do_enq == do_deq))
+        maybe_full <= do_enq;
+    end
   end // always @(posedge)
-  assign io_enq_ready = _io_enq_ready_output;
-  assign io_deq_valid = full;
-  assign io_deq_bits_pc = ram[39:0];
-  assign io_deq_bits_data = ram[167:40];
-  assign io_deq_bits_mask = ram[175:168];
-  assign io_deq_bits_xcpt_pf_inst = ram[176];
-  assign io_deq_bits_xcpt_ae_inst = ram[178];
-  assign io_deq_bits_ghist_old_history = ram[242:179];
-  assign io_deq_bits_ghist_current_saw_branch_not_taken = ram[243];
-  assign io_deq_bits_ghist_new_saw_branch_not_taken = ram[244];
-  assign io_deq_bits_ghist_new_saw_branch_taken = ram[245];
-  assign io_deq_bits_ghist_ras_idx = ram[250:246];
-  assign io_deq_bits_fsrc = ram[252:251];
-  assign io_deq_bits_tsrc = ram[254:253];
+  ram_2x88 ram_ext (
+    .R0_addr (wrap_1),
+    .R0_en   (1'h1),
+    .R0_clk  (clock),
+    .R0_data (_ram_ext_R0_data),
+    .W0_addr (wrap),
+    .W0_en   (do_enq),
+    .W0_clk  (clock),
+    .W0_data ({1'h0, io_enq_bits_data, 2'h0, io_enq_bits_source, io_enq_bits_size, 2'h0, io_enq_bits_opcode})
+  );
+  assign io_enq_ready = ~full;
+  assign io_deq_valid = ~empty;
+  assign io_deq_bits_opcode = _ram_ext_R0_data[2:0];
+  assign io_deq_bits_param = _ram_ext_R0_data[4:3];
+  assign io_deq_bits_size = _ram_ext_R0_data[6:5];
+  assign io_deq_bits_source = _ram_ext_R0_data[20:7];
+  assign io_deq_bits_sink = _ram_ext_R0_data[21];
+  assign io_deq_bits_denied = _ram_ext_R0_data[22];
+  assign io_deq_bits_data = _ram_ext_R0_data[86:23];
+  assign io_deq_bits_corrupt = _ram_ext_R0_data[87];
 endmodule
 

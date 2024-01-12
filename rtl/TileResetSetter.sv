@@ -1,14 +1,5 @@
 // Standard header to adapt well known macros for prints and assertions.
 
-// Users can define 'PRINTF_COND' to add an extra gate to prints.
-`ifndef PRINTF_COND_
-  `ifdef PRINTF_COND
-    `define PRINTF_COND_ (`PRINTF_COND)
-  `else  // PRINTF_COND
-    `define PRINTF_COND_ 1
-  `endif // PRINTF_COND
-`endif // not def PRINTF_COND_
-
 // Users can define 'ASSERT_VERBOSE_COND' to add an extra gate to assert error printing.
 `ifndef ASSERT_VERBOSE_COND_
   `ifdef ASSERT_VERBOSE_COND
@@ -39,7 +30,7 @@ module TileResetSetter(
   input  [2:0]  auto_tl_in_a_bits_opcode,
                 auto_tl_in_a_bits_param,
   input  [1:0]  auto_tl_in_a_bits_size,
-  input  [10:0] auto_tl_in_a_bits_source,
+  input  [9:0]  auto_tl_in_a_bits_source,
   input  [20:0] auto_tl_in_a_bits_address,
   input  [7:0]  auto_tl_in_a_bits_mask,
   input         auto_tl_in_a_bits_corrupt,
@@ -47,11 +38,11 @@ module TileResetSetter(
   output        auto_tl_in_d_valid,
   output [2:0]  auto_tl_in_d_bits_opcode,
   output [1:0]  auto_tl_in_d_bits_size,
-  output [10:0] auto_tl_in_d_bits_source
+  output [9:0]  auto_tl_in_d_bits_source
 );
 
   wire [2:0] tlNodeIn_d_bits_opcode = {2'h0, auto_tl_in_a_bits_opcode == 3'h4};
-  TLMonitor_62 monitor (
+  TLMonitor_48 monitor (
     .clock                (clock),
     .reset                (reset),
     .io_in_a_ready        (auto_tl_in_d_ready),

@@ -1,14 +1,5 @@
 // Standard header to adapt well known macros for prints and assertions.
 
-// Users can define 'PRINTF_COND' to add an extra gate to prints.
-`ifndef PRINTF_COND_
-  `ifdef PRINTF_COND
-    `define PRINTF_COND_ (`PRINTF_COND)
-  `else  // PRINTF_COND
-    `define PRINTF_COND_ 1
-  `endif // PRINTF_COND
-`endif // not def PRINTF_COND_
-
 // Users can define 'ASSERT_VERBOSE_COND' to add an extra gate to assert error printing.
 `ifndef ASSERT_VERBOSE_COND_
   `ifdef ASSERT_VERBOSE_COND
@@ -35,7 +26,7 @@ module Queue_10(
   input  [2:0]  io_enq_bits_opcode,
                 io_enq_bits_param,
   input  [3:0]  io_enq_bits_size,
-  input  [6:0]  io_enq_bits_source,
+  input  [5:0]  io_enq_bits_source,
   input  [13:0] io_enq_bits_address,
   input  [7:0]  io_enq_bits_mask,
   input  [63:0] io_enq_bits_data,
@@ -44,10 +35,10 @@ module Queue_10(
   output        io_deq_valid,
   output [2:0]  io_deq_bits_opcode,
   output [3:0]  io_deq_bits_size,
-  output [6:0]  io_deq_bits_source
+  output [5:0]  io_deq_bits_source
 );
 
-  reg  [103:0] ram;
+  reg  [102:0] ram;
   reg          full;
   wire         do_enq = ~full & io_enq_valid;
   always @(posedge clock) begin
@@ -62,6 +53,6 @@ module Queue_10(
   assign io_deq_valid = full;
   assign io_deq_bits_opcode = ram[2:0];
   assign io_deq_bits_size = ram[9:6];
-  assign io_deq_bits_source = ram[16:10];
+  assign io_deq_bits_source = ram[15:10];
 endmodule
 

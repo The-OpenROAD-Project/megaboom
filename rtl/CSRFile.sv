@@ -1,14 +1,5 @@
 // Standard header to adapt well known macros for prints and assertions.
 
-// Users can define 'PRINTF_COND' to add an extra gate to prints.
-`ifndef PRINTF_COND_
-  `ifdef PRINTF_COND
-    `define PRINTF_COND_ (`PRINTF_COND)
-  `else  // PRINTF_COND
-    `define PRINTF_COND_ 1
-  `endif // PRINTF_COND
-`endif // not def PRINTF_COND_
-
 // Users can define 'ASSERT_VERBOSE_COND' to add an extra gate to assert error printing.
 `ifndef ASSERT_VERBOSE_COND_
   `ifdef ASSERT_VERBOSE_COND
@@ -34,8 +25,6 @@ module CSRFile(
                 io_interrupts_debug,
                 io_interrupts_mtip,
                 io_interrupts_msip,
-                io_interrupts_meip,
-                io_interrupts_seip,
                 io_hartid,
   input  [11:0] io_rw_addr,
   input  [2:0]  io_rw_cmd,
@@ -265,7 +254,7 @@ module CSRFile(
   reg  [5:0]  small_1;
   reg  [57:0] large_1;
   wire [63:0] value_1 = {large_1, small_1};
-  wire [15:0] read_mip = {4'h0, io_interrupts_meip, 1'h0, reg_mip_seip | io_interrupts_seip, 1'h0, io_interrupts_mtip, 1'h0, reg_mip_stip, 1'h0, io_interrupts_msip, 1'h0, reg_mip_ssip, 1'h0};
+  wire [15:0] read_mip = {6'h0, reg_mip_seip, 1'h0, io_interrupts_mtip, 1'h0, reg_mip_stip, 1'h0, io_interrupts_msip, 1'h0, reg_mip_ssip, 1'h0};
   wire [15:0] _GEN_5 = reg_mie[15:0] & read_mip;
   wire [15:0] m_interrupts = ~(reg_mstatus_prv[1]) | reg_mstatus_mie ? ~(~_GEN_5 | _GEN_0) : 16'h0;
   wire [15:0] s_interrupts = reg_mstatus_v | reg_mstatus_prv == 2'h0 | reg_mstatus_prv == 2'h1 & reg_mstatus_sie ? _GEN_5 & _GEN_0 : 16'h0;
@@ -869,7 +858,7 @@ module CSRFile(
       large_1 <= 58'h0;
     end
     else begin
-      reg_wfi <= ~((|{_GEN_5[11], _GEN_5[9], _GEN_5[7], _GEN_5[5], _GEN_5[3], _GEN_5[1]}) | io_interrupts_debug | exception) & (system_insn & (&{io_rw_addr[2], _GEN_20[3], _GEN_20[4], _GEN_20[5], _GEN_20[6], _GEN_20[7], io_rw_addr[8], _GEN_20[9], _GEN_20[10], _GEN_20[11]}) & ~_io_singleStep_output & ~reg_debug | reg_wfi);
+      reg_wfi <= ~((|{_GEN_5[9], _GEN_5[7], _GEN_5[5], _GEN_5[3], _GEN_5[1]}) | io_interrupts_debug | exception) & (system_insn & (&{io_rw_addr[2], _GEN_20[3], _GEN_20[4], _GEN_20[5], _GEN_20[6], _GEN_20[7], io_rw_addr[8], _GEN_20[9], _GEN_20[10], _GEN_20[11]}) & ~_io_singleStep_output & ~reg_debug | reg_wfi);
       if (_csr_wen_T_4 & (&_decoded_decoded_T_166)) begin
         small_1 <= _GEN_33;
         large_1 <= _wdata_T_2[63:6] & _wdata_T_6[63:6];

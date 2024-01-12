@@ -1,14 +1,5 @@
 // Standard header to adapt well known macros for prints and assertions.
 
-// Users can define 'PRINTF_COND' to add an extra gate to prints.
-`ifndef PRINTF_COND_
-  `ifdef PRINTF_COND
-    `define PRINTF_COND_ (`PRINTF_COND)
-  `else  // PRINTF_COND
-    `define PRINTF_COND_ 1
-  `endif // PRINTF_COND
-`endif // not def PRINTF_COND_
-
 // Users can define 'ASSERT_VERBOSE_COND' to add an extra gate to assert error printing.
 `ifndef ASSERT_VERBOSE_COND_
   `ifdef ASSERT_VERBOSE_COND
@@ -37,16 +28,12 @@ module ChipTop(
   input        serial_tl_0_bits_out_ready,
   output       serial_tl_0_bits_out_valid,
   output [3:0] serial_tl_0_bits_out_bits,
-  input        custom_boot,
-               jtag_TCK,
+  input        jtag_TCK,
                jtag_TMS,
                jtag_TDI,
-  output       jtag_TDO,
-               uart_0_txd,
-  input        uart_0_rxd
+  output       jtag_TDO
 );
 
-  wire       _iocell_uart_0_rxd_i;
   wire       _iocell_jtag_TCK_i;
   wire       _iocell_jtag_TMS_i;
   wire       _iocell_jtag_TDI_i;
@@ -54,7 +41,6 @@ module ChipTop(
   wire       _dmactiveAck_dmactiveAck_io_q;
   wire       _debug_reset_syncd_debug_reset_sync_io_q;
   wire       _system_debug_systemjtag_reset_catcher_io_sync_reset;
-  wire       _iocell_custom_boot_i;
   wire       _iocell_serial_tl_0_clock_i;
   wire       _iocell_serial_tl_0_bits_in_valid_i;
   wire       _iocell_serial_tl_0_bits_in_bits_3_i;
@@ -75,7 +61,6 @@ module ChipTop(
   wire       _system_serial_tl_0_bits_in_ready;
   wire       _system_serial_tl_0_bits_out_valid;
   wire [3:0] _system_serial_tl_0_bits_out_bits;
-  wire       _system_uart_0_txd;
   wire       debug_reset = ~_debug_reset_syncd_debug_reset_sync_io_q;
   reg        clock_en;
   always @(posedge _system_auto_subsystem_cbus_fixedClockNode_out_clock or posedge debug_reset) begin
@@ -115,16 +100,13 @@ module ChipTop(
     .debug_systemjtag_reset                                                    (_system_debug_systemjtag_reset_catcher_io_sync_reset),
     .debug_dmactive                                                            (_system_debug_dmactive),
     .debug_dmactiveAck                                                         (_dmactiveAck_dmactiveAck_io_q),
-    .custom_boot                                                               (_iocell_custom_boot_i),
     .serial_tl_0_clock                                                         (_iocell_serial_tl_0_clock_i),
     .serial_tl_0_bits_in_ready                                                 (_system_serial_tl_0_bits_in_ready),
     .serial_tl_0_bits_in_valid                                                 (_iocell_serial_tl_0_bits_in_valid_i),
     .serial_tl_0_bits_in_bits                                                  ({_iocell_serial_tl_0_bits_in_bits_3_i, _iocell_serial_tl_0_bits_in_bits_2_i, _iocell_serial_tl_0_bits_in_bits_1_i, _iocell_serial_tl_0_bits_in_bits_i}),
     .serial_tl_0_bits_out_ready                                                (_iocell_serial_tl_0_bits_out_ready_i),
     .serial_tl_0_bits_out_valid                                                (_system_serial_tl_0_bits_out_valid),
-    .serial_tl_0_bits_out_bits                                                 (_system_serial_tl_0_bits_out_bits),
-    .uart_0_txd                                                                (_system_uart_0_txd),
-    .uart_0_rxd                                                                (_iocell_uart_0_rxd_i)
+    .serial_tl_0_bits_out_bits                                                 (_system_serial_tl_0_bits_out_bits)
   );
   GenericDigitalOutIOCell iocell_serial_tl_0_bits_out_bits (
     .pad (_iocell_serial_tl_0_bits_out_bits_pad),
@@ -191,11 +173,6 @@ module ChipTop(
     .i   (_iocell_serial_tl_0_clock_i),
     .ie  (1'h1)
   );
-  GenericDigitalInIOCell iocell_custom_boot (
-    .pad (custom_boot),
-    .i   (_iocell_custom_boot_i),
-    .ie  (1'h1)
-  );
   ResetCatchAndSync_d3 system_debug_systemjtag_reset_catcher (
     .clock         (_iocell_jtag_TCK_i),
     .reset         (_system_auto_subsystem_cbus_fixedClockNode_out_reset),
@@ -238,16 +215,6 @@ module ChipTop(
     .pad (jtag_TCK),
     .i   (_iocell_jtag_TCK_i),
     .ie  (1'h1)
-  );
-  GenericDigitalInIOCell iocell_uart_0_rxd (
-    .pad (uart_0_rxd),
-    .i   (_iocell_uart_0_rxd_i),
-    .ie  (1'h1)
-  );
-  GenericDigitalOutIOCell iocell_uart_0_txd (
-    .pad (uart_0_txd),
-    .o   (_system_uart_0_txd),
-    .oe  (1'h1)
   );
   assign serial_tl_0_bits_out_bits = {_iocell_serial_tl_0_bits_out_bits_3_pad, _iocell_serial_tl_0_bits_out_bits_2_pad, _iocell_serial_tl_0_bits_out_bits_1_pad, _iocell_serial_tl_0_bits_out_bits_pad};
 endmodule

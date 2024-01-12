@@ -1,14 +1,5 @@
 // Standard header to adapt well known macros for prints and assertions.
 
-// Users can define 'PRINTF_COND' to add an extra gate to prints.
-`ifndef PRINTF_COND_
-  `ifdef PRINTF_COND
-    `define PRINTF_COND_ (`PRINTF_COND)
-  `else  // PRINTF_COND
-    `define PRINTF_COND_ 1
-  `endif // PRINTF_COND
-`endif // not def PRINTF_COND_
-
 // Users can define 'ASSERT_VERBOSE_COND' to add an extra gate to assert error printing.
 `ifndef ASSERT_VERBOSE_COND_
   `ifdef ASSERT_VERBOSE_COND
@@ -37,7 +28,7 @@ module Repeater(
   input  [2:0]  io_enq_bits_opcode,
                 io_enq_bits_param,
                 io_enq_bits_size,
-  input  [6:0]  io_enq_bits_source,
+  input  [5:0]  io_enq_bits_source,
   input  [12:0] io_enq_bits_address,
   input  [7:0]  io_enq_bits_mask,
   input         io_enq_bits_corrupt,
@@ -46,7 +37,7 @@ module Repeater(
   output [2:0]  io_deq_bits_opcode,
                 io_deq_bits_param,
                 io_deq_bits_size,
-  output [6:0]  io_deq_bits_source,
+  output [5:0]  io_deq_bits_source,
   output [12:0] io_deq_bits_address,
   output [7:0]  io_deq_bits_mask,
   output        io_deq_bits_corrupt
@@ -56,7 +47,7 @@ module Repeater(
   reg  [2:0]  saved_opcode;
   reg  [2:0]  saved_param;
   reg  [2:0]  saved_size;
-  reg  [6:0]  saved_source;
+  reg  [5:0]  saved_source;
   reg  [12:0] saved_address;
   reg  [7:0]  saved_mask;
   reg         saved_corrupt;

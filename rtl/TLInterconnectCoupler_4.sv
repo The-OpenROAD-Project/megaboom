@@ -1,14 +1,5 @@
 // Standard header to adapt well known macros for prints and assertions.
 
-// Users can define 'PRINTF_COND' to add an extra gate to prints.
-`ifndef PRINTF_COND_
-  `ifdef PRINTF_COND
-    `define PRINTF_COND_ (`PRINTF_COND)
-  `else  // PRINTF_COND
-    `define PRINTF_COND_ 1
-  `endif // PRINTF_COND
-`endif // not def PRINTF_COND_
-
 // Users can define 'ASSERT_VERBOSE_COND' to add an extra gate to assert error printing.
 `ifndef ASSERT_VERBOSE_COND_
   `ifdef ASSERT_VERBOSE_COND
@@ -35,7 +26,7 @@ module TLInterconnectCoupler_4(
   output [2:0]  auto_fragmenter_out_a_bits_opcode,
                 auto_fragmenter_out_a_bits_param,
   output [1:0]  auto_fragmenter_out_a_bits_size,
-  output [10:0] auto_fragmenter_out_a_bits_source,
+  output [9:0]  auto_fragmenter_out_a_bits_source,
   output [12:0] auto_fragmenter_out_a_bits_address,
   output [7:0]  auto_fragmenter_out_a_bits_mask,
   output [63:0] auto_fragmenter_out_a_bits_data,
@@ -44,14 +35,14 @@ module TLInterconnectCoupler_4(
   input         auto_fragmenter_out_d_valid,
   input  [2:0]  auto_fragmenter_out_d_bits_opcode,
   input  [1:0]  auto_fragmenter_out_d_bits_size,
-  input  [10:0] auto_fragmenter_out_d_bits_source,
+  input  [9:0]  auto_fragmenter_out_d_bits_source,
   input  [63:0] auto_fragmenter_out_d_bits_data,
   output        auto_tl_in_a_ready,
   input         auto_tl_in_a_valid,
   input  [2:0]  auto_tl_in_a_bits_opcode,
                 auto_tl_in_a_bits_param,
                 auto_tl_in_a_bits_size,
-  input  [6:0]  auto_tl_in_a_bits_source,
+  input  [5:0]  auto_tl_in_a_bits_source,
   input  [12:0] auto_tl_in_a_bits_address,
   input  [7:0]  auto_tl_in_a_bits_mask,
   input  [63:0] auto_tl_in_a_bits_data,
@@ -60,7 +51,7 @@ module TLInterconnectCoupler_4(
   output        auto_tl_in_d_valid,
   output [2:0]  auto_tl_in_d_bits_opcode,
                 auto_tl_in_d_bits_size,
-  output [6:0]  auto_tl_in_d_bits_source,
+  output [5:0]  auto_tl_in_d_bits_source,
   output [63:0] auto_tl_in_d_bits_data
 );
 

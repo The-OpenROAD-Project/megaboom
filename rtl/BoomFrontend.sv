@@ -1,14 +1,5 @@
 // Standard header to adapt well known macros for prints and assertions.
 
-// Users can define 'PRINTF_COND' to add an extra gate to prints.
-`ifndef PRINTF_COND_
-  `ifdef PRINTF_COND
-    `define PRINTF_COND_ (`PRINTF_COND)
-  `else  // PRINTF_COND
-    `define PRINTF_COND_ 1
-  `endif // PRINTF_COND
-`endif // not def PRINTF_COND_
-
 // Users can define 'ASSERT_VERBOSE_COND' to add an extra gate to assert error printing.
 `ifndef ASSERT_VERBOSE_COND_
   `ifdef ASSERT_VERBOSE_COND
@@ -1698,7 +1689,7 @@ module BoomFrontend(
     .io_ptw_pmp_7_addr             (io_ptw_pmp_7_addr),
     .io_ptw_pmp_7_mask             (io_ptw_pmp_7_mask)
   );
-  Queue_32 f3 (
+  Queue_19 f3 (
     .clock                                          (clock),
     .reset                                          (_GEN_34),
     .io_enq_ready                                   (_f3_io_enq_ready),
@@ -1731,7 +1722,7 @@ module BoomFrontend(
     .io_deq_bits_fsrc                               (_f3_io_deq_bits_fsrc),
     .io_deq_bits_tsrc                               (_f3_io_deq_bits_tsrc)
   );
-  Queue_33 f3_bpd_resp (
+  Queue_20 f3_bpd_resp (
     .clock                                  (clock),
     .reset                                  (_GEN_34),
     .io_enq_ready                           (_f3_bpd_resp_io_enq_ready),
@@ -1970,7 +1961,7 @@ module BoomFrontend(
     .io_out_sfb_offset_bits  (_bpd_decoder_5_io_out_sfb_offset_bits),
     .io_out_shadowable       (_bpd_decoder_5_io_out_shadowable)
   );
-  Queue_34 f4_btb_corrections (
+  Queue_21 f4_btb_corrections (
     .clock                                          (clock),
     .reset                                          (reset),
     .io_enq_valid                                   (_f4_btb_corrections_io_enq_valid_T & (f3_btb_mispredicts_0 | f3_btb_mispredicts_1 | f3_btb_mispredicts_2 | f3_btb_mispredicts_3 | f3_btb_mispredicts_4 | f3_btb_mispredicts_5 | f3_btb_mispredicts_6 | f3_btb_mispredicts_7)),
@@ -2005,7 +1996,7 @@ module BoomFrontend(
     .io_deq_bits_meta_0                             (_f4_btb_corrections_io_deq_bits_meta_0),
     .io_deq_bits_meta_1                             (_f4_btb_corrections_io_deq_bits_meta_1)
   );
-  Queue_35 f4 (
+  Queue_22 f4 (
     .clock                                          (clock),
     .reset                                          (_GEN_34),
     .io_enq_ready                                   (_f4_io_enq_ready),

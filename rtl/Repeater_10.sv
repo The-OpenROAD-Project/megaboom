@@ -1,14 +1,5 @@
 // Standard header to adapt well known macros for prints and assertions.
 
-// Users can define 'PRINTF_COND' to add an extra gate to prints.
-`ifndef PRINTF_COND_
-  `ifdef PRINTF_COND
-    `define PRINTF_COND_ (`PRINTF_COND)
-  `else  // PRINTF_COND
-    `define PRINTF_COND_ 1
-  `endif // PRINTF_COND
-`endif // not def PRINTF_COND_
-
 // Users can define 'ASSERT_VERBOSE_COND' to add an extra gate to assert error printing.
 `ifndef ASSERT_VERBOSE_COND_
   `ifdef ASSERT_VERBOSE_COND
@@ -37,29 +28,26 @@ module Repeater_10(
   input  [2:0]  io_enq_bits_opcode,
                 io_enq_bits_param,
                 io_enq_bits_size,
-  input  [3:0]  io_enq_bits_source,
-  input  [27:0] io_enq_bits_address,
+  input  [9:0]  io_enq_bits_source,
+  input  [31:0] io_enq_bits_address,
   input  [7:0]  io_enq_bits_mask,
-  input         io_enq_bits_corrupt,
-                io_deq_ready,
+  input         io_deq_ready,
   output        io_deq_valid,
   output [2:0]  io_deq_bits_opcode,
                 io_deq_bits_param,
                 io_deq_bits_size,
-  output [3:0]  io_deq_bits_source,
-  output [27:0] io_deq_bits_address,
-  output [7:0]  io_deq_bits_mask,
-  output        io_deq_bits_corrupt
+  output [9:0]  io_deq_bits_source,
+  output [31:0] io_deq_bits_address,
+  output [7:0]  io_deq_bits_mask
 );
 
   reg         full;
   reg  [2:0]  saved_opcode;
   reg  [2:0]  saved_param;
   reg  [2:0]  saved_size;
-  reg  [3:0]  saved_source;
-  reg  [27:0] saved_address;
+  reg  [9:0]  saved_source;
+  reg  [31:0] saved_address;
   reg  [7:0]  saved_mask;
-  reg         saved_corrupt;
   wire        _io_deq_valid_output = io_enq_valid | full;
   wire        _io_enq_ready_output = io_deq_ready & ~full;
   wire        _GEN = _io_enq_ready_output & io_enq_valid & io_repeat;
@@ -75,7 +63,6 @@ module Repeater_10(
       saved_source <= io_enq_bits_source;
       saved_address <= io_enq_bits_address;
       saved_mask <= io_enq_bits_mask;
-      saved_corrupt <= io_enq_bits_corrupt;
     end
   end // always @(posedge)
   assign io_full = full;
@@ -87,6 +74,5 @@ module Repeater_10(
   assign io_deq_bits_source = full ? saved_source : io_enq_bits_source;
   assign io_deq_bits_address = full ? saved_address : io_enq_bits_address;
   assign io_deq_bits_mask = full ? saved_mask : io_enq_bits_mask;
-  assign io_deq_bits_corrupt = full ? saved_corrupt : io_enq_bits_corrupt;
 endmodule
 

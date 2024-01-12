@@ -1,14 +1,5 @@
 // Standard header to adapt well known macros for prints and assertions.
 
-// Users can define 'PRINTF_COND' to add an extra gate to prints.
-`ifndef PRINTF_COND_
-  `ifdef PRINTF_COND
-    `define PRINTF_COND_ (`PRINTF_COND)
-  `else  // PRINTF_COND
-    `define PRINTF_COND_ 1
-  `endif // PRINTF_COND
-`endif // not def PRINTF_COND_
-
 // Users can define 'ASSERT_VERBOSE_COND' to add an extra gate to assert error printing.
 `ifndef ASSERT_VERBOSE_COND_
   `ifdef ASSERT_VERBOSE_COND
@@ -35,17 +26,16 @@ module TLSerdesser(
   input  [2:0]  auto_manager_in_a_bits_opcode,
                 auto_manager_in_a_bits_param,
                 auto_manager_in_a_bits_size,
-  input  [3:0]  auto_manager_in_a_bits_source,
+  input  [7:0]  auto_manager_in_a_bits_source,
   input  [32:0] auto_manager_in_a_bits_address,
   input  [7:0]  auto_manager_in_a_bits_mask,
   input  [63:0] auto_manager_in_a_bits_data,
-  input         auto_manager_in_a_bits_corrupt,
-                auto_manager_in_d_ready,
+  input         auto_manager_in_d_ready,
   output        auto_manager_in_d_valid,
   output [2:0]  auto_manager_in_d_bits_opcode,
   output [1:0]  auto_manager_in_d_bits_param,
   output [2:0]  auto_manager_in_d_bits_size,
-  output [3:0]  auto_manager_in_d_bits_source,
+  output [7:0]  auto_manager_in_d_bits_source,
   output        auto_manager_in_d_bits_sink,
                 auto_manager_in_d_bits_denied,
   output [63:0] auto_manager_in_d_bits_data,
@@ -66,7 +56,7 @@ module TLSerdesser(
   input  [1:0]  auto_client_out_d_bits_param,
   input  [3:0]  auto_client_out_d_bits_size,
                 auto_client_out_d_bits_source,
-  input  [2:0]  auto_client_out_d_bits_sink,
+  input  [1:0]  auto_client_out_d_bits_sink,
   input         auto_client_out_d_bits_denied,
   input  [63:0] auto_client_out_d_bits_data,
   input         auto_client_out_d_bits_corrupt,
@@ -129,7 +119,7 @@ module TLSerdesser(
       end
     end
   end // always @(posedge)
-  TLMonitor_57 monitor (
+  TLMonitor_44 monitor (
     .clock                (clock),
     .reset                (reset),
     .io_in_a_ready        (_outArb_io_in_4_ready),
@@ -140,13 +130,12 @@ module TLSerdesser(
     .io_in_a_bits_source  (auto_manager_in_a_bits_source),
     .io_in_a_bits_address (auto_manager_in_a_bits_address),
     .io_in_a_bits_mask    (auto_manager_in_a_bits_mask),
-    .io_in_a_bits_corrupt (auto_manager_in_a_bits_corrupt),
     .io_in_d_ready        (auto_manager_in_d_ready),
     .io_in_d_valid        (managerNodeIn_d_valid),
     .io_in_d_bits_opcode  (_inDes_io_out_bits_opcode),
     .io_in_d_bits_param   (_inDes_io_out_bits_param[1:0]),
     .io_in_d_bits_size    (_inDes_io_out_bits_size[2:0]),
-    .io_in_d_bits_source  (_inDes_io_out_bits_source[3:0]),
+    .io_in_d_bits_source  (_inDes_io_out_bits_source),
     .io_in_d_bits_sink    (_inDes_io_out_bits_union[1]),
     .io_in_d_bits_denied  (_inDes_io_out_bits_union[0]),
     .io_in_d_bits_corrupt (_inDes_io_out_bits_corrupt)
@@ -162,17 +151,17 @@ module TLSerdesser(
     .io_in_1_bits_source  ({4'h0, auto_client_out_d_bits_source}),
     .io_in_1_bits_data    (auto_client_out_d_bits_data),
     .io_in_1_bits_corrupt (auto_client_out_d_bits_corrupt),
-    .io_in_1_bits_union   ({5'h0, auto_client_out_d_bits_sink, auto_client_out_d_bits_denied}),
+    .io_in_1_bits_union   ({6'h0, auto_client_out_d_bits_sink, auto_client_out_d_bits_denied}),
     .io_in_1_bits_last    (merged_bits_last_counter_1 == 9'h1 | merged_bits_last_beats1 == 9'h0),
     .io_in_4_ready        (_outArb_io_in_4_ready),
     .io_in_4_valid        (auto_manager_in_a_valid),
     .io_in_4_bits_opcode  (auto_manager_in_a_bits_opcode),
     .io_in_4_bits_param   (auto_manager_in_a_bits_param),
     .io_in_4_bits_size    ({5'h0, auto_manager_in_a_bits_size}),
-    .io_in_4_bits_source  ({4'h0, auto_manager_in_a_bits_source}),
+    .io_in_4_bits_source  (auto_manager_in_a_bits_source),
     .io_in_4_bits_address ({31'h0, auto_manager_in_a_bits_address}),
     .io_in_4_bits_data    (auto_manager_in_a_bits_data),
-    .io_in_4_bits_corrupt (auto_manager_in_a_bits_corrupt),
+    .io_in_4_bits_corrupt (1'h0),
     .io_in_4_bits_union   ({1'h0, auto_manager_in_a_bits_mask}),
     .io_in_4_bits_last    (merged_bits_last_counter_4 == 9'h1 | merged_bits_last_beats1_3 == 9'h0),
     .io_out_ready         (_outSer_io_in_ready),
@@ -230,7 +219,7 @@ module TLSerdesser(
   assign auto_manager_in_d_bits_opcode = _inDes_io_out_bits_opcode;
   assign auto_manager_in_d_bits_param = _inDes_io_out_bits_param[1:0];
   assign auto_manager_in_d_bits_size = _inDes_io_out_bits_size[2:0];
-  assign auto_manager_in_d_bits_source = _inDes_io_out_bits_source[3:0];
+  assign auto_manager_in_d_bits_source = _inDes_io_out_bits_source;
   assign auto_manager_in_d_bits_sink = _inDes_io_out_bits_union[1];
   assign auto_manager_in_d_bits_denied = _inDes_io_out_bits_union[0];
   assign auto_manager_in_d_bits_data = _inDes_io_out_bits_data;
