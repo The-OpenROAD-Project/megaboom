@@ -6,24 +6,21 @@ import re
 import sys
 
 
-def get_gcloud_auth_token():
+def get_gcloud_auth_token(user):
     with open(".bazelrc") as f:
         all = f.read()
-    # The username is in the .bazelrc file as "# user: <username>"
-    # fish it out using a regex
-    USER = re.search(r"# user: (.*)", all).group(1)
 
     # Run gcloud command to get the authentication token
     result = subprocess.run(
-        ["gcloud", "auth", "print-access-token", USER],
+        ["gcloud", "auth", "print-access-token", user],
         capture_output=True, text=True, check=True)
     token = result.stdout.strip()
     return token
 
 
-def generate_credentials():
+def generate_credentials(user):
     # Get the Bearer token from gcloud
-    bearer_token = get_gcloud_auth_token()
+    bearer_token = get_gcloud_auth_token(user)
 
     # Create the JSON object with the required format
     credentials = {
@@ -35,10 +32,10 @@ def generate_credentials():
 
 
 def main():
-    if len(sys.argv) != 2 or sys.argv[1] != "get":
-        sys.exit("Usage: python credential_helper.py get")
+    if len(sys.argv) != 2:
+        sys.exit("Usage: python credential_helper.py <USER_EMAIL>")
 
-    credentials = generate_credentials()
+    credentials = generate_credentials(sys.argv[1])
     print(json.dumps(credentials, indent=2))
 
 
