@@ -106,10 +106,11 @@ instead, and pass a script that fetches credentials for the account you want to 
 account needs to have logged in using `gcloud auth login` and have access to the bucket
 specified.
 
-To use this feature, copy the snippet below into `.bazelrc` and specify your username by modifying `# user: myname@openroad.tools`:
+To use this feature, copy the snippet below into `.bazelrc` and specify your email address by replacing `<USER_EMAIL>`:
 
-    # user: myname@openroad.tools
-    build --credential_helper=%workspace%/cred_helper.py --remote_cache=https://storage.googleapis.com/megaboom-bazel-artifacts --remote_cache_compression=true
+```bazel
+build --credential_helper="%workspace%/cred_helper.py <USER_EMAIL>" --remote_cache=https://storage.googleapis.com/megaboom-bazel-artifacts --remote_cache_compression=true
+```
 
 `cred_helper.py` will parse `.bazelrc` and look for
 the username in the comment.
