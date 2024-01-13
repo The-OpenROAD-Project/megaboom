@@ -111,8 +111,14 @@ To use this feature, copy the snippet below into `.bazelrc` and specify your use
     # user: myname@openroad.tools
     build --credential_helper=%workspace%/cred_helper.py --remote_cache=https://storage.googleapis.com/megaboom-bazel-artifacts --remote_cache_compression=true
 
-`cred_helper.py` will parse `.bazelrc` and look for
-the username in the comment.
+`cred_helper.py` will parse `.bazelrc` and look for the username in the comment.
+
+**NOTE:** To test the credential helper, make sure to restart Bazel to avoid using a previous
+cached authorization:
+
+    bazelisk shutdown
+    bazelisk build ALUExeUnit_floorplan
+
 
 To gain access to the https://storage.googleapis.com/megaboom-bazel-artifacts bucket,
 reach out to Tom Spyrou, Precision Innovations (https://www.linkedin.com/in/tomspyrou/).
