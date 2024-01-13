@@ -1163,7 +1163,7 @@ build_openroad(
                         'RTLMP_FLOW=True',
                         "DIE_AREA=0 0 2000 2000", "CORE_AREA=2 2 1998 1998"
                         ],
-                'place': ['PLACE_DENSITY=0.30',
+                'place': ['PLACE_DENSITY=0.15',
                 'PLACE_PINS_ARGS=-annealing'],
                 'route': ['SKIP_INCREMENTAL_REPAIR=1'],
                 #'grt': ["GLOBAL_ROUTE_ARGS=-congestion_iterations 100 -congestion_report_iter_step 5 -verbose"]
