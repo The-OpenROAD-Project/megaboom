@@ -1,6 +1,6 @@
 #!/bin/bash
 set -ex
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+ORFS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 export ORFS=~/OpenROAD-flow-scripts
 export FLOW_HOME=$ORFS/flow
@@ -9,5 +9,5 @@ export MAKEFILES=$FLOW_HOME/Makefile
 cd $ORFS
 . env.sh
 
-cd $DIR
+cd $ORFS_DIR
 eval "$@"
