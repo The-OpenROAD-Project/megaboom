@@ -43,8 +43,8 @@ module TLDebugModuleInnerAsync(
   input  [2:0]  auto_dmInner_tl_in_a_bits_opcode,
                 auto_dmInner_tl_in_a_bits_param,
   input  [1:0]  auto_dmInner_tl_in_a_bits_size,
-  input  [9:0]  auto_dmInner_tl_in_a_bits_source,
-  input  [11:0] auto_dmInner_tl_in_a_bits_address,
+  input  [11:0] auto_dmInner_tl_in_a_bits_source,
+                auto_dmInner_tl_in_a_bits_address,
   input  [7:0]  auto_dmInner_tl_in_a_bits_mask,
   input  [63:0] auto_dmInner_tl_in_a_bits_data,
   input         auto_dmInner_tl_in_a_bits_corrupt,
@@ -52,7 +52,7 @@ module TLDebugModuleInnerAsync(
   output        auto_dmInner_tl_in_d_valid,
   output [2:0]  auto_dmInner_tl_in_d_bits_opcode,
   output [1:0]  auto_dmInner_tl_in_d_bits_size,
-  output [9:0]  auto_dmInner_tl_in_d_bits_source,
+  output [11:0] auto_dmInner_tl_in_d_bits_source,
   output [63:0] auto_dmInner_tl_in_d_bits_data,
   input         io_debug_clock,
                 io_debug_reset,
@@ -60,7 +60,11 @@ module TLDebugModuleInnerAsync(
                 io_innerCtrl_mem_0_resumereq,
   input  [9:0]  io_innerCtrl_mem_0_hartsel,
   input         io_innerCtrl_mem_0_ackhavereset,
+                io_innerCtrl_mem_0_hasel,
+                io_innerCtrl_mem_0_hamask_0,
+                io_innerCtrl_mem_0_hamask_1,
                 io_innerCtrl_mem_0_hrmask_0,
+                io_innerCtrl_mem_0_hrmask_1,
   output        io_innerCtrl_ridx,
   input         io_innerCtrl_widx,
   output        io_innerCtrl_safe_ridx_valid,
@@ -68,14 +72,20 @@ module TLDebugModuleInnerAsync(
                 io_innerCtrl_safe_source_reset_n,
   output        io_innerCtrl_safe_sink_reset_n,
                 io_hgDebugInt_0,
-  input         io_hartIsInReset_0
+                io_hgDebugInt_1,
+  input         io_hartIsInReset_0,
+                io_hartIsInReset_1
 );
 
   wire        _dmactive_synced_dmInner_io_innerCtrl_sink_io_deq_valid;
   wire        _dmactive_synced_dmInner_io_innerCtrl_sink_io_deq_bits_resumereq;
   wire [9:0]  _dmactive_synced_dmInner_io_innerCtrl_sink_io_deq_bits_hartsel;
   wire        _dmactive_synced_dmInner_io_innerCtrl_sink_io_deq_bits_ackhavereset;
+  wire        _dmactive_synced_dmInner_io_innerCtrl_sink_io_deq_bits_hasel;
+  wire        _dmactive_synced_dmInner_io_innerCtrl_sink_io_deq_bits_hamask_0;
+  wire        _dmactive_synced_dmInner_io_innerCtrl_sink_io_deq_bits_hamask_1;
   wire        _dmactive_synced_dmInner_io_innerCtrl_sink_io_deq_bits_hrmask_0;
+  wire        _dmactive_synced_dmInner_io_innerCtrl_sink_io_deq_bits_hrmask_1;
   wire        _dmactive_synced_dmactive_synced_dmactiveSync_io_q;
   wire        _dmiXing_auto_out_a_valid;
   wire [2:0]  _dmiXing_auto_out_a_bits_opcode;
@@ -133,11 +143,17 @@ module TLDebugModuleInnerAsync(
     .io_innerCtrl_bits_resumereq    (_dmactive_synced_dmInner_io_innerCtrl_sink_io_deq_bits_resumereq),
     .io_innerCtrl_bits_hartsel      (_dmactive_synced_dmInner_io_innerCtrl_sink_io_deq_bits_hartsel),
     .io_innerCtrl_bits_ackhavereset (_dmactive_synced_dmInner_io_innerCtrl_sink_io_deq_bits_ackhavereset),
+    .io_innerCtrl_bits_hasel        (_dmactive_synced_dmInner_io_innerCtrl_sink_io_deq_bits_hasel),
+    .io_innerCtrl_bits_hamask_0     (_dmactive_synced_dmInner_io_innerCtrl_sink_io_deq_bits_hamask_0),
+    .io_innerCtrl_bits_hamask_1     (_dmactive_synced_dmInner_io_innerCtrl_sink_io_deq_bits_hamask_1),
     .io_innerCtrl_bits_hrmask_0     (_dmactive_synced_dmInner_io_innerCtrl_sink_io_deq_bits_hrmask_0),
+    .io_innerCtrl_bits_hrmask_1     (_dmactive_synced_dmInner_io_innerCtrl_sink_io_deq_bits_hrmask_1),
     .io_hgDebugInt_0                (io_hgDebugInt_0),
-    .io_hartIsInReset_0             (io_hartIsInReset_0)
+    .io_hgDebugInt_1                (io_hgDebugInt_1),
+    .io_hartIsInReset_0             (io_hartIsInReset_0),
+    .io_hartIsInReset_1             (io_hartIsInReset_1)
   );
-  TLAsyncCrossingSink dmiXing (
+  TLAsyncCrossingSink_7 dmiXing (
     .clock                         (io_debug_clock),
     .reset                         (io_debug_reset),
     .auto_in_a_mem_0_opcode        (auto_dmiXing_in_a_mem_0_opcode),
@@ -176,24 +192,32 @@ module TLDebugModuleInnerAsync(
     .auto_out_d_bits_source        (_dmInner_auto_dmi_in_d_bits_source),
     .auto_out_d_bits_data          (_dmInner_auto_dmi_in_d_bits_data)
   );
-  AsyncResetSynchronizerShiftReg_w1_d3_i0 dmactive_synced_dmactive_synced_dmactiveSync (
+  AsyncResetSynchronizerShiftReg_w1_d3_i0_128 dmactive_synced_dmactive_synced_dmactiveSync (
     .clock (io_debug_clock),
     .reset (io_debug_reset),
     .io_d  (io_dmactive),
     .io_q  (_dmactive_synced_dmactive_synced_dmactiveSync_io_q)
   );
-  AsyncQueueSink_2 dmactive_synced_dmInner_io_innerCtrl_sink (
+  AsyncQueueSink_18 dmactive_synced_dmInner_io_innerCtrl_sink (
     .clock                        (io_debug_clock),
     .reset                        (io_debug_reset),
     .io_deq_valid                 (_dmactive_synced_dmInner_io_innerCtrl_sink_io_deq_valid),
     .io_deq_bits_resumereq        (_dmactive_synced_dmInner_io_innerCtrl_sink_io_deq_bits_resumereq),
     .io_deq_bits_hartsel          (_dmactive_synced_dmInner_io_innerCtrl_sink_io_deq_bits_hartsel),
     .io_deq_bits_ackhavereset     (_dmactive_synced_dmInner_io_innerCtrl_sink_io_deq_bits_ackhavereset),
+    .io_deq_bits_hasel            (_dmactive_synced_dmInner_io_innerCtrl_sink_io_deq_bits_hasel),
+    .io_deq_bits_hamask_0         (_dmactive_synced_dmInner_io_innerCtrl_sink_io_deq_bits_hamask_0),
+    .io_deq_bits_hamask_1         (_dmactive_synced_dmInner_io_innerCtrl_sink_io_deq_bits_hamask_1),
     .io_deq_bits_hrmask_0         (_dmactive_synced_dmInner_io_innerCtrl_sink_io_deq_bits_hrmask_0),
+    .io_deq_bits_hrmask_1         (_dmactive_synced_dmInner_io_innerCtrl_sink_io_deq_bits_hrmask_1),
     .io_async_mem_0_resumereq     (io_innerCtrl_mem_0_resumereq),
     .io_async_mem_0_hartsel       (io_innerCtrl_mem_0_hartsel),
     .io_async_mem_0_ackhavereset  (io_innerCtrl_mem_0_ackhavereset),
+    .io_async_mem_0_hasel         (io_innerCtrl_mem_0_hasel),
+    .io_async_mem_0_hamask_0      (io_innerCtrl_mem_0_hamask_0),
+    .io_async_mem_0_hamask_1      (io_innerCtrl_mem_0_hamask_1),
     .io_async_mem_0_hrmask_0      (io_innerCtrl_mem_0_hrmask_0),
+    .io_async_mem_0_hrmask_1      (io_innerCtrl_mem_0_hrmask_1),
     .io_async_ridx                (io_innerCtrl_ridx),
     .io_async_widx                (io_innerCtrl_widx),
     .io_async_safe_ridx_valid     (io_innerCtrl_safe_ridx_valid),

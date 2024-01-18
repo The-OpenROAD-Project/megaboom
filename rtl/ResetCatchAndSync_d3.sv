@@ -25,7 +25,7 @@ module ResetCatchAndSync_d3(
 );
 
   wire _io_sync_reset_chain_io_q;
-  AsyncResetSynchronizerShiftReg_w1_d3_i0 io_sync_reset_chain (
+  AsyncResetSynchronizerShiftReg_w1_d3_i0_128 io_sync_reset_chain (
     .clock (clock),
     .reset (reset),
     .io_d  (1'h1),

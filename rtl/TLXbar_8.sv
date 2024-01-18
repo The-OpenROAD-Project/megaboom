@@ -28,7 +28,7 @@ module TLXbar_8(
   output [2:0]  auto_in_1_d_bits_opcode,
   output [1:0]  auto_in_1_d_bits_param,
   output [3:0]  auto_in_1_d_bits_size,
-  output [1:0]  auto_in_1_d_bits_sink,
+  output [2:0]  auto_in_1_d_bits_sink,
   output        auto_in_1_d_bits_denied,
   output [63:0] auto_in_1_d_bits_data,
   output        auto_in_1_d_bits_corrupt,
@@ -63,13 +63,13 @@ module TLXbar_8(
   output [1:0]  auto_in_0_d_bits_param,
   output [3:0]  auto_in_0_d_bits_size,
                 auto_in_0_d_bits_source,
-  output [1:0]  auto_in_0_d_bits_sink,
+  output [2:0]  auto_in_0_d_bits_sink,
   output        auto_in_0_d_bits_denied,
   output [63:0] auto_in_0_d_bits_data,
   output        auto_in_0_d_bits_corrupt,
                 auto_in_0_e_ready,
   input         auto_in_0_e_valid,
-  input  [1:0]  auto_in_0_e_bits_sink,
+  input  [2:0]  auto_in_0_e_bits_sink,
   input         auto_out_a_ready,
   output        auto_out_a_valid,
   output [2:0]  auto_out_a_bits_opcode,
@@ -102,13 +102,13 @@ module TLXbar_8(
   input  [1:0]  auto_out_d_bits_param,
   input  [3:0]  auto_out_d_bits_size,
   input  [4:0]  auto_out_d_bits_source,
-  input  [1:0]  auto_out_d_bits_sink,
+  input  [2:0]  auto_out_d_bits_sink,
   input         auto_out_d_bits_denied,
   input  [63:0] auto_out_d_bits_data,
   input         auto_out_d_bits_corrupt,
                 auto_out_e_ready,
   output        auto_out_e_valid,
-  output [1:0]  auto_out_e_bits_sink
+  output [2:0]  auto_out_e_bits_sink
 );
 
   wire        requestDOI_0_1 = auto_out_d_bits_source == 5'h10;
@@ -170,7 +170,7 @@ module TLXbar_8(
       end
     end
   end // always @(posedge)
-  TLMonitor_29 monitor (
+  TLMonitor_42 monitor (
     .clock                (clock),
     .reset                (reset),
     .io_in_a_ready        (portsAOI_filtered_0_ready),
@@ -210,7 +210,7 @@ module TLXbar_8(
     .io_in_e_valid        (auto_in_0_e_valid),
     .io_in_e_bits_sink    (auto_in_0_e_bits_sink)
   );
-  TLMonitor_30 monitor_1 (
+  TLMonitor_43 monitor_1 (
     .clock                (clock),
     .reset                (reset),
     .io_in_a_ready        (portsAOI_filtered_1_0_ready),

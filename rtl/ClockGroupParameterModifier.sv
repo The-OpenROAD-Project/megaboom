@@ -19,46 +19,58 @@
 `endif // not def STOP_COND_
 
 module ClockGroupParameterModifier(
-  input  auto_clock_name_prefixer_in_4_member_subsystem_cbus_subsystem_cbus_0_clock,
-         auto_clock_name_prefixer_in_4_member_subsystem_cbus_subsystem_cbus_0_reset,
-         auto_clock_name_prefixer_in_3_member_subsystem_mbus_subsystem_mbus_1_clock,
-         auto_clock_name_prefixer_in_3_member_subsystem_mbus_subsystem_mbus_1_reset,
-         auto_clock_name_prefixer_in_3_member_subsystem_mbus_subsystem_mbus_0_clock,
-         auto_clock_name_prefixer_in_3_member_subsystem_mbus_subsystem_mbus_0_reset,
-         auto_clock_name_prefixer_in_2_member_subsystem_fbus_subsystem_fbus_0_clock,
-         auto_clock_name_prefixer_in_2_member_subsystem_fbus_subsystem_fbus_0_reset,
-         auto_clock_name_prefixer_in_1_member_subsystem_pbus_subsystem_pbus_0_clock,
-         auto_clock_name_prefixer_in_1_member_subsystem_pbus_subsystem_pbus_0_reset,
+  input  auto_clock_name_prefixer_in_6_member_subsystem_cbus_subsystem_cbus_0_clock,
+         auto_clock_name_prefixer_in_6_member_subsystem_cbus_subsystem_cbus_0_reset,
+         auto_clock_name_prefixer_in_5_member_subsystem_mbus_subsystem_mbus_1_clock,
+         auto_clock_name_prefixer_in_5_member_subsystem_mbus_subsystem_mbus_1_reset,
+         auto_clock_name_prefixer_in_5_member_subsystem_mbus_subsystem_mbus_0_clock,
+         auto_clock_name_prefixer_in_5_member_subsystem_mbus_subsystem_mbus_0_reset,
+         auto_clock_name_prefixer_in_4_member_subsystem_fbus_subsystem_fbus_0_clock,
+         auto_clock_name_prefixer_in_4_member_subsystem_fbus_subsystem_fbus_0_reset,
+         auto_clock_name_prefixer_in_3_member_subsystem_pbus_subsystem_pbus_0_clock,
+         auto_clock_name_prefixer_in_3_member_subsystem_pbus_subsystem_pbus_0_reset,
+         auto_clock_name_prefixer_in_2_member_tileClockGroup_tileClockGroup_boom_tile_1_clock,
+         auto_clock_name_prefixer_in_2_member_tileClockGroup_tileClockGroup_boom_tile_1_reset,
+         auto_clock_name_prefixer_in_1_member_tileClockGroup_tileClockGroup_boom_tile_0_clock,
+         auto_clock_name_prefixer_in_1_member_tileClockGroup_tileClockGroup_boom_tile_0_reset,
          auto_clock_name_prefixer_in_0_member_subsystem_sbus_subsystem_sbus_1_clock,
          auto_clock_name_prefixer_in_0_member_subsystem_sbus_subsystem_sbus_1_reset,
          auto_clock_name_prefixer_in_0_member_subsystem_sbus_subsystem_sbus_0_clock,
          auto_clock_name_prefixer_in_0_member_subsystem_sbus_subsystem_sbus_0_reset,
-  output auto_clock_name_prefixer_out_4_member_subsystem_cbus_0_clock,
-         auto_clock_name_prefixer_out_4_member_subsystem_cbus_0_reset,
-         auto_clock_name_prefixer_out_3_member_subsystem_mbus_1_clock,
-         auto_clock_name_prefixer_out_3_member_subsystem_mbus_1_reset,
-         auto_clock_name_prefixer_out_3_member_subsystem_mbus_0_clock,
-         auto_clock_name_prefixer_out_3_member_subsystem_mbus_0_reset,
-         auto_clock_name_prefixer_out_2_member_subsystem_fbus_0_clock,
-         auto_clock_name_prefixer_out_2_member_subsystem_fbus_0_reset,
-         auto_clock_name_prefixer_out_1_member_subsystem_pbus_0_clock,
-         auto_clock_name_prefixer_out_1_member_subsystem_pbus_0_reset,
+  output auto_clock_name_prefixer_out_6_member_subsystem_cbus_0_clock,
+         auto_clock_name_prefixer_out_6_member_subsystem_cbus_0_reset,
+         auto_clock_name_prefixer_out_5_member_subsystem_mbus_1_clock,
+         auto_clock_name_prefixer_out_5_member_subsystem_mbus_1_reset,
+         auto_clock_name_prefixer_out_5_member_subsystem_mbus_0_clock,
+         auto_clock_name_prefixer_out_5_member_subsystem_mbus_0_reset,
+         auto_clock_name_prefixer_out_4_member_subsystem_fbus_0_clock,
+         auto_clock_name_prefixer_out_4_member_subsystem_fbus_0_reset,
+         auto_clock_name_prefixer_out_3_member_subsystem_pbus_0_clock,
+         auto_clock_name_prefixer_out_3_member_subsystem_pbus_0_reset,
+         auto_clock_name_prefixer_out_2_member_tileClockGroup_boom_tile_1_clock,
+         auto_clock_name_prefixer_out_2_member_tileClockGroup_boom_tile_1_reset,
+         auto_clock_name_prefixer_out_1_member_tileClockGroup_boom_tile_0_clock,
+         auto_clock_name_prefixer_out_1_member_tileClockGroup_boom_tile_0_reset,
          auto_clock_name_prefixer_out_0_member_subsystem_sbus_1_clock,
          auto_clock_name_prefixer_out_0_member_subsystem_sbus_1_reset,
          auto_clock_name_prefixer_out_0_member_subsystem_sbus_0_clock,
          auto_clock_name_prefixer_out_0_member_subsystem_sbus_0_reset
 );
 
-  assign auto_clock_name_prefixer_out_4_member_subsystem_cbus_0_clock = auto_clock_name_prefixer_in_4_member_subsystem_cbus_subsystem_cbus_0_clock;
-  assign auto_clock_name_prefixer_out_4_member_subsystem_cbus_0_reset = auto_clock_name_prefixer_in_4_member_subsystem_cbus_subsystem_cbus_0_reset;
-  assign auto_clock_name_prefixer_out_3_member_subsystem_mbus_1_clock = auto_clock_name_prefixer_in_3_member_subsystem_mbus_subsystem_mbus_1_clock;
-  assign auto_clock_name_prefixer_out_3_member_subsystem_mbus_1_reset = auto_clock_name_prefixer_in_3_member_subsystem_mbus_subsystem_mbus_1_reset;
-  assign auto_clock_name_prefixer_out_3_member_subsystem_mbus_0_clock = auto_clock_name_prefixer_in_3_member_subsystem_mbus_subsystem_mbus_0_clock;
-  assign auto_clock_name_prefixer_out_3_member_subsystem_mbus_0_reset = auto_clock_name_prefixer_in_3_member_subsystem_mbus_subsystem_mbus_0_reset;
-  assign auto_clock_name_prefixer_out_2_member_subsystem_fbus_0_clock = auto_clock_name_prefixer_in_2_member_subsystem_fbus_subsystem_fbus_0_clock;
-  assign auto_clock_name_prefixer_out_2_member_subsystem_fbus_0_reset = auto_clock_name_prefixer_in_2_member_subsystem_fbus_subsystem_fbus_0_reset;
-  assign auto_clock_name_prefixer_out_1_member_subsystem_pbus_0_clock = auto_clock_name_prefixer_in_1_member_subsystem_pbus_subsystem_pbus_0_clock;
-  assign auto_clock_name_prefixer_out_1_member_subsystem_pbus_0_reset = auto_clock_name_prefixer_in_1_member_subsystem_pbus_subsystem_pbus_0_reset;
+  assign auto_clock_name_prefixer_out_6_member_subsystem_cbus_0_clock = auto_clock_name_prefixer_in_6_member_subsystem_cbus_subsystem_cbus_0_clock;
+  assign auto_clock_name_prefixer_out_6_member_subsystem_cbus_0_reset = auto_clock_name_prefixer_in_6_member_subsystem_cbus_subsystem_cbus_0_reset;
+  assign auto_clock_name_prefixer_out_5_member_subsystem_mbus_1_clock = auto_clock_name_prefixer_in_5_member_subsystem_mbus_subsystem_mbus_1_clock;
+  assign auto_clock_name_prefixer_out_5_member_subsystem_mbus_1_reset = auto_clock_name_prefixer_in_5_member_subsystem_mbus_subsystem_mbus_1_reset;
+  assign auto_clock_name_prefixer_out_5_member_subsystem_mbus_0_clock = auto_clock_name_prefixer_in_5_member_subsystem_mbus_subsystem_mbus_0_clock;
+  assign auto_clock_name_prefixer_out_5_member_subsystem_mbus_0_reset = auto_clock_name_prefixer_in_5_member_subsystem_mbus_subsystem_mbus_0_reset;
+  assign auto_clock_name_prefixer_out_4_member_subsystem_fbus_0_clock = auto_clock_name_prefixer_in_4_member_subsystem_fbus_subsystem_fbus_0_clock;
+  assign auto_clock_name_prefixer_out_4_member_subsystem_fbus_0_reset = auto_clock_name_prefixer_in_4_member_subsystem_fbus_subsystem_fbus_0_reset;
+  assign auto_clock_name_prefixer_out_3_member_subsystem_pbus_0_clock = auto_clock_name_prefixer_in_3_member_subsystem_pbus_subsystem_pbus_0_clock;
+  assign auto_clock_name_prefixer_out_3_member_subsystem_pbus_0_reset = auto_clock_name_prefixer_in_3_member_subsystem_pbus_subsystem_pbus_0_reset;
+  assign auto_clock_name_prefixer_out_2_member_tileClockGroup_boom_tile_1_clock = auto_clock_name_prefixer_in_2_member_tileClockGroup_tileClockGroup_boom_tile_1_clock;
+  assign auto_clock_name_prefixer_out_2_member_tileClockGroup_boom_tile_1_reset = auto_clock_name_prefixer_in_2_member_tileClockGroup_tileClockGroup_boom_tile_1_reset;
+  assign auto_clock_name_prefixer_out_1_member_tileClockGroup_boom_tile_0_clock = auto_clock_name_prefixer_in_1_member_tileClockGroup_tileClockGroup_boom_tile_0_clock;
+  assign auto_clock_name_prefixer_out_1_member_tileClockGroup_boom_tile_0_reset = auto_clock_name_prefixer_in_1_member_tileClockGroup_tileClockGroup_boom_tile_0_reset;
   assign auto_clock_name_prefixer_out_0_member_subsystem_sbus_1_clock = auto_clock_name_prefixer_in_0_member_subsystem_sbus_subsystem_sbus_1_clock;
   assign auto_clock_name_prefixer_out_0_member_subsystem_sbus_1_reset = auto_clock_name_prefixer_in_0_member_subsystem_sbus_subsystem_sbus_1_reset;
   assign auto_clock_name_prefixer_out_0_member_subsystem_sbus_0_clock = auto_clock_name_prefixer_in_0_member_subsystem_sbus_subsystem_sbus_0_clock;

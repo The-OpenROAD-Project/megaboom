@@ -26,7 +26,7 @@ module TLError(
   input  [2:0]  auto_in_a_bits_opcode,
                 auto_in_a_bits_param,
   input  [3:0]  auto_in_a_bits_size,
-  input  [5:0]  auto_in_a_bits_source,
+  input  [7:0]  auto_in_a_bits_source,
   input  [13:0] auto_in_a_bits_address,
   input  [7:0]  auto_in_a_bits_mask,
   input  [63:0] auto_in_a_bits_data,
@@ -35,7 +35,7 @@ module TLError(
   output        auto_in_d_valid,
   output [2:0]  auto_in_d_bits_opcode,
   output [3:0]  auto_in_d_bits_size,
-  output [5:0]  auto_in_d_bits_source,
+  output [7:0]  auto_in_d_bits_source,
   output        auto_in_d_bits_corrupt
 );
 
@@ -44,7 +44,7 @@ module TLError(
   wire        _a_q_io_deq_valid;
   wire [2:0]  _a_q_io_deq_bits_opcode;
   wire [3:0]  _a_q_io_deq_bits_size;
-  wire [5:0]  _a_q_io_deq_bits_source;
+  wire [7:0]  _a_q_io_deq_bits_source;
   wire [26:0] _GEN = {23'h0, _a_q_io_deq_bits_size};
   wire [26:0] _a_last_beats1_decode_T_1 = 27'hFFF << _GEN;
   wire [8:0]  a_last_beats1 = _a_q_io_deq_bits_opcode[2] ? 9'h0 : ~(_a_last_beats1_decode_T_1[11:3]);
@@ -95,7 +95,7 @@ module TLError(
       end
     end
   end // always @(posedge)
-  TLMonitor_16 monitor (
+  TLMonitor_21 monitor (
     .clock                (clock),
     .reset                (reset),
     .io_in_a_ready        (_a_q_io_enq_ready),
@@ -114,7 +114,7 @@ module TLError(
     .io_in_d_bits_source  (_a_q_io_deq_bits_source),
     .io_in_d_bits_corrupt (casez_tmp[0])
   );
-  Queue_10 a_q (
+  Queue_8 a_q (
     .clock               (clock),
     .reset               (reset),
     .io_enq_ready        (_a_q_io_enq_ready),

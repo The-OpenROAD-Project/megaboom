@@ -26,8 +26,8 @@ module TLBuffer_4(
   input  [2:0]  auto_in_a_bits_opcode,
                 auto_in_a_bits_param,
   input  [3:0]  auto_in_a_bits_size,
-  input  [5:0]  auto_in_a_bits_source,
-  input  [27:0] auto_in_a_bits_address,
+  input  [7:0]  auto_in_a_bits_source,
+  input  [13:0] auto_in_a_bits_address,
   input  [7:0]  auto_in_a_bits_mask,
   input  [63:0] auto_in_a_bits_data,
   input         auto_in_a_bits_corrupt,
@@ -36,7 +36,7 @@ module TLBuffer_4(
   output [2:0]  auto_in_d_bits_opcode,
   output [1:0]  auto_in_d_bits_param,
   output [3:0]  auto_in_d_bits_size,
-  output [5:0]  auto_in_d_bits_source,
+  output [7:0]  auto_in_d_bits_source,
   output        auto_in_d_bits_sink,
                 auto_in_d_bits_denied,
   output [63:0] auto_in_d_bits_data,
@@ -46,20 +46,16 @@ module TLBuffer_4(
   output [2:0]  auto_out_a_bits_opcode,
                 auto_out_a_bits_param,
   output [3:0]  auto_out_a_bits_size,
-  output [5:0]  auto_out_a_bits_source,
-  output [27:0] auto_out_a_bits_address,
+  output [7:0]  auto_out_a_bits_source,
+  output [13:0] auto_out_a_bits_address,
   output [7:0]  auto_out_a_bits_mask,
   output [63:0] auto_out_a_bits_data,
   output        auto_out_a_bits_corrupt,
                 auto_out_d_ready,
   input         auto_out_d_valid,
   input  [2:0]  auto_out_d_bits_opcode,
-  input  [1:0]  auto_out_d_bits_param,
   input  [3:0]  auto_out_d_bits_size,
-  input  [5:0]  auto_out_d_bits_source,
-  input         auto_out_d_bits_sink,
-                auto_out_d_bits_denied,
-  input  [63:0] auto_out_d_bits_data,
+  input  [7:0]  auto_out_d_bits_source,
   input         auto_out_d_bits_corrupt
 );
 
@@ -67,12 +63,12 @@ module TLBuffer_4(
   wire [2:0] _nodeIn_d_q_io_deq_bits_opcode;
   wire [1:0] _nodeIn_d_q_io_deq_bits_param;
   wire [3:0] _nodeIn_d_q_io_deq_bits_size;
-  wire [5:0] _nodeIn_d_q_io_deq_bits_source;
+  wire [7:0] _nodeIn_d_q_io_deq_bits_source;
   wire       _nodeIn_d_q_io_deq_bits_sink;
   wire       _nodeIn_d_q_io_deq_bits_denied;
   wire       _nodeIn_d_q_io_deq_bits_corrupt;
   wire       _nodeOut_a_q_io_enq_ready;
-  TLMonitor_14 monitor (
+  TLMonitor_22 monitor (
     .clock                (clock),
     .reset                (reset),
     .io_in_a_ready        (_nodeOut_a_q_io_enq_ready),
@@ -94,7 +90,7 @@ module TLBuffer_4(
     .io_in_d_bits_denied  (_nodeIn_d_q_io_deq_bits_denied),
     .io_in_d_bits_corrupt (_nodeIn_d_q_io_deq_bits_corrupt)
   );
-  Queue_8 nodeOut_a_q (
+  Queue_9 nodeOut_a_q (
     .clock               (clock),
     .reset               (reset),
     .io_enq_ready        (_nodeOut_a_q_io_enq_ready),
@@ -118,18 +114,18 @@ module TLBuffer_4(
     .io_deq_bits_data    (auto_out_a_bits_data),
     .io_deq_bits_corrupt (auto_out_a_bits_corrupt)
   );
-  Queue_9 nodeIn_d_q (
+  Queue_7 nodeIn_d_q (
     .clock               (clock),
     .reset               (reset),
     .io_enq_ready        (auto_out_d_ready),
     .io_enq_valid        (auto_out_d_valid),
     .io_enq_bits_opcode  (auto_out_d_bits_opcode),
-    .io_enq_bits_param   (auto_out_d_bits_param),
+    .io_enq_bits_param   (2'h0),
     .io_enq_bits_size    (auto_out_d_bits_size),
     .io_enq_bits_source  (auto_out_d_bits_source),
-    .io_enq_bits_sink    (auto_out_d_bits_sink),
-    .io_enq_bits_denied  (auto_out_d_bits_denied),
-    .io_enq_bits_data    (auto_out_d_bits_data),
+    .io_enq_bits_sink    (1'h0),
+    .io_enq_bits_denied  (1'h1),
+    .io_enq_bits_data    (64'h0),
     .io_enq_bits_corrupt (auto_out_d_bits_corrupt),
     .io_deq_ready        (auto_in_d_ready),
     .io_deq_valid        (_nodeIn_d_q_io_deq_valid),

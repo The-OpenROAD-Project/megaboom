@@ -26,7 +26,7 @@ module PeripheryBus(
   input  [2:0]  auto_bus_xing_in_a_bits_opcode,
                 auto_bus_xing_in_a_bits_param,
                 auto_bus_xing_in_a_bits_size,
-  input  [5:0]  auto_bus_xing_in_a_bits_source,
+  input  [7:0]  auto_bus_xing_in_a_bits_source,
   input  [12:0] auto_bus_xing_in_a_bits_address,
   input  [7:0]  auto_bus_xing_in_a_bits_mask,
   input  [63:0] auto_bus_xing_in_a_bits_data,
@@ -36,7 +36,7 @@ module PeripheryBus(
   output [2:0]  auto_bus_xing_in_d_bits_opcode,
   output [1:0]  auto_bus_xing_in_d_bits_param,
   output [2:0]  auto_bus_xing_in_d_bits_size,
-  output [5:0]  auto_bus_xing_in_d_bits_source,
+  output [7:0]  auto_bus_xing_in_d_bits_source,
   output        auto_bus_xing_in_d_bits_sink,
                 auto_bus_xing_in_d_bits_denied,
   output [63:0] auto_bus_xing_in_d_bits_data,
@@ -50,7 +50,7 @@ module PeripheryBus(
   wire [2:0]  _coupler_to_bootaddressreg_auto_fragmenter_out_a_bits_opcode;
   wire [2:0]  _coupler_to_bootaddressreg_auto_fragmenter_out_a_bits_param;
   wire [1:0]  _coupler_to_bootaddressreg_auto_fragmenter_out_a_bits_size;
-  wire [9:0]  _coupler_to_bootaddressreg_auto_fragmenter_out_a_bits_source;
+  wire [11:0] _coupler_to_bootaddressreg_auto_fragmenter_out_a_bits_source;
   wire [12:0] _coupler_to_bootaddressreg_auto_fragmenter_out_a_bits_address;
   wire [7:0]  _coupler_to_bootaddressreg_auto_fragmenter_out_a_bits_mask;
   wire [63:0] _coupler_to_bootaddressreg_auto_fragmenter_out_a_bits_data;
@@ -60,13 +60,13 @@ module PeripheryBus(
   wire        _coupler_to_bootaddressreg_auto_tl_in_d_valid;
   wire [2:0]  _coupler_to_bootaddressreg_auto_tl_in_d_bits_opcode;
   wire [2:0]  _coupler_to_bootaddressreg_auto_tl_in_d_bits_size;
-  wire [5:0]  _coupler_to_bootaddressreg_auto_tl_in_d_bits_source;
+  wire [7:0]  _coupler_to_bootaddressreg_auto_tl_in_d_bits_source;
   wire [63:0] _coupler_to_bootaddressreg_auto_tl_in_d_bits_data;
   wire        _buffer_1_auto_out_a_valid;
   wire [2:0]  _buffer_1_auto_out_a_bits_opcode;
   wire [2:0]  _buffer_1_auto_out_a_bits_param;
   wire [2:0]  _buffer_1_auto_out_a_bits_size;
-  wire [5:0]  _buffer_1_auto_out_a_bits_source;
+  wire [7:0]  _buffer_1_auto_out_a_bits_source;
   wire [12:0] _buffer_1_auto_out_a_bits_address;
   wire [7:0]  _buffer_1_auto_out_a_bits_mask;
   wire [63:0] _buffer_1_auto_out_a_bits_data;
@@ -77,7 +77,7 @@ module PeripheryBus(
   wire [2:0]  _atomics_auto_in_d_bits_opcode;
   wire [1:0]  _atomics_auto_in_d_bits_param;
   wire [2:0]  _atomics_auto_in_d_bits_size;
-  wire [5:0]  _atomics_auto_in_d_bits_source;
+  wire [7:0]  _atomics_auto_in_d_bits_source;
   wire        _atomics_auto_in_d_bits_sink;
   wire        _atomics_auto_in_d_bits_denied;
   wire [63:0] _atomics_auto_in_d_bits_data;
@@ -86,7 +86,7 @@ module PeripheryBus(
   wire [2:0]  _atomics_auto_out_a_bits_opcode;
   wire [2:0]  _atomics_auto_out_a_bits_param;
   wire [2:0]  _atomics_auto_out_a_bits_size;
-  wire [5:0]  _atomics_auto_out_a_bits_source;
+  wire [7:0]  _atomics_auto_out_a_bits_source;
   wire [12:0] _atomics_auto_out_a_bits_address;
   wire [7:0]  _atomics_auto_out_a_bits_mask;
   wire [63:0] _atomics_auto_out_a_bits_data;
@@ -97,7 +97,7 @@ module PeripheryBus(
   wire [2:0]  _buffer_auto_in_d_bits_opcode;
   wire [1:0]  _buffer_auto_in_d_bits_param;
   wire [2:0]  _buffer_auto_in_d_bits_size;
-  wire [5:0]  _buffer_auto_in_d_bits_source;
+  wire [7:0]  _buffer_auto_in_d_bits_source;
   wire        _buffer_auto_in_d_bits_sink;
   wire        _buffer_auto_in_d_bits_denied;
   wire [63:0] _buffer_auto_in_d_bits_data;
@@ -106,7 +106,7 @@ module PeripheryBus(
   wire [2:0]  _buffer_auto_out_a_bits_opcode;
   wire [2:0]  _buffer_auto_out_a_bits_param;
   wire [2:0]  _buffer_auto_out_a_bits_size;
-  wire [5:0]  _buffer_auto_out_a_bits_source;
+  wire [7:0]  _buffer_auto_out_a_bits_source;
   wire [12:0] _buffer_auto_out_a_bits_address;
   wire [7:0]  _buffer_auto_out_a_bits_mask;
   wire [63:0] _buffer_auto_out_a_bits_data;
@@ -116,13 +116,13 @@ module PeripheryBus(
   wire        _fixer_auto_in_d_valid;
   wire [2:0]  _fixer_auto_in_d_bits_opcode;
   wire [2:0]  _fixer_auto_in_d_bits_size;
-  wire [5:0]  _fixer_auto_in_d_bits_source;
+  wire [7:0]  _fixer_auto_in_d_bits_source;
   wire [63:0] _fixer_auto_in_d_bits_data;
   wire        _fixer_auto_out_a_valid;
   wire [2:0]  _fixer_auto_out_a_bits_opcode;
   wire [2:0]  _fixer_auto_out_a_bits_param;
   wire [2:0]  _fixer_auto_out_a_bits_size;
-  wire [5:0]  _fixer_auto_out_a_bits_source;
+  wire [7:0]  _fixer_auto_out_a_bits_source;
   wire [12:0] _fixer_auto_out_a_bits_address;
   wire [7:0]  _fixer_auto_out_a_bits_mask;
   wire [63:0] _fixer_auto_out_a_bits_data;
@@ -311,7 +311,7 @@ module PeripheryBus(
     .auto_out_d_bits_data    (_atomics_auto_in_d_bits_data),
     .auto_out_d_bits_corrupt (_atomics_auto_in_d_bits_corrupt)
   );
-  TLInterconnectCoupler_4 coupler_to_bootaddressreg (
+  TLInterconnectCoupler_5 coupler_to_bootaddressreg (
     .clock                              (auto_subsystem_pbus_clock_groups_in_member_subsystem_pbus_0_clock),
     .reset                              (auto_subsystem_pbus_clock_groups_in_member_subsystem_pbus_0_reset),
     .auto_fragmenter_out_a_ready        (_coupler_to_bootaddressreg_auto_fragmenter_out_d_ready),
@@ -347,7 +347,7 @@ module PeripheryBus(
     .auto_tl_in_d_bits_source           (_coupler_to_bootaddressreg_auto_tl_in_d_bits_source),
     .auto_tl_in_d_bits_data             (_coupler_to_bootaddressreg_auto_tl_in_d_bits_data)
   );
-  TLMonitor_9 monitor (
+  TLMonitor_12 monitor (
     .clock                (auto_subsystem_pbus_clock_groups_in_member_subsystem_pbus_0_clock),
     .reset                (auto_subsystem_pbus_clock_groups_in_member_subsystem_pbus_0_reset),
     .io_in_a_ready        (_coupler_to_bootaddressreg_auto_fragmenter_out_d_ready),

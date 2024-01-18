@@ -36,7 +36,7 @@ module NLPrefetcher(
   reg  [4:0]  req_cmd;
   wire        _io_prefetch_valid_output = req_valid & io_mshr_avail;
   wire [39:0] _mshr_req_addr_T = io_req_addr + 40'h40;
-  wire        _GEN = io_req_val & ({_mshr_req_addr_T[39:32], ~(_mshr_req_addr_T[31])} == 9'h0 | {_mshr_req_addr_T[39:33], _mshr_req_addr_T[32:31] ^ 2'h2} == 9'h0);
+  wire        _GEN = io_req_val & ({_mshr_req_addr_T[39:28], _mshr_req_addr_T[27:16] ^ 12'h800} == 24'h0 | {_mshr_req_addr_T[39:32], ~(_mshr_req_addr_T[31])} == 9'h0 | {_mshr_req_addr_T[39:33], _mshr_req_addr_T[32:31] ^ 2'h2} == 9'h0);
   always @(posedge clock) begin
     if (reset)
       req_valid <= 1'h0;

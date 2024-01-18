@@ -23,61 +23,40 @@ module Queue_25(
                 reset,
   output        io_enq_ready,
   input         io_enq_valid,
-  input  [1:0]  io_enq_bits_param,
-  input  [32:0] io_enq_bits_address,
+  input  [9:0]  io_enq_bits_set,
+  input  [2:0]  io_enq_bits_way,
+  input         io_enq_bits_data_dirty,
+  input  [1:0]  io_enq_bits_data_state,
+                io_enq_bits_data_clients,
+  input  [16:0] io_enq_bits_data_tag,
   input         io_deq_ready,
   output        io_deq_valid,
-  output [2:0]  io_deq_bits_opcode,
-  output [1:0]  io_deq_bits_param,
-  output [3:0]  io_deq_bits_size,
-  output [4:0]  io_deq_bits_source,
-  output [32:0] io_deq_bits_address,
-  output [7:0]  io_deq_bits_mask,
-  output        io_deq_bits_corrupt
+  output [9:0]  io_deq_bits_set,
+  output [2:0]  io_deq_bits_way,
+  output        io_deq_bits_data_dirty,
+  output [1:0]  io_deq_bits_data_state,
+                io_deq_bits_data_clients,
+  output [16:0] io_deq_bits_data_tag
 );
 
-  wire [55:0] _ram_ext_R0_data;
-  reg         wrap;
-  reg         wrap_1;
-  reg         maybe_full;
-  wire        ptr_match = wrap == wrap_1;
-  wire        empty = ptr_match & ~maybe_full;
-  wire        full = ptr_match & maybe_full;
+  reg  [34:0] ram;
+  reg         full;
   wire        do_enq = ~full & io_enq_valid;
-  wire        do_deq = io_deq_ready & ~empty;
   always @(posedge clock) begin
-    if (reset) begin
-      wrap <= 1'h0;
-      wrap_1 <= 1'h0;
-      maybe_full <= 1'h0;
-    end
-    else begin
-      if (do_enq)
-        wrap <= wrap - 1'h1;
-      if (do_deq)
-        wrap_1 <= wrap_1 - 1'h1;
-      if (~(do_enq == do_deq))
-        maybe_full <= do_enq;
-    end
+    if (do_enq)
+      ram <= {io_enq_bits_data_tag, io_enq_bits_data_clients, io_enq_bits_data_state, io_enq_bits_data_dirty, io_enq_bits_way, io_enq_bits_set};
+    if (reset)
+      full <= 1'h0;
+    else if (~(do_enq == (io_deq_ready & full)))
+      full <= do_enq;
   end // always @(posedge)
-  ram_2x56 ram_ext (
-    .R0_addr (wrap_1),
-    .R0_en   (1'h1),
-    .R0_clk  (clock),
-    .R0_data (_ram_ext_R0_data),
-    .W0_addr (wrap),
-    .W0_en   (do_enq),
-    .W0_clk  (clock),
-    .W0_data ({9'hFF, io_enq_bits_address, 9'h6, io_enq_bits_param, 3'h6})
-  );
   assign io_enq_ready = ~full;
-  assign io_deq_valid = ~empty;
-  assign io_deq_bits_opcode = _ram_ext_R0_data[2:0];
-  assign io_deq_bits_param = _ram_ext_R0_data[4:3];
-  assign io_deq_bits_size = _ram_ext_R0_data[8:5];
-  assign io_deq_bits_source = _ram_ext_R0_data[13:9];
-  assign io_deq_bits_address = _ram_ext_R0_data[46:14];
-  assign io_deq_bits_mask = _ram_ext_R0_data[54:47];
-  assign io_deq_bits_corrupt = _ram_ext_R0_data[55];
+  assign io_deq_valid = full;
+  assign io_deq_bits_set = ram[9:0];
+  assign io_deq_bits_way = ram[12:10];
+  assign io_deq_bits_data_dirty = ram[13];
+  assign io_deq_bits_data_state = ram[15:14];
+  assign io_deq_bits_data_clients = ram[17:16];
+  assign io_deq_bits_data_tag = ram[34:18];
 endmodule
 

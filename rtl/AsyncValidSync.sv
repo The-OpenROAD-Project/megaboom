@@ -25,7 +25,7 @@ module AsyncValidSync(
          reset
 );
 
-  AsyncResetSynchronizerShiftReg_w1_d3_i0_1 io_out_source_valid_0 (
+  AsyncResetSynchronizerShiftReg_w1_d3_i0 io_out_source_valid_0 (
     .clock (clock),
     .reset (reset),
     .io_d  (io_in),

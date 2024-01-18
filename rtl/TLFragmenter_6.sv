@@ -26,29 +26,33 @@ module TLFragmenter_6(
   input  [2:0]  auto_in_a_bits_opcode,
                 auto_in_a_bits_param,
                 auto_in_a_bits_size,
-  input  [5:0]  auto_in_a_bits_source,
-  input  [20:0] auto_in_a_bits_address,
+  input  [3:0]  auto_in_a_bits_source,
+  input  [27:0] auto_in_a_bits_address,
   input  [7:0]  auto_in_a_bits_mask,
+  input  [63:0] auto_in_a_bits_data,
   input         auto_in_a_bits_corrupt,
                 auto_in_d_ready,
   output        auto_in_d_valid,
   output [2:0]  auto_in_d_bits_opcode,
                 auto_in_d_bits_size,
-  output [5:0]  auto_in_d_bits_source,
+  output [3:0]  auto_in_d_bits_source,
+  output [63:0] auto_in_d_bits_data,
   input         auto_out_a_ready,
   output        auto_out_a_valid,
   output [2:0]  auto_out_a_bits_opcode,
                 auto_out_a_bits_param,
   output [1:0]  auto_out_a_bits_size,
-  output [9:0]  auto_out_a_bits_source,
-  output [20:0] auto_out_a_bits_address,
+  output [7:0]  auto_out_a_bits_source,
+  output [27:0] auto_out_a_bits_address,
   output [7:0]  auto_out_a_bits_mask,
+  output [63:0] auto_out_a_bits_data,
   output        auto_out_a_bits_corrupt,
                 auto_out_d_ready,
   input         auto_out_d_valid,
   input  [2:0]  auto_out_d_bits_opcode,
   input  [1:0]  auto_out_d_bits_size,
-  input  [9:0]  auto_out_d_bits_source
+  input  [7:0]  auto_out_d_bits_source,
+  input  [63:0] auto_out_d_bits_data
 );
 
   wire        _repeater_io_full;
@@ -56,8 +60,8 @@ module TLFragmenter_6(
   wire        _repeater_io_deq_valid;
   wire [2:0]  _repeater_io_deq_bits_opcode;
   wire [2:0]  _repeater_io_deq_bits_size;
-  wire [5:0]  _repeater_io_deq_bits_source;
-  wire [20:0] _repeater_io_deq_bits_address;
+  wire [3:0]  _repeater_io_deq_bits_source;
+  wire [27:0] _repeater_io_deq_bits_address;
   wire [7:0]  _repeater_io_deq_bits_mask;
   reg  [2:0]  acknum;
   reg  [2:0]  dOrig;
@@ -123,7 +127,7 @@ module TLFragmenter_6(
     if (aFirst)
       aToggle_r <= dToggle;
   end // always @(posedge)
-  TLMonitor_49 monitor (
+  TLMonitor_63 monitor (
     .clock                (clock),
     .reset                (reset),
     .io_in_a_ready        (_repeater_io_enq_ready),
@@ -139,9 +143,9 @@ module TLFragmenter_6(
     .io_in_d_valid        (nodeIn_d_valid),
     .io_in_d_bits_opcode  (auto_out_d_bits_opcode),
     .io_in_d_bits_size    (nodeIn_d_bits_size),
-    .io_in_d_bits_source  (auto_out_d_bits_source[9:4])
+    .io_in_d_bits_source  (auto_out_d_bits_source[7:4])
   );
-  Repeater_8 repeater (
+  Repeater_12 repeater (
     .clock               (clock),
     .reset               (reset),
     .io_repeat           (_repeater_io_deq_bits_opcode[2] & (|aFragnum)),
@@ -169,13 +173,15 @@ module TLFragmenter_6(
   assign auto_in_d_valid = nodeIn_d_valid;
   assign auto_in_d_bits_opcode = auto_out_d_bits_opcode;
   assign auto_in_d_bits_size = nodeIn_d_bits_size;
-  assign auto_in_d_bits_source = auto_out_d_bits_source[9:4];
+  assign auto_in_d_bits_source = auto_out_d_bits_source[7:4];
+  assign auto_in_d_bits_data = auto_out_d_bits_data;
   assign auto_out_a_valid = _repeater_io_deq_valid;
   assign auto_out_a_bits_opcode = _repeater_io_deq_bits_opcode;
   assign auto_out_a_bits_size = _repeater_io_deq_bits_size[2] ? 2'h3 : _repeater_io_deq_bits_size[1:0];
   assign auto_out_a_bits_source = {_repeater_io_deq_bits_source, ~(aFirst ? dToggle : aToggle_r), aFragnum};
-  assign auto_out_a_bits_address = {_repeater_io_deq_bits_address[20:6], _repeater_io_deq_bits_address[5:0] | {~(aFragnum | _aOrigOH1_T_1[5:3]), 3'h0}};
+  assign auto_out_a_bits_address = {_repeater_io_deq_bits_address[27:6], _repeater_io_deq_bits_address[5:0] | {~(aFragnum | _aOrigOH1_T_1[5:3]), 3'h0}};
   assign auto_out_a_bits_mask = _repeater_io_full ? 8'hFF : auto_in_a_bits_mask;
+  assign auto_out_a_bits_data = auto_in_a_bits_data;
   assign auto_out_d_ready = nodeOut_d_ready;
 endmodule
 

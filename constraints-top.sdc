@@ -2,8 +2,8 @@ set sdc_version 2.0
 
 set clk_period 8500
 
-set clk_name  clock
-set clk_port_name clock
+set clk_name  auto_tap_clock_in_clock
+set clk_port_name auto_tap_clock_in_clock
 set clk_in_pct 0.20
 set clk_out_pct 0.2
 

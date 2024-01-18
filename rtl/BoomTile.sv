@@ -21,7 +21,46 @@
 module BoomTile(
   input         clock,
                 reset,
-                auto_buffer_out_a_ready,
+  output        auto_buffer_in_a_ready,
+  input         auto_buffer_in_a_valid,
+  input  [2:0]  auto_buffer_in_a_bits_opcode,
+                auto_buffer_in_a_bits_param,
+  input  [3:0]  auto_buffer_in_a_bits_size,
+  input  [4:0]  auto_buffer_in_a_bits_source,
+  input  [32:0] auto_buffer_in_a_bits_address,
+  input  [7:0]  auto_buffer_in_a_bits_mask,
+  input  [63:0] auto_buffer_in_a_bits_data,
+  input         auto_buffer_in_b_ready,
+  output        auto_buffer_in_b_valid,
+  output [2:0]  auto_buffer_in_b_bits_opcode,
+  output [1:0]  auto_buffer_in_b_bits_param,
+  output [3:0]  auto_buffer_in_b_bits_size,
+  output [4:0]  auto_buffer_in_b_bits_source,
+  output [32:0] auto_buffer_in_b_bits_address,
+  output [7:0]  auto_buffer_in_b_bits_mask,
+  output        auto_buffer_in_b_bits_corrupt,
+                auto_buffer_in_c_ready,
+  input         auto_buffer_in_c_valid,
+  input  [2:0]  auto_buffer_in_c_bits_opcode,
+                auto_buffer_in_c_bits_param,
+  input  [3:0]  auto_buffer_in_c_bits_size,
+  input  [4:0]  auto_buffer_in_c_bits_source,
+  input  [32:0] auto_buffer_in_c_bits_address,
+  input  [63:0] auto_buffer_in_c_bits_data,
+  input         auto_buffer_in_d_ready,
+  output        auto_buffer_in_d_valid,
+  output [2:0]  auto_buffer_in_d_bits_opcode,
+  output [1:0]  auto_buffer_in_d_bits_param,
+  output [3:0]  auto_buffer_in_d_bits_size,
+  output [4:0]  auto_buffer_in_d_bits_source,
+  output [2:0]  auto_buffer_in_d_bits_sink,
+  output        auto_buffer_in_d_bits_denied,
+  output [63:0] auto_buffer_in_d_bits_data,
+  output        auto_buffer_in_d_bits_corrupt,
+                auto_buffer_in_e_ready,
+  input         auto_buffer_in_e_valid,
+  input  [2:0]  auto_buffer_in_e_bits_sink,
+  input         auto_buffer_out_a_ready,
   output        auto_buffer_out_a_valid,
   output [2:0]  auto_buffer_out_a_bits_opcode,
                 auto_buffer_out_a_bits_param,
@@ -53,14 +92,55 @@ module BoomTile(
   input  [1:0]  auto_buffer_out_d_bits_param,
   input  [3:0]  auto_buffer_out_d_bits_size,
   input  [4:0]  auto_buffer_out_d_bits_source,
-  input  [1:0]  auto_buffer_out_d_bits_sink,
+  input  [2:0]  auto_buffer_out_d_bits_sink,
   input         auto_buffer_out_d_bits_denied,
   input  [63:0] auto_buffer_out_d_bits_data,
   input         auto_buffer_out_d_bits_corrupt,
                 auto_buffer_out_e_ready,
   output        auto_buffer_out_e_valid,
-  output [1:0]  auto_buffer_out_e_bits_sink,
-  input         auto_int_local_in_1_0,
+  output [2:0]  auto_buffer_out_e_bits_sink,
+  input         auto_master_out_a_ready,
+  output        auto_master_out_a_valid,
+  output [2:0]  auto_master_out_a_bits_opcode,
+                auto_master_out_a_bits_param,
+  output [3:0]  auto_master_out_a_bits_size,
+  output [4:0]  auto_master_out_a_bits_source,
+  output [32:0] auto_master_out_a_bits_address,
+  output [7:0]  auto_master_out_a_bits_mask,
+  output [63:0] auto_master_out_a_bits_data,
+  output        auto_master_out_b_ready,
+  input         auto_master_out_b_valid,
+  input  [2:0]  auto_master_out_b_bits_opcode,
+  input  [1:0]  auto_master_out_b_bits_param,
+  input  [3:0]  auto_master_out_b_bits_size,
+  input  [4:0]  auto_master_out_b_bits_source,
+  input  [32:0] auto_master_out_b_bits_address,
+  input  [7:0]  auto_master_out_b_bits_mask,
+  input         auto_master_out_b_bits_corrupt,
+                auto_master_out_c_ready,
+  output        auto_master_out_c_valid,
+  output [2:0]  auto_master_out_c_bits_opcode,
+                auto_master_out_c_bits_param,
+  output [3:0]  auto_master_out_c_bits_size,
+  output [4:0]  auto_master_out_c_bits_source,
+  output [32:0] auto_master_out_c_bits_address,
+  output [63:0] auto_master_out_c_bits_data,
+  output        auto_master_out_d_ready,
+  input         auto_master_out_d_valid,
+  input  [2:0]  auto_master_out_d_bits_opcode,
+  input  [1:0]  auto_master_out_d_bits_param,
+  input  [3:0]  auto_master_out_d_bits_size,
+  input  [4:0]  auto_master_out_d_bits_source,
+  input  [2:0]  auto_master_out_d_bits_sink,
+  input         auto_master_out_d_bits_denied,
+  input  [63:0] auto_master_out_d_bits_data,
+  input         auto_master_out_d_bits_corrupt,
+                auto_master_out_e_ready,
+  output        auto_master_out_e_valid,
+  output [2:0]  auto_master_out_e_bits_sink,
+  input         auto_int_local_in_3_0,
+                auto_int_local_in_2_0,
+                auto_int_local_in_1_0,
                 auto_int_local_in_1_1,
                 auto_int_local_in_0_0,
                 auto_hartid_in
@@ -1192,7 +1272,7 @@ module BoomTile(
   wire [127:0] _dcache_auto_out_c_bits_data;
   wire         _dcache_auto_out_d_ready;
   wire         _dcache_auto_out_e_valid;
-  wire [1:0]   _dcache_auto_out_e_bits_sink;
+  wire [2:0]   _dcache_auto_out_e_bits_sink;
   wire         _dcache_io_lsu_req_ready;
   wire         _dcache_io_lsu_resp_0_valid;
   wire [4:0]   _dcache_io_lsu_resp_0_bits_uop_ldq_idx;
@@ -1237,7 +1317,7 @@ module BoomTile(
   wire [1:0]   _widget_auto_in_d_bits_param;
   wire [3:0]   _widget_auto_in_d_bits_size;
   wire [3:0]   _widget_auto_in_d_bits_source;
-  wire [1:0]   _widget_auto_in_d_bits_sink;
+  wire [2:0]   _widget_auto_in_d_bits_sink;
   wire [127:0] _widget_auto_in_d_bits_data;
   wire         _widget_auto_in_e_ready;
   wire         _widget_auto_out_a_valid;
@@ -1258,16 +1338,18 @@ module BoomTile(
   wire [63:0]  _widget_auto_out_c_bits_data;
   wire         _widget_auto_out_d_ready;
   wire         _widget_auto_out_e_valid;
-  wire [1:0]   _widget_auto_out_e_bits_sink;
+  wire [2:0]   _widget_auto_out_e_bits_sink;
   wire         _intXbar_auto_int_out_0;
   wire         _intXbar_auto_int_out_1;
   wire         _intXbar_auto_int_out_2;
+  wire         _intXbar_auto_int_out_3;
+  wire         _intXbar_auto_int_out_4;
   wire         _tlMasterXbar_auto_in_1_a_ready;
   wire         _tlMasterXbar_auto_in_1_d_valid;
   wire [2:0]   _tlMasterXbar_auto_in_1_d_bits_opcode;
   wire [1:0]   _tlMasterXbar_auto_in_1_d_bits_param;
   wire [3:0]   _tlMasterXbar_auto_in_1_d_bits_size;
-  wire [1:0]   _tlMasterXbar_auto_in_1_d_bits_sink;
+  wire [2:0]   _tlMasterXbar_auto_in_1_d_bits_sink;
   wire         _tlMasterXbar_auto_in_1_d_bits_denied;
   wire [63:0]  _tlMasterXbar_auto_in_1_d_bits_data;
   wire         _tlMasterXbar_auto_in_1_d_bits_corrupt;
@@ -1285,7 +1367,7 @@ module BoomTile(
   wire [1:0]   _tlMasterXbar_auto_in_0_d_bits_param;
   wire [3:0]   _tlMasterXbar_auto_in_0_d_bits_size;
   wire [3:0]   _tlMasterXbar_auto_in_0_d_bits_source;
-  wire [1:0]   _tlMasterXbar_auto_in_0_d_bits_sink;
+  wire [2:0]   _tlMasterXbar_auto_in_0_d_bits_sink;
   wire         _tlMasterXbar_auto_in_0_d_bits_denied;
   wire [63:0]  _tlMasterXbar_auto_in_0_d_bits_data;
   wire         _tlMasterXbar_auto_in_0_d_bits_corrupt;
@@ -1342,55 +1424,59 @@ module BoomTile(
     .auto_in_0_e_ready        (_tlMasterXbar_auto_in_0_e_ready),
     .auto_in_0_e_valid        (_widget_auto_out_e_valid),
     .auto_in_0_e_bits_sink    (_widget_auto_out_e_bits_sink),
-    .auto_out_a_ready         (auto_buffer_out_a_ready),
-    .auto_out_a_valid         (auto_buffer_out_a_valid),
-    .auto_out_a_bits_opcode   (auto_buffer_out_a_bits_opcode),
-    .auto_out_a_bits_param    (auto_buffer_out_a_bits_param),
-    .auto_out_a_bits_size     (auto_buffer_out_a_bits_size),
-    .auto_out_a_bits_source   (auto_buffer_out_a_bits_source),
-    .auto_out_a_bits_address  (auto_buffer_out_a_bits_address),
-    .auto_out_a_bits_mask     (auto_buffer_out_a_bits_mask),
-    .auto_out_a_bits_data     (auto_buffer_out_a_bits_data),
-    .auto_out_b_ready         (auto_buffer_out_b_ready),
-    .auto_out_b_valid         (auto_buffer_out_b_valid),
-    .auto_out_b_bits_opcode   (auto_buffer_out_b_bits_opcode),
-    .auto_out_b_bits_param    (auto_buffer_out_b_bits_param),
-    .auto_out_b_bits_size     (auto_buffer_out_b_bits_size),
-    .auto_out_b_bits_source   (auto_buffer_out_b_bits_source),
-    .auto_out_b_bits_address  (auto_buffer_out_b_bits_address),
-    .auto_out_b_bits_mask     (auto_buffer_out_b_bits_mask),
-    .auto_out_b_bits_corrupt  (auto_buffer_out_b_bits_corrupt),
-    .auto_out_c_ready         (auto_buffer_out_c_ready),
-    .auto_out_c_valid         (auto_buffer_out_c_valid),
-    .auto_out_c_bits_opcode   (auto_buffer_out_c_bits_opcode),
-    .auto_out_c_bits_param    (auto_buffer_out_c_bits_param),
-    .auto_out_c_bits_size     (auto_buffer_out_c_bits_size),
-    .auto_out_c_bits_source   (auto_buffer_out_c_bits_source),
-    .auto_out_c_bits_address  (auto_buffer_out_c_bits_address),
-    .auto_out_c_bits_data     (auto_buffer_out_c_bits_data),
-    .auto_out_d_ready         (auto_buffer_out_d_ready),
-    .auto_out_d_valid         (auto_buffer_out_d_valid),
-    .auto_out_d_bits_opcode   (auto_buffer_out_d_bits_opcode),
-    .auto_out_d_bits_param    (auto_buffer_out_d_bits_param),
-    .auto_out_d_bits_size     (auto_buffer_out_d_bits_size),
-    .auto_out_d_bits_source   (auto_buffer_out_d_bits_source),
-    .auto_out_d_bits_sink     (auto_buffer_out_d_bits_sink),
-    .auto_out_d_bits_denied   (auto_buffer_out_d_bits_denied),
-    .auto_out_d_bits_data     (auto_buffer_out_d_bits_data),
-    .auto_out_d_bits_corrupt  (auto_buffer_out_d_bits_corrupt),
-    .auto_out_e_ready         (auto_buffer_out_e_ready),
-    .auto_out_e_valid         (auto_buffer_out_e_valid),
-    .auto_out_e_bits_sink     (auto_buffer_out_e_bits_sink)
+    .auto_out_a_ready         (auto_master_out_a_ready),
+    .auto_out_a_valid         (auto_master_out_a_valid),
+    .auto_out_a_bits_opcode   (auto_master_out_a_bits_opcode),
+    .auto_out_a_bits_param    (auto_master_out_a_bits_param),
+    .auto_out_a_bits_size     (auto_master_out_a_bits_size),
+    .auto_out_a_bits_source   (auto_master_out_a_bits_source),
+    .auto_out_a_bits_address  (auto_master_out_a_bits_address),
+    .auto_out_a_bits_mask     (auto_master_out_a_bits_mask),
+    .auto_out_a_bits_data     (auto_master_out_a_bits_data),
+    .auto_out_b_ready         (auto_master_out_b_ready),
+    .auto_out_b_valid         (auto_master_out_b_valid),
+    .auto_out_b_bits_opcode   (auto_master_out_b_bits_opcode),
+    .auto_out_b_bits_param    (auto_master_out_b_bits_param),
+    .auto_out_b_bits_size     (auto_master_out_b_bits_size),
+    .auto_out_b_bits_source   (auto_master_out_b_bits_source),
+    .auto_out_b_bits_address  (auto_master_out_b_bits_address),
+    .auto_out_b_bits_mask     (auto_master_out_b_bits_mask),
+    .auto_out_b_bits_corrupt  (auto_master_out_b_bits_corrupt),
+    .auto_out_c_ready         (auto_master_out_c_ready),
+    .auto_out_c_valid         (auto_master_out_c_valid),
+    .auto_out_c_bits_opcode   (auto_master_out_c_bits_opcode),
+    .auto_out_c_bits_param    (auto_master_out_c_bits_param),
+    .auto_out_c_bits_size     (auto_master_out_c_bits_size),
+    .auto_out_c_bits_source   (auto_master_out_c_bits_source),
+    .auto_out_c_bits_address  (auto_master_out_c_bits_address),
+    .auto_out_c_bits_data     (auto_master_out_c_bits_data),
+    .auto_out_d_ready         (auto_master_out_d_ready),
+    .auto_out_d_valid         (auto_master_out_d_valid),
+    .auto_out_d_bits_opcode   (auto_master_out_d_bits_opcode),
+    .auto_out_d_bits_param    (auto_master_out_d_bits_param),
+    .auto_out_d_bits_size     (auto_master_out_d_bits_size),
+    .auto_out_d_bits_source   (auto_master_out_d_bits_source),
+    .auto_out_d_bits_sink     (auto_master_out_d_bits_sink),
+    .auto_out_d_bits_denied   (auto_master_out_d_bits_denied),
+    .auto_out_d_bits_data     (auto_master_out_d_bits_data),
+    .auto_out_d_bits_corrupt  (auto_master_out_d_bits_corrupt),
+    .auto_out_e_ready         (auto_master_out_e_ready),
+    .auto_out_e_valid         (auto_master_out_e_valid),
+    .auto_out_e_bits_sink     (auto_master_out_e_bits_sink)
   );
   IntXbar_1 intXbar (
+    .auto_int_in_3_0 (auto_int_local_in_3_0),
+    .auto_int_in_2_0 (auto_int_local_in_2_0),
     .auto_int_in_1_0 (auto_int_local_in_1_0),
     .auto_int_in_1_1 (auto_int_local_in_1_1),
     .auto_int_in_0_0 (auto_int_local_in_0_0),
     .auto_int_out_0  (_intXbar_auto_int_out_0),
     .auto_int_out_1  (_intXbar_auto_int_out_1),
-    .auto_int_out_2  (_intXbar_auto_int_out_2)
+    .auto_int_out_2  (_intXbar_auto_int_out_2),
+    .auto_int_out_3  (_intXbar_auto_int_out_3),
+    .auto_int_out_4  (_intXbar_auto_int_out_4)
   );
-  TLWidthWidget_9 widget (
+  TLWidthWidget_10 widget (
     .clock                   (clock),
     .reset                   (reset),
     .auto_in_a_ready         (_widget_auto_in_a_ready),
@@ -1906,7 +1992,7 @@ module BoomTile(
     .io_ptw_pmp_7_addr                                  (_ptw_io_requestor_1_pmp_7_addr),
     .io_ptw_pmp_7_mask                                  (_ptw_io_requestor_1_pmp_7_mask)
   );
-  TLWidthWidget_10 widget_1 (
+  TLWidthWidget_11 widget_1 (
     .clock                   (clock),
     .reset                   (reset),
     .auto_in_a_ready         (_widget_1_auto_in_a_ready),
@@ -1935,6 +2021,8 @@ module BoomTile(
     .io_interrupts_debug                                (_intXbar_auto_int_out_0),
     .io_interrupts_mtip                                 (_intXbar_auto_int_out_2),
     .io_interrupts_msip                                 (_intXbar_auto_int_out_1),
+    .io_interrupts_meip                                 (_intXbar_auto_int_out_3),
+    .io_interrupts_seip                                 (_intXbar_auto_int_out_4),
     .io_ifu_fetchpacket_ready                           (_core_io_ifu_fetchpacket_ready),
     .io_ifu_fetchpacket_valid                           (_frontend_io_cpu_fetchpacket_valid),
     .io_ifu_fetchpacket_bits_uops_0_valid               (_frontend_io_cpu_fetchpacket_bits_uops_0_valid),
@@ -3817,5 +3905,44 @@ module BoomTile(
     .io_mem_resp_bits_data         (_lsu_io_hellacache_resp_bits_data),
     .io_mem_s2_xcpt_ae_ld          (_lsu_io_hellacache_s2_xcpt_ae_ld)
   );
+  assign auto_buffer_in_a_ready = auto_buffer_out_a_ready;
+  assign auto_buffer_in_b_valid = auto_buffer_out_b_valid;
+  assign auto_buffer_in_b_bits_opcode = auto_buffer_out_b_bits_opcode;
+  assign auto_buffer_in_b_bits_param = auto_buffer_out_b_bits_param;
+  assign auto_buffer_in_b_bits_size = auto_buffer_out_b_bits_size;
+  assign auto_buffer_in_b_bits_source = auto_buffer_out_b_bits_source;
+  assign auto_buffer_in_b_bits_address = auto_buffer_out_b_bits_address;
+  assign auto_buffer_in_b_bits_mask = auto_buffer_out_b_bits_mask;
+  assign auto_buffer_in_b_bits_corrupt = auto_buffer_out_b_bits_corrupt;
+  assign auto_buffer_in_c_ready = auto_buffer_out_c_ready;
+  assign auto_buffer_in_d_valid = auto_buffer_out_d_valid;
+  assign auto_buffer_in_d_bits_opcode = auto_buffer_out_d_bits_opcode;
+  assign auto_buffer_in_d_bits_param = auto_buffer_out_d_bits_param;
+  assign auto_buffer_in_d_bits_size = auto_buffer_out_d_bits_size;
+  assign auto_buffer_in_d_bits_source = auto_buffer_out_d_bits_source;
+  assign auto_buffer_in_d_bits_sink = auto_buffer_out_d_bits_sink;
+  assign auto_buffer_in_d_bits_denied = auto_buffer_out_d_bits_denied;
+  assign auto_buffer_in_d_bits_data = auto_buffer_out_d_bits_data;
+  assign auto_buffer_in_d_bits_corrupt = auto_buffer_out_d_bits_corrupt;
+  assign auto_buffer_in_e_ready = auto_buffer_out_e_ready;
+  assign auto_buffer_out_a_valid = auto_buffer_in_a_valid;
+  assign auto_buffer_out_a_bits_opcode = auto_buffer_in_a_bits_opcode;
+  assign auto_buffer_out_a_bits_param = auto_buffer_in_a_bits_param;
+  assign auto_buffer_out_a_bits_size = auto_buffer_in_a_bits_size;
+  assign auto_buffer_out_a_bits_source = auto_buffer_in_a_bits_source;
+  assign auto_buffer_out_a_bits_address = auto_buffer_in_a_bits_address;
+  assign auto_buffer_out_a_bits_mask = auto_buffer_in_a_bits_mask;
+  assign auto_buffer_out_a_bits_data = auto_buffer_in_a_bits_data;
+  assign auto_buffer_out_b_ready = auto_buffer_in_b_ready;
+  assign auto_buffer_out_c_valid = auto_buffer_in_c_valid;
+  assign auto_buffer_out_c_bits_opcode = auto_buffer_in_c_bits_opcode;
+  assign auto_buffer_out_c_bits_param = auto_buffer_in_c_bits_param;
+  assign auto_buffer_out_c_bits_size = auto_buffer_in_c_bits_size;
+  assign auto_buffer_out_c_bits_source = auto_buffer_in_c_bits_source;
+  assign auto_buffer_out_c_bits_address = auto_buffer_in_c_bits_address;
+  assign auto_buffer_out_c_bits_data = auto_buffer_in_c_bits_data;
+  assign auto_buffer_out_d_ready = auto_buffer_in_d_ready;
+  assign auto_buffer_out_e_valid = auto_buffer_in_e_valid;
+  assign auto_buffer_out_e_bits_sink = auto_buffer_in_e_bits_sink;
 endmodule
 

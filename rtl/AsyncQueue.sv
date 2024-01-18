@@ -45,7 +45,7 @@ module AsyncQueue(
   wire [3:0] _source_io_async_widx;
   wire       _source_io_async_safe_widx_valid;
   wire       _source_io_async_safe_source_reset_n;
-  AsyncQueueSource_3 source (
+  AsyncQueueSource_19 source (
     .clock                        (io_enq_clock),
     .reset                        (io_enq_reset),
     .io_enq_ready                 (io_enq_ready),
@@ -66,7 +66,7 @@ module AsyncQueue(
     .io_async_safe_source_reset_n (_source_io_async_safe_source_reset_n),
     .io_async_safe_sink_reset_n   (_sink_io_async_safe_sink_reset_n)
   );
-  AsyncQueueSink_3 sink (
+  AsyncQueueSink_19 sink (
     .clock                        (io_deq_clock),
     .reset                        (io_deq_reset),
     .io_deq_ready                 (io_deq_ready),

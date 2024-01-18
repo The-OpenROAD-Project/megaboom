@@ -40,7 +40,7 @@ module SerialRAM(
   wire [2:0]  _broadcast_auto_in_d_bits_opcode;
   wire [1:0]  _broadcast_auto_in_d_bits_param;
   wire [2:0]  _broadcast_auto_in_d_bits_size;
-  wire [7:0]  _broadcast_auto_in_d_bits_source;
+  wire [3:0]  _broadcast_auto_in_d_bits_source;
   wire [1:0]  _broadcast_auto_in_d_bits_sink;
   wire        _broadcast_auto_in_d_bits_denied;
   wire [63:0] _broadcast_auto_in_d_bits_data;
@@ -49,7 +49,7 @@ module SerialRAM(
   wire [2:0]  _broadcast_auto_out_a_bits_opcode;
   wire [2:0]  _broadcast_auto_out_a_bits_param;
   wire [2:0]  _broadcast_auto_out_a_bits_size;
-  wire [9:0]  _broadcast_auto_out_a_bits_source;
+  wire [5:0]  _broadcast_auto_out_a_bits_source;
   wire [32:0] _broadcast_auto_out_a_bits_address;
   wire [7:0]  _broadcast_auto_out_a_bits_mask;
   wire [63:0] _broadcast_auto_out_a_bits_data;
@@ -59,7 +59,7 @@ module SerialRAM(
   wire [2:0]  _fragmenter_1_auto_in_d_bits_opcode;
   wire [1:0]  _fragmenter_1_auto_in_d_bits_param;
   wire [2:0]  _fragmenter_1_auto_in_d_bits_size;
-  wire [9:0]  _fragmenter_1_auto_in_d_bits_source;
+  wire [5:0]  _fragmenter_1_auto_in_d_bits_source;
   wire        _fragmenter_1_auto_in_d_bits_sink;
   wire        _fragmenter_1_auto_in_d_bits_denied;
   wire [63:0] _fragmenter_1_auto_in_d_bits_data;
@@ -68,7 +68,7 @@ module SerialRAM(
   wire [2:0]  _fragmenter_1_auto_out_a_bits_opcode;
   wire [2:0]  _fragmenter_1_auto_out_a_bits_param;
   wire [1:0]  _fragmenter_1_auto_out_a_bits_size;
-  wire [13:0] _fragmenter_1_auto_out_a_bits_source;
+  wire [9:0]  _fragmenter_1_auto_out_a_bits_source;
   wire [32:0] _fragmenter_1_auto_out_a_bits_address;
   wire [7:0]  _fragmenter_1_auto_out_a_bits_mask;
   wire [63:0] _fragmenter_1_auto_out_a_bits_data;
@@ -78,7 +78,7 @@ module SerialRAM(
   wire [2:0]  _buffer_2_auto_in_d_bits_opcode;
   wire [1:0]  _buffer_2_auto_in_d_bits_param;
   wire [1:0]  _buffer_2_auto_in_d_bits_size;
-  wire [13:0] _buffer_2_auto_in_d_bits_source;
+  wire [9:0]  _buffer_2_auto_in_d_bits_source;
   wire        _buffer_2_auto_in_d_bits_sink;
   wire        _buffer_2_auto_in_d_bits_denied;
   wire [63:0] _buffer_2_auto_in_d_bits_data;
@@ -87,7 +87,7 @@ module SerialRAM(
   wire [2:0]  _buffer_2_auto_out_a_bits_opcode;
   wire [2:0]  _buffer_2_auto_out_a_bits_param;
   wire [1:0]  _buffer_2_auto_out_a_bits_size;
-  wire [13:0] _buffer_2_auto_out_a_bits_source;
+  wire [9:0]  _buffer_2_auto_out_a_bits_source;
   wire [32:0] _buffer_2_auto_out_a_bits_address;
   wire [7:0]  _buffer_2_auto_out_a_bits_mask;
   wire [63:0] _buffer_2_auto_out_a_bits_data;
@@ -98,7 +98,7 @@ module SerialRAM(
   wire [2:0]  _fragmenter_auto_in_d_bits_opcode;
   wire [1:0]  _fragmenter_auto_in_d_bits_param;
   wire [2:0]  _fragmenter_auto_in_d_bits_size;
-  wire [9:0]  _fragmenter_auto_in_d_bits_source;
+  wire [5:0]  _fragmenter_auto_in_d_bits_source;
   wire        _fragmenter_auto_in_d_bits_sink;
   wire        _fragmenter_auto_in_d_bits_denied;
   wire [63:0] _fragmenter_auto_in_d_bits_data;
@@ -107,7 +107,7 @@ module SerialRAM(
   wire [2:0]  _fragmenter_auto_out_a_bits_opcode;
   wire [2:0]  _fragmenter_auto_out_a_bits_param;
   wire [1:0]  _fragmenter_auto_out_a_bits_size;
-  wire [13:0] _fragmenter_auto_out_a_bits_source;
+  wire [9:0]  _fragmenter_auto_out_a_bits_source;
   wire [31:0] _fragmenter_auto_out_a_bits_address;
   wire [7:0]  _fragmenter_auto_out_a_bits_mask;
   wire [63:0] _fragmenter_auto_out_a_bits_data;
@@ -117,7 +117,7 @@ module SerialRAM(
   wire [2:0]  _buffer_1_auto_in_d_bits_opcode;
   wire [1:0]  _buffer_1_auto_in_d_bits_param;
   wire [1:0]  _buffer_1_auto_in_d_bits_size;
-  wire [13:0] _buffer_1_auto_in_d_bits_source;
+  wire [9:0]  _buffer_1_auto_in_d_bits_source;
   wire        _buffer_1_auto_in_d_bits_sink;
   wire        _buffer_1_auto_in_d_bits_denied;
   wire [63:0] _buffer_1_auto_in_d_bits_data;
@@ -126,7 +126,7 @@ module SerialRAM(
   wire [2:0]  _buffer_1_auto_out_a_bits_opcode;
   wire [2:0]  _buffer_1_auto_out_a_bits_param;
   wire [1:0]  _buffer_1_auto_out_a_bits_size;
-  wire [13:0] _buffer_1_auto_out_a_bits_source;
+  wire [9:0]  _buffer_1_auto_out_a_bits_source;
   wire [31:0] _buffer_1_auto_out_a_bits_address;
   wire [7:0]  _buffer_1_auto_out_a_bits_mask;
   wire [63:0] _buffer_1_auto_out_a_bits_data;
@@ -136,20 +136,20 @@ module SerialRAM(
   wire        _srams_1_auto_in_d_valid;
   wire [2:0]  _srams_1_auto_in_d_bits_opcode;
   wire [1:0]  _srams_1_auto_in_d_bits_size;
-  wire [13:0] _srams_1_auto_in_d_bits_source;
+  wire [9:0]  _srams_1_auto_in_d_bits_source;
   wire [63:0] _srams_1_auto_in_d_bits_data;
   wire        _srams_auto_in_a_ready;
   wire        _srams_auto_in_d_valid;
   wire [2:0]  _srams_auto_in_d_bits_opcode;
   wire [1:0]  _srams_auto_in_d_bits_size;
-  wire [13:0] _srams_auto_in_d_bits_source;
+  wire [9:0]  _srams_auto_in_d_bits_source;
   wire [63:0] _srams_auto_in_d_bits_data;
   wire        _xbar_auto_in_a_ready;
   wire        _xbar_auto_in_d_valid;
   wire [2:0]  _xbar_auto_in_d_bits_opcode;
   wire [1:0]  _xbar_auto_in_d_bits_param;
   wire [2:0]  _xbar_auto_in_d_bits_size;
-  wire [9:0]  _xbar_auto_in_d_bits_source;
+  wire [5:0]  _xbar_auto_in_d_bits_source;
   wire        _xbar_auto_in_d_bits_denied;
   wire [63:0] _xbar_auto_in_d_bits_data;
   wire        _xbar_auto_in_d_bits_corrupt;
@@ -157,7 +157,7 @@ module SerialRAM(
   wire [2:0]  _xbar_auto_out_1_a_bits_opcode;
   wire [2:0]  _xbar_auto_out_1_a_bits_param;
   wire [2:0]  _xbar_auto_out_1_a_bits_size;
-  wire [9:0]  _xbar_auto_out_1_a_bits_source;
+  wire [5:0]  _xbar_auto_out_1_a_bits_source;
   wire [32:0] _xbar_auto_out_1_a_bits_address;
   wire [7:0]  _xbar_auto_out_1_a_bits_mask;
   wire [63:0] _xbar_auto_out_1_a_bits_data;
@@ -166,7 +166,7 @@ module SerialRAM(
   wire [2:0]  _xbar_auto_out_0_a_bits_opcode;
   wire [2:0]  _xbar_auto_out_0_a_bits_param;
   wire [2:0]  _xbar_auto_out_0_a_bits_size;
-  wire [9:0]  _xbar_auto_out_0_a_bits_source;
+  wire [5:0]  _xbar_auto_out_0_a_bits_source;
   wire [31:0] _xbar_auto_out_0_a_bits_address;
   wire [7:0]  _xbar_auto_out_0_a_bits_mask;
   wire [63:0] _xbar_auto_out_0_a_bits_data;
@@ -197,7 +197,7 @@ module SerialRAM(
   wire [1:0]  _serdesser_auto_manager_in_d_bits_param;
   wire [3:0]  _serdesser_auto_manager_in_d_bits_size;
   wire        _serdesser_auto_manager_in_d_bits_source;
-  wire [1:0]  _serdesser_auto_manager_in_d_bits_sink;
+  wire [2:0]  _serdesser_auto_manager_in_d_bits_sink;
   wire        _serdesser_auto_manager_in_d_bits_denied;
   wire [63:0] _serdesser_auto_manager_in_d_bits_data;
   wire        _serdesser_auto_manager_in_d_bits_corrupt;
@@ -205,7 +205,7 @@ module SerialRAM(
   wire [2:0]  _serdesser_auto_client_out_a_bits_opcode;
   wire [2:0]  _serdesser_auto_client_out_a_bits_param;
   wire [2:0]  _serdesser_auto_client_out_a_bits_size;
-  wire [7:0]  _serdesser_auto_client_out_a_bits_source;
+  wire [3:0]  _serdesser_auto_client_out_a_bits_source;
   wire [32:0] _serdesser_auto_client_out_a_bits_address;
   wire [7:0]  _serdesser_auto_client_out_a_bits_mask;
   wire [63:0] _serdesser_auto_client_out_a_bits_data;
@@ -281,7 +281,7 @@ module SerialRAM(
     .io_tsi_out_valid        (io_tsi_out_valid),
     .io_tsi_out_bits         (io_tsi_out_bits)
   );
-  TLBuffer_14 buffer (
+  TLBuffer_16 buffer (
     .clock                   (clock),
     .reset                   (reset),
     .auto_in_a_ready         (_buffer_auto_in_a_ready),
@@ -315,7 +315,7 @@ module SerialRAM(
     .auto_out_d_bits_data    (_serdesser_auto_manager_in_d_bits_data),
     .auto_out_d_bits_corrupt (_serdesser_auto_manager_in_d_bits_corrupt)
   );
-  TLXbar_12 xbar (
+  TLXbar_15 xbar (
     .clock                     (clock),
     .reset                     (reset),
     .auto_in_a_ready           (_xbar_auto_in_a_ready),
@@ -375,7 +375,7 @@ module SerialRAM(
     .auto_out_0_d_bits_data    (_fragmenter_auto_in_d_bits_data),
     .auto_out_0_d_bits_corrupt (_fragmenter_auto_in_d_bits_corrupt)
   );
-  TLRAM srams (
+  TLRAM_1 srams (
     .clock                  (clock),
     .reset                  (reset),
     .auto_in_a_ready        (_srams_auto_in_a_ready),
@@ -395,7 +395,7 @@ module SerialRAM(
     .auto_in_d_bits_source  (_srams_auto_in_d_bits_source),
     .auto_in_d_bits_data    (_srams_auto_in_d_bits_data)
   );
-  TLRAM_1 srams_1 (
+  TLRAM_2 srams_1 (
     .clock                  (clock),
     .reset                  (reset),
     .auto_in_a_ready        (_srams_1_auto_in_a_ready),
@@ -415,7 +415,7 @@ module SerialRAM(
     .auto_in_d_bits_source  (_srams_1_auto_in_d_bits_source),
     .auto_in_d_bits_data    (_srams_1_auto_in_d_bits_data)
   );
-  TLBuffer_15 buffer_1 (
+  TLBuffer_17 buffer_1 (
     .clock                   (clock),
     .reset                   (reset),
     .auto_in_a_ready         (_buffer_1_auto_in_a_ready),
@@ -454,7 +454,7 @@ module SerialRAM(
     .auto_out_d_bits_source  (_srams_auto_in_d_bits_source),
     .auto_out_d_bits_data    (_srams_auto_in_d_bits_data)
   );
-  TLFragmenter_7 fragmenter (
+  TLFragmenter_9 fragmenter (
     .clock                   (clock),
     .reset                   (reset),
     .auto_in_a_ready         (_fragmenter_auto_in_a_ready),
@@ -496,7 +496,7 @@ module SerialRAM(
     .auto_out_d_bits_data    (_buffer_1_auto_in_d_bits_data),
     .auto_out_d_bits_corrupt (_buffer_1_auto_in_d_bits_corrupt)
   );
-  TLBuffer_16 buffer_2 (
+  TLBuffer_18 buffer_2 (
     .clock                   (clock),
     .reset                   (reset),
     .auto_in_a_ready         (_buffer_2_auto_in_a_ready),
@@ -535,7 +535,7 @@ module SerialRAM(
     .auto_out_d_bits_source  (_srams_1_auto_in_d_bits_source),
     .auto_out_d_bits_data    (_srams_1_auto_in_d_bits_data)
   );
-  TLFragmenter_8 fragmenter_1 (
+  TLFragmenter_10 fragmenter_1 (
     .clock                   (clock),
     .reset                   (reset),
     .auto_in_a_ready         (_fragmenter_1_auto_in_a_ready),
@@ -577,7 +577,7 @@ module SerialRAM(
     .auto_out_d_bits_data    (_buffer_2_auto_in_d_bits_data),
     .auto_out_d_bits_corrupt (_buffer_2_auto_in_d_bits_corrupt)
   );
-  TLBroadcast_1 broadcast (
+  TLBroadcast broadcast (
     .clock                   (clock),
     .reset                   (reset),
     .auto_in_a_ready         (_broadcast_auto_in_a_ready),

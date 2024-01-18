@@ -95,7 +95,7 @@ module TLError_1(
         state_1 <= winner_1;
     end
   end // always @(posedge)
-  TLMonitor_39 monitor (
+  TLMonitor_57 monitor (
     .clock                (clock),
     .reset                (reset),
     .io_in_a_ready        (nodeIn_a_ready),

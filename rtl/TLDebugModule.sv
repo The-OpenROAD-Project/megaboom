@@ -24,8 +24,8 @@ module TLDebugModule(
   input  [2:0]  auto_dmInner_dmInner_tl_in_a_bits_opcode,
                 auto_dmInner_dmInner_tl_in_a_bits_param,
   input  [1:0]  auto_dmInner_dmInner_tl_in_a_bits_size,
-  input  [9:0]  auto_dmInner_dmInner_tl_in_a_bits_source,
-  input  [11:0] auto_dmInner_dmInner_tl_in_a_bits_address,
+  input  [11:0] auto_dmInner_dmInner_tl_in_a_bits_source,
+                auto_dmInner_dmInner_tl_in_a_bits_address,
   input  [7:0]  auto_dmInner_dmInner_tl_in_a_bits_mask,
   input  [63:0] auto_dmInner_dmInner_tl_in_a_bits_data,
   input         auto_dmInner_dmInner_tl_in_a_bits_corrupt,
@@ -33,9 +33,10 @@ module TLDebugModule(
   output        auto_dmInner_dmInner_tl_in_d_valid,
   output [2:0]  auto_dmInner_dmInner_tl_in_d_bits_opcode,
   output [1:0]  auto_dmInner_dmInner_tl_in_d_bits_size,
-  output [9:0]  auto_dmInner_dmInner_tl_in_d_bits_source,
+  output [11:0] auto_dmInner_dmInner_tl_in_d_bits_source,
   output [63:0] auto_dmInner_dmInner_tl_in_d_bits_data,
-  output        auto_dmOuter_intsource_out_sync_0,
+  output        auto_dmOuter_intsource_out_1_sync_0,
+                auto_dmOuter_intsource_out_0_sync_0,
   input         io_debug_clock,
                 io_debug_reset,
   output        io_ctrl_dmactive,
@@ -51,7 +52,8 @@ module TLDebugModule(
   output [1:0]  io_dmi_dmi_resp_bits_resp,
   input         io_dmi_dmiClock,
                 io_dmi_dmiReset,
-                io_hartIsInReset_0
+                io_hartIsInReset_0,
+                io_hartIsInReset_1
 );
 
   wire        _dmInner_auto_dmiXing_in_a_ridx;
@@ -68,6 +70,7 @@ module TLDebugModule(
   wire        _dmInner_io_innerCtrl_safe_ridx_valid;
   wire        _dmInner_io_innerCtrl_safe_sink_reset_n;
   wire        _dmInner_io_hgDebugInt_0;
+  wire        _dmInner_io_hgDebugInt_1;
   wire [2:0]  _dmOuter_auto_asource_out_a_mem_0_opcode;
   wire [8:0]  _dmOuter_auto_asource_out_a_mem_0_address;
   wire [31:0] _dmOuter_auto_asource_out_a_mem_0_data;
@@ -81,7 +84,11 @@ module TLDebugModule(
   wire        _dmOuter_io_innerCtrl_mem_0_resumereq;
   wire [9:0]  _dmOuter_io_innerCtrl_mem_0_hartsel;
   wire        _dmOuter_io_innerCtrl_mem_0_ackhavereset;
+  wire        _dmOuter_io_innerCtrl_mem_0_hasel;
+  wire        _dmOuter_io_innerCtrl_mem_0_hamask_0;
+  wire        _dmOuter_io_innerCtrl_mem_0_hamask_1;
   wire        _dmOuter_io_innerCtrl_mem_0_hrmask_0;
+  wire        _dmOuter_io_innerCtrl_mem_0_hrmask_1;
   wire        _dmOuter_io_innerCtrl_widx;
   wire        _dmOuter_io_innerCtrl_safe_widx_valid;
   wire        _dmOuter_io_innerCtrl_safe_source_reset_n;
@@ -105,7 +112,8 @@ module TLDebugModule(
     .auto_asource_out_d_safe_widx_valid     (_dmInner_auto_dmiXing_in_d_safe_widx_valid),
     .auto_asource_out_d_safe_source_reset_n (_dmInner_auto_dmiXing_in_d_safe_source_reset_n),
     .auto_asource_out_d_safe_sink_reset_n   (_dmOuter_auto_asource_out_d_safe_sink_reset_n),
-    .auto_intsource_out_sync_0              (auto_dmOuter_intsource_out_sync_0),
+    .auto_intsource_out_1_sync_0            (auto_dmOuter_intsource_out_1_sync_0),
+    .auto_intsource_out_0_sync_0            (auto_dmOuter_intsource_out_0_sync_0),
     .io_dmi_clock                           (io_dmi_dmiClock),
     .io_dmi_reset                           (io_dmi_dmiReset),
     .io_dmi_req_ready                       (io_dmi_dmi_req_ready),
@@ -122,14 +130,19 @@ module TLDebugModule(
     .io_innerCtrl_mem_0_resumereq           (_dmOuter_io_innerCtrl_mem_0_resumereq),
     .io_innerCtrl_mem_0_hartsel             (_dmOuter_io_innerCtrl_mem_0_hartsel),
     .io_innerCtrl_mem_0_ackhavereset        (_dmOuter_io_innerCtrl_mem_0_ackhavereset),
+    .io_innerCtrl_mem_0_hasel               (_dmOuter_io_innerCtrl_mem_0_hasel),
+    .io_innerCtrl_mem_0_hamask_0            (_dmOuter_io_innerCtrl_mem_0_hamask_0),
+    .io_innerCtrl_mem_0_hamask_1            (_dmOuter_io_innerCtrl_mem_0_hamask_1),
     .io_innerCtrl_mem_0_hrmask_0            (_dmOuter_io_innerCtrl_mem_0_hrmask_0),
+    .io_innerCtrl_mem_0_hrmask_1            (_dmOuter_io_innerCtrl_mem_0_hrmask_1),
     .io_innerCtrl_ridx                      (_dmInner_io_innerCtrl_ridx),
     .io_innerCtrl_widx                      (_dmOuter_io_innerCtrl_widx),
     .io_innerCtrl_safe_ridx_valid           (_dmInner_io_innerCtrl_safe_ridx_valid),
     .io_innerCtrl_safe_widx_valid           (_dmOuter_io_innerCtrl_safe_widx_valid),
     .io_innerCtrl_safe_source_reset_n       (_dmOuter_io_innerCtrl_safe_source_reset_n),
     .io_innerCtrl_safe_sink_reset_n         (_dmInner_io_innerCtrl_safe_sink_reset_n),
-    .io_hgDebugInt_0                        (_dmInner_io_hgDebugInt_0)
+    .io_hgDebugInt_0                        (_dmInner_io_hgDebugInt_0),
+    .io_hgDebugInt_1                        (_dmInner_io_hgDebugInt_1)
   );
   TLDebugModuleInnerAsync dmInner (
     .auto_dmiXing_in_a_mem_0_opcode        (_dmOuter_auto_asource_out_a_mem_0_opcode),
@@ -173,7 +186,11 @@ module TLDebugModule(
     .io_innerCtrl_mem_0_resumereq          (_dmOuter_io_innerCtrl_mem_0_resumereq),
     .io_innerCtrl_mem_0_hartsel            (_dmOuter_io_innerCtrl_mem_0_hartsel),
     .io_innerCtrl_mem_0_ackhavereset       (_dmOuter_io_innerCtrl_mem_0_ackhavereset),
+    .io_innerCtrl_mem_0_hasel              (_dmOuter_io_innerCtrl_mem_0_hasel),
+    .io_innerCtrl_mem_0_hamask_0           (_dmOuter_io_innerCtrl_mem_0_hamask_0),
+    .io_innerCtrl_mem_0_hamask_1           (_dmOuter_io_innerCtrl_mem_0_hamask_1),
     .io_innerCtrl_mem_0_hrmask_0           (_dmOuter_io_innerCtrl_mem_0_hrmask_0),
+    .io_innerCtrl_mem_0_hrmask_1           (_dmOuter_io_innerCtrl_mem_0_hrmask_1),
     .io_innerCtrl_ridx                     (_dmInner_io_innerCtrl_ridx),
     .io_innerCtrl_widx                     (_dmOuter_io_innerCtrl_widx),
     .io_innerCtrl_safe_ridx_valid          (_dmInner_io_innerCtrl_safe_ridx_valid),
@@ -181,7 +198,9 @@ module TLDebugModule(
     .io_innerCtrl_safe_source_reset_n      (_dmOuter_io_innerCtrl_safe_source_reset_n),
     .io_innerCtrl_safe_sink_reset_n        (_dmInner_io_innerCtrl_safe_sink_reset_n),
     .io_hgDebugInt_0                       (_dmInner_io_hgDebugInt_0),
-    .io_hartIsInReset_0                    (io_hartIsInReset_0)
+    .io_hgDebugInt_1                       (_dmInner_io_hgDebugInt_1),
+    .io_hartIsInReset_0                    (io_hartIsInReset_0),
+    .io_hartIsInReset_1                    (io_hartIsInReset_1)
   );
   assign io_ctrl_dmactive = _dmOuter_io_ctrl_dmactive;
 endmodule

@@ -21,40 +21,104 @@
 module TLInterconnectCoupler_7(
   input         clock,
                 reset,
-                auto_fragmenter_out_a_ready,
-  output        auto_fragmenter_out_a_valid,
-  output [2:0]  auto_fragmenter_out_a_bits_opcode,
-                auto_fragmenter_out_a_bits_param,
-  output [1:0]  auto_fragmenter_out_a_bits_size,
-  output [9:0]  auto_fragmenter_out_a_bits_source,
-  output [27:0] auto_fragmenter_out_a_bits_address,
-  output [7:0]  auto_fragmenter_out_a_bits_mask,
-  output [63:0] auto_fragmenter_out_a_bits_data,
-  output        auto_fragmenter_out_a_bits_corrupt,
-                auto_fragmenter_out_d_ready,
-  input         auto_fragmenter_out_d_valid,
-  input  [2:0]  auto_fragmenter_out_d_bits_opcode,
-  input  [1:0]  auto_fragmenter_out_d_bits_size,
-  input  [9:0]  auto_fragmenter_out_d_bits_source,
-  input  [63:0] auto_fragmenter_out_d_bits_data,
+                auto_buffer_out_a_ready,
+  output        auto_buffer_out_a_valid,
+  output [2:0]  auto_buffer_out_a_bits_opcode,
+                auto_buffer_out_a_bits_param,
+  output [1:0]  auto_buffer_out_a_bits_size,
+  output [11:0] auto_buffer_out_a_bits_source,
+  output [25:0] auto_buffer_out_a_bits_address,
+  output [7:0]  auto_buffer_out_a_bits_mask,
+  output [63:0] auto_buffer_out_a_bits_data,
+  output        auto_buffer_out_a_bits_corrupt,
+                auto_buffer_out_d_ready,
+  input         auto_buffer_out_d_valid,
+  input  [2:0]  auto_buffer_out_d_bits_opcode,
+  input  [1:0]  auto_buffer_out_d_bits_size,
+  input  [11:0] auto_buffer_out_d_bits_source,
+  input  [63:0] auto_buffer_out_d_bits_data,
   output        auto_tl_in_a_ready,
   input         auto_tl_in_a_valid,
   input  [2:0]  auto_tl_in_a_bits_opcode,
                 auto_tl_in_a_bits_param,
                 auto_tl_in_a_bits_size,
-  input  [5:0]  auto_tl_in_a_bits_source,
-  input  [27:0] auto_tl_in_a_bits_address,
+  input  [7:0]  auto_tl_in_a_bits_source,
+  input  [25:0] auto_tl_in_a_bits_address,
   input  [7:0]  auto_tl_in_a_bits_mask,
   input  [63:0] auto_tl_in_a_bits_data,
   input         auto_tl_in_a_bits_corrupt,
                 auto_tl_in_d_ready,
   output        auto_tl_in_d_valid,
   output [2:0]  auto_tl_in_d_bits_opcode,
-                auto_tl_in_d_bits_size,
-  output [5:0]  auto_tl_in_d_bits_source,
-  output [63:0] auto_tl_in_d_bits_data
+  output [1:0]  auto_tl_in_d_bits_param,
+  output [2:0]  auto_tl_in_d_bits_size,
+  output [7:0]  auto_tl_in_d_bits_source,
+  output        auto_tl_in_d_bits_sink,
+                auto_tl_in_d_bits_denied,
+  output [63:0] auto_tl_in_d_bits_data,
+  output        auto_tl_in_d_bits_corrupt
 );
 
+  wire        _fragmenter_auto_out_a_valid;
+  wire [2:0]  _fragmenter_auto_out_a_bits_opcode;
+  wire [2:0]  _fragmenter_auto_out_a_bits_param;
+  wire [1:0]  _fragmenter_auto_out_a_bits_size;
+  wire [11:0] _fragmenter_auto_out_a_bits_source;
+  wire [25:0] _fragmenter_auto_out_a_bits_address;
+  wire [7:0]  _fragmenter_auto_out_a_bits_mask;
+  wire [63:0] _fragmenter_auto_out_a_bits_data;
+  wire        _fragmenter_auto_out_a_bits_corrupt;
+  wire        _fragmenter_auto_out_d_ready;
+  wire        _buffer_auto_in_a_ready;
+  wire        _buffer_auto_in_d_valid;
+  wire [2:0]  _buffer_auto_in_d_bits_opcode;
+  wire [1:0]  _buffer_auto_in_d_bits_param;
+  wire [1:0]  _buffer_auto_in_d_bits_size;
+  wire [11:0] _buffer_auto_in_d_bits_source;
+  wire        _buffer_auto_in_d_bits_sink;
+  wire        _buffer_auto_in_d_bits_denied;
+  wire [63:0] _buffer_auto_in_d_bits_data;
+  wire        _buffer_auto_in_d_bits_corrupt;
+  TLBuffer_5 buffer (
+    .clock                   (clock),
+    .reset                   (reset),
+    .auto_in_a_ready         (_buffer_auto_in_a_ready),
+    .auto_in_a_valid         (_fragmenter_auto_out_a_valid),
+    .auto_in_a_bits_opcode   (_fragmenter_auto_out_a_bits_opcode),
+    .auto_in_a_bits_param    (_fragmenter_auto_out_a_bits_param),
+    .auto_in_a_bits_size     (_fragmenter_auto_out_a_bits_size),
+    .auto_in_a_bits_source   (_fragmenter_auto_out_a_bits_source),
+    .auto_in_a_bits_address  (_fragmenter_auto_out_a_bits_address),
+    .auto_in_a_bits_mask     (_fragmenter_auto_out_a_bits_mask),
+    .auto_in_a_bits_data     (_fragmenter_auto_out_a_bits_data),
+    .auto_in_a_bits_corrupt  (_fragmenter_auto_out_a_bits_corrupt),
+    .auto_in_d_ready         (_fragmenter_auto_out_d_ready),
+    .auto_in_d_valid         (_buffer_auto_in_d_valid),
+    .auto_in_d_bits_opcode   (_buffer_auto_in_d_bits_opcode),
+    .auto_in_d_bits_param    (_buffer_auto_in_d_bits_param),
+    .auto_in_d_bits_size     (_buffer_auto_in_d_bits_size),
+    .auto_in_d_bits_source   (_buffer_auto_in_d_bits_source),
+    .auto_in_d_bits_sink     (_buffer_auto_in_d_bits_sink),
+    .auto_in_d_bits_denied   (_buffer_auto_in_d_bits_denied),
+    .auto_in_d_bits_data     (_buffer_auto_in_d_bits_data),
+    .auto_in_d_bits_corrupt  (_buffer_auto_in_d_bits_corrupt),
+    .auto_out_a_ready        (auto_buffer_out_a_ready),
+    .auto_out_a_valid        (auto_buffer_out_a_valid),
+    .auto_out_a_bits_opcode  (auto_buffer_out_a_bits_opcode),
+    .auto_out_a_bits_param   (auto_buffer_out_a_bits_param),
+    .auto_out_a_bits_size    (auto_buffer_out_a_bits_size),
+    .auto_out_a_bits_source  (auto_buffer_out_a_bits_source),
+    .auto_out_a_bits_address (auto_buffer_out_a_bits_address),
+    .auto_out_a_bits_mask    (auto_buffer_out_a_bits_mask),
+    .auto_out_a_bits_data    (auto_buffer_out_a_bits_data),
+    .auto_out_a_bits_corrupt (auto_buffer_out_a_bits_corrupt),
+    .auto_out_d_ready        (auto_buffer_out_d_ready),
+    .auto_out_d_valid        (auto_buffer_out_d_valid),
+    .auto_out_d_bits_opcode  (auto_buffer_out_d_bits_opcode),
+    .auto_out_d_bits_size    (auto_buffer_out_d_bits_size),
+    .auto_out_d_bits_source  (auto_buffer_out_d_bits_source),
+    .auto_out_d_bits_data    (auto_buffer_out_d_bits_data)
+  );
   TLFragmenter_1 fragmenter (
     .clock                   (clock),
     .reset                   (reset),
@@ -71,25 +135,33 @@ module TLInterconnectCoupler_7(
     .auto_in_d_ready         (auto_tl_in_d_ready),
     .auto_in_d_valid         (auto_tl_in_d_valid),
     .auto_in_d_bits_opcode   (auto_tl_in_d_bits_opcode),
+    .auto_in_d_bits_param    (auto_tl_in_d_bits_param),
     .auto_in_d_bits_size     (auto_tl_in_d_bits_size),
     .auto_in_d_bits_source   (auto_tl_in_d_bits_source),
+    .auto_in_d_bits_sink     (auto_tl_in_d_bits_sink),
+    .auto_in_d_bits_denied   (auto_tl_in_d_bits_denied),
     .auto_in_d_bits_data     (auto_tl_in_d_bits_data),
-    .auto_out_a_ready        (auto_fragmenter_out_a_ready),
-    .auto_out_a_valid        (auto_fragmenter_out_a_valid),
-    .auto_out_a_bits_opcode  (auto_fragmenter_out_a_bits_opcode),
-    .auto_out_a_bits_param   (auto_fragmenter_out_a_bits_param),
-    .auto_out_a_bits_size    (auto_fragmenter_out_a_bits_size),
-    .auto_out_a_bits_source  (auto_fragmenter_out_a_bits_source),
-    .auto_out_a_bits_address (auto_fragmenter_out_a_bits_address),
-    .auto_out_a_bits_mask    (auto_fragmenter_out_a_bits_mask),
-    .auto_out_a_bits_data    (auto_fragmenter_out_a_bits_data),
-    .auto_out_a_bits_corrupt (auto_fragmenter_out_a_bits_corrupt),
-    .auto_out_d_ready        (auto_fragmenter_out_d_ready),
-    .auto_out_d_valid        (auto_fragmenter_out_d_valid),
-    .auto_out_d_bits_opcode  (auto_fragmenter_out_d_bits_opcode),
-    .auto_out_d_bits_size    (auto_fragmenter_out_d_bits_size),
-    .auto_out_d_bits_source  (auto_fragmenter_out_d_bits_source),
-    .auto_out_d_bits_data    (auto_fragmenter_out_d_bits_data)
+    .auto_in_d_bits_corrupt  (auto_tl_in_d_bits_corrupt),
+    .auto_out_a_ready        (_buffer_auto_in_a_ready),
+    .auto_out_a_valid        (_fragmenter_auto_out_a_valid),
+    .auto_out_a_bits_opcode  (_fragmenter_auto_out_a_bits_opcode),
+    .auto_out_a_bits_param   (_fragmenter_auto_out_a_bits_param),
+    .auto_out_a_bits_size    (_fragmenter_auto_out_a_bits_size),
+    .auto_out_a_bits_source  (_fragmenter_auto_out_a_bits_source),
+    .auto_out_a_bits_address (_fragmenter_auto_out_a_bits_address),
+    .auto_out_a_bits_mask    (_fragmenter_auto_out_a_bits_mask),
+    .auto_out_a_bits_data    (_fragmenter_auto_out_a_bits_data),
+    .auto_out_a_bits_corrupt (_fragmenter_auto_out_a_bits_corrupt),
+    .auto_out_d_ready        (_fragmenter_auto_out_d_ready),
+    .auto_out_d_valid        (_buffer_auto_in_d_valid),
+    .auto_out_d_bits_opcode  (_buffer_auto_in_d_bits_opcode),
+    .auto_out_d_bits_param   (_buffer_auto_in_d_bits_param),
+    .auto_out_d_bits_size    (_buffer_auto_in_d_bits_size),
+    .auto_out_d_bits_source  (_buffer_auto_in_d_bits_source),
+    .auto_out_d_bits_sink    (_buffer_auto_in_d_bits_sink),
+    .auto_out_d_bits_denied  (_buffer_auto_in_d_bits_denied),
+    .auto_out_d_bits_data    (_buffer_auto_in_d_bits_data),
+    .auto_out_d_bits_corrupt (_buffer_auto_in_d_bits_corrupt)
   );
 endmodule
 

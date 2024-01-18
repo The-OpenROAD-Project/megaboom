@@ -26,7 +26,7 @@ module ErrorDeviceWrapper(
   input  [2:0]  auto_buffer_in_a_bits_opcode,
                 auto_buffer_in_a_bits_param,
   input  [3:0]  auto_buffer_in_a_bits_size,
-  input  [5:0]  auto_buffer_in_a_bits_source,
+  input  [7:0]  auto_buffer_in_a_bits_source,
   input  [13:0] auto_buffer_in_a_bits_address,
   input  [7:0]  auto_buffer_in_a_bits_mask,
   input  [63:0] auto_buffer_in_a_bits_data,
@@ -36,7 +36,7 @@ module ErrorDeviceWrapper(
   output [2:0]  auto_buffer_in_d_bits_opcode,
   output [1:0]  auto_buffer_in_d_bits_param,
   output [3:0]  auto_buffer_in_d_bits_size,
-  output [5:0]  auto_buffer_in_d_bits_source,
+  output [7:0]  auto_buffer_in_d_bits_source,
   output        auto_buffer_in_d_bits_sink,
                 auto_buffer_in_d_bits_denied,
   output [63:0] auto_buffer_in_d_bits_data,
@@ -47,7 +47,7 @@ module ErrorDeviceWrapper(
   wire [2:0]  _buffer_auto_out_a_bits_opcode;
   wire [2:0]  _buffer_auto_out_a_bits_param;
   wire [3:0]  _buffer_auto_out_a_bits_size;
-  wire [5:0]  _buffer_auto_out_a_bits_source;
+  wire [7:0]  _buffer_auto_out_a_bits_source;
   wire [13:0] _buffer_auto_out_a_bits_address;
   wire [7:0]  _buffer_auto_out_a_bits_mask;
   wire [63:0] _buffer_auto_out_a_bits_data;
@@ -57,7 +57,7 @@ module ErrorDeviceWrapper(
   wire        _error_auto_in_d_valid;
   wire [2:0]  _error_auto_in_d_bits_opcode;
   wire [3:0]  _error_auto_in_d_bits_size;
-  wire [5:0]  _error_auto_in_d_bits_source;
+  wire [7:0]  _error_auto_in_d_bits_source;
   wire        _error_auto_in_d_bits_corrupt;
   TLError error (
     .clock                  (clock),
@@ -79,7 +79,7 @@ module ErrorDeviceWrapper(
     .auto_in_d_bits_source  (_error_auto_in_d_bits_source),
     .auto_in_d_bits_corrupt (_error_auto_in_d_bits_corrupt)
   );
-  TLBuffer_5 buffer (
+  TLBuffer_4 buffer (
     .clock                   (clock),
     .reset                   (reset),
     .auto_in_a_ready         (auto_buffer_in_a_ready),

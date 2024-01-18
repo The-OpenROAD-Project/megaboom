@@ -24,7 +24,7 @@ module ClockSinkDomain(
   input  [2:0]  auto_plic_in_a_bits_opcode,
                 auto_plic_in_a_bits_param,
   input  [1:0]  auto_plic_in_a_bits_size,
-  input  [9:0]  auto_plic_in_a_bits_source,
+  input  [11:0] auto_plic_in_a_bits_source,
   input  [27:0] auto_plic_in_a_bits_address,
   input  [7:0]  auto_plic_in_a_bits_mask,
   input  [63:0] auto_plic_in_a_bits_data,
@@ -33,8 +33,7 @@ module ClockSinkDomain(
   output        auto_plic_in_d_valid,
   output [2:0]  auto_plic_in_d_bits_opcode,
   output [1:0]  auto_plic_in_d_bits_size,
-  output [9:0]  auto_plic_in_d_bits_source,
-  output [63:0] auto_plic_in_d_bits_data,
+  output [11:0] auto_plic_in_d_bits_source,
   input         auto_clock_in_clock,
                 auto_clock_in_reset
 );
@@ -56,8 +55,7 @@ module ClockSinkDomain(
     .auto_in_d_valid        (auto_plic_in_d_valid),
     .auto_in_d_bits_opcode  (auto_plic_in_d_bits_opcode),
     .auto_in_d_bits_size    (auto_plic_in_d_bits_size),
-    .auto_in_d_bits_source  (auto_plic_in_d_bits_source),
-    .auto_in_d_bits_data    (auto_plic_in_d_bits_data)
+    .auto_in_d_bits_source  (auto_plic_in_d_bits_source)
   );
 endmodule
 

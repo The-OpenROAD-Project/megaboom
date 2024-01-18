@@ -26,7 +26,7 @@ module TLAtomicAutomata_1(
   input  [2:0]  auto_in_a_bits_opcode,
                 auto_in_a_bits_param,
   input  [3:0]  auto_in_a_bits_size,
-  input  [5:0]  auto_in_a_bits_source,
+  input  [7:0]  auto_in_a_bits_source,
   input  [27:0] auto_in_a_bits_address,
   input  [7:0]  auto_in_a_bits_mask,
   input  [63:0] auto_in_a_bits_data,
@@ -36,7 +36,7 @@ module TLAtomicAutomata_1(
   output [2:0]  auto_in_d_bits_opcode,
   output [1:0]  auto_in_d_bits_param,
   output [3:0]  auto_in_d_bits_size,
-  output [5:0]  auto_in_d_bits_source,
+  output [7:0]  auto_in_d_bits_source,
   output        auto_in_d_bits_sink,
                 auto_in_d_bits_denied,
   output [63:0] auto_in_d_bits_data,
@@ -46,7 +46,7 @@ module TLAtomicAutomata_1(
   output [2:0]  auto_out_a_bits_opcode,
                 auto_out_a_bits_param,
   output [3:0]  auto_out_a_bits_size,
-  output [5:0]  auto_out_a_bits_source,
+  output [7:0]  auto_out_a_bits_source,
   output [27:0] auto_out_a_bits_address,
   output [7:0]  auto_out_a_bits_mask,
   output [63:0] auto_out_a_bits_data,
@@ -56,7 +56,7 @@ module TLAtomicAutomata_1(
   input  [2:0]  auto_out_d_bits_opcode,
   input  [1:0]  auto_out_d_bits_param,
   input  [3:0]  auto_out_d_bits_size,
-  input  [5:0]  auto_out_d_bits_source,
+  input  [7:0]  auto_out_d_bits_source,
   input         auto_out_d_bits_sink,
                 auto_out_d_bits_denied,
   input  [63:0] auto_out_d_bits_data,
@@ -68,7 +68,7 @@ module TLAtomicAutomata_1(
   reg  [2:0]  cam_a_0_bits_opcode;
   reg  [2:0]  cam_a_0_bits_param;
   reg  [3:0]  cam_a_0_bits_size;
-  reg  [5:0]  cam_a_0_bits_source;
+  reg  [7:0]  cam_a_0_bits_source;
   reg  [27:0] cam_a_0_bits_address;
   reg  [7:0]  cam_a_0_bits_mask;
   reg  [63:0] cam_a_0_bits_data;
@@ -80,7 +80,7 @@ module TLAtomicAutomata_1(
   wire        cam_free_0 = cam_s_0_state == 2'h0;
   wire        winner_0 = cam_s_0_state == 2'h2;
   wire        _a_canArithmetic_T_3 = auto_in_a_bits_size < 4'h4;
-  wire [4:0]  _GEN = {auto_in_a_bits_address[27], auto_in_a_bits_address[25], auto_in_a_bits_address[20], auto_in_a_bits_address[16], ~(auto_in_a_bits_address[12])};
+  wire [3:0]  _GEN = {auto_in_a_bits_address[27], auto_in_a_bits_address[25], auto_in_a_bits_address[16], ~(auto_in_a_bits_address[12])};
   wire        a_isSupported = auto_in_a_bits_opcode == 3'h3 ? _a_canArithmetic_T_3 & ~(|_GEN) : auto_in_a_bits_opcode != 3'h2 | _a_canArithmetic_T_3 & ~(|_GEN);
   wire [3:0]  _logic_out_T = cam_a_0_lut >> {2'h0, cam_a_0_bits_data[0], cam_d_0_data[0]};
   wire [3:0]  _logic_out_T_2 = cam_a_0_lut >> {2'h0, cam_a_0_bits_data[1], cam_d_0_data[1]};
@@ -277,7 +277,7 @@ module TLAtomicAutomata_1(
       cam_d_0_corrupt <= auto_out_d_bits_corrupt;
     end
   end // always @(posedge)
-  TLMonitor_15 monitor (
+  TLMonitor_20 monitor (
     .clock                (clock),
     .reset                (reset),
     .io_in_a_ready        (nodeIn_a_ready),
@@ -313,7 +313,7 @@ module TLAtomicAutomata_1(
   assign auto_out_a_bits_opcode = muxState_1 ? (a_isSupported ? auto_in_a_bits_opcode : 3'h4) : 3'h0;
   assign auto_out_a_bits_param = muxState_1 & a_isSupported ? auto_in_a_bits_param : 3'h0;
   assign auto_out_a_bits_size = (muxState_0 ? cam_a_0_bits_size : 4'h0) | (muxState_1 ? auto_in_a_bits_size : 4'h0);
-  assign auto_out_a_bits_source = (muxState_0 ? cam_a_0_bits_source : 6'h0) | (muxState_1 ? auto_in_a_bits_source : 6'h0);
+  assign auto_out_a_bits_source = (muxState_0 ? cam_a_0_bits_source : 8'h0) | (muxState_1 ? auto_in_a_bits_source : 8'h0);
   assign auto_out_a_bits_address = (muxState_0 ? cam_a_0_bits_address : 28'h0) | (muxState_1 ? auto_in_a_bits_address : 28'h0);
   assign auto_out_a_bits_mask = (muxState_0 ? {source_c_bits_a_mask_acc_5 | source_c_bits_a_mask_eq_5 & cam_a_0_bits_address[0], source_c_bits_a_mask_acc_5 | source_c_bits_a_mask_eq_5 & ~(cam_a_0_bits_address[0]), source_c_bits_a_mask_acc_4 | source_c_bits_a_mask_eq_4 & cam_a_0_bits_address[0], source_c_bits_a_mask_acc_4 | source_c_bits_a_mask_eq_4 & ~(cam_a_0_bits_address[0]), source_c_bits_a_mask_acc_3 | source_c_bits_a_mask_eq_3 & cam_a_0_bits_address[0], source_c_bits_a_mask_acc_3 | source_c_bits_a_mask_eq_3 & ~(cam_a_0_bits_address[0]), source_c_bits_a_mask_acc_2 | source_c_bits_a_mask_eq_2 & cam_a_0_bits_address[0], source_c_bits_a_mask_acc_2 | source_c_bits_a_mask_eq_2 & ~(cam_a_0_bits_address[0])} : 8'h0) | (muxState_1 ? auto_in_a_bits_mask : 8'h0);
   assign auto_out_a_bits_data = (muxState_0 ? (cam_a_0_bits_opcode[0] ? {_logic_out_T_126[0], _logic_out_T_124[0], _logic_out_T_122[0], _logic_out_T_120[0], _logic_out_T_118[0], _logic_out_T_116[0], _logic_out_T_114[0], _logic_out_T_112[0], _logic_out_T_110[0], _logic_out_T_108[0], _logic_out_T_106[0], _logic_out_T_104[0], _logic_out_T_102[0], _logic_out_T_100[0], _logic_out_T_98[0], _logic_out_T_96[0], _logic_out_T_94[0], _logic_out_T_92[0], _logic_out_T_90[0], _logic_out_T_88[0], _logic_out_T_86[0], _logic_out_T_84[0], _logic_out_T_82[0], _logic_out_T_80[0], _logic_out_T_78[0], _logic_out_T_76[0], _logic_out_T_74[0], _logic_out_T_72[0], _logic_out_T_70[0], _logic_out_T_68[0], _logic_out_T_66[0], _logic_out_T_64[0], _logic_out_T_62[0], _logic_out_T_60[0], _logic_out_T_58[0], _logic_out_T_56[0], _logic_out_T_54[0], _logic_out_T_52[0], _logic_out_T_50[0], _logic_out_T_48[0], _logic_out_T_46[0], _logic_out_T_44[0], _logic_out_T_42[0], _logic_out_T_40[0], _logic_out_T_38[0], _logic_out_T_36[0], _logic_out_T_34[0], _logic_out_T_32[0], _logic_out_T_30[0], _logic_out_T_28[0], _logic_out_T_26[0], _logic_out_T_24[0], _logic_out_T_22[0], _logic_out_T_20[0], _logic_out_T_18[0], _logic_out_T_16[0], _logic_out_T_14[0], _logic_out_T_12[0], _logic_out_T_10[0], _logic_out_T_8[0], _logic_out_T_6[0], _logic_out_T_4[0], _logic_out_T_2[0], _logic_out_T[0]} : cam_a_0_bits_param[2] ? _adder_out_T : cam_a_0_bits_param[0] == (a_a_ext[63] == a_d_ext[63] ? ~(_adder_out_T[63]) : cam_a_0_bits_param[1] == a_a_ext[63]) ? cam_a_0_bits_data : cam_d_0_data) : 64'h0) | (muxState_1 ? auto_in_a_bits_data : 64'h0);

@@ -100,7 +100,7 @@ module TLBusBypassBar(
     if (in_reset | _next_flight_T_10 == 2'h0)
       bypass_reg <= io_bypass;
   end // always @(posedge)
-  TLMonitor_38 monitor (
+  TLMonitor_56 monitor (
     .clock                (clock),
     .reset                (reset),
     .io_in_a_ready        (nodeIn_a_ready),

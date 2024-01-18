@@ -31,6 +31,10 @@ module ClockGroupParameterModifier_1(
          auto_frequency_specifier_in_member_allClocks_subsystem_fbus_0_reset,
          auto_frequency_specifier_in_member_allClocks_subsystem_pbus_0_clock,
          auto_frequency_specifier_in_member_allClocks_subsystem_pbus_0_reset,
+         auto_frequency_specifier_in_member_allClocks_tileClockGroup_boom_tile_1_clock,
+         auto_frequency_specifier_in_member_allClocks_tileClockGroup_boom_tile_1_reset,
+         auto_frequency_specifier_in_member_allClocks_tileClockGroup_boom_tile_0_clock,
+         auto_frequency_specifier_in_member_allClocks_tileClockGroup_boom_tile_0_reset,
          auto_frequency_specifier_in_member_allClocks_subsystem_sbus_1_clock,
          auto_frequency_specifier_in_member_allClocks_subsystem_sbus_1_reset,
          auto_frequency_specifier_in_member_allClocks_subsystem_sbus_0_clock,
@@ -47,6 +51,10 @@ module ClockGroupParameterModifier_1(
          auto_frequency_specifier_out_member_allClocks_subsystem_fbus_0_reset,
          auto_frequency_specifier_out_member_allClocks_subsystem_pbus_0_clock,
          auto_frequency_specifier_out_member_allClocks_subsystem_pbus_0_reset,
+         auto_frequency_specifier_out_member_allClocks_tileClockGroup_boom_tile_1_clock,
+         auto_frequency_specifier_out_member_allClocks_tileClockGroup_boom_tile_1_reset,
+         auto_frequency_specifier_out_member_allClocks_tileClockGroup_boom_tile_0_clock,
+         auto_frequency_specifier_out_member_allClocks_tileClockGroup_boom_tile_0_reset,
          auto_frequency_specifier_out_member_allClocks_subsystem_sbus_1_clock,
          auto_frequency_specifier_out_member_allClocks_subsystem_sbus_1_reset,
          auto_frequency_specifier_out_member_allClocks_subsystem_sbus_0_clock,
@@ -65,6 +73,10 @@ module ClockGroupParameterModifier_1(
   assign auto_frequency_specifier_out_member_allClocks_subsystem_fbus_0_reset = auto_frequency_specifier_in_member_allClocks_subsystem_fbus_0_reset;
   assign auto_frequency_specifier_out_member_allClocks_subsystem_pbus_0_clock = auto_frequency_specifier_in_member_allClocks_subsystem_pbus_0_clock;
   assign auto_frequency_specifier_out_member_allClocks_subsystem_pbus_0_reset = auto_frequency_specifier_in_member_allClocks_subsystem_pbus_0_reset;
+  assign auto_frequency_specifier_out_member_allClocks_tileClockGroup_boom_tile_1_clock = auto_frequency_specifier_in_member_allClocks_tileClockGroup_boom_tile_1_clock;
+  assign auto_frequency_specifier_out_member_allClocks_tileClockGroup_boom_tile_1_reset = auto_frequency_specifier_in_member_allClocks_tileClockGroup_boom_tile_1_reset;
+  assign auto_frequency_specifier_out_member_allClocks_tileClockGroup_boom_tile_0_clock = auto_frequency_specifier_in_member_allClocks_tileClockGroup_boom_tile_0_clock;
+  assign auto_frequency_specifier_out_member_allClocks_tileClockGroup_boom_tile_0_reset = auto_frequency_specifier_in_member_allClocks_tileClockGroup_boom_tile_0_reset;
   assign auto_frequency_specifier_out_member_allClocks_subsystem_sbus_1_clock = auto_frequency_specifier_in_member_allClocks_subsystem_sbus_1_clock;
   assign auto_frequency_specifier_out_member_allClocks_subsystem_sbus_1_reset = auto_frequency_specifier_in_member_allClocks_subsystem_sbus_1_reset;
   assign auto_frequency_specifier_out_member_allClocks_subsystem_sbus_0_clock = auto_frequency_specifier_in_member_allClocks_subsystem_sbus_0_clock;

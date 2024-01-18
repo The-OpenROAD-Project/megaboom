@@ -134,11 +134,11 @@ module BoomMSHR(
   input  [2:0]   io_mem_grant_bits_opcode,
   input  [1:0]   io_mem_grant_bits_param,
   input  [3:0]   io_mem_grant_bits_size,
-  input  [1:0]   io_mem_grant_bits_sink,
+  input  [2:0]   io_mem_grant_bits_sink,
   input  [127:0] io_mem_grant_bits_data,
   input          io_mem_finish_ready,
   output         io_mem_finish_valid,
-  output [1:0]   io_mem_finish_bits_sink,
+  output [2:0]   io_mem_finish_bits_sink,
   input          io_prober_state_valid,
   input  [39:0]  io_prober_state_bits,
   input          io_refill_ready,
@@ -607,7 +607,7 @@ module BoomMSHR(
   wire         _rpq_io_enq_valid_T_1 = io_req_sec_val & _io_req_sec_rdy_output;
   wire         _rpq_io_enq_valid_T_7 = (_rpq_io_enq_valid_T | _rpq_io_enq_valid_T_1) & ~(io_req_uop_mem_cmd == 5'h2 | _state_c_cat_T_96);
   reg          grantack_valid;
-  reg  [1:0]   grantack_bits_sink;
+  reg  [2:0]   grantack_bits_sink;
   reg  [1:0]   refill_ctr;
   reg          commit_line;
   reg          grant_had_data;

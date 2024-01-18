@@ -26,7 +26,7 @@ module TLFIFOFixer_2(
   input  [2:0]  auto_in_a_bits_opcode,
                 auto_in_a_bits_param,
   input  [3:0]  auto_in_a_bits_size,
-  input  [5:0]  auto_in_a_bits_source,
+  input  [7:0]  auto_in_a_bits_source,
   input  [27:0] auto_in_a_bits_address,
   input  [7:0]  auto_in_a_bits_mask,
   input  [63:0] auto_in_a_bits_data,
@@ -36,7 +36,7 @@ module TLFIFOFixer_2(
   output [2:0]  auto_in_d_bits_opcode,
   output [1:0]  auto_in_d_bits_param,
   output [3:0]  auto_in_d_bits_size,
-  output [5:0]  auto_in_d_bits_source,
+  output [7:0]  auto_in_d_bits_source,
   output        auto_in_d_bits_sink,
                 auto_in_d_bits_denied,
   output [63:0] auto_in_d_bits_data,
@@ -46,7 +46,7 @@ module TLFIFOFixer_2(
   output [2:0]  auto_out_a_bits_opcode,
                 auto_out_a_bits_param,
   output [3:0]  auto_out_a_bits_size,
-  output [5:0]  auto_out_a_bits_source,
+  output [7:0]  auto_out_a_bits_source,
   output [27:0] auto_out_a_bits_address,
   output [7:0]  auto_out_a_bits_mask,
   output [63:0] auto_out_a_bits_data,
@@ -56,14 +56,14 @@ module TLFIFOFixer_2(
   input  [2:0]  auto_out_d_bits_opcode,
   input  [1:0]  auto_out_d_bits_param,
   input  [3:0]  auto_out_d_bits_size,
-  input  [5:0]  auto_out_d_bits_source,
+  input  [7:0]  auto_out_d_bits_source,
   input         auto_out_d_bits_sink,
                 auto_out_d_bits_denied,
   input  [63:0] auto_out_d_bits_data,
   input         auto_out_d_bits_corrupt
 );
 
-  TLMonitor_12 monitor (
+  TLMonitor_15 monitor (
     .clock                (clock),
     .reset                (reset),
     .io_in_a_ready        (auto_out_a_ready),

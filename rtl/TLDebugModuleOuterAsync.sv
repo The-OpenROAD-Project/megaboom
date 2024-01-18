@@ -38,7 +38,8 @@ module TLDebugModuleOuterAsync(
   input         auto_asource_out_d_safe_widx_valid,
                 auto_asource_out_d_safe_source_reset_n,
   output        auto_asource_out_d_safe_sink_reset_n,
-                auto_intsource_out_sync_0,
+                auto_intsource_out_1_sync_0,
+                auto_intsource_out_0_sync_0,
   input         io_dmi_clock,
                 io_dmi_reset,
   output        io_dmi_req_ready,
@@ -55,14 +56,19 @@ module TLDebugModuleOuterAsync(
   output        io_innerCtrl_mem_0_resumereq,
   output [9:0]  io_innerCtrl_mem_0_hartsel,
   output        io_innerCtrl_mem_0_ackhavereset,
+                io_innerCtrl_mem_0_hasel,
+                io_innerCtrl_mem_0_hamask_0,
+                io_innerCtrl_mem_0_hamask_1,
                 io_innerCtrl_mem_0_hrmask_0,
+                io_innerCtrl_mem_0_hrmask_1,
   input         io_innerCtrl_ridx,
   output        io_innerCtrl_widx,
   input         io_innerCtrl_safe_ridx_valid,
   output        io_innerCtrl_safe_widx_valid,
                 io_innerCtrl_safe_source_reset_n,
   input         io_innerCtrl_safe_sink_reset_n,
-                io_hgDebugInt_0
+                io_hgDebugInt_0,
+                io_hgDebugInt_1
 );
 
   wire        _io_innerCtrl_source_io_enq_ready;
@@ -95,13 +101,18 @@ module TLDebugModuleOuterAsync(
   wire        _dmOuter_auto_dmi_in_d_valid;
   wire [2:0]  _dmOuter_auto_dmi_in_d_bits_opcode;
   wire [31:0] _dmOuter_auto_dmi_in_d_bits_data;
-  wire        _dmOuter_auto_int_out_0;
+  wire        _dmOuter_auto_int_out_1_0;
+  wire        _dmOuter_auto_int_out_0_0;
   wire        _dmOuter_io_ctrl_dmactive;
   wire        _dmOuter_io_innerCtrl_valid;
   wire        _dmOuter_io_innerCtrl_bits_resumereq;
   wire [9:0]  _dmOuter_io_innerCtrl_bits_hartsel;
   wire        _dmOuter_io_innerCtrl_bits_ackhavereset;
+  wire        _dmOuter_io_innerCtrl_bits_hasel;
+  wire        _dmOuter_io_innerCtrl_bits_hamask_0;
+  wire        _dmOuter_io_innerCtrl_bits_hamask_1;
   wire        _dmOuter_io_innerCtrl_bits_hrmask_0;
+  wire        _dmOuter_io_innerCtrl_bits_hrmask_1;
   wire        _dmi2tl_auto_out_a_valid;
   wire [2:0]  _dmi2tl_auto_out_a_bits_opcode;
   wire [8:0]  _dmi2tl_auto_out_a_bits_address;
@@ -122,7 +133,7 @@ module TLDebugModuleOuterAsync(
   wire [8:0]  _dmiXbar_auto_out_0_a_bits_address;
   wire [31:0] _dmiXbar_auto_out_0_a_bits_data;
   wire        _dmiXbar_auto_out_0_d_ready;
-  TLXbar_10 dmiXbar (
+  TLXbar_12 dmiXbar (
     .clock                     (io_dmi_clock),
     .reset                     (io_dmi_reset),
     .auto_in_a_ready           (_dmiXbar_auto_in_a_ready),
@@ -192,7 +203,8 @@ module TLDebugModuleOuterAsync(
     .auto_dmi_in_d_valid            (_dmOuter_auto_dmi_in_d_valid),
     .auto_dmi_in_d_bits_opcode      (_dmOuter_auto_dmi_in_d_bits_opcode),
     .auto_dmi_in_d_bits_data        (_dmOuter_auto_dmi_in_d_bits_data),
-    .auto_int_out_0                 (_dmOuter_auto_int_out_0),
+    .auto_int_out_1_0               (_dmOuter_auto_int_out_1_0),
+    .auto_int_out_0_0               (_dmOuter_auto_int_out_0_0),
     .io_ctrl_dmactive               (_dmOuter_io_ctrl_dmactive),
     .io_ctrl_dmactiveAck            (_dmactiveAck_dmactiveAckSync_io_q),
     .io_innerCtrl_ready             (_io_innerCtrl_source_io_enq_ready),
@@ -200,12 +212,19 @@ module TLDebugModuleOuterAsync(
     .io_innerCtrl_bits_resumereq    (_dmOuter_io_innerCtrl_bits_resumereq),
     .io_innerCtrl_bits_hartsel      (_dmOuter_io_innerCtrl_bits_hartsel),
     .io_innerCtrl_bits_ackhavereset (_dmOuter_io_innerCtrl_bits_ackhavereset),
+    .io_innerCtrl_bits_hasel        (_dmOuter_io_innerCtrl_bits_hasel),
+    .io_innerCtrl_bits_hamask_0     (_dmOuter_io_innerCtrl_bits_hamask_0),
+    .io_innerCtrl_bits_hamask_1     (_dmOuter_io_innerCtrl_bits_hamask_1),
     .io_innerCtrl_bits_hrmask_0     (_dmOuter_io_innerCtrl_bits_hrmask_0),
-    .io_hgDebugInt_0                (io_hgDebugInt_0)
+    .io_innerCtrl_bits_hrmask_1     (_dmOuter_io_innerCtrl_bits_hrmask_1),
+    .io_hgDebugInt_0                (io_hgDebugInt_0),
+    .io_hgDebugInt_1                (io_hgDebugInt_1)
   );
-  IntSyncCrossingSource_4 intsource (
-    .auto_in_0       (_dmOuter_auto_int_out_0),
-    .auto_out_sync_0 (auto_intsource_out_sync_0)
+  IntSyncCrossingSource_8 intsource (
+    .auto_in_1_0       (_dmOuter_auto_int_out_1_0),
+    .auto_in_0_0       (_dmOuter_auto_int_out_0_0),
+    .auto_out_1_sync_0 (auto_intsource_out_1_sync_0),
+    .auto_out_0_sync_0 (auto_intsource_out_0_sync_0)
   );
   TLBusBypass dmiBypass (
     .clock                            (io_dmi_clock),
@@ -241,7 +260,7 @@ module TLDebugModuleOuterAsync(
     .auto_node_in_in_d_bits_corrupt   (_dmiBypass_auto_node_in_in_d_bits_corrupt),
     .io_bypass                        (~_dmOuter_io_ctrl_dmactive | ~_dmactiveAck_dmactiveAckSync_io_q)
   );
-  TLAsyncCrossingSource asource (
+  TLAsyncCrossingSource_7 asource (
     .clock                          (io_dmi_clock),
     .reset                          (io_dmi_reset),
     .auto_in_a_ready                (_asource_auto_in_a_ready),
@@ -279,13 +298,13 @@ module TLDebugModuleOuterAsync(
     .auto_out_d_safe_source_reset_n (auto_asource_out_d_safe_source_reset_n),
     .auto_out_d_safe_sink_reset_n   (auto_asource_out_d_safe_sink_reset_n)
   );
-  AsyncResetSynchronizerShiftReg_w1_d3_i0 dmactiveAck_dmactiveAckSync (
+  AsyncResetSynchronizerShiftReg_w1_d3_i0_128 dmactiveAck_dmactiveAckSync (
     .clock (io_dmi_clock),
     .reset (io_dmi_reset),
     .io_d  (io_ctrl_dmactiveAck),
     .io_q  (_dmactiveAck_dmactiveAckSync_io_q)
   );
-  AsyncQueueSource_1 io_innerCtrl_source (
+  AsyncQueueSource_17 io_innerCtrl_source (
     .clock                        (io_dmi_clock),
     .reset                        (io_dmi_reset),
     .io_enq_ready                 (_io_innerCtrl_source_io_enq_ready),
@@ -293,11 +312,19 @@ module TLDebugModuleOuterAsync(
     .io_enq_bits_resumereq        (_dmOuter_io_innerCtrl_bits_resumereq),
     .io_enq_bits_hartsel          (_dmOuter_io_innerCtrl_bits_hartsel),
     .io_enq_bits_ackhavereset     (_dmOuter_io_innerCtrl_bits_ackhavereset),
+    .io_enq_bits_hasel            (_dmOuter_io_innerCtrl_bits_hasel),
+    .io_enq_bits_hamask_0         (_dmOuter_io_innerCtrl_bits_hamask_0),
+    .io_enq_bits_hamask_1         (_dmOuter_io_innerCtrl_bits_hamask_1),
     .io_enq_bits_hrmask_0         (_dmOuter_io_innerCtrl_bits_hrmask_0),
+    .io_enq_bits_hrmask_1         (_dmOuter_io_innerCtrl_bits_hrmask_1),
     .io_async_mem_0_resumereq     (io_innerCtrl_mem_0_resumereq),
     .io_async_mem_0_hartsel       (io_innerCtrl_mem_0_hartsel),
     .io_async_mem_0_ackhavereset  (io_innerCtrl_mem_0_ackhavereset),
+    .io_async_mem_0_hasel         (io_innerCtrl_mem_0_hasel),
+    .io_async_mem_0_hamask_0      (io_innerCtrl_mem_0_hamask_0),
+    .io_async_mem_0_hamask_1      (io_innerCtrl_mem_0_hamask_1),
     .io_async_mem_0_hrmask_0      (io_innerCtrl_mem_0_hrmask_0),
+    .io_async_mem_0_hrmask_1      (io_innerCtrl_mem_0_hrmask_1),
     .io_async_ridx                (io_innerCtrl_ridx),
     .io_async_widx                (io_innerCtrl_widx),
     .io_async_safe_ridx_valid     (io_innerCtrl_safe_ridx_valid),

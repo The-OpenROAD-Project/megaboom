@@ -25,14 +25,16 @@ module TestHarness(
 );
 
   wire        dtm_success;
+  wire        _source_2_clk;
   wire        _source_1_clk;
   wire        _source_clk;
   wire        _harnessBinderReset_catcher_io_sync_reset;
-  wire [31:0] _plusarg_reader_out;
+  wire [31:0] _plusarg_reader_1_out;
   wire        _jtag_jtag_TCK;
   wire        _jtag_jtag_TMS;
   wire        _jtag_jtag_TDI;
   wire [31:0] _jtag_exit;
+  wire        _plusarg_reader_out;
   wire        _tsi_tsi_in_valid;
   wire [31:0] _tsi_tsi_in_bits;
   wire        _tsi_tsi_out_ready;
@@ -49,7 +51,7 @@ module TestHarness(
   wire        _chiptop0_jtag_TDO;
   assign dtm_success = _jtag_exit == 32'h1;
   `ifndef SYNTHESIS
-    always @(posedge _source_1_clk) begin
+    always @(posedge _source_2_clk) begin
       if (~_harnessBinderReset_catcher_io_sync_reset & (|(_tsi_exit[31:1]))) begin
         if (`ASSERT_VERBOSE_COND_)
           $error("Assertion failed: *** FAILED *** (exit code = %d)\n\n    at HarnessBinders.scala:235 assert(!error, \"*** FAILED *** (exit code = %%%%d)\\n\", exit >> 1.U)\n", {1'h0, _tsi_exit[31:1]});
@@ -67,20 +69,22 @@ module TestHarness(
   ChipTop chiptop0 (
     .reset_io                   (reset),
     .clock_uncore               (_source_clk),
-    .serial_tl_0_clock          (_source_1_clk),
+    .clock_bus                  (_source_1_clk),
+    .serial_tl_0_clock          (_source_2_clk),
     .serial_tl_0_bits_in_ready  (_chiptop0_serial_tl_0_bits_in_ready),
     .serial_tl_0_bits_in_valid  (_ram_io_ser_in_valid),
     .serial_tl_0_bits_in_bits   (_ram_io_ser_in_bits),
     .serial_tl_0_bits_out_ready (_ram_io_ser_out_ready),
     .serial_tl_0_bits_out_valid (_chiptop0_serial_tl_0_bits_out_valid),
     .serial_tl_0_bits_out_bits  (_chiptop0_serial_tl_0_bits_out_bits),
+    .custom_boot                (_plusarg_reader_out),
     .jtag_TCK                   (_jtag_jtag_TCK),
     .jtag_TMS                   (_jtag_jtag_TMS),
     .jtag_TDI                   (_jtag_jtag_TDI),
     .jtag_TDO                   (_chiptop0_jtag_TDO)
   );
   SerialRAM ram (
-    .clock            (_source_1_clk),
+    .clock            (_source_2_clk),
     .reset            (_harnessBinderReset_catcher_io_sync_reset),
     .io_ser_in_ready  (_chiptop0_serial_tl_0_bits_in_ready),
     .io_ser_in_valid  (_ram_io_ser_in_valid),
@@ -96,7 +100,7 @@ module TestHarness(
     .io_tsi_out_bits  (_ram_io_tsi_out_bits)
   );
   SimTSI tsi (
-    .clock         (_source_1_clk),
+    .clock         (_source_2_clk),
     .reset         (_harnessBinderReset_catcher_io_sync_reset),
     .tsi_in_ready  (_ram_io_tsi_in_ready),
     .tsi_in_valid  (_tsi_tsi_in_valid),
@@ -106,10 +110,17 @@ module TestHarness(
     .tsi_out_bits  (_ram_io_tsi_out_bits),
     .exit          (_tsi_exit)
   );
+  plusarg_reader #(
+    .DEFAULT(0),
+    .FORMAT("custom_boot_pin=%d"),
+    .WIDTH(1)
+  ) plusarg_reader (
+    .out (_plusarg_reader_out)
+  );
   SimJTAG #(
     .TICK_DELAY(3)
   ) jtag (
-    .clock           (_source_1_clk),
+    .clock           (_source_2_clk),
     .reset           (_harnessBinderReset_catcher_io_sync_reset),
     .jtag_TRSTn      (/* unused */),
     .jtag_TCK        (_jtag_jtag_TCK),
@@ -117,7 +128,7 @@ module TestHarness(
     .jtag_TDI        (_jtag_jtag_TDI),
     .jtag_TDO_data   (_chiptop0_jtag_TDO),
     .jtag_TDO_driven (1'h1),
-    .enable          (_plusarg_reader_out[0]),
+    .enable          (_plusarg_reader_1_out[0]),
     .init_done       (~_harnessBinderReset_catcher_io_sync_reset),
     .exit            (_jtag_exit)
   );
@@ -125,16 +136,16 @@ module TestHarness(
     .DEFAULT(0),
     .FORMAT("jtag_rbb_enable=%d"),
     .WIDTH(32)
-  ) plusarg_reader (
-    .out (_plusarg_reader_out)
+  ) plusarg_reader_1 (
+    .out (_plusarg_reader_1_out)
   );
   ResetCatchAndSync_d3 harnessBinderReset_catcher (
-    .clock         (_source_1_clk),
+    .clock         (_source_2_clk),
     .reset         (reset),
     .io_sync_reset (_harnessBinderReset_catcher_io_sync_reset)
   );
   ClockSourceAtFreqMHz #(
-    .PERIOD(2.000000e+00)
+    .PERIOD(5.000000e+00)
   ) source (
     .power (1'h1),
     .gate  (1'h0),
@@ -146,6 +157,13 @@ module TestHarness(
     .power (1'h1),
     .gate  (1'h0),
     .clk   (_source_1_clk)
+  );
+  ClockSourceAtFreqMHz #(
+    .PERIOD(1.000000e+01)
+  ) source_2 (
+    .power (1'h1),
+    .gate  (1'h0),
+    .clk   (_source_2_clk)
   );
   assign io_success = dtm_success | _tsi_exit == 32'h1;
 endmodule

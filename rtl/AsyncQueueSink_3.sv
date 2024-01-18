@@ -19,62 +19,244 @@
 `endif // not def STOP_COND_
 
 module AsyncQueueSink_3(
-  input        clock,
-               reset,
-               io_deq_ready,
-  output       io_deq_valid,
-  output [3:0] io_deq_bits,
-  input  [3:0] io_async_mem_0,
-               io_async_mem_1,
-               io_async_mem_2,
-               io_async_mem_3,
-               io_async_mem_4,
-               io_async_mem_5,
-               io_async_mem_6,
-               io_async_mem_7,
-  output [3:0] io_async_ridx,
-  input  [3:0] io_async_widx,
-  output       io_async_safe_ridx_valid,
-  input        io_async_safe_widx_valid,
-               io_async_safe_source_reset_n,
-  output       io_async_safe_sink_reset_n
+  input         clock,
+                reset,
+                io_deq_ready,
+  output        io_deq_valid,
+  output [2:0]  io_deq_bits_opcode,
+                io_deq_bits_param,
+  output [3:0]  io_deq_bits_size,
+  output [4:0]  io_deq_bits_source,
+  output [32:0] io_deq_bits_address,
+  output [63:0] io_deq_bits_data,
+  output        io_deq_bits_corrupt,
+  input  [2:0]  io_async_mem_0_opcode,
+                io_async_mem_0_param,
+  input  [3:0]  io_async_mem_0_size,
+  input  [4:0]  io_async_mem_0_source,
+  input  [32:0] io_async_mem_0_address,
+  input  [63:0] io_async_mem_0_data,
+  input         io_async_mem_0_corrupt,
+  input  [2:0]  io_async_mem_1_opcode,
+                io_async_mem_1_param,
+  input  [3:0]  io_async_mem_1_size,
+  input  [4:0]  io_async_mem_1_source,
+  input  [32:0] io_async_mem_1_address,
+  input  [63:0] io_async_mem_1_data,
+  input         io_async_mem_1_corrupt,
+  input  [2:0]  io_async_mem_2_opcode,
+                io_async_mem_2_param,
+  input  [3:0]  io_async_mem_2_size,
+  input  [4:0]  io_async_mem_2_source,
+  input  [32:0] io_async_mem_2_address,
+  input  [63:0] io_async_mem_2_data,
+  input         io_async_mem_2_corrupt,
+  input  [2:0]  io_async_mem_3_opcode,
+                io_async_mem_3_param,
+  input  [3:0]  io_async_mem_3_size,
+  input  [4:0]  io_async_mem_3_source,
+  input  [32:0] io_async_mem_3_address,
+  input  [63:0] io_async_mem_3_data,
+  input         io_async_mem_3_corrupt,
+  input  [2:0]  io_async_mem_4_opcode,
+                io_async_mem_4_param,
+  input  [3:0]  io_async_mem_4_size,
+  input  [4:0]  io_async_mem_4_source,
+  input  [32:0] io_async_mem_4_address,
+  input  [63:0] io_async_mem_4_data,
+  input         io_async_mem_4_corrupt,
+  input  [2:0]  io_async_mem_5_opcode,
+                io_async_mem_5_param,
+  input  [3:0]  io_async_mem_5_size,
+  input  [4:0]  io_async_mem_5_source,
+  input  [32:0] io_async_mem_5_address,
+  input  [63:0] io_async_mem_5_data,
+  input         io_async_mem_5_corrupt,
+  input  [2:0]  io_async_mem_6_opcode,
+                io_async_mem_6_param,
+  input  [3:0]  io_async_mem_6_size,
+  input  [4:0]  io_async_mem_6_source,
+  input  [32:0] io_async_mem_6_address,
+  input  [63:0] io_async_mem_6_data,
+  input         io_async_mem_6_corrupt,
+  input  [2:0]  io_async_mem_7_opcode,
+                io_async_mem_7_param,
+  input  [3:0]  io_async_mem_7_size,
+  input  [4:0]  io_async_mem_7_source,
+  input  [32:0] io_async_mem_7_address,
+  input  [63:0] io_async_mem_7_data,
+  input         io_async_mem_7_corrupt,
+  output [3:0]  io_async_ridx,
+  input  [3:0]  io_async_widx,
+  output        io_async_safe_ridx_valid,
+  input         io_async_safe_widx_valid,
+                io_async_safe_source_reset_n,
+  output        io_async_safe_sink_reset_n
 );
 
-  wire       _io_deq_valid_output;
-  wire       _source_valid_io_out;
-  wire       _source_extend_io_out;
-  wire       _sink_valid_0_io_out;
-  wire [3:0] _widx_widx_gray_io_q;
-  reg  [3:0] ridx_ridx_bin;
-  wire [3:0] _ridx_incremented_T = ridx_ridx_bin + {3'h0, io_deq_ready & _io_deq_valid_output};
-  wire [3:0] ridx_incremented = _source_valid_io_out ? _ridx_incremented_T : 4'h0;
-  wire [2:0] _index_T = ridx_incremented[2:0] ^ ridx_incremented[3:1];
-  wire [3:0] ridx = {ridx_incremented[3], _index_T};
-  wire       valid = _source_valid_io_out & ridx != _widx_widx_gray_io_q;
-  reg  [3:0] casez_tmp;
+  wire         _io_deq_valid_output;
+  wire         _source_valid_io_out;
+  wire         _source_extend_io_out;
+  wire         _sink_valid_0_io_out;
+  wire [112:0] _io_deq_bits_deq_bits_reg_io_q;
+  wire [3:0]   _widx_widx_gray_io_q;
+  reg  [3:0]   ridx_ridx_bin;
+  wire [3:0]   _ridx_incremented_T = ridx_ridx_bin + {3'h0, io_deq_ready & _io_deq_valid_output};
+  wire [3:0]   ridx_incremented = _source_valid_io_out ? _ridx_incremented_T : 4'h0;
+  wire [2:0]   _index_T = ridx_incremented[2:0] ^ ridx_incremented[3:1];
+  wire [3:0]   ridx = {ridx_incremented[3], _index_T};
+  wire         valid = _source_valid_io_out & ridx != _widx_widx_gray_io_q;
+  wire [2:0]   index = _index_T ^ {ridx_incremented[3], 2'h0};
+  reg  [2:0]   casez_tmp;
   always @(*) begin
-    casez (_index_T ^ {ridx_incremented[3], 2'h0})
+    casez (index)
       3'b000:
-        casez_tmp = io_async_mem_0;
+        casez_tmp = io_async_mem_0_opcode;
       3'b001:
-        casez_tmp = io_async_mem_1;
+        casez_tmp = io_async_mem_1_opcode;
       3'b010:
-        casez_tmp = io_async_mem_2;
+        casez_tmp = io_async_mem_2_opcode;
       3'b011:
-        casez_tmp = io_async_mem_3;
+        casez_tmp = io_async_mem_3_opcode;
       3'b100:
-        casez_tmp = io_async_mem_4;
+        casez_tmp = io_async_mem_4_opcode;
       3'b101:
-        casez_tmp = io_async_mem_5;
+        casez_tmp = io_async_mem_5_opcode;
       3'b110:
-        casez_tmp = io_async_mem_6;
+        casez_tmp = io_async_mem_6_opcode;
       default:
-        casez_tmp = io_async_mem_7;
+        casez_tmp = io_async_mem_7_opcode;
     endcase
   end // always @(*)
-  reg        valid_reg;
+  reg  [2:0]   casez_tmp_0;
+  always @(*) begin
+    casez (index)
+      3'b000:
+        casez_tmp_0 = io_async_mem_0_param;
+      3'b001:
+        casez_tmp_0 = io_async_mem_1_param;
+      3'b010:
+        casez_tmp_0 = io_async_mem_2_param;
+      3'b011:
+        casez_tmp_0 = io_async_mem_3_param;
+      3'b100:
+        casez_tmp_0 = io_async_mem_4_param;
+      3'b101:
+        casez_tmp_0 = io_async_mem_5_param;
+      3'b110:
+        casez_tmp_0 = io_async_mem_6_param;
+      default:
+        casez_tmp_0 = io_async_mem_7_param;
+    endcase
+  end // always @(*)
+  reg  [3:0]   casez_tmp_1;
+  always @(*) begin
+    casez (index)
+      3'b000:
+        casez_tmp_1 = io_async_mem_0_size;
+      3'b001:
+        casez_tmp_1 = io_async_mem_1_size;
+      3'b010:
+        casez_tmp_1 = io_async_mem_2_size;
+      3'b011:
+        casez_tmp_1 = io_async_mem_3_size;
+      3'b100:
+        casez_tmp_1 = io_async_mem_4_size;
+      3'b101:
+        casez_tmp_1 = io_async_mem_5_size;
+      3'b110:
+        casez_tmp_1 = io_async_mem_6_size;
+      default:
+        casez_tmp_1 = io_async_mem_7_size;
+    endcase
+  end // always @(*)
+  reg  [4:0]   casez_tmp_2;
+  always @(*) begin
+    casez (index)
+      3'b000:
+        casez_tmp_2 = io_async_mem_0_source;
+      3'b001:
+        casez_tmp_2 = io_async_mem_1_source;
+      3'b010:
+        casez_tmp_2 = io_async_mem_2_source;
+      3'b011:
+        casez_tmp_2 = io_async_mem_3_source;
+      3'b100:
+        casez_tmp_2 = io_async_mem_4_source;
+      3'b101:
+        casez_tmp_2 = io_async_mem_5_source;
+      3'b110:
+        casez_tmp_2 = io_async_mem_6_source;
+      default:
+        casez_tmp_2 = io_async_mem_7_source;
+    endcase
+  end // always @(*)
+  reg  [32:0]  casez_tmp_3;
+  always @(*) begin
+    casez (index)
+      3'b000:
+        casez_tmp_3 = io_async_mem_0_address;
+      3'b001:
+        casez_tmp_3 = io_async_mem_1_address;
+      3'b010:
+        casez_tmp_3 = io_async_mem_2_address;
+      3'b011:
+        casez_tmp_3 = io_async_mem_3_address;
+      3'b100:
+        casez_tmp_3 = io_async_mem_4_address;
+      3'b101:
+        casez_tmp_3 = io_async_mem_5_address;
+      3'b110:
+        casez_tmp_3 = io_async_mem_6_address;
+      default:
+        casez_tmp_3 = io_async_mem_7_address;
+    endcase
+  end // always @(*)
+  reg  [63:0]  casez_tmp_4;
+  always @(*) begin
+    casez (index)
+      3'b000:
+        casez_tmp_4 = io_async_mem_0_data;
+      3'b001:
+        casez_tmp_4 = io_async_mem_1_data;
+      3'b010:
+        casez_tmp_4 = io_async_mem_2_data;
+      3'b011:
+        casez_tmp_4 = io_async_mem_3_data;
+      3'b100:
+        casez_tmp_4 = io_async_mem_4_data;
+      3'b101:
+        casez_tmp_4 = io_async_mem_5_data;
+      3'b110:
+        casez_tmp_4 = io_async_mem_6_data;
+      default:
+        casez_tmp_4 = io_async_mem_7_data;
+    endcase
+  end // always @(*)
+  reg          casez_tmp_5;
+  always @(*) begin
+    casez (index)
+      3'b000:
+        casez_tmp_5 = io_async_mem_0_corrupt;
+      3'b001:
+        casez_tmp_5 = io_async_mem_1_corrupt;
+      3'b010:
+        casez_tmp_5 = io_async_mem_2_corrupt;
+      3'b011:
+        casez_tmp_5 = io_async_mem_3_corrupt;
+      3'b100:
+        casez_tmp_5 = io_async_mem_4_corrupt;
+      3'b101:
+        casez_tmp_5 = io_async_mem_5_corrupt;
+      3'b110:
+        casez_tmp_5 = io_async_mem_6_corrupt;
+      default:
+        casez_tmp_5 = io_async_mem_7_corrupt;
+    endcase
+  end // always @(*)
+  reg          valid_reg;
   assign _io_deq_valid_output = valid_reg & _source_valid_io_out;
-  reg  [3:0] ridx_gray;
+  reg  [3:0]   ridx_gray;
   always @(posedge clock or posedge reset) begin
     if (reset) begin
       ridx_ridx_bin <= 4'h0;
@@ -111,10 +293,10 @@ module AsyncQueueSink_3(
     .io_d  (io_async_widx),
     .io_q  (_widx_widx_gray_io_q)
   );
-  ClockCrossingReg_w4 io_deq_bits_deq_bits_reg (
+  ClockCrossingReg_w113 io_deq_bits_deq_bits_reg (
     .clock (clock),
-    .io_d  (casez_tmp),
-    .io_q  (io_deq_bits),
+    .io_d  ({casez_tmp, casez_tmp_0, casez_tmp_1, casez_tmp_2, casez_tmp_3, casez_tmp_4, casez_tmp_5}),
+    .io_q  (_io_deq_bits_deq_bits_reg_io_q),
     .io_en (valid)
   );
   AsyncValidSync sink_valid_0 (
@@ -142,6 +324,13 @@ module AsyncQueueSink_3(
     .reset  (reset)
   );
   assign io_deq_valid = _io_deq_valid_output;
+  assign io_deq_bits_opcode = _io_deq_bits_deq_bits_reg_io_q[112:110];
+  assign io_deq_bits_param = _io_deq_bits_deq_bits_reg_io_q[109:107];
+  assign io_deq_bits_size = _io_deq_bits_deq_bits_reg_io_q[106:103];
+  assign io_deq_bits_source = _io_deq_bits_deq_bits_reg_io_q[102:98];
+  assign io_deq_bits_address = _io_deq_bits_deq_bits_reg_io_q[97:65];
+  assign io_deq_bits_data = _io_deq_bits_deq_bits_reg_io_q[64:1];
+  assign io_deq_bits_corrupt = _io_deq_bits_deq_bits_reg_io_q[0];
   assign io_async_ridx = ridx_gray;
   assign io_async_safe_sink_reset_n = ~reset;
 endmodule

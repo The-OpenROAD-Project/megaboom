@@ -1689,7 +1689,7 @@ module BoomFrontend(
     .io_ptw_pmp_7_addr             (io_ptw_pmp_7_addr),
     .io_ptw_pmp_7_mask             (io_ptw_pmp_7_mask)
   );
-  Queue_19 f3 (
+  Queue_30 f3 (
     .clock                                          (clock),
     .reset                                          (_GEN_34),
     .io_enq_ready                                   (_f3_io_enq_ready),
@@ -1722,7 +1722,7 @@ module BoomFrontend(
     .io_deq_bits_fsrc                               (_f3_io_deq_bits_fsrc),
     .io_deq_bits_tsrc                               (_f3_io_deq_bits_tsrc)
   );
-  Queue_20 f3_bpd_resp (
+  Queue_31 f3_bpd_resp (
     .clock                                  (clock),
     .reset                                  (_GEN_34),
     .io_enq_ready                           (_f3_bpd_resp_io_enq_ready),
@@ -1961,7 +1961,7 @@ module BoomFrontend(
     .io_out_sfb_offset_bits  (_bpd_decoder_5_io_out_sfb_offset_bits),
     .io_out_shadowable       (_bpd_decoder_5_io_out_shadowable)
   );
-  Queue_21 f4_btb_corrections (
+  Queue_32 f4_btb_corrections (
     .clock                                          (clock),
     .reset                                          (reset),
     .io_enq_valid                                   (_f4_btb_corrections_io_enq_valid_T & (f3_btb_mispredicts_0 | f3_btb_mispredicts_1 | f3_btb_mispredicts_2 | f3_btb_mispredicts_3 | f3_btb_mispredicts_4 | f3_btb_mispredicts_5 | f3_btb_mispredicts_6 | f3_btb_mispredicts_7)),
@@ -1996,7 +1996,7 @@ module BoomFrontend(
     .io_deq_bits_meta_0                             (_f4_btb_corrections_io_deq_bits_meta_0),
     .io_deq_bits_meta_1                             (_f4_btb_corrections_io_deq_bits_meta_1)
   );
-  Queue_22 f4 (
+  Queue_33 f4 (
     .clock                                          (clock),
     .reset                                          (_GEN_34),
     .io_enq_ready                                   (_f4_io_enq_ready),

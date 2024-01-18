@@ -21,6 +21,7 @@
 module ChipTop(
   input        reset_io,
                clock_uncore,
+               clock_bus,
                serial_tl_0_clock,
   output       serial_tl_0_bits_in_ready,
   input        serial_tl_0_bits_in_valid,
@@ -28,7 +29,8 @@ module ChipTop(
   input        serial_tl_0_bits_out_ready,
   output       serial_tl_0_bits_out_valid,
   output [3:0] serial_tl_0_bits_out_bits,
-  input        jtag_TCK,
+  input        custom_boot,
+               jtag_TCK,
                jtag_TMS,
                jtag_TDI,
   output       jtag_TDO
@@ -41,6 +43,7 @@ module ChipTop(
   wire       _dmactiveAck_dmactiveAck_io_q;
   wire       _debug_reset_syncd_debug_reset_sync_io_q;
   wire       _system_debug_systemjtag_reset_catcher_io_sync_reset;
+  wire       _iocell_custom_boot_i;
   wire       _iocell_serial_tl_0_clock_i;
   wire       _iocell_serial_tl_0_bits_in_valid_i;
   wire       _iocell_serial_tl_0_bits_in_bits_3_i;
@@ -86,11 +89,14 @@ module ChipTop(
     .reset                                                                     (_system_auto_implicitClockGrouper_out_reset),
     .auto_implicitClockGrouper_out_clock                                       (_system_auto_implicitClockGrouper_out_clock),
     .auto_implicitClockGrouper_out_reset                                       (_system_auto_implicitClockGrouper_out_reset),
+    .auto_prci_ctrl_domain_reset_setter_clock_in_member_allClocks_bus_clock    (clock_bus),
+    .auto_prci_ctrl_domain_reset_setter_clock_in_member_allClocks_bus_reset    (reset_io),
     .auto_prci_ctrl_domain_reset_setter_clock_in_member_allClocks_uncore_clock (clock_uncore),
     .auto_prci_ctrl_domain_reset_setter_clock_in_member_allClocks_uncore_reset (reset_io),
     .auto_subsystem_cbus_fixedClockNode_out_clock                              (_system_auto_subsystem_cbus_fixedClockNode_out_clock),
     .auto_subsystem_cbus_fixedClockNode_out_reset                              (_system_auto_subsystem_cbus_fixedClockNode_out_reset),
     .resetctrl_hartIsInReset_0                                                 (_system_auto_subsystem_cbus_fixedClockNode_out_reset),
+    .resetctrl_hartIsInReset_1                                                 (_system_auto_subsystem_cbus_fixedClockNode_out_reset),
     .debug_clock                                                               (_gated_clock_debug_clock_gate_out),
     .debug_reset                                                               (debug_reset),
     .debug_systemjtag_jtag_TCK                                                 (_iocell_jtag_TCK_i),
@@ -100,6 +106,7 @@ module ChipTop(
     .debug_systemjtag_reset                                                    (_system_debug_systemjtag_reset_catcher_io_sync_reset),
     .debug_dmactive                                                            (_system_debug_dmactive),
     .debug_dmactiveAck                                                         (_dmactiveAck_dmactiveAck_io_q),
+    .custom_boot                                                               (_iocell_custom_boot_i),
     .serial_tl_0_clock                                                         (_iocell_serial_tl_0_clock_i),
     .serial_tl_0_bits_in_ready                                                 (_system_serial_tl_0_bits_in_ready),
     .serial_tl_0_bits_in_valid                                                 (_iocell_serial_tl_0_bits_in_valid_i),
@@ -173,12 +180,17 @@ module ChipTop(
     .i   (_iocell_serial_tl_0_clock_i),
     .ie  (1'h1)
   );
+  GenericDigitalInIOCell iocell_custom_boot (
+    .pad (custom_boot),
+    .i   (_iocell_custom_boot_i),
+    .ie  (1'h1)
+  );
   ResetCatchAndSync_d3 system_debug_systemjtag_reset_catcher (
     .clock         (_iocell_jtag_TCK_i),
     .reset         (_system_auto_subsystem_cbus_fixedClockNode_out_reset),
     .io_sync_reset (_system_debug_systemjtag_reset_catcher_io_sync_reset)
   );
-  AsyncResetSynchronizerShiftReg_w1_d3_i0 debug_reset_syncd_debug_reset_sync (
+  AsyncResetSynchronizerShiftReg_w1_d3_i0_128 debug_reset_syncd_debug_reset_sync (
     .clock (_system_auto_subsystem_cbus_fixedClockNode_out_clock),
     .reset (_system_debug_systemjtag_reset_catcher_io_sync_reset),
     .io_d  (1'h1),

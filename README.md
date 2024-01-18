@@ -285,4 +285,4 @@ Follow https://github.com/ucb-bar/chipyard/issues/1623 for latest updates.
 That said, the rtl/ folder was generated using latest Chipyard + some hacked
 files locally:
 
-     make buildfile tutorial=sky130-openroad CONFIG=MegaBoomConfig
+    make tutorial=sky130-openroad CONFIG=MegaBoomMacroConfig verilog

@@ -19,9 +19,13 @@
 `endif // not def STOP_COND_
 
 module ClockGroupResetSynchronizer(
-  input  auto_in_member_allClocks_uncore_clock,
+  input  auto_in_member_allClocks_bus_clock,
+         auto_in_member_allClocks_bus_reset,
+         auto_in_member_allClocks_uncore_clock,
          auto_in_member_allClocks_uncore_reset,
-  output auto_out_member_allClocks_uncore_clock,
+  output auto_out_member_allClocks_bus_clock,
+         auto_out_member_allClocks_bus_reset,
+         auto_out_member_allClocks_uncore_clock,
          auto_out_member_allClocks_uncore_reset
 );
 
@@ -30,6 +34,12 @@ module ClockGroupResetSynchronizer(
     .reset         (auto_in_member_allClocks_uncore_reset),
     .io_sync_reset (auto_out_member_allClocks_uncore_reset)
   );
+  ResetCatchAndSync_d3 nodeOut_member_allClocks_bus_reset_catcher (
+    .clock         (auto_in_member_allClocks_bus_clock),
+    .reset         (auto_in_member_allClocks_bus_reset),
+    .io_sync_reset (auto_out_member_allClocks_bus_reset)
+  );
+  assign auto_out_member_allClocks_bus_clock = auto_in_member_allClocks_bus_clock;
   assign auto_out_member_allClocks_uncore_clock = auto_in_member_allClocks_uncore_clock;
 endmodule
 

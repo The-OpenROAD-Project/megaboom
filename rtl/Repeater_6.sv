@@ -29,6 +29,7 @@ module Repeater_6(
   input  [3:0]   io_enq_bits_size,
                  io_enq_bits_source,
   input  [32:0]  io_enq_bits_address,
+  input  [15:0]  io_enq_bits_mask,
   input  [127:0] io_enq_bits_data,
   input          io_deq_ready,
   output         io_deq_valid,
@@ -37,6 +38,7 @@ module Repeater_6(
   output [3:0]   io_deq_bits_size,
                  io_deq_bits_source,
   output [32:0]  io_deq_bits_address,
+  output [15:0]  io_deq_bits_mask,
   output [127:0] io_deq_bits_data
 );
 
@@ -46,6 +48,7 @@ module Repeater_6(
   reg  [3:0]   saved_size;
   reg  [3:0]   saved_source;
   reg  [32:0]  saved_address;
+  reg  [15:0]  saved_mask;
   reg  [127:0] saved_data;
   wire         _io_deq_valid_output = io_enq_valid | full;
   wire         _io_enq_ready_output = io_deq_ready & ~full;
@@ -61,6 +64,7 @@ module Repeater_6(
       saved_size <= io_enq_bits_size;
       saved_source <= io_enq_bits_source;
       saved_address <= io_enq_bits_address;
+      saved_mask <= io_enq_bits_mask;
       saved_data <= io_enq_bits_data;
     end
   end // always @(posedge)
@@ -71,6 +75,7 @@ module Repeater_6(
   assign io_deq_bits_size = full ? saved_size : io_enq_bits_size;
   assign io_deq_bits_source = full ? saved_source : io_enq_bits_source;
   assign io_deq_bits_address = full ? saved_address : io_enq_bits_address;
+  assign io_deq_bits_mask = full ? saved_mask : io_enq_bits_mask;
   assign io_deq_bits_data = full ? saved_data : io_enq_bits_data;
 endmodule
 

@@ -26,7 +26,7 @@ module Queue(
   input  [2:0]  io_enq_bits_opcode,
                 io_enq_bits_param,
                 io_enq_bits_size,
-  input  [5:0]  io_enq_bits_source,
+  input  [7:0]  io_enq_bits_source,
   input  [12:0] io_enq_bits_address,
   input  [7:0]  io_enq_bits_mask,
   input  [63:0] io_enq_bits_data,
@@ -36,14 +36,14 @@ module Queue(
   output [2:0]  io_deq_bits_opcode,
                 io_deq_bits_param,
                 io_deq_bits_size,
-  output [5:0]  io_deq_bits_source,
+  output [7:0]  io_deq_bits_source,
   output [12:0] io_deq_bits_address,
   output [7:0]  io_deq_bits_mask,
   output [63:0] io_deq_bits_data,
   output        io_deq_bits_corrupt
 );
 
-  wire [100:0] _ram_ext_R0_data;
+  wire [102:0] _ram_ext_R0_data;
   reg          wrap;
   reg          wrap_1;
   reg          maybe_full;
@@ -67,7 +67,7 @@ module Queue(
         maybe_full <= do_enq;
     end
   end // always @(posedge)
-  ram_2x101 ram_ext (
+  ram_2x103 ram_ext (
     .R0_addr (wrap_1),
     .R0_en   (1'h1),
     .R0_clk  (clock),
@@ -82,10 +82,10 @@ module Queue(
   assign io_deq_bits_opcode = _ram_ext_R0_data[2:0];
   assign io_deq_bits_param = _ram_ext_R0_data[5:3];
   assign io_deq_bits_size = _ram_ext_R0_data[8:6];
-  assign io_deq_bits_source = _ram_ext_R0_data[14:9];
-  assign io_deq_bits_address = _ram_ext_R0_data[27:15];
-  assign io_deq_bits_mask = _ram_ext_R0_data[35:28];
-  assign io_deq_bits_data = _ram_ext_R0_data[99:36];
-  assign io_deq_bits_corrupt = _ram_ext_R0_data[100];
+  assign io_deq_bits_source = _ram_ext_R0_data[16:9];
+  assign io_deq_bits_address = _ram_ext_R0_data[29:17];
+  assign io_deq_bits_mask = _ram_ext_R0_data[37:30];
+  assign io_deq_bits_data = _ram_ext_R0_data[101:38];
+  assign io_deq_bits_corrupt = _ram_ext_R0_data[102];
 endmodule
 

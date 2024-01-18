@@ -26,8 +26,8 @@ module TLRAM_1(
   input  [2:0]  auto_in_a_bits_opcode,
                 auto_in_a_bits_param,
   input  [1:0]  auto_in_a_bits_size,
-  input  [13:0] auto_in_a_bits_source,
-  input  [32:0] auto_in_a_bits_address,
+  input  [9:0]  auto_in_a_bits_source,
+  input  [31:0] auto_in_a_bits_address,
   input  [7:0]  auto_in_a_bits_mask,
   input  [63:0] auto_in_a_bits_data,
   input         auto_in_a_bits_corrupt,
@@ -35,7 +35,7 @@ module TLRAM_1(
   output        auto_in_d_valid,
   output [2:0]  auto_in_d_bits_opcode,
   output [1:0]  auto_in_d_bits_size,
-  output [13:0] auto_in_d_bits_source,
+  output [9:0]  auto_in_d_bits_source,
   output [63:0] auto_in_d_bits_data
 );
 
@@ -52,7 +52,7 @@ module TLRAM_1(
   wire [63:0] _mem_ext_RW0_rdata;
   reg         r_full;
   reg  [1:0]  r_size;
-  reg  [13:0] r_source;
+  reg  [9:0]  r_source;
   reg         r_read;
   wire [2:0]  nodeIn_d_bits_opcode = {2'h0, r_read};
   wire        nodeIn_a_ready = ~r_full | auto_in_d_ready;
@@ -99,7 +99,7 @@ module TLRAM_1(
       r_7 <= _mem_ext_RW0_rdata[63:56];
     end
   end // always @(posedge)
-  TLMonitor_54 monitor (
+  TLMonitor_73 monitor (
     .clock                (clock),
     .reset                (reset),
     .io_in_a_ready        (nodeIn_a_ready),

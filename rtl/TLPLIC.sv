@@ -26,7 +26,7 @@ module TLPLIC(
   input  [2:0]  auto_in_a_bits_opcode,
                 auto_in_a_bits_param,
   input  [1:0]  auto_in_a_bits_size,
-  input  [9:0]  auto_in_a_bits_source,
+  input  [11:0] auto_in_a_bits_source,
   input  [27:0] auto_in_a_bits_address,
   input  [7:0]  auto_in_a_bits_mask,
   input  [63:0] auto_in_a_bits_data,
@@ -35,26 +35,29 @@ module TLPLIC(
   output        auto_in_d_valid,
   output [2:0]  auto_in_d_bits_opcode,
   output [1:0]  auto_in_d_bits_size,
-  output [9:0]  auto_in_d_bits_source,
-  output [63:0] auto_in_d_bits_data
+  output [11:0] auto_in_d_bits_source
 );
 
   wire        _out_rofireMux_T_1;
-  wire        out_backSel_6;
-  wire        out_backSel_4;
+  wire        out_backSel_28;
+  wire        out_backSel_24;
+  wire        out_backSel_20;
+  wire        out_backSel_16;
+  wire        claimer_2;
   wire        claimer_0;
+  wire        claimer_3;
   wire        claimer_1;
   wire        _out_back_q_io_enq_ready;
   wire        _out_back_q_io_deq_valid;
   wire        _out_back_q_io_deq_bits_read;
   wire [22:0] _out_back_q_io_deq_bits_index;
   wire [7:0]  _out_back_q_io_deq_bits_mask;
-  wire [9:0]  _out_back_q_io_deq_bits_extra_tlrr_extra_source;
+  wire [11:0] _out_back_q_io_deq_bits_extra_tlrr_extra_source;
   wire [1:0]  _out_back_q_io_deq_bits_extra_tlrr_extra_size;
   `ifndef SYNTHESIS
-    wire [1:0] _GEN = {claimer_1, claimer_0};
+    wire [3:0] _GEN = {claimer_3, claimer_2, claimer_1, claimer_0};
     always @(posedge clock) begin
-      if (~reset & (|(_GEN & _GEN - 2'h1))) begin
+      if (~reset & (|(_GEN & _GEN - 4'h1))) begin
         if (`ASSERT_VERBOSE_COND_)
           $error("Assertion failed\n    at Plic.scala:246 assert((claimer.asUInt & (claimer.asUInt - 1.U)) === 0.U) // One-Hot\n");
         if (`STOP_COND_)
@@ -62,16 +65,20 @@ module TLPLIC(
       end
     end // always @(posedge)
   `endif // not def SYNTHESIS
-  wire        _out_out_bits_data_WIRE_6 = {_out_back_q_io_deq_bits_index[22:19], _out_back_q_io_deq_bits_index[17:10], _out_back_q_io_deq_bits_index[8:5], _out_back_q_io_deq_bits_index[3:0]} == 20'h0;
-  wire [31:0] _out_womask_T_7 = {{8{_out_back_q_io_deq_bits_mask[7]}}, {8{_out_back_q_io_deq_bits_mask[6]}}, {8{_out_back_q_io_deq_bits_mask[5]}}, {8{_out_back_q_io_deq_bits_mask[4]}}};
-  assign claimer_1 = _out_rofireMux_T_1 & out_backSel_6 & _out_out_bits_data_WIRE_6 & (|_out_womask_T_7);
-  assign claimer_0 = _out_rofireMux_T_1 & out_backSel_4 & _out_out_bits_data_WIRE_6 & (|_out_womask_T_7);
-  wire [2:0]  _GEN_0 = {_out_back_q_io_deq_bits_index[18], _out_back_q_io_deq_bits_index[9], _out_back_q_io_deq_bits_index[4]};
-  assign out_backSel_4 = _GEN_0 == 3'h4;
-  assign out_backSel_6 = _GEN_0 == 3'h6;
+  wire        _out_T_17 = {_out_back_q_io_deq_bits_index[22:19], _out_back_q_io_deq_bits_index[17:11], _out_back_q_io_deq_bits_index[8:6], _out_back_q_io_deq_bits_index[3:0]} == 18'h0;
+  wire [31:0] _out_womask_T_12 = {{8{_out_back_q_io_deq_bits_mask[7]}}, {8{_out_back_q_io_deq_bits_mask[6]}}, {8{_out_back_q_io_deq_bits_mask[5]}}, {8{_out_back_q_io_deq_bits_mask[4]}}};
+  assign claimer_1 = _out_rofireMux_T_1 & out_backSel_20 & _out_T_17 & (|_out_womask_T_12);
+  assign claimer_3 = _out_rofireMux_T_1 & out_backSel_28 & _out_T_17 & (|_out_womask_T_12);
+  assign claimer_0 = _out_rofireMux_T_1 & out_backSel_16 & _out_T_17 & (|_out_womask_T_12);
+  assign claimer_2 = _out_rofireMux_T_1 & out_backSel_24 & _out_T_17 & (|_out_womask_T_12);
+  wire [4:0]  _GEN_0 = {_out_back_q_io_deq_bits_index[18], _out_back_q_io_deq_bits_index[10:9], _out_back_q_io_deq_bits_index[5:4]};
+  assign out_backSel_16 = _GEN_0 == 5'h10;
+  assign out_backSel_20 = _GEN_0 == 5'h14;
+  assign out_backSel_24 = _GEN_0 == 5'h18;
+  assign out_backSel_28 = _GEN_0 == 5'h1C;
   assign _out_rofireMux_T_1 = _out_back_q_io_deq_valid & auto_in_d_ready & _out_back_q_io_deq_bits_read;
   wire [2:0]  nodeIn_d_bits_opcode = {2'h0, _out_back_q_io_deq_bits_read};
-  TLMonitor_34 monitor (
+  TLMonitor_52 monitor (
     .clock                (clock),
     .reset                (reset),
     .io_in_a_ready        (_out_back_q_io_enq_ready),
@@ -89,7 +96,7 @@ module TLPLIC(
     .io_in_d_bits_size    (_out_back_q_io_deq_bits_extra_tlrr_extra_size),
     .io_in_d_bits_source  (_out_back_q_io_deq_bits_extra_tlrr_extra_source)
   );
-  Queue_28 out_back_q (
+  Queue_38 out_back_q (
     .clock                               (clock),
     .reset                               (reset),
     .io_enq_ready                        (_out_back_q_io_enq_ready),
@@ -113,6 +120,5 @@ module TLPLIC(
   assign auto_in_d_bits_opcode = nodeIn_d_bits_opcode;
   assign auto_in_d_bits_size = _out_back_q_io_deq_bits_extra_tlrr_extra_size;
   assign auto_in_d_bits_source = _out_back_q_io_deq_bits_extra_tlrr_extra_source;
-  assign auto_in_d_bits_data = 64'h0;
 endmodule
 
