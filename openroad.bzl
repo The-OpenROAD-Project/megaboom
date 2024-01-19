@@ -210,13 +210,13 @@ def build_openroad(
     [run_binary(
         name = target_name + "_" + stage + "_orfs",
         tool = ":orfs",
-        srcs = ["bazel-orfs.mk"] + all_sources,
+        srcs = ["orfs-bazel.mk"] + all_sources,
         args = ["make"] + base_args + wrap_args(stage_args.get(stage, [])) + ["bazel-" + stage + "-orfs"],
         outs = ["logs/" + platform + "/%s/%s/%s.sh" %(output_folder_name, variant, stage)],
     ) for stage in stages]
 
     for stage in name_to_stage:
-        stage_sources[stage] = (["bazel-" + stage + ".mk"] +
+        stage_sources[stage] = ([stage + "-bazel.mk"] +
         all_sources +
         (macro_lib_targets if stage not in ('clock_period', 'synth_sdc') else []) +
         (macro_lef_targets if stage not in ('synth', 'clock_period', 'synth_sdc') else []) +
