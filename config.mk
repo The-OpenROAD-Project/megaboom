@@ -4,14 +4,14 @@ export PLATFORM=asap7
 
 export WORK_HOME_READ?=$(WORK_HOME)
 
--include bazel-clock_period.mk
--include bazel-orfs.mk
--include bazel-synth.mk
--include bazel-synth_sdc.mk
--include bazel-floorplan.mk
--include bazel-place.mk
--include bazel-cts.mk
--include bazel-grt.mk
--include bazel-route.mk
--include bazel-final.mk
--include bazel-generate_abstract.mk
+-include clock_period-bazel.mk
+-include orfs-bazel.mk
+-include synth-bazel.mk
+-include synth_sdc-bazel.mk
+-include floorplan-bazel.mk
+-include place-bazel.mk
+-include cts-bazel.mk
+-include grt-bazel.mk
+-include route-bazel.mk
+-include final-bazel.mk
+-include generate_abstract-bazel.mk

@@ -5,4 +5,4 @@ export DESIGN_CONFIG?=config.mk
 export DESIGN_NAME?=ChipTop
 export WORK_HOME?=bazel-bin
 
-include bazel-memory.mk
+include memory-bazel.mk
