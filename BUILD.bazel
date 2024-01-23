@@ -1,4 +1,4 @@
-load("//:openroad.bzl", "build_openroad")
+load("@bazel-orfs//:openroad.bzl", "build_openroad")
 
 all_source_files = [
 "rtl/ALUExeUnit_2.sv",
