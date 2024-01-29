@@ -285,4 +285,15 @@ Follow https://github.com/ucb-bar/chipyard/issues/1623 for latest updates.
 That said, the rtl/ folder was generated using latest Chipyard + some hacked
 files locally:
 
-     make buildfile tutorial=sky130-openroad CONFIG=MegaBoomConfig
+    make tutorial=sky130-openroad CONFIG=MegaBoomMacroConfig verilog
+
+Hammer hacking with ASAP7
+=========================
+
+Build everything:
+
+    ./build-setup.sh --skip-ctags --skip-conda --skip-toolchain --skip-firesim --skip-marshal --skip-clean
+
+Create Verilog code:
+
+    make CONFIG=MegaBoomConfig tech_name=asap7 VLSI_TOP=ChipTop INPUT_CONFS=example-asap7.yml TOP_MACROCOMPILER_MODE='--mode synflops' verilog
