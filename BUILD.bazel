@@ -603,7 +603,7 @@ build_openroad(
                         ],
                 'place': ['PLACE_DENSITY=0.42',
                 'PLACE_PINS_ARGS=-annealing'],
-                'route': ['SKIP_INCREMENTAL_REPAIR=1']
+                'grt': ['SKIP_INCREMENTAL_REPAIR=1']
                 },
         mock_abstract=True,
         mock_stage='floorplan',
@@ -928,6 +928,7 @@ build_openroad(
                         ],
                 'place': ['PLACE_DENSITY=0.30',
                 'PLACE_PINS_ARGS=-annealing'],
+                'grt': ['SKIP_INCREMENTAL_REPAIR=1']
                 }
         )
 
@@ -1073,7 +1074,7 @@ build_openroad(
                         ],
                 'place': ['PLACE_DENSITY=0.28',
                 'PLACE_PINS_ARGS=-annealing'],
-                'route': ['SKIP_INCREMENTAL_REPAIR=1']
+                'grt': ['SKIP_INCREMENTAL_REPAIR=1']
                 },
         mock_abstract=True,
         mock_stage='floorplan',
@@ -1137,7 +1138,7 @@ build_openroad(
                         ],
                 'place': ['PLACE_DENSITY=0.28',
                 'PLACE_PINS_ARGS=-annealing'],
-                'route': ['SKIP_INCREMENTAL_REPAIR=1']
+                'grt': ['SKIP_INCREMENTAL_REPAIR=1']
                 },
         io_constraints="io.tcl",
         mock_abstract=True,
@@ -1186,7 +1187,7 @@ build_openroad(
                         ],
                 'place': ['PLACE_DENSITY=0.30',
                 'PLACE_PINS_ARGS=-annealing'],
-                'route': ['SKIP_INCREMENTAL_REPAIR=1'],
+                'grt': ['SKIP_INCREMENTAL_REPAIR=1'],
                 #'grt': ["GLOBAL_ROUTE_ARGS=-congestion_iterations 100 -congestion_report_iter_step 5 -verbose"]
                 }
         )
