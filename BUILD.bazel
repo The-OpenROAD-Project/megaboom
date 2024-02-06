@@ -917,7 +917,12 @@ build_openroad(
         verilog_files=all_source_files,
         macros=boom_tile_rams + boom_regfile_rams + boom_tile_small_srams,
         entrypoint = "//:entrypoint.mk",
-        stage_sources={'synth': ["constraints-top.sdc"]},
+        stage_sources={
+                'synth': ["constraints-boomtile.sdc"],
+                'floorplan': ["util.tcl"],
+                'place': ["util.tcl"]
+        },
+        io_constraints="io-boomtile.tcl",
         stage_args={
                 'synth': ['SYNTH_HIERARCHICAL=1'],
                 'floorplan': [
