@@ -931,7 +931,7 @@ build_openroad(
                         # Too slow for now...
                         ,'RTLMP_FLOW=True'
                         ],
-                'place': ['PLACE_DENSITY=0.30',
+                'place': ['PLACE_DENSITY=0.27',
                 'PLACE_PINS_ARGS=-annealing'],
                 'grt': ['SKIP_INCREMENTAL_REPAIR=1']
                 }
