@@ -512,7 +512,6 @@ exeunitsrc =  [ "rtl/ALU.sv",
 
 [build_openroad(
         name = exe,
-        entrypoint = "//:entrypoint.mk",
         verilog_files=["rtl/" + exe + ".sv"] + exeunitsrc,
         stage_sources={'synth': ["constraints.sdc"]},
         stage_args={
@@ -585,7 +584,6 @@ fpfiles = ["rtl/FpPipeline.sv",
 
 build_openroad(
         name = "FpPipeline",
-        entrypoint = "//:entrypoint.mk",
         verilog_files=fpfiles,
         macros=["regfile_128x65"],
         io_constraints="io-top.tcl",
@@ -622,7 +620,6 @@ registerreadsrc = ["rtl/RegisterRead_1.sv",
 
 build_openroad(
         name = "RegisterRead_1",
-        entrypoint = "//:entrypoint.mk",
         verilog_files=registerreadsrc,
         stage_sources={'synth': ["constraints.sdc"]},
         stage_args={'floorplan':['CORE_UTILIZATION=5',
@@ -635,7 +632,6 @@ issueslotfiles = ["rtl/IssueUnitCollapsing_1.sv", "rtl/IssueUnitCollapsing_2.sv"
 
 [build_openroad(
         name = exe,
-        entrypoint = "//:entrypoint.mk",
         verilog_files=issueslotfiles,
         stage_sources={'synth': ["constraints.sdc"]},
         stage_args={'floorplan':['CORE_UTILIZATION=10'],
@@ -646,7 +642,6 @@ issueslotfiles = ["rtl/IssueUnitCollapsing_1.sv", "rtl/IssueUnitCollapsing_2.sv"
 
 build_openroad(
         name = "Rob",
-        entrypoint = "//:entrypoint.mk",
         verilog_files=["rtl/Rob.sv"],
         stage_sources={'synth': ["constraints.sdc"]},
         stage_args={'floorplan':['CORE_UTILIZATION=3'],
@@ -655,7 +650,6 @@ build_openroad(
 
 build_openroad(
         name = "DecodeUnit",
-        entrypoint = "//:entrypoint.mk",
         verilog_files=["rtl/DecodeUnit.sv"],
         stage_sources={'synth': ["constraints.sdc"]},
         stage_args={'floorplan':['CORE_UTILIZATION=20',
@@ -665,7 +659,6 @@ build_openroad(
 
 build_openroad(
         name = "BoomCore",
-        entrypoint = "//:entrypoint.mk",
         verilog_files=["rtl/BoomCore.sv",
         "rtl/Arbiter_18.sv",
         "rtl/CSRFile.sv",
@@ -723,7 +716,6 @@ digital_top_srams=["cc_dir_1024x168",
 
 [build_openroad(
         name = ram,
-        entrypoint = "//:entrypoint.mk",
         io_constraints="io-sram.tcl",
         verilog_files=[{'array_256x128':'mock',
         'cc_dir_1024x168':'mock',
@@ -755,7 +747,6 @@ big_rams = ['mem_8192x64', 'cc_banks_16384x64', 'TLROM', 'ghist_40x72']
 
 [build_openroad(
         name = ram,
-        entrypoint = "//:entrypoint.mk",
         io_constraints="io-sram.tcl",
         verilog_files=["mock/" + ram + ".sv"],
         stage_sources={'synth': ["constraints-sram.sdc", "util.tcl"],
@@ -772,7 +763,6 @@ big_rams = ['mem_8192x64', 'cc_banks_16384x64', 'TLROM', 'ghist_40x72']
 
 build_openroad(
         name = "TLROM",
-        entrypoint = "//:entrypoint.mk",
         io_constraints="io.tcl",
         verilog_files=["rtl/TLROM.sv",
         "rtl/TLMonitor_43.sv",
@@ -795,7 +785,6 @@ boom_regfile_rams = [
 
 [build_openroad(
         name = ram,
-        entrypoint = "//:entrypoint.mk",
         io_constraints="io-sram.tcl",
         verilog_files=["mock/" + ram + ".sv"],
         stage_sources={'synth': ["constraints-sram.sdc", "util.tcl"],
@@ -916,7 +905,6 @@ build_openroad(
         name = "BoomTile",
         verilog_files=all_source_files,
         macros=boom_tile_rams + boom_regfile_rams + boom_tile_small_srams,
-        entrypoint = "//:entrypoint.mk",
         stage_sources={
                 'synth': ["constraints-boomtile.sdc"],
                 'floorplan': ["util.tcl"],
@@ -939,7 +927,6 @@ build_openroad(
 
 build_openroad(
         name = "L1MetadataArray",
-        entrypoint = "//:entrypoint.mk",
         verilog_files=["rtl/L1MetadataArray.sv"],
         variant="test",
         macros=["tag_array_64x184"],
@@ -962,7 +949,6 @@ build_openroad(
 
 build_openroad(
         name = "ICache",
-        entrypoint = "//:entrypoint.mk",
         verilog_files=["rtl/ICache.sv",
         "rtl/MaxPeriodFibonacciLFSR.sv",
         "rtl/dataArrayB_256x64.sv",
@@ -989,7 +975,6 @@ build_openroad(
 
 build_openroad(
         name = "BoomNonBlockingDCache",
-        entrypoint = "//:entrypoint.mk",
         verilog_files=all_source_files,
         macros=["array_256x128"] +boom_tile_small_srams,
         io_constraints="io.tcl",
@@ -1062,7 +1047,6 @@ inclusive_cache_files = [
 
 build_openroad(
         name = "InclusiveCache",
-        entrypoint = "//:entrypoint.mk",
         verilog_files=all_source_files,
         macros=big_rams + digital_top_srams + boom_tile_rams + boom_regfile_rams + boom_tile_small_srams,
         io_constraints="io-top.tcl",
@@ -1118,7 +1102,6 @@ branch_predictor_files = [
 
 build_openroad(
         name = "BranchPredictor",
-        entrypoint = "//:entrypoint.mk",
         verilog_files=all_source_files,
         macros=['data_2048x8',
         'mem_256x4',
@@ -1153,7 +1136,6 @@ build_openroad(
 
 build_openroad(
         name = "ChipTop",
-        entrypoint = "//:entrypoint.mk",
         variant = "flat",
         verilog_files=all_source_files,
         macros=digital_top_srams + boom_tile_rams + boom_regfile_rams + boom_tile_small_srams +
@@ -1176,7 +1158,6 @@ build_openroad(
 
 build_openroad(
         name = "ChipTop",
-        entrypoint = "//:entrypoint.mk",
         verilog_files=all_source_files,
         macros=digital_top_srams + boom_tile_rams + boom_regfile_rams + boom_tile_small_srams +
         ["BranchPredictor", "FpPipeline", "ICache", "BoomNonBlockingDCache"] +
