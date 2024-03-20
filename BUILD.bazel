@@ -912,7 +912,8 @@ build_openroad(
         },
         io_constraints="io-boomtile.tcl",
         stage_args={
-                'synth': ['SYNTH_HIERARCHICAL=1'],
+                'synth': ['SYNTH_HIERARCHICAL=1',
+                'DUMMY=1'],
                 'floorplan': [
                         'SKIP_METRICS=1',
                         'CORE_UTILIZATION=20',
