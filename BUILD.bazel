@@ -927,7 +927,8 @@ build_openroad(
                 'PLACE_PINS_ARGS=-annealing',
                 'SKIP_METRICS=1'],
                 'grt': ['SKIP_INCREMENTAL_REPAIR=1',
-                'SKIP_METRICS=1'],
+                'SKIP_METRICS=1',
+                'SKIP_ANTENNA_REPAIR=1'],
                 'route': ['SKIP_METRICS=1']
                 }
         )
