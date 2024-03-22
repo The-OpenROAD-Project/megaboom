@@ -915,21 +915,21 @@ build_openroad(
                 'synth': ['SYNTH_HIERARCHICAL=1',
                 'DUMMY=1'],
                 'floorplan': [
-                        'SKIP_METRICS=1',
+                        'SKIP_REPORT_METRICS=1',
                         'CORE_UTILIZATION=20',
                         'MACRO_PLACE_HALO=20 20'
                         # Too slow for now...
                         ,'RTLMP_FLOW=True'
                         ],
                 'cts': ['TNS_END_PERCENT=0',
-                'SKIP_METRICS=1'],
+                'SKIP_REPORT_METRICS=1'],
                 'place': ['PLACE_DENSITY=0.27',
                 'PLACE_PINS_ARGS=-annealing',
-                'SKIP_METRICS=1'],
+                'SKIP_REPORT_METRICS=1'],
                 'grt': ['SKIP_INCREMENTAL_REPAIR=1',
-                'SKIP_METRICS=1',
+                'SKIP_REPORT_METRICS=1',
                 'SKIP_ANTENNA_REPAIR=1'],
-                'route': ['SKIP_METRICS=1']
+                'route': ['SKIP_REPORT_METRICS=1']
                 }
         )
 
