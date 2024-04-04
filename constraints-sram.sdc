@@ -1,4 +1,6 @@
-source util.tcl
+set script_path [ file dirname $::env(SDC_FILE) ]
+# We expect util.tcl in the same directory as this file
+source $script_path/util.tcl
 
 # Set the clock name and period
 set clk_period 400 
