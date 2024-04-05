@@ -1,18 +1,2 @@
-load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
-
-#git_hash = ""
-#archive_sha256 = ""
-#
-#http_archive(
-#    name = "bazel-orfs",
-#    sha256 = archive_sha256,
-#    strip_prefix = "bazel-orfs-%s" % git_hash,
-#    url = "https://github.com/The-OpenROAD-Project/bazel-orfs/archive/%s.tar.gz" % git_hash,
-#)
-
-# For now the repository is local, but we will switch to hosting bazel-orfs
-# in https://github.com/The-OpenROAD-Project/ once it is ready.
-local_repository(
-    name = "bazel-orfs",
-    path = "../bazel-orfs",
-)
+# This file marks the root of the Bazel workspace.
+# See MODULE.bazel for external dependencies setup.

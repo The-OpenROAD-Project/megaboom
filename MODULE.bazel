@@ -1,0 +1,12 @@
+module(
+    name = "megaboom",
+    version = "0.0.1",
+    compatibility_level = 1,
+)
+
+bazel_dep(name = "bazel-orfs")
+git_override(
+    module_name = "bazel-orfs",
+    remote = "https://github.com/antmicro/bazel-orfs.git",
+    commit = "9c6a77edd9c6e431f578f28e01fa631765061fd2"
+)
