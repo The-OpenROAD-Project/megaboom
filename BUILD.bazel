@@ -507,41 +507,6 @@ all_source_files = [
 "rtl/UOPCodeFPUDecoder.sv",
 ]
 
-nonrams = [
-"ram_2x5",
-"ram_2x40",
-"ram_5x1",
-"ram_8x8"]
-
-rams = [
-"ram_256x8",
-"ram_combMem_0",
-"ram_combMem",
-"ram_index_combMem_0",
-"ram_index_combMem",
-"ram_mask_2x16",
-"ram_mask_combMem_0",
-"ram_mask_combMem_1",
-"ram_mask_combMem_2",
-"ram_mask_combMem",
-"ram_meta_0_combMem_0",
-"ram_meta_0_combMem",
-"ram_meta_2x120",
-"ram_opcode_combMem_0",
-"ram_opcode_combMem_1",
-"ram_opcode_combMem",
-"ram_pc_combMem_0",
-"ram_pc_combMem",
-"ram_predicated_combMem_0",
-"ram_predicated_combMem_1",
-"ram_predicated_combMem",
-"ram_set_combMem",
-"ram_size_combMem_0",
-"ram_size_combMem_1",
-"ram_size_combMem",
-"ram_tl_state_source_combMem_0",
-"ram_tl_state_source_combMem"]
-
 execunits = ['ALUExeUnit_2', 'ALUExeUnit_3', 'ALUExeUnit_4', 'ALUExeUnit_5', 'ALUExeUnit']
 
 exeunitsrc =  [ "rtl/ALU.sv",
@@ -583,13 +548,6 @@ exeunitsrc =  [ "rtl/ALU.sv",
  for exe in execunits]
 
  #'RegisterFileSynthesizable',
-
-renamefiles = ["rtl/RenameBusyTable.sv",
-        "rtl/RenameBusyTable_1.sv",
-        "rtl/RenameFreeList.sv",
-        "rtl/RenameFreeList_1.sv",
-        "rtl/RenameMapTable.sv",
-        "rtl/RenameMapTable_1.sv"]
 
 fpfiles = ["rtl/FpPipeline.sv",
         "rtl/ram_7x79.sv",
@@ -855,100 +813,6 @@ boom_regfile_rams = [
         )
  for ram in boom_regfile_rams]
 
-
-boomtilefiles = ["rtl/" + f + ".sv" for f in ['TLXbar_8',
-        'IntXbar_1',
-        'IntXbar',
-        'TLWidthWidget_8',
-        'BoomNonBlockingDCache',
-        'BoomFrontend',
-        'TLWidthWidget_9',
-        'TLBuffer_13',
-        'LSU',
-        'PTW',
-        'HellaCacheArbiter',
-        'Arbiter_14',
-        'AMOALU',
-        'BoomWritebackUnit',
-        'BoomProbeUnit',
-        'BoomMSHRFile',
-        'L1MetadataArray',
-        'L1MetadataArray',
-        'Arbiter_9',
-        'Arbiter_10',
-        'BoomDuplicatedDataArray',
-        'Arbiter_11',
-        'Arbiter_12',
-        'MaxPeriodFibonacciLFSR',
-        'Arbiter_13',
-        'Arbiter_14',
-        'ICache',
-        'BranchPredictor',
-        'BoomRAS',
-        'TLB',
-        'Queue_66',
-        'Queue_67',
-        'RVCExpander',
-        'RVCExpander',
-        'BranchDecode',
-        'Queue_68',
-        'Queue_69',
-        'FetchBuffer',
-        'FetchTargetQueue',
-        'Arbiter_15',
-        'TLWidthWidget_9',
-        'TLBuffer_13',
-        'LSU',
-        'PTW',
-        'HellaCacheArbiter',
-        'ForwardingAgeLogic',
-        'NBDTLB',
-        'OptimizationBarrier_93',
-        'OptimizationBarrier_92',
-        'Arbiter_20',
-        'OptimizationBarrier_14',
-        'PMPChecker_1',
-        'ComposedBranchPredictorBank',
-        'OptimizationBarrier',
-        'PMPChecker',
-        'ram_meta_2x120',
-        'ghist_40x5',
-        'ghist_40x1',
-        'ghist_40x64',
-        'meta_40x240',
-        'BoomIOMSHR',
-        'Arbiter_8',
-        'BoomMSHR',
-        'Arbiter_7',
-        'Arbiter_6',
-        'Arbiter_5',
-        'Arbiter_4',
-        'Arbiter_3',
-        'Arbiter_2',
-        'Arbiter_1',
-        'Arbiter',
-        'lb_32x128',
-        'sdq_17x64',
-        'NLPrefetcher',
-        'FAMicroBTBBranchPredictorBank',
-        'BIMBranchPredictorBank',
-        'BTBBranchPredictorBank',
-        'TageBranchPredictorBank',
-        'LoopBranchPredictorBank',
-        'LoopBranchPredictorColumn',
-        'MaxPeriodFibonacciLFSR_3',
-        'TageTable_5',
-        'TageTable_4',
-        'TageTable_3',
-        'TageTable_2',
-        'TageTable_1',
-        'TageTable',
-        'mem_128x1',
-        'table_128x44',
-        'mem_256x1',
-        'table_256x48'
-        ] + rams + nonrams + boom_tile_small_srams]
-
 build_openroad(
         name = "BoomTile",
         verilog_files=all_source_files,
@@ -1042,55 +906,6 @@ build_openroad(
         mock_area=0.33
         )
 
-
-
-inclusive_cache_files = [
-
-'rtl/SourceA.sv',
-'rtl/SourceB.sv',
-'rtl/SourceC.sv',
-'rtl/SourceD.sv',
-'rtl/SourceE.sv',
-'rtl/SourceX.sv',
-'rtl/SinkA.sv',
-'rtl/SinkC.sv',
-'rtl/SinkD.sv',
-'rtl/SinkE.sv',
-'rtl/SinkX.sv',
-'rtl/Directory.sv',
-'rtl/BankedStore.sv',
-'rtl/ListBuffer_2.sv',
-'rtl/MSHR.sv',
-'rtl/BankedStore.sv',
-'rtl/BankedStore.sv',
-'rtl/BankedStore.sv',
-'rtl/BankedStore.sv',
-'rtl/BankedStore.sv',
-'rtl/BankedStore.sv',
-'rtl/BankedStore.sv',
-'rtl/Queue_50.sv',
-'rtl/Queue_17.sv',
-'rtl/Queue_18.sv',
-'rtl/Queue_19.sv',
-'rtl/Queue_52.sv',
-'rtl/Atomics.sv',
-'rtl/ListBuffer.sv',
-'rtl/ListBuffer_1.sv',
-'rtl/ListBuffer_2.sv',
-'rtl/MaxPeriodFibonacciLFSR.sv',
-'rtl/cc_dir_1024x168.sv',
-'rtl/mem_8192x64.sv',
-'rtl/next_16x4.sv',
-'rtl/head_21x6.sv',
-'rtl/next_40x6.sv',
-'rtl/tail_2x4.sv',
-'rtl/next_40x6.sv',
-'rtl/tail_40x6.sv',
-'rtl/head_40x6.sv',
-'rtl/TLMonitor_35.sv',
-'rtl/TLMonitor_34.sv',
-'rtl/plusarg_reader.v']
-
 build_openroad(
         name = "InclusiveCache",
         verilog_files=all_source_files,
@@ -1113,36 +928,6 @@ build_openroad(
         mock_stage='floorplan',
         mock_area=0.3
         )
-
-branch_predictor_files = [
-        'rtl/LoopBranchPredictorBank.sv',
-        'rtl/BranchPredictor.sv',
-        'rtl/BIMBranchPredictorBank.sv',
-        'rtl/BranchPredictor_assert.sv',
-        'rtl/BranchPredictor.sv',
-        'rtl/BTBBranchPredictorBank.sv',
-        'rtl/ComposedBranchPredictorBank.sv',
-        'rtl/FAMicroBTBBranchPredictorBank.sv',
-        'rtl/LoopBranchPredictorBank.sv',
-        'rtl/LoopBranchPredictorColumn.sv',
-        'rtl/TageBranchPredictorBank.sv',
-        'rtl/MaxPeriodFibonacciLFSR_3.sv',
-        'rtl/TageTable_5.sv',
-        'rtl/TageTable_4.sv',
-        'rtl/TageTable_3.sv',
-        'rtl/TageTable_2.sv',
-        'rtl/TageTable_1.sv',
-        'rtl/TageTable.sv',
-        'rtl/ebtb_128x40.sv',
-        'rtl/btb_128x56.sv',
-        'rtl/meta_128x120.sv',
-        'rtl/data_2048x2.sv',
-        'rtl/table_128x44.sv',
-        'rtl/mem_128x1.sv',
-        'rtl/table_256x48.sv',
-        'rtl/mem_256x1.sv',
-        'rtl/table_128x52.sv'
-]
 
 build_openroad(
         name = "BranchPredictor",
@@ -1197,7 +982,7 @@ build_openroad(
                 }
         )
 
-
+# buildifier: disable=duplicated-name
 build_openroad(
         name = "ChipTop",
         verilog_files=all_source_files,
