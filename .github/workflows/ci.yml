@@ -6,6 +6,23 @@ on:
   pull_request:
 
 jobs:
+  lint:
+    name: Lint Bazel files
+    runs-on: ubuntu-22.04
+    env:
+      DEBIAN_FRONTEND: "noninteractive"
+    steps:
+      - name: Download buildifier
+        run: |
+          wget https://github.com/bazelbuild/buildtools/releases/download/v6.4.0/buildifier-linux-amd64 -O /usr/local/bin/buildifier
+          chmod +x /usr/local/bin/buildifier
+          buildifier -version
+      - name: Checkout bazel-orfs
+        uses: actions/checkout@v4
+      - name: Check Bazel files
+        run: |
+          buildifier -lint warn -r .
+
   build-stage-target:
     name: Build sample stage targets
     runs-on: ubuntu-22.04
