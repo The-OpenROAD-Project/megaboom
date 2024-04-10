@@ -1,0 +1,47 @@
+name: MegaBoom build tests
+
+on:
+  workflow_dispatch:
+  push:
+  pull_request:
+
+jobs:
+  build-stage-target:
+    name: Build sample stage targets
+    runs-on: ubuntu-22.04
+    defaults:
+      run:
+        shell: bash
+    strategy:
+      fail-fast: false
+      matrix:
+        STAGE_TARGET:
+          - tag_array_64x184_generate_abstract
+          - L1MetadataArray_test_generate_abstract
+          - regfile_128x65_floorplan
+    env:
+      DEBIAN_FRONTEND: "noninteractive"
+    steps:
+      - name: Free Disk Space (Ubuntu)
+        uses: jlumbroso/free-disk-space@main
+        with:
+          swap-storage: false
+      - name: Print info
+        run: |
+          echo "USER: "$(whoami)
+          echo "PWD: "$(pwd)
+          ls -la
+          echo "HOME: "$HOME
+          docker --version
+      - name: Checkout bazel-orfs
+        uses: actions/checkout@v4
+      - name: load docker image
+        run: |
+          bazel run --subcommands --verbose_failures --sandbox_debug @bazel-orfs//:orfs_env
+      - name: query target
+        run: |
+          bazel query ${{ matrix.STAGE_TARGET }}
+          bazel query ${{ matrix.STAGE_TARGET }} --output=build
+      - name: build target
+        run: |
+          bazel build --subcommands --verbose_failures --sandbox_debug ${{ matrix.STAGE_TARGET }}
