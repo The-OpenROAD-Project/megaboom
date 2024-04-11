@@ -660,7 +660,7 @@ build_openroad(
                 'grt': ['SKIP_INCREMENTAL_REPAIR=1']
                 },
         mock_abstract=True,
-        mock_stage='grt',
+        mock_stage='floorplan',
         mock_area=0.6
         )
 
@@ -787,7 +787,7 @@ digital_top_srams=["cc_dir_1024x168",
                         'CORE_ASPECT_RATIO=2'],
                 'place': ['PLACE_DENSITY=0.65']},
         mock_abstract=True,
-        mock_stage='grt',
+        mock_stage='floorplan',
         mock_area={'tag_array_64x184':0.20,
         'meta_40x240':0.3,
         'data_data_40x128':1,
@@ -809,7 +809,7 @@ big_rams = ['mem_8192x64', 'cc_banks_16384x64', 'TLROM', 'ghist_40x72']
                         'CORE_ASPECT_RATIO=2'],
                 'place': ['PLACE_DENSITY=0.65']},
         mock_abstract=True,
-        mock_stage='grt',
+        mock_stage='floorplan',
         mock_area={'ghist_40x72':1}.get(ram, 0.30)
         ) for ram in big_rams if ram != 'TLROM']
 
@@ -825,7 +825,7 @@ build_openroad(
                         'CORE_ASPECT_RATIO=2'],
                 'place': ['PLACE_DENSITY=0.65']},
         mock_abstract=True,
-        mock_stage='grt',
+        mock_stage='floorplan',
         mock_area=0.40
         )
 
@@ -850,7 +850,7 @@ boom_regfile_rams = [
                 {'regfile_128x64':'0.42', 'regfile_128x65':'0.3'}.get(ram, '0.10')],
         },
         mock_abstract=True,
-        mock_stage='grt',
+        mock_stage='floorplan',
         mock_area={'regfile_128x64':0.4, 'regfile_128x65':0.4}.get(ram, 0.8)
         )
  for ram in boom_regfile_rams]
@@ -994,7 +994,7 @@ build_openroad(
                 'place': ['PLACE_DENSITY=0.20', 'PLACE_PINS_ARGS=-annealing'],
                 },
         mock_abstract=True,
-        mock_stage='grt'
+        mock_stage='floorplan'
         )
 
 build_openroad(
@@ -1017,7 +1017,7 @@ build_openroad(
                 'place': ['PLACE_DENSITY=0.20'],
                 },
         mock_abstract=True,
-        mock_stage='grt',
+        mock_stage='floorplan',
         mock_area=0.25
         )
 
@@ -1038,7 +1038,7 @@ build_openroad(
                 'place': ['PLACE_DENSITY=0.30'],
                 },
         mock_abstract=True,
-        mock_stage='grt',
+        mock_stage='floorplan',
         mock_area=0.33
         )
 
@@ -1110,7 +1110,7 @@ build_openroad(
                 'grt': ['SKIP_INCREMENTAL_REPAIR=1']
                 },
         mock_abstract=True,
-        mock_stage='grt',
+        mock_stage='floorplan',
         mock_area=0.3
         )
 
@@ -1172,7 +1172,7 @@ build_openroad(
                 },
         io_constraints=":io",
         mock_abstract=True,
-        mock_stage='grt',
+        mock_stage='floorplan',
         mock_area=0.20
         )
 
