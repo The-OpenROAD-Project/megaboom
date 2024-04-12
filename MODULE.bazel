@@ -8,5 +8,9 @@ bazel_dep(name = "bazel-orfs")
 git_override(
     module_name = "bazel-orfs",
     remote = "https://github.com/antmicro/bazel-orfs.git",
-    commit = "9c6a77edd9c6e431f578f28e01fa631765061fd2"
+    commit = "08c9ec6508d42e48095af0195dee4349c79a99ce"
 )
+
+#local_path_override(
+#    module_name = "bazel-orfs", path = "../bazel-orfs"
+#)
