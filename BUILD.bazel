@@ -830,7 +830,8 @@ build_openroad(
                         ,'RTLMP_FLOW=True'
                         ],
                 'cts': ['TNS_END_PERCENT=0',
-                'SKIP_REPORT_METRICS=1'],
+                'SKIP_REPORT_METRICS=1',
+                'SKIP_CTS_REPAIR_TIMING=1'],
                 'place': ['PLACE_DENSITY=0.27',
                 'PLACE_PINS_ARGS=-annealing',
                 'SKIP_REPORT_METRICS=1'],
