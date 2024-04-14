@@ -750,6 +750,7 @@ digital_top_srams=["cc_dir_1024x168",
         'meta_40x240':0.3,
         'data_data_40x128':1,
         'ram_256x8':0.2,
+        'meta_128x120':0.25,
         'lb_32x128':1,
         'l2_tlb_ram_0_512x45':0.3}.get(ram, 0.5)
         )
