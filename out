@@ -6,7 +6,8 @@
 #
 # Where:
 # _bazel_user is a folder where "user" is the username
-# 7e6ad621f3f951c3ee6f5b179289b54e is the most recent folder
+# 7e6ad621f3f951c3ee6f5b179289b54e is the MD5 hash of the path name of workspace root
+#     (as described in https://bazel.build/remote/output-directories#layout)
 #
 # Then print out the path
 
@@ -14,6 +15,10 @@ import os
 import sys
 import re
 import argparse
+import hashlib
+from pathlib import Path
+
+PROJECT_DIR = Path(__file__).parent.resolve()
 
 
 def find_path():
@@ -22,19 +27,14 @@ def find_path():
         print("Path does not exist: " + path)
         sys.exit(1)
 
-    dirs = os.listdir(path)
-    dirs.sort(key=lambda x: os.path.getmtime(os.path.join(path, x)), reverse=True)
-    dirs.reverse()
-
-    for d in dirs:
-        if not re.match(r'[a-z0-9]{32}', d):
-            continue
+    hash = hashlib.new("md5")
+    hash.update(str(PROJECT_DIR).encode())
+    d = hash.hexdigest()
+    if re.match(r'[a-z0-9]{32}', d):
         path2 = os.path.join(path, d,
                              "execroot/_main/bazel-out/k8-fastbuild/bin")
-        if not os.path.exists(path2):
-            continue
-
-        return path2
+        if os.path.exists(path2):
+            return path2
 
     print("Could not find path")
     sys.exit(1)
@@ -45,7 +45,9 @@ def recurse(path):
     files.sort(key=lambda x: os.lstat(os.path.join(path, x)).st_mtime, reverse=True)
     for f in files:
         if os.path.isdir(os.path.join(path, f)):
-            return recurse(os.path.join(path, f))
+            result = recurse(os.path.join(path, f))
+            if result is not None:
+                return result
         elif f.endswith(".log"):
             return os.path.join(path, f)
     return None
