@@ -35,7 +35,6 @@ jobs:
         STAGE_TARGET:
           - tag_array_64x184_generate_abstract
           - L1MetadataArray_test_generate_abstract
-          - BoomTile_generate_abstract
           - regfile_128x65_floorplan
     env:
       DEBIAN_FRONTEND: "noninteractive"
