@@ -36,6 +36,7 @@ jobs:
           - tag_array_64x184_generate_abstract
           - L1MetadataArray_test_generate_abstract
           - regfile_128x65_floorplan
+          - lb_32x128_generate_abstract
     env:
       DEBIAN_FRONTEND: "noninteractive"
     steps:
