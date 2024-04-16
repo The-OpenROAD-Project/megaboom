@@ -1,7 +1,7 @@
 Bazel on OpenROAD-flow-scripts(ORFS) with MegaBoom use case
 ===========================================================
 
-This is a stand-alone project that has a wafer thin Bazel layer on top
+This is a stand-alone project that use a wafer thin Bazel layer on top
 of OpenROAD-flow-scripts.
 
 The purpose of this project is to demonstrate and develop a practical workflow
@@ -45,7 +45,7 @@ Challenges with large designs and ORFS that Bazel helps address
 
 - **Long build times**; hours, days.
 - **Artifacts** are needed. Synthesis, for instance, can
-  be very time consuming and and it is useful to share synthesis artifacts
+  be very time consuming and it is useful to share synthesis artifacts
   between developers and CI servers. On a large design with multiple
   developers and many pull requests in flight, it can become error
   prone to manually track exactly what version of built stages that
@@ -61,7 +61,7 @@ Challenges with large designs and ORFS that Bazel helps address
   always existed for detailed routing: detailed routing succeeds, has exit code 0,
   even if there are DRC errors.
 - **Mocking abstracts** when doing initial top-level floorplanning is needed to
-  seperate concerns. It can be useful to skip one of place, cts, route for
+  separate concerns. It can be useful to skip one of place, cts, route for
   the macros until one starts to converge on a workable
   top level floorplan. This is supported via `mock_abstract` in `openroad.bzl`
 - **Efficient local storage of build artifacts** are needed as .odb files are
@@ -86,13 +86,53 @@ Challenges with large designs and ORFS that Bazel helps address
 Setup
 -----
 
-This setup intentionally does not treat ORFS as a installable versioned tool,
-but prefers to rely on ~/OpenROAD-flow-scripts such that it is easy to hack
-ORFS and OpenROAD.
+For running bazel flow for the ORFS, megaboom uses [bazel-orfs](https://github.com/The-OpenROAD-Project/bazel-orfs).
+It provides two different bazel flows for running Physical Design flow with [OpenROAD-flow-scripts](https://github.com/The-OpenROAD-Project/OpenROAD-flow-scripts).
+For the installation and usage guide, please refer to [bazel-orfs's README](https://github.com/The-OpenROAD-Project/bazel-orfs/blob/main/README.md).
 
-- Clone and build OpenROAD-flow-scripts into ~/OpenROAD-flow-scripts. The `./orfs`
-  script in this example assumes this location.
-- Install Bazel and Bazelisk https://github.com/bazelbuild/bazelisk
+`bazel-orfs` must be specified in megaboom as the external dependency.
+It can be pinned to a specific revision of [the upstream repository](https://github.com/The-OpenROAD-Project/bazel-orfs) or the dependency can point to a local bazel-orfs workspace available on disk.
+
+### Upstream repository
+
+In `MODULE.bazel` use [git_override](https://bazel.build/rules/lib/globals/module#git_override) to pin `bazel-orfs` version at specific commit:
+
+```
+git_override(
+    module_name = "bazel-orfs",
+    remote = "https://github.com/The-OpenROAD-Project/bazel-orfs.git",
+    commit = "<commit hash>",
+)
+```
+
+### Local workspace
+
+For testing changes made to `bazel-orfs` it is useful to set the dependency to a local bazel-orfs workspace.
+In order to do that, in `MODULE.bazel` use [local_path_override](https://bazel.build/rules/lib/globals/module#local_path_override):
+
+```
+local_path_override(
+    module_name = "bazel-orfs", path = "<path to local bazel-orfs workspace>"
+)
+```
+
+For the local `bazel-orfs` it is also required to mount the `bazel-orfs` workspace directory to the docker containers while using the `docker flow`.
+In your local `bazel-orfs` apply the changes showcased by the diff:
+
+```
+diff --git a/docker_shell.sh b/docker_shell.sh
+index db1673c..f933d6a 100755
+--- a/docker_shell.sh
++++ b/docker_shell.sh
+@@ -83,6 +83,7 @@ docker run --name "bazel-orfs-$uid" --rm \
+  -e WORK_HOME=$WORKSPACE_EXECROOT/$RULEDIR \
+  -v $WORKSPACE_ROOT:$WORKSPACE_ROOT \
+  -v $WORKSPACE_ORIGIN:$WORKSPACE_ORIGIN \
++ -v <path to local bazel-orfs directory>:<path to local bazel-orfs directory> \
+  --network host \
+  $DOCKER_INTERACTIVE \
+  $DOCKER_ARGS \
+```
 
 Example of using a Bazel artifact server
 ----------------------------------------
@@ -116,8 +156,8 @@ To use this feature, copy the snippet below into `.bazelrc` and specify your use
 **NOTE:** To test the credential helper, make sure to restart Bazel to avoid using a previous
 cached authorization:
 
-    bazelisk shutdown
-    bazelisk build ALUExeUnit_floorplan
+    bazel shutdown
+    bazel build ALUExeUnit_floorplan
 
 
 To gain access to the https://storage.googleapis.com/megaboom-bazel-artifacts bucket,
@@ -126,174 +166,76 @@ reach out to Tom Spyrou, Precision Innovations (https://www.linkedin.com/in/toms
 Tutorial
 ========
 
+This tutorial uses the `docker flow` to run the physical design flow with ORFS.
+Before starting, it is required to have available in your docker runtime a docker image with `OpenROAD-flow-scripts` installation.
+For more information, please refer to the [Requirements](https://github.com/The-OpenROAD-Project/bazel-orfs?tab=readme-ov-file#requirements) chapter of `bazel-orfs`.
+
+---
+
+**Note:**
+`orfs_env` rule for downloading and loading the docker image is defined in `bazel-orfs`.
+In order to run it in the context of megaboom (the workspace that uses `bazel-orfs` as external dependency), it is required to use correct bazel label to this external target:
+
+```
+bazel run @bazel-orfs//:orfs_env
+```
+
+---
+
 Hello world
 -----------
 
-A quick test-build of Bazel:
+A quick test-build:
 
-  bazelisk build L1MetadataArray_test_generate_abstract
+```
+# Build L1MetadataArray macro up to the CTS stage
+bazel build L1MetadataArray_test_cts
 
-Viewing results from Bazel:
-
-  ./orfs make DESIGN_NAME=L1MetadataArray gui_final
-
-Tweaking aspect ratio of a floorplan
-------------------------------------
-
-Notice how the `CORE_ASPECT_RATIO` parameter is associated with
-the floorplan and *only* the floorplan stage below.
-
-Bazel will detect this change specifically as a change to the
-floorplan, re-use the synthesis result and rebuild from the
-floorplan stage. Similarly, if the `PLACE_DENSITY` is modified,
-only stages from the placement and on are re-built.
-
-Also, notice that when the aspect ratio is changed back to
-a value for which there exists artifacts, Bazel completes
-instantaneously as the artifact already exists:
-
-    --- a/BUILD.bazel
-    +++ b/BUILD.bazel
-    @@ -165,7 +165,7 @@ exeunitsrc =  [ "rtl/ALU.sv",
-            stage_args={
-                    'floorplan': ['CORE_UTILIZATION=5',
-    -                'CORE_ASPECT_RATIO=8',
-    +                'CORE_ASPECT_RATIO=6',
-                    "RTLMP_FLOW=True"],
-                    'place': ['PLACE_DENSITY=0.2000'],
-
-Then run a quick test-build Bazel:
-
-    bazelisk build ALUExeUnit_floorplan
-
-Viewing final results from Bazel:
-
-    ./orfs make DESIGN_NAME=ALUExeUnit gui_floorplan
-
-Creating an issue report
-------------------------
-
-This is slightly tricky because we need find and use the variables Bazel passed to
-ORFS on the command line.
-
-The TL;DR to create a floorplan.tcl issue is:
-
-  bazelisk build L1MetadataArray_test_floorplan_orfs
-  cat bazel-bin/logs/asap7/L1MetadataArray/test/floorplan.txt
-
-This shows the ORFS make command line, after which the normal make
-targets for floorplanning is appended:
-
-  ./orfs make DESIGN_NAME=L1MetadataArray  RTLMP_FLOW=True ... DESIGN_CONFIG=config.mk
-
-Next run:
-
-  ./orfs make DESIGN_NAME=L1MetadataArray ... floorplan_issue
-
-Fast floorplanning and mock abstracts
--------------------------------------
-
-Let's say we want to skip place, cts and route and create a mock abstract where
-we can at least check that there is enough place for the macros at the top level.
-
-    Warning! Although mock abstracts can speed up turnaround times, skipping
-    place, cts or route can lead to errors and problems that don't exist when place, cts and route are not skipped.
-
-To do so, we modify `BUILD.bzl`:
-
-    --- a/BUILD.bazel
-    +++ b/BUILD.bazel
-    @@ -566,7 +566,7 @@ build_openroad(
-                    'place': ['PLACE_DENSITY=0.20', 'PLACE_PINS_ARGS=-annealing'],
-                    },
-            mock_abstract=True,
-    -        mock_stage="grt"
-    +        mock_stage="floorplan"
-            )
-
-Then run:
-
-    bazelisk build L1MetadataArray_test_generate_abstract
-
-Tentative roadmap
-=================
-
-- Break out Bazel support into a orfs_rules project that can be imported from example
-  projects such as this megaboom example. Perhaps orfs_rules could be hosted inside the ORFS
-  repository, or perhaps it should be a standalone repository.
-- ORFS and orfs_rules should be independently versioned dependencies
-  while it should still be easy to do local hacking of ORFS. There should be a version
-  number for the ORFS dependency and orfs_rules separately. It should be possible to
-  specify the ORFS version per invocation of orfs_rules such that e.g. macros are not
-  rebuilt unless the user wants them to be rebuilt. Some macros can take days to build
-  and there could be manual verification involved and hence rebuilding should be
-  more controllable than for your typical Bazel build that is reasonably fast(C++, Scala,
-  etc.)
-- Once a reasonable structure is in place, set up CI for pull requests and invite
-  refinements and developments from the community.
-
-Bazel hacking
-=============
-
-Run all synth targets
----------------------
-
-    bazelisk build $(bazelisk query '...:*' | grep '_synth$')
-
-Forcing a rebuild of a stage
-----------------------------
-
-Sometimes it is desirable, such as when hacking ORFS, to redo a build stage even
-if none of the dependencies for that stage changed. This can be achieved by changing
-a `PHONY` variable to that stage and bumping it:
-
-    --- a/BUILD.bazel
-    +++ b/BUILD.bazel
-    @@ -166,7 +166,8 @@ exeunitsrc =  [ "rtl/ALU.sv",
-            stage_args={
-                    'floorplan': ['CORE_UTILIZATION=5',
-                    'CORE_ASPECT_RATIO=8',
-    -                "RTLMP_FLOW=True"],
-    +                "RTLMP_FLOW=True",
-    +                'PHONY=1'],
+# View results with OpenROAD GUI
+bazel run L1MetadataArray_test_cts_gui
+```
 
 Staring at logs
 ---------------
 
-This is surprisingly tricky, you have to go spelunking in ~/.cache/bazel/.
-
 In ORFS it is oftentimes useful to view the tail of the single running
 stage on a machine, `./out` is in this project to "stare at logs":
 
-  tail -f $(./out -t)
+```
+tail -f $(./out -t)
+```
 
-Downloading the immediate dependencies of a target
---------------------------------------------------
-
-  bazelisk build $(bazelisk query 'deps(ChipTop_synth, 1)' --noimplicit_deps)
+Currently, this script depends on bazel cache residing under `~/.cache/bazel/`.
+This directory is scanned for the newest log file which name of gets printed to the standard output.
 
 MegaBoom RTL code
 =================
 
 Based on: https://chipyard.readthedocs.io/en/stable/VLSI/Sky130-OpenROAD-Tutorial.html#initial-setup
 
-    NOTE! Chipyard main does not work smoothly with MegaBoom as of writing as
-    Chipyard is mixing SFC and MFC.
+```
+**Note:** Chipyard main does not work smoothly with MegaBoom as of writing as Chipyard is mixing SFC and MFC.
+```
 
 Follow https://github.com/ucb-bar/chipyard/issues/1623 for latest updates.
 
-That said, the rtl/ folder was generated using latest Chipyard + some hacked
-files locally:
+That said, the `rtl/` folder was generated using latest Chipyard + some hacked files locally:
 
-    make tutorial=sky130-openroad CONFIG=MegaBoomMacroConfig verilog
+```
+make tutorial=sky130-openroad CONFIG=MegaBoomMacroConfig verilog
+```
 
 Hammer hacking with ASAP7
 =========================
 
 Build everything:
 
-    ./build-setup.sh --skip-ctags --skip-conda --skip-toolchain --skip-firesim --skip-marshal --skip-clean
+```
+./build-setup.sh --skip-ctags --skip-conda --skip-toolchain --skip-firesim --skip-marshal --skip-clean
+```
 
 Create Verilog code:
 
-    make CONFIG=MegaBoomConfig tech_name=asap7 VLSI_TOP=ChipTop INPUT_CONFS=example-asap7.yml TOP_MACROCOMPILER_MODE='--mode synflops' verilog
+```
+make CONFIG=MegaBoomConfig tech_name=asap7 VLSI_TOP=ChipTop INPUT_CONFS=example-asap7.yml TOP_MACROCOMPILER_MODE='--mode synflops' verilog
+```
