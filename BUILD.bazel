@@ -860,7 +860,7 @@ build_openroad(
                 'place': ['PLACE_DENSITY=0.20', 'PLACE_PINS_ARGS=-annealing'],
                 },
         mock_abstract=True,
-        mock_stage='cts'
+        mock_stage='place'
         )
 
 build_openroad(
