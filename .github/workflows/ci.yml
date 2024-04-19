@@ -109,6 +109,11 @@ jobs:
           TARGET: L1MetadataArray_test
           STAGES: synth_sdc synth floorplan place generate_abstract
         run: .github/scripts/build_local_target.sh
+      - name: open targets
+        run: |
+          for stage in "synth" "floorplan" "place"; do
+            echo | bazel-bin/L1MetadataArray_test_${stage}_local_make open_${stage}
+          done
 
   test-make-scripts-target-docker:
     name: Docker flow - test _scripts tartgets
@@ -147,3 +152,9 @@ jobs:
           TARGET: L1MetadataArray_test
           STAGES: synth_sdc synth floorplan place generate_abstract
         run: .github/scripts/build_local_target.sh
+      - name: open target
+        if: matrix.STAGE_TARGET == 'L1MetadataArray_test_generate_abstract'
+        run: |
+          for stage in "synth" "floorplan" "place"; do
+            echo | bazel-bin/L1MetadataArray_test_${stage}_docker open_${stage}
+          done
