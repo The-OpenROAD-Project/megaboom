@@ -4,11 +4,7 @@ set -e
 
 target_name=${TARGET:-"tag_array_64x184"}
 if [[ -z "$STAGES" ]]; then
-  if [[ "$target_name" == L1MetadataArray_* ]]; then
-    STAGES=("synth_sdc" "synth" "floorplan" "place" "cts" "grt" "generate_abstract")
-  else
-    STAGES=("synth_sdc" "synth" "floorplan" "generate_abstract")
-  fi
+  STAGES=("synth_sdc" "synth" "floorplan" "place" "cts" "generate_abstract")
 else
   eval "STAGES=($STAGES)"
 fi
