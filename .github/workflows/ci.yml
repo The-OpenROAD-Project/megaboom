@@ -107,5 +107,5 @@ jobs:
       - name: build local stage targets - L1MetadataArray_test
         env:
           TARGET: L1MetadataArray_test
-          STAGES: synth_sdc synth floorplan place cts generate_abstract
+          STAGES: synth_sdc synth floorplan place generate_abstract
         run: .github/scripts/build_local_target.sh
