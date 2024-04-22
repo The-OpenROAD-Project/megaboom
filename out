@@ -17,6 +17,7 @@ import re
 import argparse
 import hashlib
 from pathlib import Path
+from glob import glob
 
 PROJECT_DIR = Path(__file__).parent.resolve()
 
@@ -40,17 +41,9 @@ def find_path():
     sys.exit(1)
 
 
-def recurse(path):
-    files = os.listdir(path)
-    files.sort(key=lambda x: os.lstat(os.path.join(path, x)).st_mtime, reverse=True)
-    for f in files:
-        if os.path.isdir(os.path.join(path, f)):
-            result = recurse(os.path.join(path, f))
-            if result is not None:
-                return result
-        elif f.endswith(".log"):
-            return os.path.join(path, f)
-    return None
+def find_newest_log(path):
+    files = glob(path + "/**/*.log", recursive=True)
+    return max(files, key=os.path.getmtime, default=None)
 
 
 if __name__ == "__main__":
@@ -67,7 +60,7 @@ if __name__ == "__main__":
         # .tmp.log:
         #
         # path + '/logs/asap7/DigitalTop/2_6_floorplan_pdn.tmp.log'
-        tmpfile = recurse(path + '/logs')
+        tmpfile = find_newest_log(path + '/logs')
         if tmpfile is None:
             print("Could not find tmp file")
             sys.exit(1)
