@@ -815,6 +815,26 @@ boom_regfile_rams = [
  for ram in boom_regfile_rams]
 
 build_openroad(
+        name = "L1MetadataArray",
+        verilog_files=["rtl/L1MetadataArray.sv"],
+        variant="test",
+        macros=["tag_array_64x184"],
+        io_constraints=":io",
+		sdc_constraints=":constraints-top.sdc",
+        stage_args={
+                'synth': ['SYNTH_HIERARCHICAL=1'],
+                'floorplan': [
+                        'CORE_UTILIZATION=3',
+                        'RTLMP_FLOW=True',
+                        'CORE_MARGIN=2',
+                        ],
+                'place': ['PLACE_DENSITY=0.20', 'PLACE_PINS_ARGS=-annealing'],
+                },
+        mock_abstract=True,
+        mock_stage='place'
+        )
+
+build_openroad(
         name = "BoomTile",
         verilog_files=all_source_files,
         macros=boom_tile_rams + boom_regfile_rams + boom_tile_small_srams,
@@ -841,169 +861,5 @@ build_openroad(
                 'SKIP_REPORT_METRICS=1',
                 'SKIP_ANTENNA_REPAIR=1'],
                 'route': ['SKIP_REPORT_METRICS=1']
-                }
-        )
-
-build_openroad(
-        name = "L1MetadataArray",
-        verilog_files=["rtl/L1MetadataArray.sv"],
-        variant="test",
-        macros=["tag_array_64x184"],
-        io_constraints=":io",
-		sdc_constraints=":constraints-top.sdc",
-        stage_args={
-                'synth': ['SYNTH_HIERARCHICAL=1'],
-                'floorplan': [
-                        'CORE_UTILIZATION=3',
-                        'RTLMP_FLOW=True',
-                        'CORE_MARGIN=2',
-                        ],
-                'place': ['PLACE_DENSITY=0.20', 'PLACE_PINS_ARGS=-annealing'],
-                },
-        mock_abstract=True,
-        mock_stage='place'
-        )
-
-build_openroad(
-        name = "ICache",
-        verilog_files=["rtl/ICache.sv",
-        "rtl/MaxPeriodFibonacciLFSR.sv",
-        "rtl/dataArrayB_256x64.sv",
-        "rtl/tag_array_64x168.sv"],
-        macros=["dataArrayB_256x64",        "tag_array_64x168"],
-        io_constraints=":io",
-		sdc_constraints=":constraints.sdc",
-        stage_args={
-                'synth': ['SYNTH_HIERARCHICAL=1'],
-                'floorplan': [
-                        'RTLMP_FLOW=True',
-                        'CORE_UTILIZATION=10',
-                        # "DIE_AREA=0 0 200 200",
-                        # "CORE_AREA=2 2 198 198"
-                        ],
-                'place': ['PLACE_DENSITY=0.20'],
-                },
-        mock_abstract=True,
-        mock_stage='cts',
-        mock_area=0.25
-        )
-
-build_openroad(
-        name = "BoomNonBlockingDCache",
-        verilog_files=all_source_files,
-        macros=["array_256x128"] +boom_tile_small_srams,
-        io_constraints=":io",
-        sdc_constraints=":constraints-dcache.sdc",
-        stage_args={
-                'synth': ['SYNTH_HIERARCHICAL=1'],
-                'floorplan': [
-                        'RTLMP_FLOW=True',
-                        'CORE_UTILIZATION=20',
-                        # "DIE_AREA=0 0 200 200",
-                        # "CORE_AREA=2 2 198 198"
-                        ],
-                'place': ['PLACE_DENSITY=0.30'],
-                },
-        mock_abstract=True,
-        mock_stage='cts',
-        mock_area=0.33
-        )
-
-build_openroad(
-        name = "InclusiveCache",
-        verilog_files=all_source_files,
-        macros=big_rams + digital_top_srams + boom_tile_rams + boom_regfile_rams + boom_tile_small_srams,
-        io_constraints=":io-top",
-        sdc_constraints=":constraints-l2.sdc",
-        stage_args={
-                'synth': ['SYNTH_HIERARCHICAL=1'],
-                'floorplan': [
-                        'CORE_UTILIZATION=10',
-                        # "DIE_AREA=0 0 200 200", "CORE_AREA=2 2 198 198",
-                        'MACRO_PLACE_HALO=20 20',
-                        'RTLMP_FLOW=True'
-                        ],
-                'place': ['PLACE_DENSITY=0.28',
-                'PLACE_PINS_ARGS=-annealing'],
-                'grt': ['SKIP_INCREMENTAL_REPAIR=1']
-                },
-        mock_abstract=True,
-        mock_stage='cts',
-        mock_area=0.3
-        )
-
-build_openroad(
-        name = "BranchPredictor",
-        verilog_files=all_source_files,
-        macros=['data_2048x8',
-        'mem_256x4',
-        'ebtb_128x40',
-        'btb_128x56',
-        'meta_128x120',
-        'data_2048x2',
-        'table_128x44',
-        'table_256x48',
-        'table_128x52'],
-        sdc_constraints=":constraints-branchpredictor.sdc",
-        stage_args={
-                'synth': ['SYNTH_HIERARCHICAL=1'],
-                'floorplan': [
-                        'CORE_UTILIZATION=10',
-                        'CORE_ASPECT_RATIO=1',
-                        #"DIE_AREA=0 0 500 500", "CORE_AREA=2 2 498 498",
-                        'MACRO_PLACE_HALO=20 20',
-                        'RTLMP_FLOW=True'
-                        ],
-                'place': ['PLACE_DENSITY=0.28',
-                'PLACE_PINS_ARGS=-annealing'],
-                'grt': ['SKIP_INCREMENTAL_REPAIR=1']
-                },
-        io_constraints=":io",
-        mock_abstract=True,
-        mock_stage='cts',
-        mock_area=0.20
-        )
-
-build_openroad(
-        name = "ChipTop",
-        variant = "flat",
-        verilog_files=all_source_files,
-        macros=digital_top_srams + boom_tile_rams + boom_regfile_rams + boom_tile_small_srams +
-        big_rams,
-		sdc_constraints=":constraints-chiptop.sdc",
-        stage_args={
-                'synth': ['SYNTH_HIERARCHICAL=1'],
-                'floorplan': [
-                        #'CORE_UTILIZATION=50',
-                        'MACRO_PLACE_HALO=20 20',
-                        'RTLMP_FLOW=True',
-                        "DIE_AREA=0 0 1500 1500", "CORE_AREA=2 2 1498 1498"
-                        ],
-                'place': ['PLACE_DENSITY=0.25',
-                'PLACE_PINS_ARGS=-annealing'],
-                'grt': ['SKIP_INCREMENTAL_REPAIR=1']
-                }
-        )
-
-# buildifier: disable=duplicated-name
-build_openroad(
-        name = "ChipTop",
-        verilog_files=all_source_files,
-        macros=digital_top_srams + boom_tile_rams + boom_regfile_rams + boom_tile_small_srams +
-        ["BranchPredictor", "FpPipeline", "ICache", "BoomNonBlockingDCache"] +
-        big_rams,
-		sdc_constraints=":constraints-chiptop.sdc",
-        stage_args={
-                'synth': ['SYNTH_HIERARCHICAL=1'],
-                'floorplan': [
-                        #'CORE_UTILIZATION=50',
-                        'MACRO_PLACE_HALO=20 20',
-                        'RTLMP_FLOW=True',
-                        "DIE_AREA=0 0 1000 1000", "CORE_AREA=2 2 998 998"
-                        ],
-                'place': ['PLACE_DENSITY=0.30',
-                'PLACE_PINS_ARGS=-annealing'],
-                'grt': ['SKIP_INCREMENTAL_REPAIR=1'],
-                #'grt': ["GLOBAL_ROUTE_ARGS=-congestion_iterations 100 -congestion_report_iter_step 5 -verbose"]
                 }
         )
