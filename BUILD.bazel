@@ -716,7 +716,7 @@ boom_tile_small_srams = [
         "mem_256x4"]
 
 boom_tile_rams = [
-        "l2_tlb_ram_0_512x46",
+        # "l2_tlb_ram_0_512x46",
         "ebtb_128x40",
         "array_256x128",
         "dataArrayB_256x64",
@@ -741,6 +741,7 @@ digital_top_srams=["cc_dir_1024x168",
         'l2_tlb_ram_0_512x45':'mock'}.get(ram, "rtl") + "/" + ram + ".sv"],
         sdc_constraints = ":constraints-sram",
         stage_args={
+                'synth': ['SYNTH_MEMORY_MAX_BITS=16384'],
                 'floorplan': ['CORE_UTILIZATION=40',
                         'CORE_ASPECT_RATIO=2'],
                 'place': ['PLACE_DENSITY=0.65']},
@@ -837,7 +838,7 @@ build_openroad(
 build_openroad(
         name = "BoomTile",
         verilog_files=all_source_files,
-        macros=boom_tile_rams + boom_regfile_rams + boom_tile_small_srams,
+        macros=boom_tile_rams + boom_regfile_rams + boom_tile_small_srams + digital_top_srams,
         sdc_constraints = ":constraints-boomtile.sdc",
         io_constraints=":io-boomtile",
         stage_args={
