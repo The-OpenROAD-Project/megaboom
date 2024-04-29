@@ -1,4 +1,4 @@
-load("@bazel-orfs//:openroad.bzl", "build_openroad")
+load("@bazel-orfs//:openroad.bzl", "build_openroad", "add_options_all_stages")
 
 filegroup(
     name = "util",
@@ -844,26 +844,20 @@ build_openroad(
         macros=boom_tile_rams + boom_regfile_rams + boom_tile_small_srams + digital_top_srams,
         sdc_constraints = ":constraints-boomtile.sdc",
         io_constraints=":io-boomtile",
-        stage_args={
-                'synth': ['SYNTH_HIERARCHICAL=1',
-                'DUMMY=1'],
+        stage_args=add_options_all_stages({
+                'synth': ['SYNTH_HIERARCHICAL=1'],
                 'floorplan': [
-                        'SKIP_REPORT_METRICS=1',
                         'CORE_UTILIZATION=20',
-                        'MACRO_PLACE_HALO=20 20'
-                        # Too slow for now...
-                        ,'RTLMP_FLOW=True'
+                        'MACRO_PLACE_HALO=20 20',
+                        'RTLMP_FLOW=True'
                         ],
                 'cts': ['TNS_END_PERCENT=0',
-                'SKIP_REPORT_METRICS=1',
                 'SKIP_CTS_REPAIR_TIMING=1'],
                 'place': ['PLACE_DENSITY=0.27',
                 'PLACE_PINS_ARGS=-annealing',
-                'SKIP_REPORT_METRICS=1',
                 'GPL_ROUTABILITY_DRIVEN=0'],
                 'grt': ['SKIP_INCREMENTAL_REPAIR=1',
-                'SKIP_REPORT_METRICS=1',
                 'SKIP_ANTENNA_REPAIR=1'],
-                'route': ['SKIP_REPORT_METRICS=1']
-                }
+                'route': []
+                }, ['SKIP_REPORT_METRICS=1'])
         )
