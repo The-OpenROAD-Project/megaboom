@@ -11,6 +11,14 @@ git_override(
     commit = "c4fc0c549fde78560f5504e823c1283895e1effe",
 )
 
+# Read: https://github.com/The-OpenROAD-Project/megaboom?tab=readme-ov-file#local-workspace
+#
+# TL;DR
+#
+# 1. uncomment below
+# 2. comment git_override() above
+# 3. add "-v <full path>/../bazel-orfs:<full path>/../bazel-orfs \" to ../bazel-orfs/docker_shell
+#
 #local_path_override(
 #    module_name = "bazel-orfs", path = "../bazel-orfs"
 #)
