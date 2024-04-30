@@ -1,4 +1,4 @@
-name: MegaBoom build tests
+name: MegaBoom
 
 on:
   workflow_dispatch:
@@ -24,7 +24,7 @@ jobs:
           buildifier -lint warn -r .
 
   build-stage-target:
-    name: Build sample stage targets
+    name: ${{ matrix.STAGE_TARGET }}
     runs-on: ubuntu-22.04
     defaults:
       run:
