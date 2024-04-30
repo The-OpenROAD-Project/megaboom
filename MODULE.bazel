@@ -17,8 +17,7 @@ git_override(
 #
 # 1. uncomment below
 # 2. comment git_override() above
-# 3. add "-v <full path>/../bazel-orfs:<full path>/../bazel-orfs \" to ../bazel-orfs/docker_shell
 #
-#local_path_override(
+# local_path_override(
 #    module_name = "bazel-orfs", path = "../bazel-orfs"
-#)
+# )
