@@ -23,7 +23,7 @@ jobs:
         run: |
           buildifier -lint warn -r .
 
-  build-stage-target:
+  test-make-target:
     name: ${{ matrix.STAGE_TARGET }}
     runs-on: ubuntu-22.04
     defaults:
@@ -33,11 +33,11 @@ jobs:
       fail-fast: false
       matrix:
         STAGE_TARGET:
-          - tag_array_64x184_generate_abstract
-          - L1MetadataArray_test_generate_abstract
-          - regfile_128x65_floorplan
-          - lb_32x128_generate_abstract
-          - data_2048x2_generate_abstract
+          - tag_array_64x184_generate_abstract_make
+          - L1MetadataArray_test_generate_abstract_make
+          - regfile_128x65_floorplan_make
+          - lb_32x128_generate_abstract_make
+          - data_2048x2_generate_abstract_make
     env:
       DEBIAN_FRONTEND: "noninteractive"
     steps:
@@ -65,11 +65,11 @@ jobs:
         run: |
           bazel build --subcommands --verbose_failures --sandbox_debug ${{ matrix.STAGE_TARGET }}
 
-  test-make-script-target:
-    name: Execute sample _make scripts
+  test-make-scripts-target-local:
+    name: Local flow - test _scripts tartgets
     runs-on: ubuntu-22.04
     container:
-      image: ghcr.io/antmicro/bazel-orfs@sha256:78b4c15830d75e026dc2294b280cb5ff1200f6ee7902a714dca71fd61b5b2e4e
+      image: ghcr.io/antmicro/openroad-flow-scripts/ubuntu22.04@sha256:b13b35193bec45cb708bd9a5ee3546a7f20378e3c977a4c49f00e9c1c8a71181
     defaults:
       run:
         shell: bash
@@ -77,23 +77,23 @@ jobs:
       fail-fast: false
     env:
       DEBIAN_FRONTEND: "noninteractive"
+      FLOW_HOME: /OpenROAD-flow-scripts/flow
     steps:
-      # Workaround for https://github.com/actions/runner/issues/863
-      - name: Override HOME env var
-        shell: bash
-        run: |
-          echo HOME=/root | sudo tee -a $GITHUB_ENV
       - name: Print info
         run: |
           echo "USER: "$(whoami)
           echo "PWD: "$(pwd)
           ls -la
           echo "HOME: "$HOME
-          cd ~/OpenROAD-flow-scripts
+          cd /OpenROAD-flow-scripts
           echo "OpenROAD-flow-scripts SHA: "$(git rev-parse HEAD)
           source ./env.sh
           yosys --version
           openroad -version
+      - name: Install bazelisk as bazel
+        run: |
+          wget https://github.com/bazelbuild/bazelisk/releases/download/v1.19.0/bazelisk-linux-amd64 -O /usr/local/bin/bazel
+          chmod +x /usr/local/bin/bazel
       - name: Checkout megaboom
         uses: actions/checkout@v4
       - name: build local stage targets - tag_array_64x184
@@ -103,6 +103,44 @@ jobs:
       - name: build local stage targets - lb_32x128
         env:
           TARGET: lb_32x128
+        run: .github/scripts/build_local_target.sh
+      - name: build local stage targets - L1MetadataArray_test
+        env:
+          TARGET: L1MetadataArray_test
+          STAGES: synth_sdc synth floorplan place generate_abstract
+        run: .github/scripts/build_local_target.sh
+
+  test-make-scripts-target-docker:
+    name: Docker flow - test _scripts tartgets
+    runs-on: ubuntu-22.04
+    defaults:
+      run:
+        shell: bash
+    strategy:
+      fail-fast: false
+    env:
+      DEBIAN_FRONTEND: "noninteractive"
+      FLOW: docker
+    steps:
+      - name: Free Disk Space (Ubuntu)
+        uses: jlumbroso/free-disk-space@main
+        with:
+          swap-storage: false
+      - name: Print info
+        run: |
+          echo "USER: "$(whoami)
+          echo "PWD: "$(pwd)
+          ls -la
+          echo "HOME: "$HOME
+          docker --version
+      - name: Checkout bazel-orfs
+        uses: actions/checkout@v4
+      - name: load docker image
+        run: |
+          bazel run --subcommands --verbose_failures --sandbox_debug @bazel-orfs//:orfs_env
+      - name: build local stage targets - tag_array_64x184
+        env:
+          TARGET: tag_array_64x184
         run: .github/scripts/build_local_target.sh
       - name: build local stage targets - L1MetadataArray_test
         env:
