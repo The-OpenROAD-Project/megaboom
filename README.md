@@ -170,11 +170,11 @@ Hello world
 A quick test-build:
 
 ```
-# Build L1MetadataArray macro up to the CTS stage
-bazel build L1MetadataArray_test_cts
+# Build L1MetadataArray macro up to the placement stage and generate scripts
+bazel build L1MetadataArray_test_place_gui
 
 # View results with OpenROAD GUI
-bazel run L1MetadataArray_test_cts_gui
+./bazel-bin/L1MetadataArray_test_place_docker gui_place
 ```
 
 Staring at logs
