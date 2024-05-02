@@ -116,24 +116,6 @@ local_path_override(
 )
 ```
 
-For the local `bazel-orfs` it is also required to mount the `bazel-orfs` workspace directory to the docker containers while using the `docker flow`.
-In your local `bazel-orfs` apply the changes showcased by the diff:
-
-```
-diff --git a/docker_shell.sh b/docker_shell.sh
-index db1673c..f933d6a 100755
---- a/docker_shell.sh
-+++ b/docker_shell.sh
-@@ -83,6 +83,7 @@ docker run --name "bazel-orfs-$uid" --rm \
-  -e WORK_HOME=$WORKSPACE_EXECROOT/$RULEDIR \
-  -v $WORKSPACE_ROOT:$WORKSPACE_ROOT \
-  -v $WORKSPACE_ORIGIN:$WORKSPACE_ORIGIN \
-+ -v <path to local bazel-orfs directory>:<path to local bazel-orfs directory> \
-  --network host \
-  $DOCKER_INTERACTIVE \
-  $DOCKER_ARGS \
-```
-
 Example of using a Bazel artifact server
 ----------------------------------------
 
