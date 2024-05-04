@@ -704,7 +704,7 @@ build_openroad(
 boom_tile_small_srams = [
         "tag_array_64x184",
         "tag_array_64x168",
-        "data_2048x2",
+        # "data_2048x2",
         "table_256x48",
         "table_128x52",
         "table_128x44",
@@ -719,13 +719,15 @@ boom_tile_rams = [
         # "l2_tlb_ram_0_512x46",
         "ebtb_128x40",
         "array_256x128",
-        "dataArrayB_256x64",
-        "l2_tlb_ram_0_512x45"]
+        "dataArrayB_256x64"
+        #, "l2_tlb_ram_0_512x45"
+        ]
 
-digital_top_srams=["cc_dir_1024x168",
-"data_data_40x128",
-"ghist_40x64",
-"meta_40x240"]
+digital_top_srams=[
+        # "cc_dir_1024x168",
+        # "data_data_40x128",
+        # "ghist_40x64",
+        "meta_40x240"]
 
 
 [build_openroad(
