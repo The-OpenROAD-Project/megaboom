@@ -1,16 +1,25 @@
 Bazel on OpenROAD-flow-scripts(ORFS) with MegaBoom use case
 ===========================================================
 
-This is a stand-alone project that use a wafer thin Bazel layer on top
-of OpenROAD-flow-scripts.
+Demonstrates a practical workflow for large designs in a git repository that is not a fork of OpenROAD-flow-scripts and that is using its own file layout layout: similar to a private repository or a large project.
 
-The purpose of this project is to demonstrate and develop a practical workflow
-for large designs in a git repository that is not a fork of OpenROAD-flow-scripts
-and that is using its own file layout layout: similar to a private
-repository for a large project.
+MegaBoom(a RISC-V SoC from Chipyard) has been chosen as a test-case as it is large, familiar and interesting in itself.
 
-MegaBoom(a RISC-V SoC from Chipyard) has been chosen as a test-case
-as it is large, familiar and interesting in itself.
+Build and view result
+---------------------
+
+The build of MegaBoom takes on the order of 24 hours, unless you configure an
+[artifact server](#using-the-openroad-project-bazel-artifact-server-to-download-pre-built-results)
+to download pre-built results.
+
+To build BoomTile and set up scripts to view the results in the OpenROAD GUI:
+
+    bazel build BoomTile_final_gui
+
+View result using Docker in OpenROAD GUI using the script that launches OpenROAD-flow-scripts
+make with the design configuration and forwards arguments to make to view the result:
+
+    bazel-bin/BoomTile_final_docker gui_final
 
 Setup
 -----
@@ -45,8 +54,8 @@ local_path_override(
 )
 ```
 
-Example of using a Bazel artifact server
-----------------------------------------
+Using the OpenROAD project Bazel artifact server to download pre-built results
+------------------------------------------------------------------------------
 
 If you only have a single Google account that you use for Google Cloud locally, you can use
 `--google_default_credentials`.
@@ -68,42 +77,10 @@ To use this feature, copy the snippet below into `.bazelrc` and specify your use
 cached authorization:
 
     bazel shutdown
-    bazel build ALUExeUnit_floorplan
+    bazel build BoomTile_final_scripts
 
 To gain access to the https://storage.googleapis.com/megaboom-bazel-artifacts bucket,
 reach out to Tom Spyrou, Precision Innovations (https://www.linkedin.com/in/tomspyrou/).
-
-Tutorial
-========
-
-This tutorial uses the `docker flow` to run the physical design flow with ORFS.
-Before starting, it is required to have available in your docker runtime a docker image with `OpenROAD-flow-scripts` installation.
-For more information, please refer to the [Requirements](https://github.com/The-OpenROAD-Project/bazel-orfs?tab=readme-ov-file#requirements) chapter of `bazel-orfs`.
-
----
-
-**Note:**
-`orfs_env` rule for downloading and loading the docker image is defined in `bazel-orfs`.
-In order to run it in the context of megaboom (the workspace that uses `bazel-orfs` as external dependency), it is required to use correct bazel label to this external target:
-
-```
-bazel run @bazel-orfs//:orfs_env
-```
-
----
-
-Hello world
------------
-
-A quick test-build:
-
-```
-# Build L1MetadataArray macro up to the placement stage and generate scripts
-bazel build L1MetadataArray_test_place_gui
-
-# View results with OpenROAD GUI
-./bazel-bin/L1MetadataArray_test_place_docker gui_place
-```
 
 Staring at logs
 ---------------
@@ -118,8 +95,8 @@ tail -f $(./out -t)
 Currently, this script depends on bazel cache residing under `~/.cache/bazel/`.
 This directory is scanned for the newest log file which name of gets printed to the standard output.
 
-MegaBoom RTL code
-=================
+About the MegaBoom RTL code
+===========================
 
 Based on: https://chipyard.readthedocs.io/en/stable/VLSI/Sky130-OpenROAD-Tutorial.html#initial-setup
 
@@ -136,7 +113,7 @@ make tutorial=sky130-openroad CONFIG=MegaBoomMacroConfig verilog
 ```
 
 Hammer hacking with ASAP7
-=========================
+-------------------------
 
 Build everything:
 
