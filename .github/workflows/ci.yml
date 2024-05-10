@@ -37,7 +37,7 @@ jobs:
           - L1MetadataArray_test_generate_abstract_make
           - regfile_128x65_floorplan_make
           - lb_32x128_generate_abstract_make
-          - data_2048x2_generate_abstract_make
+          - data_2048x8_generate_abstract_make
     env:
       DEBIAN_FRONTEND: "noninteractive"
     steps:
