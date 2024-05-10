@@ -12,77 +12,6 @@ repository for a large project.
 MegaBoom(a RISC-V SoC from Chipyard) has been chosen as a test-case
 as it is large, familiar and interesting in itself.
 
-There are many build flows on top of OpenROAD
----------------------------------------------
-
-There are numerous build flows on top of OpenROAD, these are some:
-
-- ORFS. The developers of OpenROAD use this flow
-  to test the tool. It has features specifically for reporting bugs and
-  is simple to understand for OpenROAD developers as well as novice
-  users. It provides a lingua franca in the community to discuss features
-  and test cases.
-- [Hammer](https://chipyard.readthedocs.io/en/latest/VLSI/Hammer.html) is used with
-  Chipyard.
-- https://www.zeroasic.com/ has a Python based workflow that supports both
-  commercial tools and OpenROAD.
-
-Why Bazel on top of ORFS?
--------------------------
-
-ORFS and OpenROAD is work in progress and one should expect for
-large designs to get involved with the community or need a
-support contract with Precision Innovations (https://www.linkedin.com/in/tomspyrou/).
-
-Using ORFS directly, instead of modifying it or creating an alternative flow,
-makes it easy to get the very latest features and version of OpenROAD and ORFS
-as well as having access to the tools, `make issue` and `deltaDebug.py`,
-required to articulate familiar and easily actionable github issues for
-the OpenROAD and ORFS maintainers.
-
-Challenges with large designs and ORFS that Bazel helps address
----------------------------------------------------------------
-
-- **Long build times**; hours, days.
-- **Artifacts** are needed. Synthesis, for instance, can
-  be very time consuming and it is useful to share synthesis artifacts
-  between developers and CI servers. On a large design with multiple
-  developers and many pull requests in flight, it can become error
-  prone to manually track exactly what version of built stages that
-  are still valid. Ideally one should be able to check out a
-  pull request and automatically get the right prebuilt artifacts.
-- **Dependencies** in ORFS are at the file level. For instance, synthesis must be
-  redone if the clock period changes, but many other changes to .sdc do not require
-  resynthesis. With finer grained dependencies, superfluous time consuming
-  resynthesis, floor planning, placement, cts and routing can be avoided.
-- **Examining failures** for global/detailed place/route, that can take many
-  hours to build, is useful. Artifacts for failed stages are needed to
-  examine the problem: failed .odb file as well as any reports. This workflow
-  always existed for detailed routing: detailed routing succeeds, has exit code 0,
-  even if there are DRC errors.
-- **Mocking abstracts** when doing initial top-level floorplanning is needed to
-  separate concerns. It can be useful to skip one of place, cts, route for
-  the macros until one starts to converge on a workable
-  top level floorplan. This is supported via `mock_abstract` in `openroad.bzl`
-- **Efficient local storage of build artifacts** are needed as .odb files are
-  large and they should not exist in duplicates unnecessarily. Bazel
-  uses symbolic links. ORFS can not use symbolic links for .odb files because,
-  long story short, `make` does not work properly with symbolic links. This becomes
-  especially important when working with many branches and pull requests where
-  there is a large degree of shared .odb files.
-- **Parallel builds** are required for macros.
-- **Remote build services** are required for large projects where
-  developers machines are powerful enough to examine results, but
-  not to run builds.
-- **Cross cutting builds** such as completing floor planning for all macros,
-  then place, then cts, then route is required to be able to separate concerns.
-  When iterating on the concerns, it can be useful to complete placement under
-  human supervision to iterate quickly, but to leave routing for CI servers to complete.
-- **Select level of detail of artifacts** is useful throughout the
-  development process. Initially for a macro, artifacts are useful for inspection
-  for synthesis, floorplan, place, cts, route and abstract. Later, for stable macros,
-  abstracts are adequate(no .odb file, only .lef, .lib and .gds).
-
 Setup
 -----
 
@@ -140,7 +69,6 @@ cached authorization:
 
     bazel shutdown
     bazel build ALUExeUnit_floorplan
-
 
 To gain access to the https://storage.googleapis.com/megaboom-bazel-artifacts bucket,
 reach out to Tom Spyrou, Precision Innovations (https://www.linkedin.com/in/tomspyrou/).
