@@ -69,7 +69,7 @@ jobs:
     name: Local flow - test _scripts tartgets
     runs-on: ubuntu-22.04
     container:
-      image: ghcr.io/antmicro/openroad-flow-scripts/ubuntu22.04@sha256:b13b35193bec45cb708bd9a5ee3546a7f20378e3c977a4c49f00e9c1c8a71181
+      image: ghcr.io/antmicro/openroad-flow-scripts/ubuntu22.04@sha256:ef18800147f1b09fd00366c32b2266da4944d59d588680ed05d2685fbae2531a
     defaults:
       run:
         shell: bash
