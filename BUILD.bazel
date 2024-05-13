@@ -156,7 +156,7 @@ all_source_files = [
 "rtl/CompareRecFN.sv",
 "rtl/ComposedBranchPredictorBank.sv",
 "rtl/CSRFile.sv",
-"rtl/data_2048x8.sv",
+"mock/data_2048x8.sv",
 "mock/dataArrayB_256x64.sv",
 "rtl/DebugTransportModuleJTAG.sv",
 "rtl/DecodeUnit.sv",
@@ -741,7 +741,8 @@ digital_top_srams=[
         'ebtb_128x40':'mock',
         'ghist_40x64':'mock',
         'l2_tlb_ram_0_512x45':'mock',
-        'tag_array_64x184':'mock'}.get(ram, "rtl") + "/" + ram + ".sv"],
+        'tag_array_64x184':'mock',
+        'data_2048x8':'mock'}.get(ram, "rtl") + "/" + ram + ".sv"],
         sdc_constraints = ":constraints-sram",
         stage_args={
                 'synth': ['SYNTH_MEMORY_MAX_BITS=16384'],
