@@ -100,10 +100,6 @@ jobs:
         env:
           TARGET: tag_array_64x184
         run: .github/scripts/build_local_target.sh
-      - name: build local stage targets - lb_32x128
-        env:
-          TARGET: lb_32x128
-        run: .github/scripts/build_local_target.sh
       - name: build local stage targets - L1MetadataArray_test
         env:
           TARGET: L1MetadataArray_test
