@@ -359,7 +359,7 @@ all_source_files = [
 "rtl/table_128x52.sv",
 "rtl/table_256x48.sv",
 "rtl/tag_array_64x168.sv",
-"rtl/tag_array_64x184.sv",
+"mock/tag_array_64x184.sv",
 "rtl/TageBranchPredictorBank.sv",
 "rtl/TageTable_1.sv",
 "rtl/TageTable_2.sv",
@@ -740,7 +740,8 @@ digital_top_srams=[
         'data_data_40x128':'mock',
         'ebtb_128x40':'mock',
         'ghist_40x64':'mock',
-        'l2_tlb_ram_0_512x45':'mock'}.get(ram, "rtl") + "/" + ram + ".sv"],
+        'l2_tlb_ram_0_512x45':'mock',
+        'tag_array_64x184':'mock'}.get(ram, "rtl") + "/" + ram + ".sv"],
         sdc_constraints = ":constraints-sram",
         stage_args={
                 'synth': ['SYNTH_MEMORY_MAX_BITS=16384'],
@@ -752,7 +753,7 @@ digital_top_srams=[
         },
         mock_abstract=True,
         mock_stage='cts',
-        mock_area={'tag_array_64x184':0.20,
+        mock_area={
         'meta_40x240':0.3,
         'data_data_40x128':1,
         'ram_256x8':0.2,
