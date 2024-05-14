@@ -15,6 +15,7 @@ filegroup(
     data = [
         ":util",
     ],
+    visibility = [":__subpackages__"],
 )
 
 filegroup(
@@ -55,6 +56,7 @@ filegroup(
     data = [
         ":util",
     ],
+    visibility = [":__subpackages__"],
 )
 
 
