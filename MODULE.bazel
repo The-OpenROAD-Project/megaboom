@@ -8,7 +8,7 @@ bazel_dep(name = "bazel-orfs")
 git_override(
     module_name = "bazel-orfs",
     remote = "https://github.com/The-OpenROAD-Project/bazel-orfs.git",
-    commit = "4d9d5084270d7cfe51019f3cb6b886f6f8b57872",
+    commit = "44378cf64346f64eeab5fec7860634a680c88c6c",
 )
 
 # Read: https://github.com/The-OpenROAD-Project/megaboom?tab=readme-ov-file#local-workspace
