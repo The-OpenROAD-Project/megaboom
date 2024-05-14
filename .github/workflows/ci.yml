@@ -38,6 +38,7 @@ jobs:
           - regfile_128x65_floorplan_make
           - lb_32x128_generate_abstract_make
           - data_2048x8_generate_abstract_make
+          - subpackage:tag_array_64x184_generate_abstract
     env:
       DEBIAN_FRONTEND: "noninteractive"
     steps:
