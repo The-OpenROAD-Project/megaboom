@@ -1,4 +1,5 @@
-load("@bazel-orfs//:openroad.bzl", "build_openroad", "add_options_all_stages")
+load("@bazel-orfs//:openroad.bzl", "build_openroad", "add_options_all_stages", "create_out_rule")
+create_out_rule()
 
 filegroup(
     name = "util",
