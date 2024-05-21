@@ -1,6 +1,6 @@
 {
   "lockFileVersion": 3,
-  "moduleFileHash": "d3f4a2449e6dc736b45c5392bce24124a4931dc276f64ba55aea4eafa97b10aa",
+  "moduleFileHash": "bf6a9e371451d6c56b1a3bbbc52c290371200dc404688212ba37d7268d2e2726",
   "flags": {
     "cmdRegistries": [
       "https://bcr.bazel.build/"
@@ -56,7 +56,7 @@
               "tagName": "pull",
               "attributeValues": {
                 "name": "orfs_image",
-                "digest": "sha256:b13b35193bec45cb708bd9a5ee3546a7f20378e3c977a4c49f00e9c1c8a71181",
+                "digest": "sha256:ef18800147f1b09fd00366c32b2266da4944d59d588680ed05d2685fbae2531a",
                 "image": "ghcr.io/antmicro/openroad-flow-scripts/ubuntu22.04",
                 "platforms": [
                   "linux/amd64"
@@ -1873,7 +1873,7 @@
               "scheme": "https",
               "registry": "ghcr.io",
               "repository": "antmicro/openroad-flow-scripts/ubuntu22.04",
-              "identifier": "sha256:b13b35193bec45cb708bd9a5ee3546a7f20378e3c977a4c49f00e9c1c8a71181",
+              "identifier": "sha256:ef18800147f1b09fd00366c32b2266da4944d59d588680ed05d2685fbae2531a",
               "platforms": {
                 "@@platforms//cpu:x86_64": "@orfs_image_linux_amd64"
               },
@@ -2208,7 +2208,7 @@
               "scheme": "https",
               "registry": "ghcr.io",
               "repository": "antmicro/openroad-flow-scripts/ubuntu22.04",
-              "identifier": "sha256:b13b35193bec45cb708bd9a5ee3546a7f20378e3c977a4c49f00e9c1c8a71181",
+              "identifier": "sha256:ef18800147f1b09fd00366c32b2266da4944d59d588680ed05d2685fbae2531a",
               "platform": "linux/amd64",
               "target_name": "orfs_image_linux_amd64"
             }
