@@ -82,19 +82,6 @@ cached authorization:
 To gain access to the https://storage.googleapis.com/megaboom-bazel-artifacts bucket,
 reach out to Tom Spyrou, Precision Innovations (https://www.linkedin.com/in/tomspyrou/).
 
-Staring at logs
----------------
-
-In ORFS it is oftentimes useful to view the tail of the single running
-stage on a machine, `./out` is in this project to "stare at logs":
-
-```
-tail -f $(./out -t)
-```
-
-Currently, this script depends on bazel cache residing under `~/.cache/bazel/`.
-This directory is scanned for the newest log file which name of gets printed to the standard output.
-
 About the MegaBoom RTL code
 ===========================
 
