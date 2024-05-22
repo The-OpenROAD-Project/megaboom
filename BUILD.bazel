@@ -12,8 +12,6 @@ filegroup(
     name = "io-sram",
     srcs = [
         "io-sram.tcl",
-    ],
-    data = [
         ":util",
     ],
     visibility = [":__subpackages__"],
@@ -23,8 +21,6 @@ filegroup(
     name = "io-boomtile",
     srcs = [
         "io-boomtile.tcl",
-    ],
-    data = [
         ":util",
     ],
 )
@@ -33,8 +29,6 @@ filegroup(
     name = "io",
     srcs = [
         "io.tcl",
-    ],
-    data = [
         ":util",
     ],
 )
@@ -43,8 +37,6 @@ filegroup(
     name = "io-top",
     srcs = [
         "io-top.tcl",
-    ],
-    data = [
         ":util",
     ],
 )
@@ -53,8 +45,6 @@ filegroup(
     name = "constraints-sram",
     srcs = [
         "constraints-sram.sdc",
-    ],
-    data = [
         ":util",
     ],
     visibility = [":__subpackages__"],
