@@ -3,8 +3,7 @@ load("@bazel-orfs//:openroad.bzl", "build_openroad")
 build_openroad(
     name = "tag_array_64x184",
     io_constraints = "//:io-sram",
-    mock_abstract = True,
-    mock_stage = "floorplan",
+    abstract_stage = "floorplan",
     sdc_constraints = "//:constraints-sram",
     stage_args = {
         "floorplan": [
