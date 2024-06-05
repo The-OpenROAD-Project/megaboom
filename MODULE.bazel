@@ -11,7 +11,7 @@ git_override(
     commit = "72403c0ed232130a5ec23cb22c2c9608c03490e0",
 )
 
-# Read: https://github.com/The-OpenROAD-Project/megaboom?tab=readme-ov-file#local-workspace
+# Read: https://github.com/The-OpenROAD-Project/bazel-orfs?tab=readme-ov-file#usage
 #
 # TL;DR
 #
