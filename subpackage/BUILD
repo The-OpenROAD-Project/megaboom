@@ -6,6 +6,9 @@ build_openroad(
     abstract_stage = "floorplan",
     sdc_constraints = "//:constraints-sram",
     stage_args = {
+        "synth": [
+            "SYNTH_MEMORY_MAX_BITS=12000",
+        ],
         "floorplan": [
             "CORE_UTILIZATION=40",
             "CORE_ASPECT_RATIO=2",
