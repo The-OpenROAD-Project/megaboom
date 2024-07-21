@@ -46,8 +46,7 @@ filegroup(
 filegroup(
     name = "constraints-sram",
     srcs = [
-        "constraints-sram.sdc",
-        ":util",
+        "constraints.sdc",
     ],
     visibility = [":__subpackages__"],
 )
@@ -671,37 +670,6 @@ build_openroad(
         'place': ['PLACE_DENSITY=0.40']}
         )
 
-build_openroad(
-        docker_image = orfs_version,
-        name = "BoomCore",
-        verilog_files=["rtl/BoomCore.sv",
-        "rtl/Arbiter_18.sv",
-        "rtl/CSRFile.sv",
-        "rtl/Arbiter_19.sv",
-        "rtl/BasicDispatcher.sv",
-        "rtl/BranchMaskGenerationLogic.sv",
-        "rtl/DecodeUnit.sv",
-        "rtl/ALUExeUnit.sv",
-        "rtl/ALUExeUnit_2.sv",
-        "rtl/ALUExeUnit_3.sv",
-        "rtl/ALUExeUnit_4.sv",
-        "rtl/ALUExeUnit_5.sv"
-        ] + exeunitsrc + registerreadsrc,
-        macros=["FpPipeline",
-        "IssueUnitCollapsing_1",
-        "IssueUnitCollapsing_2",
-        "Rob",
-        "RenameStage",
-        "RenameStage_1",
-        "RegisterRead_1",
-        "RegisterFileSynthesizable_1"] +
-        execunits,
-        sdc_constraints = ":constraints-top.sdc",
-        stage_args={
-                'floorplan': ['CORE_UTILIZATION=10','MACRO_PLACE_HALO=50 50'],
-                'place': ['PLACE_DENSITY=0.20']}
-        )
-
 boom_tile_small_srams = [
         "tag_array_64x184",
         "tag_array_64x168",
@@ -830,7 +798,7 @@ build_openroad(
         variant="test",
         macros=["tag_array_64x184"],
         io_constraints=":io",
-		sdc_constraints=":constraints-top.sdc",
+		sdc_constraints=":constraints.sdc",
         stage_args={
                 'synth': ['SYNTH_HIERARCHICAL=1'],
                 'floorplan': [
