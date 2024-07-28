@@ -20,6 +20,15 @@ filegroup(
 )
 
 filegroup(
+    name = "io-sram-bottom",
+    srcs = [
+        "io-sram-bottom.tcl",
+        ":util",
+    ],
+    visibility = [":__subpackages__"],
+)
+
+filegroup(
     name = "io-boomtile",
     srcs = [
         "io-boomtile.tcl",
@@ -772,7 +781,7 @@ boom_regfile_rams = [
 [build_openroad(
         docker_image = orfs_version,
         name = ram,
-        io_constraints=":io-sram",
+        io_constraints={'regfile_128x64':":io-sram-bottom", }.get(ram, ":io-sram"),
         verilog_files=["mock/" + ram + ".sv"],
         sdc_constraints = ":constraints-sram",
         stage_args={
