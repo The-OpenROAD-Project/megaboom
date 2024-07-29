@@ -836,7 +836,7 @@ build_openroad(
                         ],
                 'cts': ['TNS_END_PERCENT=0',
                 'SKIP_CTS_REPAIR_TIMING=1'],
-                'place': ['PLACE_DENSITY=0.27',
+                'place': ['PLACE_DENSITY=0.20',
                 'PLACE_PINS_ARGS=-annealing',
                 'GPL_ROUTABILITY_DRIVEN=0'],
                 'grt': ['SKIP_INCREMENTAL_REPAIR=1',
