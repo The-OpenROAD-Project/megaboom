@@ -72,8 +72,11 @@ mock_files = [
 ]
 
 all_source_files = sorted(glob(
-    include = ["rtl/*.sv"],
-    exclude = [f.replace("mock/", "rtl/") for f in mock_files]
+    include = ["rtl/*.(sv|v)"],
+    exclude = ([f.replace("mock/", "rtl/") for f in mock_files] +
+    ["rtl/ClockSourceAtFreqMHz.v",
+    "rtl/SimJTAG.v",
+    "rtl/SimTSI.v"])
 ) + mock_files)
 
 boom_tile_small_srams = [
