@@ -33,12 +33,12 @@ jobs:
       fail-fast: false
       matrix:
         STAGE_TARGET:
-          - tag_array_64x184_generate_abstract_make
-          - L1MetadataArray_test_generate_abstract_make
-          - regfile_128x65_floorplan_make
-          - lb_32x128_generate_abstract_make
-          - data_2048x8_generate_abstract_make
+          - tag_array_64x184_generate_abstract
+          - L1MetadataArray_generate_abstract
+          - lb_32x128_generate_abstract
+          - data_2048x8_generate_abstract
           - subpackage:tag_array_64x184_generate_abstract
+          - regfile_128x65_floorplan
     env:
       DEBIAN_FRONTEND: "noninteractive"
     steps:
@@ -55,22 +55,25 @@ jobs:
           docker --version
       - name: Checkout bazel-orfs
         uses: actions/checkout@v4
-      - name: load docker image
-        run: |
-          bazel run --subcommands --verbose_failures --sandbox_debug @bazel-orfs//:orfs_env
-      - name: query target
+      - name: Query target
         run: |
           bazel query ${{ matrix.STAGE_TARGET }}
           bazel query ${{ matrix.STAGE_TARGET }} --output=build
-      - name: build target
+      - name: Build abstract target
+        if: matrix.STAGE_TARGET != 'regfile_128x65_floorplan'
         run: |
           bazel build --subcommands --verbose_failures --sandbox_debug ${{ matrix.STAGE_TARGET }}
+      - name: Build floorplan target
+        if: matrix.STAGE_TARGET == 'regfile_128x65_floorplan'
+        run: |
+          bazel run --subcommands --verbose_failures --sandbox_debug ${{ matrix.STAGE_TARGET }} -- `pwd`/build
 
-  test-make-scripts-target-local:
-    name: Local flow - test _scripts tartgets
+
+  test-target-local:
+    name: Local flow - test targets
     runs-on: ubuntu-22.04
     container:
-      image: ghcr.io/antmicro/openroad-flow-scripts/ubuntu22.04@sha256:ef18800147f1b09fd00366c32b2266da4944d59d588680ed05d2685fbae2531a
+      image: openroad/orfs:v3.0-1022-g69767b6a@sha256:adc74e5343a7638919f747eb74cbc67b5b71b18d9012608fef912ccee534c458
     defaults:
       run:
         shell: bash
@@ -97,23 +100,23 @@ jobs:
           chmod +x /usr/local/bin/bazel
       - name: Checkout megaboom
         uses: actions/checkout@v4
-      - name: build local stage targets - tag_array_64x184
+      - name: Build local stage targets - tag_array_64x184
         env:
           TARGET: tag_array_64x184
         run: .github/scripts/build_local_target.sh
-      - name: build local stage targets - L1MetadataArray_test
+      - name: Build local stage targets - L1MetadataArray
         env:
-          TARGET: L1MetadataArray_test
-          STAGES: synth_sdc synth floorplan place generate_abstract
+          TARGET: L1MetadataArray
+          STAGES: synth floorplan place
         run: .github/scripts/build_local_target.sh
-      - name: open targets
+      - name: Open targets
         run: |
-          for stage in "synth" "floorplan" "place"; do
-            echo | bazel-bin/L1MetadataArray_test_${stage}_local_make open_${stage}
+          for stage in "floorplan" "place"; do
+            echo | build/make open_${stage}
           done
 
-  test-make-scripts-target-docker:
-    name: Docker flow - test _scripts tartgets
+  test-target-bazel:
+    name: Bazel flow - test targets
     runs-on: ubuntu-22.04
     defaults:
       run:
@@ -122,7 +125,6 @@ jobs:
       fail-fast: false
     env:
       DEBIAN_FRONTEND: "noninteractive"
-      FLOW: docker
     steps:
       - name: Free Disk Space (Ubuntu)
         uses: jlumbroso/free-disk-space@main
@@ -137,21 +139,18 @@ jobs:
           docker --version
       - name: Checkout bazel-orfs
         uses: actions/checkout@v4
-      - name: load docker image
-        run: |
-          bazel run --subcommands --verbose_failures --sandbox_debug @bazel-orfs//:orfs_env
-      - name: build local stage targets - tag_array_64x184
+      - name: Build local stage targets - tag_array_64x184
         env:
           TARGET: tag_array_64x184
         run: .github/scripts/build_local_target.sh
-      - name: build local stage targets - L1MetadataArray_test
+      - name: Build local stage targets - L1MetadataArray
         env:
-          TARGET: L1MetadataArray_test
-          STAGES: synth_sdc synth floorplan place generate_abstract
+          TARGET: L1MetadataArray
+          STAGES: synth floorplan place
         run: .github/scripts/build_local_target.sh
-      - name: open target
-        if: matrix.STAGE_TARGET == 'L1MetadataArray_test_generate_abstract'
+      - name: Open target
+        if: matrix.STAGE_TARGET == 'L1MetadataArray_generate_abstract'
         run: |
-          for stage in "synth" "floorplan" "place"; do
-            echo | bazel-bin/L1MetadataArray_test_${stage}_docker open_${stage}
+          for stage in "floorplan" "place"; do
+            echo | build/make open_${stage}
           done
