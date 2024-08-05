@@ -72,7 +72,7 @@ mock_files = [
 ]
 
 all_source_files = sorted(glob(
-    include = ["rtl/*.(sv|v)"],
+    include = ["rtl/*.sv", "rtl/*.v"],
     exclude = ([f.replace("mock/", "rtl/") for f in mock_files] +
     ["rtl/ClockSourceAtFreqMHz.v",
     "rtl/SimJTAG.v",
