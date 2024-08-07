@@ -76,7 +76,7 @@ SRAM_FLOOR_PLACE_ARGUMENTS = {"IO_CONSTRAINTS": "$(location :io-sram)"}
 
 SRAM_BOOMTILE_FLOOR_PLACE_ARGUMENTS = {"IO_CONSTRAINTS": "$(location :io-boomtile)"}
 
-SKIP_REPORT_METRICS = {"SKIP_REPORT_METRICS": "0"}
+SKIP_REPORT_METRICS = {"SKIP_REPORT_METRICS": "1"}
 
 mock_files = [
     "mock/array_256x128.sv",
