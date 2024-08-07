@@ -21,3 +21,9 @@ git_override(
 #local_path_override(
 #   module_name = "bazel-orfs", path = "../bazel-orfs"
 #)
+
+orfs = use_extension("@bazel-orfs//:extension.bzl", "orfs_repositories")
+orfs.default(
+    image = "openroad/orfs:v3.0-1098-ge0c1d5d6",
+    sha256 = "7b560e7da878d535a65cc39f29ccfe8539fe1ad5f8e857a13bdca77241c3de49",
+)
