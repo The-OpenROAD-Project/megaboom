@@ -14,3 +14,4 @@ megaboom.qws
 tmp-clearbox/
 .vscode/
 copyright.txt
+MODULE.bazel.lock
