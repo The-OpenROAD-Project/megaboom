@@ -13,4 +13,4 @@ megaboom.qsf
 megaboom.qws
 tmp-clearbox/
 .vscode/
-copyright.txt
+.user-bazelrc
