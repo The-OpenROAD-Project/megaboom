@@ -13,15 +13,23 @@ echo "Build ${target_name} macro"
 for stage in "${STAGES[@]}"
 do
   if [[ -z $SKIP_BUILD ]] ; then
-    echo "query dependency target"
+    echo "[${target_name}] ${stage}: Query dependency target"
     bazel query "${target_name}_${stage}_deps"
     bazel query "${target_name}_${stage}_deps" --output=build
-    echo "build dependency"
+    echo "[${target_name}] ${stage}: Build dependency"
     bazel run --subcommands --verbose_failures --sandbox_debug "${target_name}_${stage}_deps" -- "$(pwd)/build"
   fi
   if [[ -z $SKIP_RUN ]] ; then
-    echo "run make script"
-    build/make "${stage}"
+    stages=()
+    if [[ $stage == "synth" ]]; then
+        stages+=("do-yosys-canonicalize" "do-yosys")
+    fi
+    stages+=("do-${stage}")
+    for local_stage in "${stages[@]}"
+    do
+        echo "[${target_name}] ${local_stage}: Run make script"
+        build/make "${local_stage}"
+    done
   fi
 done
 
