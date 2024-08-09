@@ -23,6 +23,20 @@ jobs:
         run: |
           buildifier -lint warn -r .
 
+  generate-config:
+    name: Generate configs
+    runs-on: ubuntu-latest
+    outputs:
+      docker-tag: ${{ steps.docker-image.outputs.docker-orfs }}
+    steps:
+      - name: Checkout megaboom
+        uses: actions/checkout@v4
+      - name: Lint Bazel files
+        run: bazel mod tidy && git diff --exit-code
+      - name: Extract Docker tag
+        id: docker-image
+        run: echo "docker-orfs=$(python3 .github/scripts/extract_docker_revision.py MODULE.bazel.lock)" | tee -a $GITHUB_OUTPUT
+
   test-make-target:
     name: ${{ matrix.STAGE_TARGET }}
     runs-on: ubuntu-22.04
@@ -68,18 +82,15 @@ jobs:
         run: |
           bazel run --subcommands --verbose_failures --sandbox_debug ${{ matrix.STAGE_TARGET }} -- `pwd`/build
 
-
   test-target-local:
     name: Local flow - test targets
     runs-on: ubuntu-22.04
+    needs: generate-config
     container:
-      # NOTE: Ensure this is kept in sync with MODULE.bazel
-      image: openroad/orfs:v3.0-1114-g46acc762@sha256:ae4df23391c26bcc48a506f8e0d0da73742d1b6cb3b1dc02f4d5ea71170195b5
+      image: ${{ fromJSON(needs.generate-config.outputs.docker-tag).image }}
     defaults:
       run:
         shell: bash
-    strategy:
-      fail-fast: false
     env:
       DEBIAN_FRONTEND: "noninteractive"
       FLOW_HOME: /OpenROAD-flow-scripts/flow
@@ -122,8 +133,6 @@ jobs:
     defaults:
       run:
         shell: bash
-    strategy:
-      fail-fast: false
     env:
       DEBIAN_FRONTEND: "noninteractive"
     steps:
