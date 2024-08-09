@@ -73,7 +73,8 @@ jobs:
     name: Local flow - test targets
     runs-on: ubuntu-22.04
     container:
-      image: openroad/orfs:v3.0-1022-g69767b6a@sha256:adc74e5343a7638919f747eb74cbc67b5b71b18d9012608fef912ccee534c458
+      # NOTE: Ensure this is kept in sync with MODULE.bazel
+      image: openroad/orfs:v3.0-1114-g46acc762@sha256:ae4df23391c26bcc48a506f8e0d0da73742d1b6cb3b1dc02f4d5ea71170195b5
     defaults:
       run:
         shell: bash
@@ -149,7 +150,6 @@ jobs:
           STAGES: synth floorplan place
         run: .github/scripts/build_local_target.sh
       - name: Open target
-        if: matrix.STAGE_TARGET == 'L1MetadataArray_generate_abstract'
         run: |
           for stage in "floorplan" "place"; do
             echo | build/make open_${stage}
