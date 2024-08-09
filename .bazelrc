@@ -1,2 +1,2 @@
 build --incompatible_strict_action_env
-build --spawn_strategy=local
+try-import %workspace%/.user-bazelrc

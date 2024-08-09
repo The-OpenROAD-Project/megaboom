@@ -7,9 +7,9 @@ import sys
 
 
 def get_gcloud_auth_token():
-    with open(".bazelrc") as f:
+    with open(".user-bazelrc") as f:
         all = f.read()
-    # The username is in the .bazelrc file as "# user: <username>"
+    # The username is in the .user-bazelrc file as "# user: <username>"
     # fish it out using a regex
     USER = re.search(r"# user: (.*)", all).group(1)
 
