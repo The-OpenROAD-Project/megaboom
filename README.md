@@ -32,6 +32,42 @@ Bazel-orfs must be specified in MegaBoom as the external dependency.
 It can be pinned to a specific revision of [the upstream repository](https://github.com/The-OpenROAD-Project/bazel-orfs) or the dependency can point to a local bazel-orfs workspace available on disk.
 Setup can be modified in [MODULE.bazel](./MODULE.bazel) file.
 
+
+About the MegaBoom RTL code
+===========================
+
+Based on: https://chipyard.readthedocs.io/en/stable/VLSI/Sky130-OpenROAD-Tutorial.html#initial-setup
+
+> **Note:** Chipyard main does not work smoothly with MegaBoom as of writing as Chipyard is mixing SFC and MFC.
+
+Follow https://github.com/ucb-bar/chipyard/issues/1623 for latest updates.
+
+That said, the `rtl/` folder was generated using latest Chipyard + some hacked files locally:
+
+```
+make tutorial=sky130-openroad CONFIG=MegaBoomMacroConfig verilog
+```
+
+Hammer hacking with ASAP7
+-------------------------
+
+Build everything:
+
+```
+./build-setup.sh --skip-ctags --skip-conda --skip-toolchain --skip-firesim --skip-marshal --skip-clean
+```
+
+Create Verilog code:
+
+```
+make CONFIG=MegaBoomConfig tech_name=asap7 VLSI_TOP=ChipTop INPUT_CONFS=example-asap7.yml TOP_MACROCOMPILER_MODE='--mode synflops' verilog
+```
+
+Operations
+==========
+
+Here is some operational information to help you use megaboom.
+
 Using the OpenROAD project Bazel artifact server to download pre-built results
 ------------------------------------------------------------------------------
 
@@ -64,32 +100,17 @@ cached authorization:
 To gain access to the https://storage.googleapis.com/megaboom-bazel-artifacts bucket,
 reach out to Tom Spyrou, Precision Innovations (https://www.linkedin.com/in/tomspyrou/).
 
-About the MegaBoom RTL code
-===========================
-
-Based on: https://chipyard.readthedocs.io/en/stable/VLSI/Sky130-OpenROAD-Tutorial.html#initial-setup
-
-> **Note:** Chipyard main does not work smoothly with MegaBoom as of writing as Chipyard is mixing SFC and MFC.
-
-Follow https://github.com/ucb-bar/chipyard/issues/1623 for latest updates.
-
-That said, the `rtl/` folder was generated using latest Chipyard + some hacked files locally:
-
-```
-make tutorial=sky130-openroad CONFIG=MegaBoomMacroConfig verilog
-```
-
-Hammer hacking with ASAP7
+Updating the ORFS Version
 -------------------------
+To update the orfs version that megaboom uses, update the image and sha256 in the orfs.default section of the [MODULE.bazel](./MODULE.bazel) file with the appropriate orfs-version-tag and orfs-version-sha256 values.
 
-Build everything:
+    orfs.default(
+        image = "openroad/orfs:<orfs-version-tag>",
+        sha256 = "<orfs-version-sha256>",
+    )
 
-```
-./build-setup.sh --skip-ctags --skip-conda --skip-toolchain --skip-firesim --skip-marshal --skip-clean
-```
+The list of available orfs docker images can be found at the [orfs Docker Hub](https://hub.docker.com/r/openroad/orfs/tags).
 
-Create Verilog code:
+After [MODULE.bazel](./MODULE.bazel) has been modified, execute the following command to update the [MODULE.bazel.lock](./MODULE.bazel.lock) file:
 
-```
-make CONFIG=MegaBoomConfig tech_name=asap7 VLSI_TOP=ChipTop INPUT_CONFS=example-asap7.yml TOP_MACROCOMPILER_MODE='--mode synflops' verilog
-```
+    bazel mod tidy
