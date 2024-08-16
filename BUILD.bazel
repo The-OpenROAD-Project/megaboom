@@ -232,6 +232,9 @@ orfs_flow(
 
 boom_tile_macros = [x + "_generate_abstract" for x in boom_tile_rams + boom_regfile_rams.keys() + boom_tile_small_srams + digital_top_srams]
 
+# Get list of BoomTile blocks to use to set $BLOCKS
+boom_tile_blocks = " ".join(boom_tile_rams + boom_regfile_rams.keys() + boom_tile_small_srams + digital_top_srams)
+
 orfs_flow(
     name = "BoomTile",
     macros = boom_tile_macros,
@@ -244,6 +247,7 @@ orfs_flow(
             "CORE_UTILIZATION": "20",
             "MACRO_PLACE_HALO": "20 20",
             "RTLMP_FLOW": "1",
+	    "BLOCKS": boom_tile_blocks,
         },
         "cts": SKIP_REPORT_METRICS | {
             "TNS_END_PERCENT": "0",

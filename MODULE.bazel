@@ -24,6 +24,6 @@ git_override(
 
 orfs = use_extension("@bazel-orfs//:extension.bzl", "orfs_repositories")
 orfs.default(
-    image = "openroad/orfs:v3.0-1149-gee899c35",
-    sha256 = "4fe87ac24e81e17086507a266021d14f8709fe2521c76e6b15fdaef04a2d5eff",
+    image = "openroad/orfs:v3.0-1160-g72f4714f",
+    sha256 = "f486e759694a391c6d52b1db5d0ebe5590d782de08ef567e03d3a5b0e0434259",
 )
