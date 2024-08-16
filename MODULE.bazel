@@ -4,23 +4,20 @@ module(
     compatibility_level = 1,
 )
 
+# To test with local bazel-orfs, read: https://github.com/The-OpenROAD-Project/bazel-orfs?tab=readme-ov-file#usage
+#
+# 1. comment git_override() below
+# 2. uncomment local_path_override below
+#
+#local_path_override(
+#   module_name = "bazel-orfs", path = "../bazel-orfs"
+#)
 bazel_dep(name = "bazel-orfs")
 git_override(
     module_name = "bazel-orfs",
     commit = "16eb5dd5b31bdeacc0b3006a71dbce29076e9850",
     remote = "https://github.com/The-OpenROAD-Project/bazel-orfs.git",
 )
-
-# Read: https://github.com/The-OpenROAD-Project/bazel-orfs?tab=readme-ov-file#usage
-#
-# TL;DR
-#
-# 1. uncomment below
-# 2. comment git_override() above
-#
-#local_path_override(
-#   module_name = "bazel-orfs", path = "../bazel-orfs"
-#)
 
 orfs = use_extension("@bazel-orfs//:extension.bzl", "orfs_repositories")
 orfs.default(
