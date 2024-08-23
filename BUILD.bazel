@@ -232,9 +232,6 @@ orfs_flow(
 
 boom_tile_macros = [x + "_generate_abstract" for x in boom_tile_rams + boom_regfile_rams.keys() + boom_tile_small_srams + digital_top_srams]
 
-# Get list of BoomTile blocks to use to set MACROS
-boom_tile_blocks = " ".join(boom_tile_rams + boom_regfile_rams.keys() + boom_tile_small_srams + digital_top_srams)
-
 orfs_flow(
     name = "BoomTile",
     macros = boom_tile_macros,
@@ -249,7 +246,7 @@ orfs_flow(
             "RTLMP_FLOW": "1",
             # repair_timing runs for hours in floorplan
             "REMOVE_ABC_BUFFERS": "1",
-	    "MACROS": boom_tile_blocks,
+            "PDN_TCL": "$(PLATFORM_DIR)/openRoad/pdn/BLOCKS_grid_strategy.tcl",
         },
         "cts": SKIP_REPORT_METRICS | {
             "TNS_END_PERCENT": "0",
