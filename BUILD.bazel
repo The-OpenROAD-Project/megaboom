@@ -68,6 +68,17 @@ filegroup(
     visibility = [":__subpackages__"],
 )
 
+BLOCK_FLOORPLAN = {
+    "PDN_TCL": "$(PLATFORM_DIR)/openRoad/pdn/BLOCK_grid_strategy.tcl",
+    # repair_timing runs for hours in floorplan
+    "REMOVE_ABC_BUFFERS": "1",
+}
+BLOCKS_FLOORPLAN = {
+    "PDN_TCL": "$(PLATFORM_DIR)/openRoad/pdn/BLOCKS_grid_strategy.tcl",
+    # repair_timing runs for hours in floorplan
+    "REMOVE_ABC_BUFFERS": "1",
+}
+
 SRAM_SYNTH_ARGUMENTS = {"SDC_FILE": "$(location :constraints-sram)"}
 
 FLOOR_PLACE_ARGUMENTS = {"IO_CONSTRAINTS": "$(location :io)"}
@@ -137,7 +148,7 @@ digital_top_srams = [
         abstract_stage = "cts",
         stage_args = {
             "synth": SRAM_SYNTH_ARGUMENTS | {"SYNTH_MEMORY_MAX_BITS": "16384"},
-            "floorplan": SRAM_FLOOR_PLACE_ARGUMENTS | {
+            "floorplan": BLOCK_FLOORPLAN | SRAM_FLOOR_PLACE_ARGUMENTS | {
                 "CORE_UTILIZATION": "40",
                 "CORE_ASPECT_RATIO": "2",
             },
@@ -181,7 +192,7 @@ boom_regfile_rams = {
         abstract_stage = "cts",
         stage_args = {
             "synth": SRAM_SYNTH_ARGUMENTS,
-            "floorplan": {
+            "floorplan": BLOCK_FLOORPLAN | {
                 # "CORE_UTILIZATION": "200",
                 # "CORE_ASPECT_RATIO": "4",
                 "DIE_AREA": "0 0 400 400",
@@ -212,7 +223,7 @@ orfs_flow(
     macros = ["tag_array_64x184_generate_abstract"],
     stage_args = {
         "synth": SRAM_SYNTH_ARGUMENTS | {"SYNTH_HIERARCHICAL": "1"},
-        "floorplan": FLOOR_PLACE_ARGUMENTS | {
+        "floorplan": BLOCKS_FLOORPLAN | FLOOR_PLACE_ARGUMENTS | {
             "CORE_UTILIZATION": "3",
             "RTLMP_FLOW": "1",
             "CORE_MARGIN": "2",
@@ -240,12 +251,10 @@ orfs_flow(
             "SYNTH_HIERARCHICAL": "1",
             "SDC_FILE": "$(location :constraints-boomtile)",
         },
-        "floorplan": SRAM_BOOMTILE_FLOOR_PLACE_ARGUMENTS | SKIP_REPORT_METRICS | {
+        "floorplan": BLOCKS_FLOORPLAN | SRAM_BOOMTILE_FLOOR_PLACE_ARGUMENTS | SKIP_REPORT_METRICS | {
             "CORE_UTILIZATION": "20",
             "MACRO_PLACE_HALO": "20 20",
-            "RTLMP_FLOW": "1",
-            # repair_timing runs for hours in floorplan
-            "REMOVE_ABC_BUFFERS": "1",
+            "RTLMP_FLOW": "1"
         },
         "cts": SKIP_REPORT_METRICS | {
             "TNS_END_PERCENT": "0",
@@ -257,7 +266,7 @@ orfs_flow(
             "GPL_ROUTABILITY_DRIVEN": "1",
             "GPL_TIMING_DRIVEN": "0",
         },
-        "route": SKIP_REPORT_METRICS,
+	"route": SKIP_REPORT_METRICS,
     },
     stage_sources = {
         "synth": [":constraints-boomtile"],
