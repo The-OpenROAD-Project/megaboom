@@ -253,7 +253,9 @@ orfs_flow(
         },
         "floorplan": BLOCKS_FLOORPLAN | SRAM_BOOMTILE_FLOOR_PLACE_ARGUMENTS | SKIP_REPORT_METRICS | {
             "CORE_UTILIZATION": "20",
-            "MACRO_PLACE_HALO": "20 20",
+            # Tweak below to work around initial condition sensitive bugs in
+            # macro placement
+            "MACRO_PLACE_HALO": "19 19",
             "RTLMP_FLOW": "1"
         },
         "cts": SKIP_REPORT_METRICS | {
