@@ -68,6 +68,14 @@ filegroup(
     visibility = [":__subpackages__"],
 )
 
+filegroup(
+    name = "boomtile-macro-placement",
+    srcs = [
+        "macros.tcl",
+    ],
+    visibility = [":__subpackages__"],
+)
+
 BLOCK_FLOORPLAN = {
     "PDN_TCL": "$(PLATFORM_DIR)/openRoad/pdn/BLOCK_grid_strategy.tcl",
     # repair_timing runs for hours in floorplan
@@ -259,7 +267,8 @@ orfs_flow(
             # Tweak below to work around initial condition sensitive bugs in
             # macro placement
             "MACRO_PLACE_HALO": "19 19",
-            "RTLMP_FLOW": "1"
+            "RTLMP_FLOW": "1",
+            "MACRO_PLACEMENT_TCL": "$(location :boomtile-macro-placement)",
         },
         "cts": SKIP_REPORT_METRICS | {
             "TNS_END_PERCENT": "0",
@@ -274,7 +283,7 @@ orfs_flow(
     },
     stage_sources = {
         "synth": [":constraints-boomtile"],
-        "floorplan": [":io-boomtile"],
+        "floorplan": [":io-boomtile", ":boomtile-macro-placement"],
         "place": [":io-boomtile"],
     },
     verilog_files = all_source_files,
