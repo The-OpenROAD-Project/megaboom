@@ -279,7 +279,10 @@ orfs_flow(
             "GPL_ROUTABILITY_DRIVEN": "1",
             "GPL_TIMING_DRIVEN": "0",
         },
-	"route": SKIP_REPORT_METRICS,
+	"route": SKIP_REPORT_METRICS | {
+            # Save global route time for now
+            "SKIP_INCREMENTAL_REPAIR": "1",
+        },
     },
     stage_sources = {
         "synth": [":constraints-boomtile"],
