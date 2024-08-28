@@ -63,8 +63,8 @@
   "moduleExtensions": {
     "@@bazel-orfs~//:extension.bzl%orfs_repositories": {
       "general": {
-        "bzlTransitiveDigest": "42x9Wez2cJ4mcTzytkWEzBr9ilyB80Y3HGoSJdZwb6w=",
-        "usagesDigest": "YlFz9gA3BVSJmTqL5qJCyC/ZRnh4fsH0uQVUZUt56aU=",
+        "bzlTransitiveDigest": "qZZ2T9xZ8fojzi/nBMa7hGyEnWuuc6QPUO/+LJxhJ5A=",
+        "usagesDigest": "uzFRgFCjA1A3tsL7UzXzw2jOJ/yWezImFO2O455HCBQ=",
         "recordedFileInputs": {},
         "recordedDirentsInputs": {},
         "envVariables": {},
@@ -73,8 +73,8 @@
             "bzlFile": "@@bazel-orfs~//:docker.bzl",
             "ruleClassName": "docker_pkg",
             "attributes": {
-              "image": "openroad/orfs:v3.0-1206-gc6ea30d2",
-              "sha256": "c3b9263892e166684f6e3cd5498a556bc2b9a858b4dc36f3b7ea4ed92fb0b2f5",
+              "image": "openroad/orfs:v3.0-1262-gfabc855b",
+              "sha256": "e3a1607116b3826d39cd3c67963088773f2846425a553b64f254534b91a5d788",
               "build_file": "@@bazel-orfs~//:docker.BUILD.bazel",
               "timeout": 3600
             }
@@ -89,17 +89,6 @@
                 "https://github.com/NixOS/patchelf/releases/download/0.18.0/patchelf-0.18.0-x86_64.tar.gz"
               ]
             }
-          },
-          "com_github_docker_buildx_file": {
-            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
-            "ruleClassName": "http_file",
-            "attributes": {
-              "executable": true,
-              "sha256": "8d486f0088b7407a90ad675525ba4a17d0a537741b9b33fe3391a88cafa2dd0b",
-              "urls": [
-                "https://github.com/docker/buildx/releases/download/v0.15.1/buildx-v0.15.1.linux-amd64"
-              ]
-            }
           }
         },
         "recordedRepoMappingEntries": [
@@ -107,11 +96,6 @@
             "bazel-orfs~",
             "bazel_tools",
             "bazel_tools"
-          ],
-          [
-            "bazel-orfs~",
-            "com_github_docker_buildx_file",
-            "bazel-orfs~~orfs_repositories~com_github_docker_buildx_file"
           ],
           [
             "bazel-orfs~",
