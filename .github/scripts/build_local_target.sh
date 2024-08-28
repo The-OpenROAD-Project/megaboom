@@ -25,6 +25,7 @@ do
         stages+=("do-yosys-canonicalize")
     else
       if [[ $stage == "synth" ]]; then
+          stages+=("do-yosys-keep-hierarchy")
           stages+=("do-yosys")
       fi
       stages+=("do-${stage}")
