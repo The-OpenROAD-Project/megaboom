@@ -30,6 +30,6 @@ git_override(
 # $ bazel mod tidy
 orfs = use_extension("@bazel-orfs//:extension.bzl", "orfs_repositories")
 orfs.default(
-    image = "openroad/orfs:v3.0-1262-gfabc855b",
+    image = "docker.io/openroad/orfs:v3.0-1262-gfabc855b",
     sha256 = "e3a1607116b3826d39cd3c67963088773f2846425a553b64f254534b91a5d788",
 )
