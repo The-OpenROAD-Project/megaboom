@@ -254,6 +254,12 @@ orfs_flow(
 
 boom_tile_macros = [x + "_generate_abstract" for x in boom_tile_rams + boom_regfile_rams.keys() + boom_tile_small_srams + digital_top_srams]
 
+GLOBAL_ROUTE_ARGS = {
+    "MIN_ROUTING_LAYER": "M2",
+    "MAX_ROUTING_LAYER": "M7",
+    "ROUTING_LAYER_ADJUSTMENT": "0.45",
+}
+
 orfs_flow(
     name = "BoomTile",
     macros = boom_tile_macros,
@@ -274,12 +280,12 @@ orfs_flow(
             "TNS_END_PERCENT": "0",
             "SKIP_CTS_REPAIR_TIMING": "1",
         },
-        "place": BOOMTILE_FLOOR_PLACE_ARGUMENTS | SKIP_REPORT_METRICS | {
+        "place": BOOMTILE_FLOOR_PLACE_ARGUMENTS | SKIP_REPORT_METRICS | GLOBAL_ROUTE_ARGS | {
             "PLACE_PINS_ARGS": "-annealing",
             "GPL_ROUTABILITY_DRIVEN": "1",
             "GPL_TIMING_DRIVEN": "0",
         },
-	"route": SKIP_REPORT_METRICS | {
+        "route": SKIP_REPORT_METRICS | GLOBAL_ROUTE_ARGS | {
             # Save global route time for now
             "SKIP_INCREMENTAL_REPAIR": "1",
         },
