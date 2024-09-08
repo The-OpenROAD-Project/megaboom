@@ -4,7 +4,7 @@ set -e
 
 target_name=${TARGET:-"tag_array_64x184"}
 if [[ -z "$STAGES" ]]; then
-  STAGES=("canonicalize" "synth" "floorplan" "place" "cts")
+  STAGES=("synth" "floorplan" "place" "cts")
 else
   eval "STAGES=($STAGES)"
 fi
@@ -21,13 +21,11 @@ do
   fi
   if [[ -z $SKIP_RUN ]] ; then
     stages=()
-    if [[ $stage == "canonicalize" ]]; then
+    if [[ $stage == "synth" ]]; then
         stages+=("do-yosys-canonicalize")
+        stages+=("do-yosys-keep-hierarchy")
+        stages+=("do-yosys")
     else
-      if [[ $stage == "synth" ]]; then
-          stages+=("do-yosys-keep-hierarchy")
-          stages+=("do-yosys")
-      fi
       stages+=("do-${stage}")
     fi
     for local_stage in "${stages[@]}"
