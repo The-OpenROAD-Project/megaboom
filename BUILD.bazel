@@ -257,32 +257,29 @@ boom_tile_macros = [x + "_generate_abstract" for x in boom_tile_rams + boom_regf
 orfs_flow(
     name = "BoomTile",
     macros = boom_tile_macros,
-    stage_args = {
-        "synth": SKIP_REPORT_METRICS | {
+    args = SKIP_REPORT_METRICS | {
             "SYNTH_HIERARCHICAL": "1",
             "SDC_FILE": "$(location :constraints-boomtile)",
-        },
-        "floorplan": BLOCKS_FLOORPLAN | BOOMTILE_FLOOR_PLACE_ARGUMENTS | SKIP_REPORT_METRICS | {
+        } | BLOCKS_FLOORPLAN | BOOMTILE_FLOOR_PLACE_ARGUMENTS | SKIP_REPORT_METRICS | {
             "CORE_UTILIZATION": "20",
             # Tweak below to work around initial condition sensitive bugs in
             # macro placement
             "MACRO_PLACE_HALO": "19 19",
             "RTLMP_FLOW": "1",
             "MACRO_PLACEMENT_TCL": "$(location :boomtile-macro-placement)",
-        },
-        "cts": SKIP_REPORT_METRICS | {
+        } | SKIP_REPORT_METRICS | {
             "TNS_END_PERCENT": "0",
             "SKIP_CTS_REPAIR_TIMING": "1",
-        },
-        "place": BOOMTILE_FLOOR_PLACE_ARGUMENTS | SKIP_REPORT_METRICS | {
+        } | BOOMTILE_FLOOR_PLACE_ARGUMENTS | SKIP_REPORT_METRICS | {
             "PLACE_PINS_ARGS": "-annealing",
             "GPL_ROUTABILITY_DRIVEN": "1",
             "GPL_TIMING_DRIVEN": "0",
-        },
-	    "grt": SKIP_REPORT_METRICS | {
+        } | SKIP_REPORT_METRICS | {
             # Save global route time for now
             "SKIP_INCREMENTAL_REPAIR": "1",
-        },
+            "MIN_ROUTING_LAYER": "M2",
+            "MAX_ROUTING_LAYER": "M7",
+            "ROUTING_LAYER_ADJUSTMENT": "0.45"
     },
     stage_sources = {
         "synth": [":constraints-boomtile"],

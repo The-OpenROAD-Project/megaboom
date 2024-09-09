@@ -15,7 +15,7 @@ module(
 bazel_dep(name = "bazel-orfs")
 git_override(
     module_name = "bazel-orfs",
-    commit = "9408cdea30458ab5f882fd9f01ffea4cbd2cf5f5",
+    commit = "5ee519edb8cbb70465e838d72a2269a62d4ff6a4",
     remote = "https://github.com/The-OpenROAD-Project/bazel-orfs.git",
 )
 
