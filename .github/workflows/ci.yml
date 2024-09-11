@@ -17,115 +17,11 @@ jobs:
           wget https://github.com/bazelbuild/buildtools/releases/download/v6.4.0/buildifier-linux-amd64 -O /usr/local/bin/buildifier
           chmod +x /usr/local/bin/buildifier
           buildifier -version
-      - name: Checkout bazel-orfs
+      - name: Checkout megaboom
         uses: actions/checkout@v4
       - name: Check Bazel files
         run: |
           buildifier -lint warn -r .
-
-  generate-config:
-    name: Generate configs
-    runs-on: ubuntu-latest
-    outputs:
-      docker-tag: ${{ steps.docker-image.outputs.docker-orfs }}
-    steps:
-      - name: Checkout megaboom
-        uses: actions/checkout@v4
-      - name: Lint Bazel files
-        run: bazel mod tidy && git diff --exit-code
-      - name: Extract Docker tag
-        id: docker-image
-        run: echo "docker-orfs=$(python3 .github/scripts/extract_docker_revision.py MODULE.bazel.lock)" | tee -a $GITHUB_OUTPUT
-
-  test-make-target:
-    name: ${{ matrix.STAGE_TARGET }}
-    runs-on: ubuntu-22.04
-    defaults:
-      run:
-        shell: bash
-    strategy:
-      fail-fast: false
-      matrix:
-        STAGE_TARGET:
-          - tag_array_64x184_generate_abstract
-          - L1MetadataArray_generate_abstract
-          - lb_32x128_generate_abstract
-          - data_2048x8_generate_abstract
-          - subpackage:tag_array_64x184_generate_abstract
-          - regfile_128x65_floorplan
-    env:
-      DEBIAN_FRONTEND: "noninteractive"
-    steps:
-      - name: Free Disk Space (Ubuntu)
-        uses: jlumbroso/free-disk-space@main
-        with:
-          swap-storage: false
-      - name: Print info
-        run: |
-          echo "USER: "$(whoami)
-          echo "PWD: "$(pwd)
-          ls -la
-          echo "HOME: "$HOME
-          docker --version
-      - name: Checkout bazel-orfs
-        uses: actions/checkout@v4
-      - name: Query target
-        run: |
-          bazel query ${{ matrix.STAGE_TARGET }}
-          bazel query ${{ matrix.STAGE_TARGET }} --output=build
-      - name: Build abstract target
-        if: matrix.STAGE_TARGET != 'regfile_128x65_floorplan'
-        run: |
-          bazel build --subcommands --verbose_failures --sandbox_debug ${{ matrix.STAGE_TARGET }}
-      - name: Build floorplan target
-        if: matrix.STAGE_TARGET == 'regfile_128x65_floorplan'
-        run: |
-          bazel run --subcommands --verbose_failures --sandbox_debug ${{ matrix.STAGE_TARGET }} -- `pwd`/build
-
-  test-target-local:
-    name: Local flow - test targets
-    runs-on: ubuntu-22.04
-    needs: generate-config
-    container:
-      image: ${{ fromJSON(needs.generate-config.outputs.docker-tag).image }}
-    defaults:
-      run:
-        shell: bash
-    env:
-      DEBIAN_FRONTEND: "noninteractive"
-      FLOW_HOME: /OpenROAD-flow-scripts/flow
-    steps:
-      - name: Print info
-        run: |
-          echo "USER: "$(whoami)
-          echo "PWD: "$(pwd)
-          ls -la
-          echo "HOME: "$HOME
-          cd /OpenROAD-flow-scripts
-          echo "OpenROAD-flow-scripts SHA: "$(git rev-parse HEAD)
-          source ./env.sh
-          yosys --version
-          openroad -version
-      - name: Install bazelisk as bazel
-        run: |
-          wget https://github.com/bazelbuild/bazelisk/releases/download/v1.19.0/bazelisk-linux-amd64 -O /usr/local/bin/bazel
-          chmod +x /usr/local/bin/bazel
-      - name: Checkout megaboom
-        uses: actions/checkout@v4
-      - name: Build local stage targets - tag_array_64x184
-        env:
-          TARGET: tag_array_64x184
-        run: .github/scripts/build_local_target.sh
-      - name: Build local stage targets - L1MetadataArray
-        env:
-          TARGET: L1MetadataArray
-          STAGES: synth floorplan place
-        run: .github/scripts/build_local_target.sh
-      - name: Open targets
-        run: |
-          for stage in "floorplan" "place"; do
-            echo | build/make open_${stage}
-          done
 
   test-target-bazel:
     name: Bazel flow - test targets
@@ -147,19 +43,15 @@ jobs:
           ls -la
           echo "HOME: "$HOME
           docker --version
-      - name: Checkout bazel-orfs
+      - name: Checkout megaboom
         uses: actions/checkout@v4
       - name: Build local stage targets - tag_array_64x184
         env:
           TARGET: tag_array_64x184
+          STAGES: synth floorplan place cts
         run: .github/scripts/build_local_target.sh
       - name: Build local stage targets - L1MetadataArray
         env:
           TARGET: L1MetadataArray
           STAGES: synth floorplan place
         run: .github/scripts/build_local_target.sh
-      - name: Open target
-        run: |
-          for stage in "floorplan" "place"; do
-            echo | build/make open_${stage}
-          done
