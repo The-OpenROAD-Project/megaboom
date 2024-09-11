@@ -258,10 +258,12 @@ orfs_flow(
     name = "BoomTile",
     macros = boom_tile_macros,
     args = SKIP_REPORT_METRICS | {
-            "SYNTH_HIERARCHICAL": "1",
+            # We only need hierarchical synthesis when we are running through floorplan
+            # write_macro_placement macros.tcl
+            "SYNTH_HIERARCHICAL": "0",
             "SDC_FILE": "$(location :constraints-boomtile)",
         } | BLOCKS_FLOORPLAN | BOOMTILE_FLOOR_PLACE_ARGUMENTS | SKIP_REPORT_METRICS | {
-            "CORE_UTILIZATION": "20",
+            #"CORE_UTILIZATION": "20",
             # Tweak below to work around initial condition sensitive bugs in
             # macro placement
             "MACRO_PLACE_HALO": "19 19",
@@ -279,7 +281,9 @@ orfs_flow(
             "SKIP_INCREMENTAL_REPAIR": "1",
             "MIN_ROUTING_LAYER": "M2",
             "MAX_ROUTING_LAYER": "M7",
-            "ROUTING_LAYER_ADJUSTMENT": "0.45"
+            "ROUTING_LAYER_ADJUSTMENT": "0.45",
+            "DIE_AREA": "0 0 2300 2300",
+            "CORE_AREA": "1.026 1.08 2298 2298",
     },
     stage_sources = {
         "synth": [":constraints-boomtile"],
