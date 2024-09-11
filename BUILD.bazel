@@ -95,7 +95,7 @@ SRAM_FLOOR_PLACE_ARGUMENTS = {"IO_CONSTRAINTS": "$(location :io-sram)"}
 
 BOOMTILE_FLOOR_PLACE_ARGUMENTS = {
     "IO_CONSTRAINTS": "$(location :io-boomtile)",
-    "PLACE_DENSITY": "0.15",
+    "PLACE_DENSITY": "0.20",
 }
 
 SKIP_REPORT_METRICS = {"SKIP_REPORT_METRICS": "1"}
