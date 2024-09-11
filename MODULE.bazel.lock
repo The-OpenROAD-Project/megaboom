@@ -63,7 +63,7 @@
   "moduleExtensions": {
     "@@bazel-orfs~//:extension.bzl%orfs_repositories": {
       "general": {
-        "bzlTransitiveDigest": "QBi+YhISAjw4QqUAPLtPaFfw3mWHftL+XC6x62hMv+o=",
+        "bzlTransitiveDigest": "6eEoCMP8ko4O/UCrzah7mGNTdhQAn0hHrFEu7ZNU5yg=",
         "usagesDigest": "QgO3w3VN6g5pYTzV8HSvLNqAuqRC2CSmFvv4GVawoeM=",
         "recordedFileInputs": {},
         "recordedDirentsInputs": {},
