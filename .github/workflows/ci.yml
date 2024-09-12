@@ -45,6 +45,8 @@ jobs:
           docker --version
       - name: Checkout megaboom
         uses: actions/checkout@v4
+      - name: Lint Bazel files
+        run: bazel mod tidy && git diff --exit-code
       - name: Build local stage targets - tag_array_64x184
         env:
           TARGET: tag_array_64x184
