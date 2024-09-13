@@ -284,6 +284,8 @@ orfs_flow(
             "ROUTING_LAYER_ADJUSTMENT": "0.45",
             "DIE_AREA": "0 0 2300 2300",
             "CORE_AREA": "1.026 1.08 2298 2298",
+            "FILL_CELLS": "",
+            "TAPCELL_TCL": "",
     },
     stage_sources = {
         "synth": [":constraints-boomtile"],
