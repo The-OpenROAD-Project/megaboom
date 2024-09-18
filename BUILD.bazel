@@ -252,7 +252,12 @@ orfs_flow(
     verilog_files = ["rtl/L1MetadataArray.sv"],
 )
 
-boom_tile_macros = [x + "_generate_abstract" for x in boom_tile_rams + boom_regfile_rams.keys() + boom_tile_small_srams + digital_top_srams]
+boom_tile_macros = [x + "_generate_abstract" for x in (
+    boom_tile_rams +
+    # boom_regfile_rams.keys() +
+    boom_tile_small_srams +
+    digital_top_srams
+    )]
 
 orfs_flow(
     name = "BoomTile",

@@ -1,5 +1,5 @@
-place_macro -macro_name core.FpPipeline.fregfile.regfile_ext -location {888.598 1741.44} -orientation MY
-place_macro -macro_name core.iregfile.regfile_ext -location {982.368 140.67} -orientation R0
+# place_macro -macro_name core.FpPipeline.fregfile.regfile_ext -location {888.598 1741.44} -orientation MY
+# place_macro -macro_name core.iregfile.regfile_ext -location {982.368 140.67} -orientation R0
 place_macro -macro_name dcache.data.array_0_0_ext -location {343.386 451.344} -orientation MY
 place_macro -macro_name dcache.data.array_0_1_ext -location {343.386 329.136} -orientation MY
 place_macro -macro_name dcache.data.array_1_0_ext -location {505.066 451.344} -orientation MY
