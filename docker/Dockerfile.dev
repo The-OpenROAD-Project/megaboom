@@ -34,7 +34,7 @@ WORKDIR /home/boomer
 RUN mkdir -p /home/boomer/.config/gcloud
 RUN chmod -R 777 /home/boomer/.config/gcloud
 
-# copy bazelfiles into place
-COPY docker/user-bazelrc /home/boomer/.user-bazelrc
-COPY docker/bazelrc /home/boomer/.bazelrc
+# copy bazelfiles into place owned by boomer
+COPY --chown=boomer docker/user-bazelrc /home/boomer/.user-bazelrc
+COPY --chown=boomer docker/bazelrc /home/boomer/.bazelrc
 
