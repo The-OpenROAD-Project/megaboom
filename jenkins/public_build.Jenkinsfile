@@ -31,12 +31,12 @@ node('gce-megaboom-central1') {
 
     // execute bazel to build BoomTile through grt stage
     stage('Build Megaboom') {
-	buildMegaboom($DOCKER_IMAGE);
+	buildMegaboom(DOCKER_IMAGE);
     }
 
     // TODO Add some smoke tests
 
     stage ('Cleanup and Reporting') {
-        finalReport($DOCKER_IMAGE, "megaboom");
+        finalReport(DOCKER_IMAGE, "megaboom");
     }
 }
