@@ -30,6 +30,7 @@ usage: $0 [CMD] [OPTIONS]
   -tag=TAG                      Use as the image tag. Default is git commit sha.
   -username=USERNAME            Username to login at the docker registry.
   -password=PASSWORD            Password to login at the docker registry.
+  -ci                           Argument isn't used, but kept since dockerPush.groovy calls the script with the arg (compatibility with ORFS Jenkins)
   -dry-run                      Do not push images to the repository
   -h -help                      Show this message and exits
 
