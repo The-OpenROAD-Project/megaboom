@@ -51,7 +51,7 @@ _setup() {
             ;;
         *)
             echo "Target OS ${os} not supported" >&2
-            _help
+ -ci           _help
             ;;
     esac
     imageName="${IMAGE_NAME_OVERRIDE:-"${org}/megaboom-${os}-${target}"}"
@@ -163,6 +163,9 @@ while [ "$#" -gt 0 ]; do
     case "${1}" in
         -h|-help)
             _help 0
+            ;;
+        -ci )
+            # no-op. Leave this here. dockerPush.groovy calls the script with it
             ;;
         -dry-run )
             dryRun=1
