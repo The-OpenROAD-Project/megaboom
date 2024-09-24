@@ -26,7 +26,7 @@ RUN apt install git -y
 RUN apt install podman-docker -y
 
 # Create the boomer user account to run the build
-RUN useradd -ms /bin/bash boomer
+RUN useradd -ms /bin/bash -u 1234 boomer
 USER boomer
 WORKDIR /home/boomer
 
