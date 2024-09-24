@@ -25,9 +25,9 @@ RUN apt install git -y
 # Install podman docker
 RUN apt install podman-docker -y
 
-# Create gcloud config directories
-RUN mkdir -p /root/.config/gcloud
-RUN chmod -R 777 /root/.config/gcloud
+# Create gcloud config directories in /tmp
+RUN mkdir -p /tmp/.config/gcloud
+RUN chmod -R 777 /tmp/.config
 
 # copy user-bazelrc into /tmp for use during build
 COPY docker/user-bazelrc /tmp/.user-bazelrc
