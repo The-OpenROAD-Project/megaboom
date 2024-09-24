@@ -35,3 +35,7 @@ COPY docker/user-bazelrc /tmp/.user-bazelrc
 # copy .bazelrc into root's home dir
 COPY docker/bazelrc /tmp/.bazelrc
 
+# set up builduser UID of 1016:1017
+# name is required for bazel to run the build
+RUN groupadd --gid 1017 buildgroup
+RUN useradd --gid buildgroup --uid 1016 -ms /bin/bash builduser
