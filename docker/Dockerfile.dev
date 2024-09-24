@@ -25,16 +25,13 @@ RUN apt install git -y
 # Install podman docker
 RUN apt install podman-docker -y
 
-# Create the boomer user account to run the build
-RUN useradd -ms /bin/bash -u 1234 boomer
-USER boomer
-WORKDIR /home/boomer
-
 # Create gcloud config directories
-RUN mkdir -p /home/boomer/.config/gcloud
-RUN chmod -R 777 /home/boomer/.config/gcloud
+RUN mkdir -p /root/.config/gcloud
+RUN chmod -R 777 /root/.config/gcloud
 
-# copy bazelfiles into place owned by boomer
-COPY --chown=boomer docker/user-bazelrc /home/boomer/.user-bazelrc
-COPY --chown=boomer docker/bazelrc /home/boomer/.bazelrc
+# copy user-bazelrc into /tmp for use during build
+COPY docker/user-bazelrc /tmp/.user-bazelrc
+
+# copy .bazelrc into root's home dir
+COPY docker/bazelrc /tmp/.bazelrc
 
