@@ -40,3 +40,4 @@ node('gce-megaboom-central1') {
         finalReport(DOCKER_IMAGE, "megaboom");
     }
 }
+
