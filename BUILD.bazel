@@ -147,6 +147,9 @@ boom_tile_rams = [
 ]
 
 digital_top_srams = [
+    # "cc_dir_1024x168",
+    # "data_data_40x128",
+    # "ghist_40x64",
     "meta_40x240",
 ]
 
