@@ -157,7 +157,7 @@ digital_top_srams = [
     orfs_flow(
         name = ram,
         abstract_stage = "cts",
-        stage_args = {
+        stage_arguments = {
             "synth": SRAM_SYNTH_ARGUMENTS | {"SYNTH_MEMORY_MAX_BITS": "16384"},
             "floorplan": BLOCK_FLOORPLAN | SRAM_FLOOR_PLACE_ARGUMENTS | {
                 "CORE_UTILIZATION": "40",
@@ -201,7 +201,7 @@ boom_regfile_rams = {
     orfs_flow(
         name = ram,
         abstract_stage = "cts",
-        stage_args = {
+        stage_arguments = {
             "synth": SRAM_SYNTH_ARGUMENTS,
             "floorplan": BLOCK_FLOORPLAN | {
                 # "CORE_UTILIZATION": "200",
@@ -232,7 +232,7 @@ orfs_flow(
     name = "L1MetadataArray",
     abstract_stage = "place",
     macros = ["tag_array_64x184_generate_abstract"],
-    stage_args = {
+    stage_arguments = {
         "synth": SRAM_SYNTH_ARGUMENTS | {"SYNTH_HIERARCHICAL": "1"},
         "floorplan": BLOCKS_FLOORPLAN | FLOOR_PLACE_ARGUMENTS | {
             "CORE_UTILIZATION": "3",
@@ -262,7 +262,7 @@ boom_tile_macros = [x + "_generate_abstract" for x in (
 orfs_flow(
     name = "BoomTile",
     macros = boom_tile_macros,
-    args = SKIP_REPORT_METRICS | {
+    arguments = SKIP_REPORT_METRICS | {
             # We only need hierarchical synthesis when we are running through floorplan
             # write_macro_placement macros.tcl
             "SYNTH_HIERARCHICAL": "0",
