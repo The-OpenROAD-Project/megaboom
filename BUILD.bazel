@@ -265,7 +265,7 @@ orfs_flow(
     arguments = SKIP_REPORT_METRICS | {
             # We only need hierarchical synthesis when we are running through floorplan
             # write_macro_placement macros.tcl
-            "SYNTH_HIERARCHICAL": "0",
+            "SYNTH_HIERARCHICAL": "1",
             "SDC_FILE": "$(location :constraints-boomtile)",
         } | BLOCKS_FLOORPLAN | BOOMTILE_FLOOR_PLACE_ARGUMENTS | SKIP_REPORT_METRICS | {
             #"CORE_UTILIZATION": "20",
@@ -273,7 +273,7 @@ orfs_flow(
             # macro placement
             "MACRO_PLACE_HALO": "19 19",
             "RTLMP_FLOW": "1",
-            "MACRO_PLACEMENT_TCL": "$(location :boomtile-macro-placement)",
+            # "MACRO_PLACEMENT_TCL": "$(location :boomtile-macro-placement)",
         } | SKIP_REPORT_METRICS | {
             "TNS_END_PERCENT": "0",
             "SKIP_CTS_REPAIR_TIMING": "1",
