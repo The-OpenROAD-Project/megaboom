@@ -15,7 +15,7 @@ module(
 bazel_dep(name = "bazel-orfs")
 git_override(
     module_name = "bazel-orfs",
-    commit = "01e36cbb55e42a2d4ac3df10780ba4b077a42931",
+    commit = "3ccb566d81cffde6d21e0d6c3af5e1ce614c8aa2",
     remote = "https://github.com/The-OpenROAD-Project/bazel-orfs.git",
 )
 
@@ -28,8 +28,14 @@ git_override(
 # $ docker buildx imagetools inspect openroad/flow-ubuntu22.04-builder --format "{{json .Manifest.Digest}}"
 # "sha256:5d4d20d3d5638fa5c79b05c6f9b240c7e5691bf8b6c47c9a46d9bb0e0d53bb09"
 # $ bazel mod tidy
-orfs = use_extension("@bazel-orfs//:extension.bzl", "orfs_repositories")
-orfs.default(
-    image = "docker.io/openroad/orfs:v3.0-1343-g091a06bf",
-    sha256 = "90743d244bd6379675eca8ce99ad0db383a4f25c0c73469bb7d64e5d4bc8aa2c",
-)
+
+# ORFS is provided as a transitive dependency from bazel-orfs, but
+# it is possible to specify a version in here if something newer than
+# latest bazel-orfs tested ORFS is needed.
+
+#orfs = use_extension("@bazel-orfs//:extension.bzl", "orfs_repositories")
+#
+#orfs.default(
+#    image = "docker.io/openroad/orfs:v3.0-1459-gd505a82b",
+#    sha256 = "434edf30b4d0610c17cb0cd4f865ba8ce34f7b247904bd2a8ba6e17b89981c37",
+#)
