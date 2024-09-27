@@ -7,11 +7,20 @@ import sys
 
 
 def get_gcloud_auth_token():
+    """
+    Returns the gcloud auth token based on the .user-bazelrc or an 
+    environment variable
+    """
+    
     with open(".user-bazelrc") as f:
         all = f.read()
     # The username is in the .user-bazelrc file as "# user: <username>"
     # fish it out using a regex
     USER = re.search(r"# user: (.*)", all).group(1)
+
+    if not USER:
+        # check the environment variable - mainly for Jenkins
+        USER = os.environ.get("GCP_SERVICE_ACCOUNT_EMAIL")
 
     # Run gcloud command to get the authentication token
     result = subprocess.run(

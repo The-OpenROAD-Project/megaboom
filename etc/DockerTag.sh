@@ -10,6 +10,7 @@ if [[ "$@" == "-dev" ]]; then
     file_list=(
         "./docker/Dockerfile.dev"
 	"./docker/bazelrc"
+	"./docker/user-bazelrc"
         "./etc/DockerHelper.sh"
         "./etc/DockerTag.sh"
     )

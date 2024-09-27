@@ -29,6 +29,9 @@ RUN apt install podman-docker -y
 RUN mkdir -p /tmp/.config/gcloud
 RUN chmod -R 777 /tmp/.config
 
+# copy user-bazelrc into /tmp for use during build
+COPY docker/user-bazelrc /tmp/.user-bazelrc
+
 # copy .bazelrc into root's home dir
 COPY docker/bazelrc /tmp/.bazelrc
 
