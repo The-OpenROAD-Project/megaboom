@@ -81,12 +81,13 @@ _setup() {
 #
 _create() {
     echo "Create docker image ${imagePath} using ${file}"
-    echo "${DOCKER_CMD} buildx build --no-cache --file \"${file}\" --tag \"${imagePath}\" ${buildArgs} \"${context}\""
+    set -x
     ${DOCKER_CMD} buildx build \
         --file "${file}" \
         --tag "${imagePath}" \
         ${buildArgs} \
         "${context}"
+    set +x
 }
 
 #

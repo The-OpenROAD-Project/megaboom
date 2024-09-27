@@ -9,7 +9,6 @@ cd $(dirname $(realpath $0))/../
 if [[ "$@" == "-dev" ]]; then
     file_list=(
         "./docker/Dockerfile.dev"
-	"./docker/user-bazelrc"
 	"./docker/bazelrc"
         "./etc/DockerHelper.sh"
         "./etc/DockerTag.sh"

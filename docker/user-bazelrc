@@ -1,2 +1,0 @@
-# user: jenkins-megaboom@foss-fpga-tools-ext-openroad.iam.gserviceaccount.com
-build --credential_helper=%workspace%/cred_helper.py --remote_cache=https://storage.googleapis.com/megaboom-bazel-artifacts --remote_cache_compression=true
