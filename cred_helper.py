@@ -7,6 +7,10 @@ import sys
 
 
 def get_gcloud_auth_token():
+    """
+    Returns the gcloud auth token based on the .user-bazelrc
+    """
+    
     with open(".user-bazelrc") as f:
         all = f.read()
     # The username is in the .user-bazelrc file as "# user: <username>"
