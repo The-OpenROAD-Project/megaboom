@@ -157,6 +157,7 @@ digital_top_srams = [
     orfs_flow(
         name = ram,
         abstract_stage = "cts",
+        mocK_area = 0.65,
         stage_arguments = {
             "synth": SRAM_SYNTH_ARGUMENTS | {"SYNTH_MEMORY_MAX_BITS": "16384"},
             "floorplan": BLOCK_FLOORPLAN | SRAM_FLOOR_PLACE_ARGUMENTS | {

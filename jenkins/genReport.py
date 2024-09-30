@@ -69,6 +69,8 @@ args = parser.parse_args()
 
 summary_data = read_log(args.input_file)
 write_summary(args.output_file, summary_data)
+sys.exit(len(summary_data["errors"] > 0))
+
     
 
     
