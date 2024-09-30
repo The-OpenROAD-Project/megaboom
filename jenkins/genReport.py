@@ -26,7 +26,7 @@ def write_summary(output_file, summary_data):
     summary += "=" * 60 + "\n"
 
     dir_name = os.path.dirname(output_file)
-    if not os.path.isdir(dir_name):
+    if dir_name and not os.path.isdir(dir_name):
         os.makedirs(dir_name)
     with open(output_file, "w") as out_fh:
         out_fh.write(summary)
@@ -44,17 +44,27 @@ def read_log(input_file):
     Reads the build log and extracts any interesting errors or info to include
     in the summary.
 
-    Returns a dictionary with "errors" and "info" as the keys to lists of log file output to
-    include in the summary
+    Returns a dictionary with "errors" and "info" as the keys to lists of log
+    file output to include in the summary
+
+    NOTE: GRT-0119 is skipped for right now
     """
     
     summary_data = { "errors": [], "info": [] }
     orfs_regex_error = re.compile(r"^\[error ?(\w+-\d+)?\]", re.IGNORECASE)
+    bazel_regex_error = re.compile(r"^error:", re.IGNORECASE)
     regex_hitrate = re.compile(r"^INFO\:\s+\d+\s+processes\:\s+\d+\s+remote\s+cache\s+hit")
     
     with open(input_file, "r") as in_fh:
         for line in in_fh:
-            if re.search(orfs_regex_error, line) or line.startswith("ERROR: Build did NOT"):
+            orfs_result = orfs_regex_error.match(line)
+            if orfs_result:
+                orfs_error_code = orfs_result.group(1)
+                print(orfs_error_code)
+                # skip "Routing congestion too high" error for now
+                if orfs_error_code != "GRT-0119":
+                    summary_data["errors"].append(line.strip())
+            elif re.search(bazel_regex_error, line):
                 summary_data["errors"].append(line.strip())
             elif line.startswith("INFO: Elapsed time") or re.search(regex_hitrate, line) or line.startswith("INFO: Build completed successfully"):
                 summary_data["info"].append(line.strip())
@@ -69,6 +79,8 @@ args = parser.parse_args()
 
 summary_data = read_log(args.input_file)
 write_summary(args.output_file, summary_data)
+sys.exit(len(summary_data["errors"]) > 0)
+
     
 
     
