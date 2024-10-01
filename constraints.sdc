@@ -3,12 +3,11 @@ set sdc_version 2.0
 #
 # SDC file used during SRAM abstract generation
 #
-# SRAM Verilog defines separate read and write clocks, R0_clk and WO_clk.
-#
 
 # Run at 666 MHz
 set clk_period 1500
 
+# Covers all clock naming types in SRAMs and reg files
 set clock_ports [concat [get_ports -quiet *clk] [get_ports -quiet *clock]]
 
 if {[llength $clock_ports] == 0} {
