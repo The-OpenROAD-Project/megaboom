@@ -25,6 +25,9 @@ RUN apt install git -y
 # Install podman docker
 RUN apt install podman-docker -y
 
+# Install time in /usr/bin for ORFS
+RUN apt install time
+
 # Create gcloud config directories in /tmp
 RUN mkdir -p /tmp/.config/gcloud
 RUN chmod -R 777 /tmp/.config
