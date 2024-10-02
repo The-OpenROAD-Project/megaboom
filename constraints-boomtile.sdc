@@ -1,6 +1,11 @@
 set sdc_version 2.0
 
-set clk_period 1500
+#
+# SDC file used by BoomTile top level
+#
+
+# Run at 833 MHz
+set clk_period 1200
 set clk_name  clock
 set clk_port_name clock
 
