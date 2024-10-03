@@ -1,4 +1,4 @@
-load("@bazel-orfs//:openroad.bzl", "orfs_flow")
+load("@bazel-orfs//:openroad.bzl", "orfs_flow", "orfs_run")
 
 filegroup(
     name = "io-sram",
@@ -209,10 +209,10 @@ all_srams = boom_tile_rams | boom_tile_small_srams | digital_top_srams
     orfs_flow(
         name = ram,
         abstract_stage = "cts",
-        mock_area = ram_data["mock_area"],
         arguments = {
             "PLACE_PINS_ARGS": "-min_distance 1 -min_distance_in_tracks",
         },
+        mock_area = ram_data["mock_area"],
         stage_arguments = {
             "synth": SRAM_SYNTH_ARGUMENTS | {"SYNTH_MEMORY_MAX_BITS": "16384"},
             "floorplan": BLOCK_FLOORPLAN | SRAM_FLOOR_PLACE_ARGUMENTS | {
@@ -247,6 +247,24 @@ all_srams = boom_tile_rams | boom_tile_small_srams | digital_top_srams
     )
     for ram, ram_data in all_srams.items()
 ]
+
+[orfs_run(
+    name = ram + "_report",
+    src = ":" + ram + "_floorplan",
+    outs = [
+        ram + ".yaml",
+    ],
+    arguments = {"OUTFILE": "$(location :" + ram + ".yaml)"},
+    script = ":report-sram.tcl",
+) for ram in all_srams.keys()]
+
+sh_binary(
+    name = "sram_report",
+    srcs = ["sram.py"],
+    args = ["$(location :" + ram + "_report)" for ram in all_srams.keys()],
+    data = [":" + ram + "_report" for ram in all_srams.keys()],
+    visibility = ["//visibility:public"],
+)
 
 boom_regfile_rams = {
     "regfile_128x64": ":io-sram-bottom",
