@@ -13,7 +13,8 @@ def main():
     srams = {}
     for filename in sys.argv[1:]:
         with open(filename, "r") as f:
-            srams[filename] = yaml.load(f, Loader=yaml.FullLoader)
+            key = os.path.splitext(os.path.basename(filename))[0].replace("_floorplan", "")
+            srams[key] = srams.get(key, {}) | yaml.load(f, Loader=yaml.FullLoader)
 
     list_of_list_of_all_columns = [list(sram.keys()) for sram in srams.values()]
     all_columns = sorted(

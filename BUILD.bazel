@@ -248,21 +248,41 @@ all_srams = boom_tile_rams | boom_tile_small_srams | digital_top_srams
     for ram, ram_data in all_srams.items()
 ]
 
+sram_report_stage_num = "3"
+sram_report_stage = "place"
 [orfs_run(
-    name = ram + "_report",
-    src = ":" + ram + "_floorplan",
+    name = ram + "_timing_report",
+    src = ":" + ram + "_"  + sram_report_stage,
     outs = [
         ram + ".yaml",
     ],
-    arguments = {"OUTFILE": "$(location :" + ram + ".yaml)"},
+    arguments = {
+        "OUTFILE": "$(location :" + ram + ".yaml)",
+        "STAGE": sram_report_stage_num + "_" + sram_report_stage,
+    },
     script = ":report-sram.tcl",
 ) for ram in all_srams.keys()]
+
+[orfs_run(
+    name = ram + "_floorplan_report",
+    src = ":" + ram + "_floorplan_mock_area",
+    outs = [
+        ram + "_floorplan.yaml",
+    ],
+    arguments = {"OUTFILE": "$(location :" + ram + "_floorplan.yaml)"},
+    script = ":report-floorplan.tcl",
+) for ram in all_srams.keys()]
+
 
 sh_binary(
     name = "sram_report",
     srcs = ["sram.py"],
-    args = ["$(location :" + ram + "_report)" for ram in all_srams.keys()],
-    data = [":" + ram + "_report" for ram in all_srams.keys()],
+    args = (
+        ["$(location :" + ram + "_timing_report)" for ram in all_srams.keys()] +
+        ["$(location :" + ram + "_floorplan_report)" for ram in all_srams.keys()]
+    ),
+    data = [":" + ram + "_timing_report" for ram in all_srams.keys()] +
+            [":" + ram + "_floorplan_report" for ram in all_srams.keys()],
     visibility = ["//visibility:public"],
 )
 
