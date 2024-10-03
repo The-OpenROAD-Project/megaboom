@@ -165,12 +165,13 @@ boom_tile_small_srams = {
         "aspect_ratio": "1.2",
     },
     "data_2048x8": {
-        "mock_area": 5.01,
-        "aspect_ratio": "19",
-    },  # target aspect ratio not achievable - not enough space for metal straps
+        "mock_area": 3.2,
+        "aspect_ratio": "58",
+        "core_utilization": "10",
+    },
     "mem_256x4": {
         "mock_area": 0.265,
-        "aspect_ratio": "17.2",
+        "aspect_ratio": "36",
     },  # close
 }
 
@@ -215,7 +216,7 @@ all_srams = boom_tile_rams | boom_tile_small_srams | digital_top_srams
         stage_arguments = {
             "synth": SRAM_SYNTH_ARGUMENTS | {"SYNTH_MEMORY_MAX_BITS": "16384"},
             "floorplan": BLOCK_FLOORPLAN | SRAM_FLOOR_PLACE_ARGUMENTS | {
-                "CORE_UTILIZATION": "40",
+                "CORE_UTILIZATION": ram_data.get("core_utilization", "40"),
                 "CORE_ASPECT_RATIO": ram_data["aspect_ratio"],
             },
             "place": SRAM_FLOOR_PLACE_ARGUMENTS | {
