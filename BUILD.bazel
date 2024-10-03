@@ -128,13 +128,13 @@ all_source_files = sorted(glob(
 # with experiment notes on the same line
 boom_tile_small_srams = {
     "tag_array_64x184": {
-        "mock_area": 0.92,
+        "mock_area": 0.62,
         "aspect_ratio": "0.33",
-    },  # ran out of left edge pin slots
+    },
     "tag_array_64x168": {
-        "mock_area": 0.44,
+        "mock_area": 0.31,
         "aspect_ratio": "0.36",
-    },  # ran out of left edge pin slots
+    },
     # "data_2048x2": { "mock_area": None, "aspect_ratio": "2" },
     "table_256x48": {
         "mock_area": 0.31,
@@ -153,17 +153,17 @@ boom_tile_small_srams = {
         "aspect_ratio": "0.53",
     },  # close
     "meta_128x120": {
-        "mock_area": 0.79,
+        "mock_area": 0.31,
         "aspect_ratio": "0.25",
-    },  # ran out of left edge pin slots
+    },
     "lb_32x128": {
-        "mock_area": 0.34,
+        "mock_area": 0.32,
         "aspect_ratio": "0.93",
-    },  # ran out of left edge pin slots - can get within 70 um^2 by adjusting aspect ratio to 0.99
+    },
     "sdq_17x64": {
         "mock_area": 0.32,
         "aspect_ratio": "1.2",
-    },  # ran out of left edge pin slots - can get within 10 um^2 by adjusting aspect ratio to 1.37
+    },
     "data_2048x8": {
         "mock_area": 5.01,
         "aspect_ratio": "19",
@@ -209,6 +209,9 @@ all_srams = boom_tile_rams | boom_tile_small_srams | digital_top_srams
         name = ram,
         abstract_stage = "cts",
         mock_area = ram_data["mock_area"],
+        arguments = {
+            "PLACE_PINS_ARGS": "-min_distance 1 -min_distance_in_tracks",
+        },
         stage_arguments = {
             "synth": SRAM_SYNTH_ARGUMENTS | {"SYNTH_MEMORY_MAX_BITS": "16384"},
             "floorplan": BLOCK_FLOORPLAN | SRAM_FLOOR_PLACE_ARGUMENTS | {
