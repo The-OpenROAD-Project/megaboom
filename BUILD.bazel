@@ -265,7 +265,7 @@ sram_report_stage = "place"
 
 [orfs_run(
     name = ram + "_floorplan_report",
-    src = ":" + ram + "_floorplan_mock_area",
+    src = ":" + ram + "_mocked_floorplan",
     outs = [
         ram + "_floorplan.yaml",
     ],
