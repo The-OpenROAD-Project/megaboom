@@ -1,4 +1,5 @@
 load("@bazel-orfs//:openroad.bzl", "orfs_flow", "orfs_run")
+load(":write_binary.bzl", "write_binary")
 
 filegroup(
     name = "io-sram",
@@ -205,6 +206,11 @@ digital_top_srams = {
 # combine SRAMs into one dictionary for processing
 all_srams = boom_tile_rams | boom_tile_small_srams | digital_top_srams
 
+write_binary(
+    name = "srams",
+    data = str(all_srams),
+)
+
 [
     orfs_flow(
         name = ram,
@@ -249,10 +255,12 @@ all_srams = boom_tile_rams | boom_tile_small_srams | digital_top_srams
 ]
 
 sram_report_stage_num = "3"
+
 sram_report_stage = "place"
+
 [orfs_run(
     name = ram + "_timing_report",
-    src = ":" + ram + "_"  + sram_report_stage,
+    src = ":" + ram + "_" + sram_report_stage,
     outs = [
         ram + ".yaml",
     ],
@@ -273,16 +281,17 @@ sram_report_stage = "place"
     script = ":report-floorplan.tcl",
 ) for ram in all_srams.keys()]
 
-
 sh_binary(
     name = "sram_report",
     srcs = ["sram.py"],
     args = (
+        ["$(location :srams)"] +
         ["$(location :" + ram + "_timing_report)" for ram in all_srams.keys()] +
         ["$(location :" + ram + "_floorplan_report)" for ram in all_srams.keys()]
     ),
-    data = [":" + ram + "_timing_report" for ram in all_srams.keys()] +
-            [":" + ram + "_floorplan_report" for ram in all_srams.keys()],
+    data = [":srams"] +
+           [":" + ram + "_timing_report" for ram in all_srams.keys()] +
+           [":" + ram + "_floorplan_report" for ram in all_srams.keys()],
     visibility = ["//visibility:public"],
 )
 

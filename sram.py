@@ -1,26 +1,36 @@
 #!/usr/bin/env python3
 import os
 import yaml
+import json
 import sys
 from tabulate import tabulate
 
 
 def main():
     if len(sys.argv) == 1:
-        print("Usage: {} <files>".format(sys.argv[0]))
+        print("Usage: {} <desired.json> <files>".format(sys.argv[0]))
         sys.exit(1)
 
+    with open(sys.argv[1], "r") as f:
+        build_bazel = json.load(f)
+
     srams = {}
-    for filename in sys.argv[1:]:
+    for filename in sys.argv[2:]:
         with open(filename, "r") as f:
-            key = os.path.splitext(os.path.basename(filename))[0].replace("_floorplan", "")
-            srams[key] = srams.get(key, {}) | yaml.load(f, Loader=yaml.FullLoader)
+            key = os.path.splitext(os.path.basename(filename))[0].replace(
+                "_floorplan", ""
+            )
+            srams[key] = (
+                srams.get(key, {})
+                | yaml.load(f, Loader=yaml.FullLoader)
+                | build_bazel[key]
+            )
 
     list_of_list_of_all_columns = [list(sram.keys()) for sram in srams.values()]
     all_columns = sorted(
         list(set([item for sublist in list_of_list_of_all_columns for item in sublist]))
     )
-    order = ["width", "height"]
+    order = ["aspect_ratio", "width", "height"]
     all_columns = order + [col for col in all_columns if col not in order]
 
     table_data = []
