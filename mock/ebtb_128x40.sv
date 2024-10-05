@@ -23,14 +23,14 @@ module ebtb_128x40(
 
   reg [39:0] Memory[0:15];  // Reduced to 16 rows
   reg        _R0_en_d0;
-  reg [3:0]  _R0_addr_d0;  // Reduced to 4 bits
-  reg [3:0]  _W0_addr_d0;  // Reduced to 4 bits
+  wire [3:0]  _R0_addr_d0;  // Reduced to 4 bits
+  wire [3:0]  _W0_addr_d0;  // Reduced to 4 bits
+  assign _R0_addr_d0 = R0_addr[3:0] ^ R0_addr[6:4];  // XOR upper and lower bits
+  assign _W0_addr_d0 = W0_addr[3:0] ^ W0_addr[6:4];  // XOR upper and lower bits
   always @(posedge R0_clk) begin
     _R0_en_d0 <= R0_en;
-    _R0_addr_d0 <= R0_addr[3:0] ^ R0_addr[6:4];  // XOR upper and lower bits
   end // always @(posedge)
   always @(posedge W0_clk) begin
-    _W0_addr_d0 <= W0_addr[3:0] ^ W0_addr[6:4];  // XOR upper and lower bits
     if (W0_en)
       Memory[_W0_addr_d0] <= W0_data;  // Use XORed address
   end // always @(posedge)
