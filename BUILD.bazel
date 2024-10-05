@@ -254,19 +254,19 @@ write_binary(
     for ram, ram_data in all_srams.items()
 ]
 
-sram_report_stage_num = "3"
+all_srams_stage_num = "4"
 
-sram_report_stage = "place"
+all_srams_stage = "cts"
 
 [orfs_run(
     name = ram + "_timing_report",
-    src = ":" + ram + "_" + sram_report_stage,
+    src = ":" + ram + "_" + all_srams_stage,
     outs = [
         ram + ".yaml",
     ],
     arguments = {
         "OUTFILE": "$(location :" + ram + ".yaml)",
-        "STAGE": sram_report_stage_num + "_" + sram_report_stage,
+        "STAGE": all_srams_stage_num + "_" + all_srams_stage,
     },
     script = ":report-sram.tcl",
 ) for ram in all_srams.keys()]
@@ -281,17 +281,19 @@ sram_report_stage = "place"
     script = ":report-floorplan.tcl",
 ) for ram in all_srams.keys()]
 
-sh_binary(
+genrule(
     name = "sram_report",
-    srcs = ["sram.py"],
-    args = (
-        ["$(location :srams)"] +
-        ["$(location :" + ram + "_timing_report)" for ram in all_srams.keys()] +
-        ["$(location :" + ram + "_floorplan_report)" for ram in all_srams.keys()]
-    ),
-    data = [":srams"] +
-           [":" + ram + "_timing_report" for ram in all_srams.keys()] +
+    srcs = ["sram.py"] + [
+               ":srams",
+           ] + [":" + ram + "_timing_report" for ram in all_srams.keys()] +
            [":" + ram + "_floorplan_report" for ram in all_srams.keys()],
+    outs = ["sram_report"],
+    cmd = (
+        "$(location :sram.py) $(location :srams) " +
+        " ".join(["$(location :" + ram + "_timing_report)" for ram in all_srams.keys()] +
+                 ["$(location :" + ram + "_floorplan_report)" for ram in all_srams.keys()]) +
+        " > $@"
+    ),
     visibility = ["//visibility:public"],
 )
 
@@ -303,7 +305,7 @@ boom_regfile_rams = {
 [
     orfs_flow(
         name = ram,
-        abstract_stage = "cts",
+        abstract_stage = all_srams_stage,
         stage_arguments = {
             "synth": SRAM_SYNTH_ARGUMENTS,
             "floorplan": BLOCK_FLOORPLAN | {
