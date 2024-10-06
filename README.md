@@ -12,14 +12,9 @@ The build of MegaBoom takes on the order of 24 hours, unless you configure an
 [artifact server](#using-the-openroad-project-bazel-artifact-server-to-download-pre-built-results)
 to download pre-built results.
 
-To build BoomTile and set up scripts to view the results in the OpenROAD GUI:
+Read [OpenROAD-flow-scripts](https://github.com/The-OpenROAD-Project/bazel-orfs) for more details on how to use Bazel to build BoomTile and examine results, but oneliner to build BoomTile and view the results after the CTS(clock tree synthesis stage) in the GUI is:
 
-    bazel build BoomTile_final_gui
-
-View result using Docker in OpenROAD GUI using the script that launches OpenROAD-flow-scripts
-make with the design configuration and forwards arguments to make to view the result:
-
-    bazel-bin/BoomTile_final_docker gui_final
+    bazel run BoomTile_cts $(pwd)/tmp gui_cts
 
 Setup
 -----
@@ -31,7 +26,6 @@ For the installation and usage guide, please refer to [bazel-orfs's README](http
 Bazel-orfs must be specified in MegaBoom as the external dependency.
 It can be pinned to a specific revision of [the upstream repository](https://github.com/The-OpenROAD-Project/bazel-orfs) or the dependency can point to a local bazel-orfs workspace available on disk.
 Setup can be modified in [MODULE.bazel](./MODULE.bazel) file.
-
 
 About the MegaBoom RTL code
 ===========================
