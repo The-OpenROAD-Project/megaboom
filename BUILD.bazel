@@ -274,7 +274,7 @@ genrule(
                ":srams",
            ] + [":" + ram + "_timing_report" for ram in all_srams.keys()] +
            [":" + ram + "_floorplan_report" for ram in all_srams.keys()],
-    outs = ["sram_report"],
+    outs = ["sram-report.md"],
     cmd = (
         "$(location :sram.py) $(location :srams) " +
         " ".join(["$(location :" + ram + "_timing_report)" for ram in all_srams.keys()] +
