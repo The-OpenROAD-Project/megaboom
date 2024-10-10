@@ -21,7 +21,7 @@ def get_gcloud_auth_token(test):
     """
     Returns the gcloud auth token based on the .user-bazelrc
     """
-
+    
     with open(".user-bazelrc") as f:
         all = f.read()
     match = re.search(r"# user: (.*)", all)
@@ -40,7 +40,12 @@ def get_gcloud_auth_token(test):
 def generate_credentials(test):
     bearer_token = get_gcloud_auth_token(test)
 
-    credentials = {"headers": {"Authorization": f"Bearer {bearer_token}"}}
+    # Create the JSON object with the required format
+    credentials = {
+        "headers": {
+            "Authorization": [f"Bearer {bearer_token}"]
+        }
+    }
     return credentials
 
 
@@ -57,7 +62,7 @@ def test_permissions(credentials, bucket_name):
 
 def main():
     if len(sys.argv) <= 1 or (len(sys.argv) >= 2 and sys.argv[1] not in ["get", "test"]):
-        sys.exit("Usage: python credential_helper.py [get|test]")
+        sys.exit("Usage: python cred_helper.py [get|test]")
     test = sys.argv[1] == "test"
 
     credentials = generate_credentials(test)
