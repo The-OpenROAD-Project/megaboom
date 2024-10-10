@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+#
+# Returns information about user's GCP entitlements
+#
+# Usage: cred_helper.py [get|test]
+#
+#     get prints the GCP auth token
+#     test prints the user's GCP entitlements
+#
+# Calling script without arguments prints out usage information and then exits with a non-zero code (per spec)
+#
 
 import subprocess
 import requests
@@ -46,12 +56,9 @@ def test_permissions(credentials, bucket_name):
 
 
 def main():
-    if len(sys.argv) > 2 or (len(sys.argv) == 2 and sys.argv[1] != "get"):
-        sys.exit(
-            "Tests or gets access credentials\n"
-            "Usage: python credential_helper.py [get]"
-        )
-    test = len(sys.argv) == 1
+    if len(sys.argv) <= 1 or (len(sys.argv) >= 2 and sys.argv[1] not in ["get", "test"]):
+        sys.exit("Usage: python credential_helper.py [get|test]")
+    test = sys.argv[1] == "test"
 
     credentials = generate_credentials(test)
     if not test:

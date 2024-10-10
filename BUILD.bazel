@@ -116,7 +116,7 @@ all_source_files = sorted(glob(
 # with experiment notes on the same line
 boom_tile_small_srams = {
     "tag_array_64x184": {
-        "mock_area": 0.62,
+        "mock_area": 0.9,
         "aspect_ratio": "0.33",
     },
     "tag_array_64x168": {
