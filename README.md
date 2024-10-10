@@ -85,6 +85,18 @@ Copy the snippet below into `.user-bazelrc` and specify your username by modifyi
 
 `cred_helper.py` will parse `.user-bazelrc` and look for the username in the comment.
 
+To test, run:
+
+    $ ./cred_helper.py
+    Running: gcloud auth print-access-token oyvind@openroad.tools
+    {
+      "kind": "storage#testIamPermissionsResponse",
+      "permissions": [
+        "storage.buckets.get",
+        "storage.objects.create"
+      ]
+    }
+
 > **Note:** To test the credential helper, make sure to restart Bazel to avoid using a previous
 cached authorization:
 
