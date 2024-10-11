@@ -75,7 +75,7 @@ def test_permissions(credentials, bucket_name):
 
 
 def main():
-    if len(sys.argv) <= 1 or (len(sys.argv) >= 2 and sys.argv[1] not in ["get", "test"]):
+    if len(sys.argv) <= 1 or (len(sys.argv) == 2 and sys.argv[1] not in ["get", "test"]) or len(sys.argv) >= 3:
         sys.exit("Usage: python cred_helper.py [get|test]")
     test = sys.argv[1] == "test"
 

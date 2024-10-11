@@ -67,5 +67,18 @@ class CredHelperTests(unittest.TestCase):
         self.assertEqual("", result.stdout)
         self.assertTrue(result.stderr.startswith("Usage: "))
 
+    def test_extra_args(self):
+        """
+        Tests that we generate a syntax error when calling with more than two
+        args
+        """
+        result = subprocess.run([self._exe, "1", "2"], stdout=subprocess.PIPE,
+                                stderr=subprocess.PIPE, text=True)
+        # return code is supposed to be non-zero
+        self.assertEqual(result.returncode, 1)
+        # messages go to stderr, not stdout
+        self.assertEqual("", result.stdout)
+        self.assertTrue(result.stderr.startswith("Usage: "))
+        
 if __name__ == "__main__":
     unittest.main()
