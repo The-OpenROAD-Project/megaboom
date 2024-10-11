@@ -87,7 +87,7 @@ Copy the snippet below into `.user-bazelrc` and specify your username by modifyi
 
 To test, run:
 
-    $ ./cred_helper.py
+    $ ./cred_helper.py test
     Running: gcloud auth print-access-token oyvind@openroad.tools
     {
       "kind": "storage#testIamPermissionsResponse",
