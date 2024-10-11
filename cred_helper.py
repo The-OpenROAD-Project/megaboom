@@ -38,6 +38,11 @@ def get_gcloud_auth_token(test):
 
 
 def generate_credentials(test):
+    """
+    Generate the credentials in a form that Bazel wants, which is the
+    Authorization key points to a list
+    """
+    
     bearer_token = get_gcloud_auth_token(test)
 
     # Create the JSON object with the required format
@@ -50,6 +55,15 @@ def generate_credentials(test):
 
 
 def test_permissions(credentials, bucket_name):
+    """
+    Tests the user's entitlements for this bucket
+
+    Note that the call to check the permissions needs the Authorization key to
+    point to a string and not a list. So, take the first element in the list
+    and make it the only value
+    """
+    
+    credentials["headers"]["Authorization"] = credentials["headers"]["Authorization"][0]
     url = (
         f"https://storage.googleapis.com/storage/v1/b/{bucket_name}/iam/testPermissions"
     )
