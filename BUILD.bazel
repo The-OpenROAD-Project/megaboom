@@ -329,7 +329,7 @@ orfs_flow(
         # repair_timing runs for hours in floorplan
         "REMOVE_ABC_BUFFERS": "1",
         "IO_CONSTRAINTS": "$(location :io-boomtile)",
-        "PLACE_DENSITY": "0.20",
+        "PLACE_DENSITY": "0.30",
         # We only need hierarchical synthesis when we are running through floorplan
         # write_macro_placement macros.tcl
         "SYNTH_HIERARCHICAL": "1",
@@ -350,8 +350,8 @@ orfs_flow(
         "MIN_ROUTING_LAYER": "M2",
         "MAX_ROUTING_LAYER": "M7",
         "ROUTING_LAYER_ADJUSTMENT": "0.45",
-        "DIE_AREA": "0 0 1500 1500",
-        "CORE_AREA": "2 2 1498 1498",
+        "DIE_AREA": "0 0 1000 1000",
+        "CORE_AREA": "2 2 998 998",
         "FILL_CELLS": "",
         "TAPCELL_TCL": "",
     },
