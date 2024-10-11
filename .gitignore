@@ -14,3 +14,4 @@ megaboom.qws
 tmp-clearbox/
 .vscode/
 .user-bazelrc
+__pycache__/
