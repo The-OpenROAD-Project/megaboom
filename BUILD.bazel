@@ -337,7 +337,7 @@ orfs_flow(
         #"CORE_UTILIZATION": "20",
         # Tweak below to work around initial condition sensitive bugs in
         # macro placement
-        "MACRO_PLACE_HALO": "19 19",
+        "MACRO_PLACE_HALO": "10 10",
         "RTLMP_FLOW": "1",
         # "MACRO_PLACEMENT_TCL": "$(location :boomtile-macro-placement)",
         "TNS_END_PERCENT": "0",
