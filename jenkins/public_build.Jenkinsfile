@@ -1,4 +1,4 @@
-@Library('utils@orfs-v2.2.1') _
+@Library('utils@move-build-to-megaboom') _
 
 // kick off worker using megaboom cloud definition
 node('gce-megaboom-central1') {
