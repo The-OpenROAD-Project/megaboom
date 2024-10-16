@@ -320,6 +320,24 @@ boom_regfile_rams = {
     for ram, io_constraint in boom_regfile_rams.items()
 ]
 
+orfs_run(
+    name = "slack",
+    src = ":BoomTile_cts",
+    outs = ["slack.txt"],
+    arguments = {
+        "OUTPUT": "$(location :slack.txt)",
+    },
+    script = ":slack-positions.tcl",
+)
+
+sh_binary(
+    name = "show_slack",
+    srcs = ["plot-3d-slack.py"],
+    args = ["$(location :slack)"],
+    data = ["slack"],
+    visibility = ["//visibility:public"],
+)
+
 boom_tile_macros = [x + "_generate_abstract" for x in all_srams.keys()]
 
 orfs_flow(
