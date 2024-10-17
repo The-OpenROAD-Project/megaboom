@@ -345,7 +345,7 @@ FAST_BUILD_SETTINGS = {
     "REMOVE_ABC_BUFFERS": "1",
     "TNS_END_PERCENT": "0",
     "SKIP_CTS_REPAIR_TIMING": "1",
-    "GPL_TIMING_DRIVEN": "0",
+    "GPL_TIMING_DRIVEN": "1",
     "GPL_ROUTABILITY_DRIVEN": "1",
     # Save global route time for now
     "SKIP_INCREMENTAL_REPAIR": "1",
