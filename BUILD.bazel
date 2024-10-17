@@ -325,7 +325,10 @@ boom_tile_macros = [x + "_generate_abstract" for x in all_srams.keys()]
 FAST_BUILD_SETTINGS = {
     # # repair_timing runs for hours in floorplan
     # "REMOVE_ABC_BUFFERS": "1",
-    # "TNS_END_PERCENT": "0",
+
+    # Repair takes forever at 100% so we'll just do the worst
+    # path to build in a reasonable amount of time.
+    "TNS_END_PERCENT": "0",
     # "SKIP_CTS_REPAIR_TIMING": "1",
     # "GPL_TIMING_DRIVEN": "0",
     # "GPL_ROUTABILITY_DRIVEN": "1",
