@@ -338,6 +338,17 @@ sh_binary(
     visibility = ["//visibility:public"],
 )
 
+orfs_run(
+    name = "kpi",
+    src = ":BoomTile_cts",
+    outs = ["kpi.yaml"],
+    arguments = {
+        "OUTPUT": "$(location :kpi.yaml)",
+    },
+    script = ":report-kpi.tcl",
+)
+
+
 boom_tile_macros = [x + "_generate_abstract" for x in all_srams.keys()]
 
 FAST_BUILD_SETTINGS = {
