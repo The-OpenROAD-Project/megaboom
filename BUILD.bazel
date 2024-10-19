@@ -348,7 +348,6 @@ orfs_run(
     script = ":report-kpi.tcl",
 )
 
-
 boom_tile_macros = [x + "_generate_abstract" for x in all_srams.keys()]
 
 FAST_BUILD_SETTINGS = {
@@ -364,8 +363,43 @@ FAST_BUILD_SETTINGS = {
     "TAPCELL_TCL": "",
 }
 
-orfs_flow(
+SWEEP = {
+    "base": {
+        "PLACE_DENSITY": "0.20",
+        "MACRO_PLACE_HALO": "19 19",
+        "GPL_TIMING_DRIVEN": "0",
+        "GPL_ROUTABILITY_DRIVEN": "1",
+        "REMOVE_ABC_BUFFERS": "1",
+        "TNS_END_PERCENT": "0",
+    },
+    "1": {
+        "PLACE_DENSITY": "0.19",
+    },
+    "2": {
+        "PLACE_DENSITY": "0.21",
+    },
+    "3": {
+        "PLACE_DENSITY": "0.22",
+    },
+    "4": {
+        "PLACE_DENSITY": "0.23",
+    },
+}
+
+SWEEP_JSON = {
+    "sweep": SWEEP,
+    "stage": "floorplan",
+}
+
+write_binary(
+    name = "sweep.json",
+    data = str(SWEEP_JSON),
+)
+
+
+[orfs_flow(
     name = "BoomTile",
+    variant = variant,
     arguments = SKIP_REPORT_METRICS | FAST_BUILD_SETTINGS | {
         "PDN_TCL": "$(PLATFORM_DIR)/openRoad/pdn/BLOCKS_grid_strategy.tcl",
         "IO_CONSTRAINTS": "$(location :io-boomtile)",
@@ -386,8 +420,10 @@ orfs_flow(
         "ROUTING_LAYER_ADJUSTMENT": "0.45",
         "DIE_AREA": "0 0 1500 1500",
         "CORE_AREA": "2 2 1498 1498",
-    },
+    } | SWEEP[variant],
     macros = boom_tile_macros,
+    # Share synthesis stage between all variants
+    previous_stage = {"floorplan": "BoomTile_synth"},
     stage_sources = {
         "synth": [":constraints-boomtile"],
         "floorplan": [
@@ -397,4 +433,28 @@ orfs_flow(
         "place": [":io-boomtile"],
     },
     verilog_files = all_source_files,
+) for variant in SWEEP]
+
+[orfs_run(
+    name = "BoomTile_" + variant + "_report",
+    src = ":BoomTile_" + ("" if variant == "base" else variant + "_") + SWEEP_JSON["stage"],
+    outs = [
+        "BoomTile_" + variant + ".yaml",
+    ],
+    arguments = {
+        "OUTFILE": "$(location :BoomTile_" + variant + ".yaml)",
+        "REPORT_STAGE": SWEEP_JSON["stage"],
+    },
+    script = ":report-wns.tcl",
+) for variant in SWEEP]
+
+genrule(
+    name = "wns_report",
+    srcs = ["wns_report.py", "sweep.json"] +
+           [":BoomTile_" + variant + ".yaml" for variant in SWEEP],
+    outs = ["BoomTile_wns_report.md"],
+    cmd = (
+        "$(location :wns_report.py) > $@ " +
+        "$(location :sweep.json)"),
+    visibility = ["//visibility:public"],
 )
