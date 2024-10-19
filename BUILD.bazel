@@ -378,24 +378,25 @@ SWEEP = {
     "4": {
         "PLACE_DENSITY": "0.23",
     },
-    "5": {
-        "REMOVE_ABC_BUFFERS": "0",
-    },
-    "6": {
-        "REMOVE_ABC_BUFFERS": "0",
-        "GPL_TIMING_DRIVEN": "1",
-    },
-    "7": {
-        "REMOVE_ABC_BUFFERS": "0",
-        "GPL_TIMING_DRIVEN": "1",
-        "SKIP_CTS_REPAIR_TIMING": "0",
-    },
-    "8": {
-        "REMOVE_ABC_BUFFERS": "0",
-        "GPL_TIMING_DRIVEN": "1",
-        "SKIP_CTS_REPAIR_TIMING": "0",
-        "SKIP_INCREMENTAL_REPAIR": "0",
-    },
+    # Too slow for now...
+    # "5": {
+    #     "REMOVE_ABC_BUFFERS": "0",
+    # },
+    # "6": {
+    #     "REMOVE_ABC_BUFFERS": "0",
+    #     "GPL_TIMING_DRIVEN": "1",
+    # },
+    # "7": {
+    #     "REMOVE_ABC_BUFFERS": "0",
+    #     "GPL_TIMING_DRIVEN": "1",
+    #     "SKIP_CTS_REPAIR_TIMING": "0",
+    # },
+    # "8": {
+    #     "REMOVE_ABC_BUFFERS": "0",
+    #     "GPL_TIMING_DRIVEN": "1",
+    #     "SKIP_CTS_REPAIR_TIMING": "0",
+    #     "SKIP_INCREMENTAL_REPAIR": "0",
+    # },
 }
 
 BOOMTILE_VARIABLES = SKIP_REPORT_METRICS | FAST_BUILD_SETTINGS | {
