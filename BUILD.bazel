@@ -348,7 +348,6 @@ orfs_run(
     script = ":report-kpi.tcl",
 )
 
-
 boom_tile_macros = [x + "_generate_abstract" for x in all_srams.keys()]
 
 FAST_BUILD_SETTINGS = {
@@ -364,30 +363,85 @@ FAST_BUILD_SETTINGS = {
     "TAPCELL_TCL": "",
 }
 
-orfs_flow(
-    name = "BoomTile",
-    arguments = SKIP_REPORT_METRICS | FAST_BUILD_SETTINGS | {
-        "PDN_TCL": "$(PLATFORM_DIR)/openRoad/pdn/BLOCKS_grid_strategy.tcl",
-        "IO_CONSTRAINTS": "$(location :io-boomtile)",
-        "PLACE_DENSITY": "0.20",
-        # We only need hierarchical synthesis when we are running through floorplan
-        # write_macro_placement macros.tcl
-        "SYNTH_HIERARCHICAL": "1",
-        "SDC_FILE": "$(location :constraints-boomtile)",
-        #"CORE_UTILIZATION": "20",
-        # Tweak below to work around initial condition sensitive bugs in
-        # macro placement
-        "MACRO_PLACE_HALO": "19 19",
-        "RTLMP_FLOW": "1",
-        # "MACRO_PLACEMENT_TCL": "$(location :boomtile-macro-placement)",
-        "PLACE_PINS_ARGS": "-annealing",
-        "MIN_ROUTING_LAYER": "M2",
-        "MAX_ROUTING_LAYER": "M7",
-        "ROUTING_LAYER_ADJUSTMENT": "0.45",
-        "DIE_AREA": "0 0 1500 1500",
-        "CORE_AREA": "2 2 1498 1498",
+SWEEP = {
+    "base": {
     },
+    "1": {
+        "PLACE_DENSITY": "0.25",
+    },
+    "2": {
+        "PLACE_DENSITY": "0.21",
+    },
+    "3": {
+        "PLACE_DENSITY": "0.22",
+    },
+    "4": {
+        "PLACE_DENSITY": "0.23",
+    },
+    "5": {
+        "REMOVE_ABC_BUFFERS": "0",
+    },
+    "6": {
+        "REMOVE_ABC_BUFFERS": "0",
+        "GPL_TIMING_DRIVEN": "1",
+    },
+    "7": {
+        "REMOVE_ABC_BUFFERS": "0",
+        "GPL_TIMING_DRIVEN": "1",
+        "SKIP_CTS_REPAIR_TIMING": "0",
+    },
+    "8": {
+        "REMOVE_ABC_BUFFERS": "0",
+        "GPL_TIMING_DRIVEN": "1",
+        "SKIP_CTS_REPAIR_TIMING": "0",
+        "SKIP_INCREMENTAL_REPAIR": "0",
+    },
+}
+
+BOOMTILE_VARIABLES = SKIP_REPORT_METRICS | FAST_BUILD_SETTINGS | {
+    "PDN_TCL": "$(PLATFORM_DIR)/openRoad/pdn/BLOCKS_grid_strategy.tcl",
+    "IO_CONSTRAINTS": "$(location :io-boomtile)",
+    "PLACE_DENSITY": "0.20",
+    # We only need hierarchical synthesis when we are running through floorplan
+    # write_macro_placement macros.tcl
+    "SYNTH_HIERARCHICAL": "1",
+    "SDC_FILE": "$(location :constraints-boomtile)",
+    #"CORE_UTILIZATION": "20",
+    # Tweak below to work around initial condition sensitive bugs in
+    # macro placement
+    "MACRO_PLACE_HALO": "19 19",
+    "RTLMP_FLOW": "1",
+    # "MACRO_PLACEMENT_TCL": "$(location :boomtile-macro-placement)",
+    "PLACE_PINS_ARGS": "-annealing",
+    "MIN_ROUTING_LAYER": "M2",
+    "MAX_ROUTING_LAYER": "M7",
+    "ROUTING_LAYER_ADJUSTMENT": "0.45",
+    "DIE_AREA": "0 0 1500 1500",
+    "CORE_AREA": "2 2 1498 1498",
+}
+
+SWEEP_JSON = {
+    "base": BOOMTILE_VARIABLES,
+    "sweep": SWEEP,
+    "stage": "cts",
+    "stages": [
+        "floorplan",
+        "place",
+        "cts",
+    ],
+}
+
+write_binary(
+    name = "sweep.json",
+    data = str(SWEEP_JSON),
+)
+
+[orfs_flow(
+    name = "BoomTile",
+    arguments = BOOMTILE_VARIABLES | SWEEP[variant],
     macros = boom_tile_macros,
+    # Share synthesis stage between all variants
+    previous_stage = {"floorplan": "BoomTile_synth"},
     stage_sources = {
         "synth": [":constraints-boomtile"],
         "floorplan": [
@@ -396,5 +450,41 @@ orfs_flow(
         ],
         "place": [":io-boomtile"],
     },
+    variant = variant,
     verilog_files = all_source_files,
+) for variant in SWEEP]
+
+[orfs_run(
+    name = "BoomTile_" + variant + "_report",
+    src = ":BoomTile_" + ("" if variant == "base" else variant + "_") + SWEEP_JSON["stage"],
+    outs = [
+        "BoomTile_" + variant + ".yaml",
+    ],
+    arguments = {
+        "OUTFILE": "$(location :BoomTile_" + variant + ".yaml)",
+        "REPORT_STAGE": SWEEP_JSON["stage"],
+    },
+    script = ":report-wns.tcl",
+) for variant in SWEEP]
+
+[filegroup(
+    name = "BoomTile_" + variant + "_logs",
+    srcs = [":BoomTile_" + ("" if variant == "base" else variant + "_") + stage for stage in SWEEP_JSON["stages"]],
+    output_group = "logs",
+    visibility = [":__subpackages__"],
+) for variant in SWEEP]
+
+genrule(
+    name = "wns_report",
+    srcs = [
+               "wns_report.py",
+               "sweep.json",
+           ] + [":BoomTile_" + variant + ".yaml" for variant in SWEEP] +
+           [":BoomTile_" + variant + "_logs" for variant in SWEEP],
+    outs = ["BoomTile_wns_report.md"],
+    cmd = (
+        "$(location :wns_report.py) > $@" +
+        " $(location :sweep.json)"
+    ),
+    visibility = ["//visibility:public"],
 )

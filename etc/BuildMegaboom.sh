@@ -8,4 +8,5 @@ exec 2>&1
 # Check GCP service account entitlements first
 test/cred_helper_test.py
 
-bazel build BoomTile_grt
+bazel build wns_report BoomTile_grt --keep_going
+cat bazel-bin/BoomTile_wns_report.md
