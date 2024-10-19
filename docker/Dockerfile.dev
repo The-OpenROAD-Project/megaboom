@@ -19,14 +19,8 @@ RUN echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.
 RUN apt update 
 RUN apt install google-cloud-cli -y
 
-# Install git
-RUN apt install git -y
-
-# Install podman docker
-RUN apt install podman-docker -y
-
-# Install time in /usr/bin for ORFS
-RUN apt install time
+RUN apt install time podman-docker git python3 python3-pip -y
+RUN pip3 install tabulate
 
 # Create gcloud config directories in /tmp
 RUN mkdir -p /tmp/.config/gcloud
