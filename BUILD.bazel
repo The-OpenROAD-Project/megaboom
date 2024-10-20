@@ -112,8 +112,6 @@ all_source_files = sorted(glob(
     ]),
 ) + mock_files)
 
-# Haven't tried mocking any SRAMs with mock_area of None. Rest have been tried
-# with experiment notes on the same line
 boom_tile_small_srams = {
     "tag_array_64x184": {
         "mock_area": 0.62,
@@ -152,15 +150,6 @@ boom_tile_small_srams = {
         "mock_area": 0.32,
         "aspect_ratio": "1.2",
     },
-    "data_2048x8": {
-        "mock_area": 3.2,
-        "aspect_ratio": "58",
-        "core_utilization": "10",
-    },
-    "mem_256x4": {
-        "mock_area": 0.265,
-        "aspect_ratio": "36",
-    },  # close
 }
 
 boom_tile_rams = {
