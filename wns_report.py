@@ -7,14 +7,16 @@ import subprocess
 import sys
 from tabulate import tabulate
 
+
 def transpose_table(table_data):
     return list(map(list, zip(*table_data)))
+
 
 def print_log_dir_times(f):
     first = True
     totalElapsed = 0
     total_max_memory = 0
-    #print(logdir)
+    # print(logdir)
 
     # Extract Elapsed Time line from log file
     with open(str(f)) as logfile:
@@ -46,9 +48,7 @@ def print_log_dir_times(f):
                         + int(timeList[2])
                     )
                 else:
-                    print(
-                        "Elapsed time not understood in", str(line), file=sys.stderr
-                    )
+                    print("Elapsed time not understood in", str(line), file=sys.stderr)
                 # Find Peak Memory
                 peak_memory = int(
                     int(line.split("Peak memory: ")[1].split("KB")[0]) / 1024
@@ -66,8 +66,6 @@ def print_log_dir_times(f):
         total_max_memory = max(total_max_memory, int(peak_memory))
 
     return totalElapsed
-
-
 
 
 def main():
@@ -88,15 +86,33 @@ def main():
 
     table_data = None
     for variant in sweep:
-        slack_file = os.path.join(os.path.dirname(sweep_file), "BoomTile_" + variant + ".yaml")
+        slack_file = os.path.join(
+            os.path.dirname(sweep_file), "BoomTile_" + variant + ".yaml"
+        )
         with open(slack_file, "r") as file:
             stats = yaml.safe_load(file)
         names = sorted(stats.keys())
         if table_data is None:
             table_data = [["Variant"] + names + variables + logs]
-        table_data.append(([variant] + [stats[name] for name in names] +
-        [sweep[variant].get(variable, "") for variable in variables] +
-        [print_log_dir_times(os.path.join(logs_dir, variant, log)) for log in logs]))
+        table_data.append(
+            (
+                [variant]
+                + [stats[name] for name in names]
+                + [
+                    (
+                        sweep[variant].get(variable, "")
+                        if sweep_json["base"].get(variable, "")
+                        != sweep[variant].get(variable, "")
+                        else ""
+                    )
+                    for variable in variables
+                ]
+                + [
+                    print_log_dir_times(os.path.join(logs_dir, variant, log))
+                    for log in logs
+                ]
+            )
+        )
 
     print("Stage: " + sweep_json["stage"])
     table_data = transpose_table(table_data)
@@ -106,7 +122,14 @@ def main():
     print()
     print("Base configuration variables")
     base_keys = sorted(sweep_json["base"].keys())
-    print(tabulate([[key, sweep_json["base"][key]] for key in base_keys], ["Variable", "Value"], tablefmt="github"))
+    print(
+        tabulate(
+            [[key, sweep_json["base"][key]] for key in base_keys],
+            ["Variable", "Value"],
+            tablefmt="github",
+        )
+    )
+
 
 if __name__ == "__main__":
     main()
