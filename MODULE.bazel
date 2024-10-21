@@ -33,9 +33,8 @@ git_override(
 # it is possible to specify a version in here if something newer than
 # latest bazel-orfs tested ORFS is needed.
 
-#orfs = use_extension("@bazel-orfs//:extension.bzl", "orfs_repositories")
-#
-#orfs.default(
-#    image = "docker.io/openroad/orfs:v3.0-1459-gd505a82b",
-#    sha256 = "434edf30b4d0610c17cb0cd4f865ba8ce34f7b247904bd2a8ba6e17b89981c37",
-#)
+orfs = use_extension("@bazel-orfs//:extension.bzl", "orfs_repositories")
+orfs.default(
+    image = "docker.io/openroad/orfs:v3.0-1676-gae5333d6",
+    sha256 = "87a7bb6605933ff992990c090c248a729a8988ca06e99961b00425e75db6a73d",
+)
