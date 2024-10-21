@@ -79,8 +79,6 @@ filegroup(
 
 BLOCK_FLOORPLAN = {
     "PDN_TCL": "$(PLATFORM_DIR)/openRoad/pdn/BLOCK_grid_strategy.tcl",
-    # repair_timing runs for hours in floorplan
-    "REMOVE_ABC_BUFFERS": "1",
 }
 
 SRAM_SYNTH_ARGUMENTS = {"SDC_FILE": "$(location :constraints-sram)"}
@@ -202,22 +200,21 @@ write_binary(
     orfs_flow(
         name = ram,
         abstract_stage = "cts",
-        arguments = {
-            "PLACE_PINS_ARGS": "-min_distance 1 -min_distance_in_tracks",
+        arguments = SRAM_SYNTH_ARGUMENTS | SKIP_REPORT_METRICS | {"SYNTH_MEMORY_MAX_BITS": "16384"} | {
+                        "PLACE_PINS_ARGS": "-min_distance 1 -min_distance_in_tracks",
+                    } | BLOCK_FLOORPLAN |
+                    {
+                        "CORE_UTILIZATION": ram_data.get("core_utilization", "40"),
+                        "CORE_ASPECT_RATIO": ram_data["aspect_ratio"],
+                    } | SRAM_FLOOR_PLACE_ARGUMENTS | {
+            "PLACE_DENSITY": "0.65",
+            "GPL_TIMING_DRIVEN": "0",
+        } | {
+            "SKIP_CTS_REPAIR_TIMING": "0",
+            "SKIP_LAST_GASP": "1",
+            "SETUP_SLACK_MARGIN": "-500",
         },
         mock_area = ram_data["mock_area"],
-        stage_arguments = {
-            "synth": SRAM_SYNTH_ARGUMENTS | {"SYNTH_MEMORY_MAX_BITS": "16384"},
-            "floorplan": BLOCK_FLOORPLAN | SRAM_FLOOR_PLACE_ARGUMENTS | {
-                "CORE_UTILIZATION": ram_data.get("core_utilization", "40"),
-                "CORE_ASPECT_RATIO": ram_data["aspect_ratio"],
-            },
-            "place": SRAM_FLOOR_PLACE_ARGUMENTS | {
-                "PLACE_DENSITY": "0.65",
-                "GPL_TIMING_DRIVEN": "0",
-            },
-            "cts": SKIP_REPORT_METRICS | {"SKIP_CTS_REPAIR_TIMING": "0"},
-        },
         stage_sources = {
             "synth": [":constraints-sram"],
             "floorplan": [":io-sram"],
@@ -366,9 +363,15 @@ FAST_BUILD_SETTINGS = {
 SWEEP = {
     "base": {
     },
-    # "1": {
-    #     "PLACE_DENSITY": "0.25",
-    # },
+    "1": {
+        # Had to increase it to a minimum of 0.22 recommended
+        "PLACE_DENSITY": "0.24",
+        # Enable floorplan retiming
+        "REMOVE_ABC_BUFFERS": "0",
+        # Saves hours of build time
+        "SKIP_LAST_GASP": "1",
+        "SETUP_SLACK_MARGIN": "-1300",
+    },
     # "2": {
     #     "PLACE_DENSITY": "0.21",
     # },
