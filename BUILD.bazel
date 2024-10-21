@@ -142,15 +142,6 @@ boom_tile_small_srams = {
         "mock_area": 0.32,
         "aspect_ratio": "1.2",
     },
-    "data_2048x8": {
-        "mock_area": 3.2,
-        "aspect_ratio": "58",
-        "core_utilization": "10",
-    },
-    "mem_256x4": {
-        "mock_area": 0.265,
-        "aspect_ratio": "36",
-    },  # close
 }
 
 boom_tile_rams = {
@@ -364,6 +355,10 @@ SWEEP = {
             # Saves hours of build time
             "SKIP_LAST_GASP": "1",
             "SETUP_SLACK_MARGIN": "-1300",
+         "REMOVE_ABC_BUFFERS": "0",
+         "GPL_TIMING_DRIVEN": "1",
+         "SKIP_CTS_REPAIR_TIMING": "0",
+         "SKIP_INCREMENTAL_REPAIR": "0",
         },
     },
     "2": {
