@@ -366,6 +366,8 @@ FAST_BUILD_SETTINGS = {
 SWEEP = {
     "base": {
     },
+    "naja": {
+    },
     "1": {
         "PLACE_DENSITY": "0.25",
     },
@@ -443,6 +445,17 @@ write_binary(
     macros = boom_tile_macros,
     # Share synthesis stage between all variants
     previous_stage = {"floorplan": "BoomTile_synth"},
+    renamed_inputs = {
+        "naja": {
+            "floorplan": {"1_synth.v": ":naja"},
+        },
+        "mock-naja": {
+            "floorplan": {"1_synth.v": ":mock-naja"},
+        },
+        "naja-error": {
+            "floorplan": {"1_synth.v": ":naja-error"},
+        },
+    }.get(variant, {}),
     stage_sources = {
         "synth": [":constraints-boomtile"],
         "floorplan": [
@@ -488,4 +501,34 @@ genrule(
         " $(location :sweep.json)"
     ),
     visibility = ["//visibility:public"],
+)
+
+# fish out the file that we want as input to the "naja" rule
+# below.
+filegroup(
+    name = "BoomTile_synth_unedited",
+    srcs = ["BoomTile_naja_synth"],
+    output_group = "1_synth.v",
+)
+
+
+filegroup(
+    name = "BoomTile_synth_mergedlib",
+    srcs = ["BoomTile_naja_synth"],
+    output_group = "merged.lib",
+)
+
+# Read in the renamed synthesis output from above and provide
+# the original name to the next stage
+genrule(
+    name = "naja",
+    srcs = [
+      ":BoomTile_unedited",
+      ":BoomTile_synth_mergedlib",
+      "naja_edit/install/bin/naja_edit",
+      "naja_edit/install/lib/python",
+      "naja_edit/install/share/naja/primitives/asap7_new.py",
+    ],
+    outs = ["mock-naja.v"],
+    cmd = "mkdir -p `dirname $@`; export PYTHONPATH=$(location naja_edit/install/lib/python) && $(location naja_edit/install/bin/naja_edit) -a all -p $(location :BoomTile_synth_mergedlib) -f verilog -t verilog -i $(location :BoomTile_synth_unedited) -o $@",
 )
