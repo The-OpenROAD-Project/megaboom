@@ -518,18 +518,26 @@ filegroup(
     output_group = "merged.lib",
 )
 
+
+filegroup(
+    name = "top_lib",
+    srcs = ["top_generate_abstract"],
+    output_group = "top.lib",
+)
+
 # Read in the renamed synthesis output from above and provide
 # the original name to the next stage
 genrule(
     name = "naja",
     srcs = [
       ":BoomTile_synth_unedited",
-      #":BoomTile_synth_mergedlib",
+      ":BoomTile_synth_mergedlib",
+      #":top_lib",
       "naja_edit/install/bin/naja_edit",
       "naja_edit/install/lib/python",
       "naja_edit/install/share/naja/primitives/asap7_new.py",
     ],
     outs = ["naja.v"],
-    #cmd = "mkdir -p `dirname $@`; export PYTHONPATH=$(location naja_edit/install/lib/python) && $(location naja_edit/install/bin/naja_edit) -a all -p $(location :BoomTile_synth_mergedlib) -f verilog -t verilog -i $(location :BoomTile_synth_unedited) -o $@",
-    cmd = "mkdir -p `dirname $@`; export PYTHONPATH=$(location naja_edit/install/lib/python) && $(location naja_edit/install/bin/naja_edit) -a all -p $(location naja_edit/install/share/naja/primitives/asap7_new.py) -f verilog -t verilog -i $(location :BoomTile_synth_unedited) -o $@",
+    cmd = "mkdir -p `dirname $@`; export PYTHONPATH=$(location naja_edit/install/lib/python) && $(location naja_edit/install/bin/naja_edit) -a all -p $(location :BoomTile_synth_mergedlib) -f verilog -t verilog -i $(location :BoomTile_synth_unedited) -o $@",
+    #cmd = "mkdir -p `dirname $@`; export PYTHONPATH=$(location naja_edit/install/lib/python) && $(location naja_edit/install/bin/naja_edit) -a all -p $(location naja_edit/install/share/naja/primitives/asap7_new.py) -f verilog -t verilog -i $(location :BoomTile_synth_unedited) -o $@",
 )
