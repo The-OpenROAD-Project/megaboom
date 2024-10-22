@@ -366,18 +366,18 @@ FAST_BUILD_SETTINGS = {
 SWEEP = {
     "base": {
     },
-    "1": {
-        "PLACE_DENSITY": "0.25",
-    },
-    "2": {
-        "PLACE_DENSITY": "0.21",
-    },
-    "3": {
-        "PLACE_DENSITY": "0.22",
-    },
-    "4": {
-        "PLACE_DENSITY": "0.23",
-    },
+    # "1": {
+    #     "PLACE_DENSITY": "0.25",
+    # },
+    # "2": {
+    #     "PLACE_DENSITY": "0.21",
+    # },
+    # "3": {
+    #     "PLACE_DENSITY": "0.22",
+    # },
+    # "4": {
+    #     "PLACE_DENSITY": "0.23",
+    # },
     # Too slow for now...
     # "5": {
     #     "REMOVE_ABC_BUFFERS": "0",
