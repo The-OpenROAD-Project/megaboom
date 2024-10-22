@@ -444,7 +444,7 @@ write_binary(
     arguments = BOOMTILE_VARIABLES | SWEEP[variant],
     macros = boom_tile_macros,
     # Share synthesis stage between all variants
-    previous_stage = {"floorplan": "BoomTile_synth"},
+    previous_stage = {} if "naja" in variant else {"floorplan": "BoomTile_synth"},
     renamed_inputs = {
         "naja": {
             "floorplan": {"1_synth.v": ":naja"},
@@ -512,18 +512,18 @@ filegroup(
 )
 
 
+[filegroup(
+ name = ram + "_lib",
+ srcs = [ram + "_generate_abstract"],
+ output_group = ram + ".lib",
+) for ram in all_srams.keys()]
+
 filegroup(
     name = "BoomTile_synth_mergedlib",
-    srcs = ["BoomTile_naja_synth"],
+    srcs = ["BoomTile_synth"],
     output_group = "merged.lib",
 )
 
-
-filegroup(
-    name = "top_lib",
-    srcs = ["top_generate_abstract"],
-    output_group = "top.lib",
-)
 
 # Read in the renamed synthesis output from above and provide
 # the original name to the next stage
@@ -532,13 +532,14 @@ genrule(
     srcs = [
       ":BoomTile_synth_unedited",
       ":BoomTile_synth_mergedlib",
-      ":top_lib",
       "naja_edit/install/bin/naja_edit",
       "naja_edit/install/lib/python",
       "naja_edit/install/share/naja/primitives/asap7_new.py",
-    ],
+    ] + [":" + ram + "_lib" for ram in all_srams.keys()],
     outs = ["naja.v"],
     #cmd = "mkdir -p `dirname $@`; export PYTHONPATH=$(location naja_edit/install/lib/python) && $(location naja_edit/install/bin/naja_edit) -a all -p $(location :BoomTile_synth_mergedlib) -f verilog -t verilog -i $(location :BoomTile_synth_unedited) -o $@",
     #cmd = "mkdir -p `dirname $@`; export PYTHONPATH=$(location naja_edit/install/lib/python) && $(location naja_edit/install/bin/naja_edit) -a all -p $(location naja_edit/install/share/naja/primitives/asap7_new.py) -f verilog -t verilog -i $(location :BoomTile_synth_unedited) -o $@",
-    cmd = "mkdir -p `dirname $@`; export PYTHONPATH=$(location naja_edit/install/lib/python) && $(location naja_edit/install/bin/naja_edit) -a all -p $(location :top_lib) -f verilog -t verilog -i $(location :BoomTile_synth_unedited) -o $@",
+    cmd = ("mkdir -p `dirname $@`; export PYTHONPATH=$(location naja_edit/install/lib/python) && $(location naja_edit/install/bin/naja_edit) -a all -p " + 
+    " ".join(["$(location :" + ram + "_lib)" for ram in all_srams.keys()]) +
+    " -f verilog -t verilog -i $(location :BoomTile_synth_unedited) -o $@"),
 )
