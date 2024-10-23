@@ -33,9 +33,9 @@ git_override(
 # it is possible to specify a version in here if something newer than
 # latest bazel-orfs tested ORFS is needed.
 
-#orfs = use_extension("@bazel-orfs//:extension.bzl", "orfs_repositories")
-#
-#orfs.default(
-#    image = "docker.io/openroad/orfs:v3.0-1459-gd505a82b",
-#    sha256 = "434edf30b4d0610c17cb0cd4f865ba8ce34f7b247904bd2a8ba6e17b89981c37",
-#)
+orfs = use_extension("@bazel-orfs//:extension.bzl", "orfs_repositories")
+orfs.default(
+    # FIXME replace with official ORFS image
+    image = "europe-north1-docker.pkg.dev/ascenium/openroad-flow-script/flow-ubuntu22.04-builder:9af59c",
+    sha256 = "82bc4cab0a8b3d9401f2c0d7401986cab23ec314ed4120c333551a5ba32fbc02",
+)
