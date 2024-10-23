@@ -349,7 +349,6 @@ boom_tile_macros = [x + "_generate_abstract" for x in all_srams.keys()]
 
 FAST_BUILD_SETTINGS = {
     # repair_timing runs for hours in floorplan
-    "REMOVE_ABC_BUFFERS": "1",
     "TNS_END_PERCENT": "0",
     "SKIP_CTS_REPAIR_TIMING": "1",
     "GPL_TIMING_DRIVEN": "0",
@@ -364,48 +363,31 @@ SWEEP = {
     "base": {
     },
     "1": {
-        # Had to increase it to a minimum of 0.22 recommended
-        "PLACE_DENSITY": "0.24",
-        # Enable floorplan retiming
-        "REMOVE_ABC_BUFFERS": "0",
-        # Saves hours of build time
-        "SKIP_LAST_GASP": "1",
-        "SETUP_SLACK_MARGIN": "-1300",
+        "SKIP_CTS_REPAIR_TIMING": "0",
+        "GPL_TIMING_DRIVEN": "0",
+        "GPL_ROUTABILITY_DRIVEN": "1",
+        "SKIP_INCREMENTAL_REPAIR": "1",
     },
-    # "2": {
-    #     "PLACE_DENSITY": "0.21",
-    # },
-    # "3": {
-    #     "PLACE_DENSITY": "0.22",
-    # },
-    # "4": {
-    #     "PLACE_DENSITY": "0.23",
-    # },
-    # Too slow for now...
-    # "5": {
-    #     "REMOVE_ABC_BUFFERS": "0",
-    # },
-    # "6": {
-    #     "REMOVE_ABC_BUFFERS": "0",
-    #     "GPL_TIMING_DRIVEN": "1",
-    # },
-    # "7": {
-    #     "REMOVE_ABC_BUFFERS": "0",
-    #     "GPL_TIMING_DRIVEN": "1",
-    #     "SKIP_CTS_REPAIR_TIMING": "0",
-    # },
-    # "8": {
-    #     "REMOVE_ABC_BUFFERS": "0",
-    #     "GPL_TIMING_DRIVEN": "1",
-    #     "SKIP_CTS_REPAIR_TIMING": "0",
-    #     "SKIP_INCREMENTAL_REPAIR": "0",
-    # },
+    "2": {
+        "SKIP_CTS_REPAIR_TIMING": "0",
+        "GPL_TIMING_DRIVEN": "1",
+        "GPL_ROUTABILITY_DRIVEN": "1",
+        "SKIP_INCREMENTAL_REPAIR": "1",
+        "SETUP_SLACK_MARGIN": "-1200",
+    },
+    "3": {
+        "SKIP_CTS_REPAIR_TIMING": "0",
+        "GPL_TIMING_DRIVEN": "1",
+        "GPL_ROUTABILITY_DRIVEN": "1",
+        "SKIP_INCREMENTAL_REPAIR": "0",
+        "SETUP_SLACK_MARGIN": "-1000",
+    },
 }
 
 BOOMTILE_VARIABLES = SKIP_REPORT_METRICS | FAST_BUILD_SETTINGS | {
     "PDN_TCL": "$(PLATFORM_DIR)/openRoad/pdn/BLOCKS_grid_strategy.tcl",
     "IO_CONSTRAINTS": "$(location :io-boomtile)",
-    "PLACE_DENSITY": "0.20",
+    "PLACE_DENSITY": "0.24",
     # We only need hierarchical synthesis when we are running through floorplan
     # write_macro_placement macros.tcl
     "SYNTH_HIERARCHICAL": "1",
@@ -422,6 +404,10 @@ BOOMTILE_VARIABLES = SKIP_REPORT_METRICS | FAST_BUILD_SETTINGS | {
     "ROUTING_LAYER_ADJUSTMENT": "0.45",
     "DIE_AREA": "0 0 1500 1500",
     "CORE_AREA": "2 2 1498 1498",
+    # Saves hours of build time
+    "SKIP_LAST_GASP": "1",
+    "SETUP_SLACK_MARGIN": "-1300",
+    "HOLD_SLACK_MARGIN": "-200",
 }
 
 SWEEP_JSON = {
