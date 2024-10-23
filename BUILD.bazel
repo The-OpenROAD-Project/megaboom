@@ -189,7 +189,7 @@ digital_top_srams = {
 }
 
 # combine SRAMs into one dictionary for processing
-all_srams = boom_regfile_rams | boom_tile_rams | boom_tile_small_srams | digital_top_srams
+all_srams = boom_tile_rams | boom_tile_small_srams | digital_top_srams
 
 write_binary(
     name = "srams",
@@ -345,8 +345,6 @@ orfs_run(
     script = ":report-kpi.tcl",
 )
 
-boom_tile_macros = [x + "_generate_abstract" for x in all_srams.keys()]
-
 FAST_BUILD_SETTINGS = {
     # repair_timing runs for hours in floorplan
     "TNS_END_PERCENT": "0",
@@ -361,28 +359,26 @@ FAST_BUILD_SETTINGS = {
 
 SWEEP = {
     "base": {
+        "dissolve": boom_regfile_rams.keys(),
     },
     "naja": {
     },
     "1": {
-        "SKIP_CTS_REPAIR_TIMING": "0",
-        "GPL_TIMING_DRIVEN": "0",
-        "GPL_ROUTABILITY_DRIVEN": "1",
-        "SKIP_INCREMENTAL_REPAIR": "1",
+        "variables": {
+            # Had to increase it to a minimum of 0.22 recommended
+            "PLACE_DENSITY": "0.24",
+            # Enable floorplan retiming
+            "REMOVE_ABC_BUFFERS": "0",
+            # Saves hours of build time
+            "SKIP_LAST_GASP": "1",
+            "SETUP_SLACK_MARGIN": "-1300",
+        },
     },
     "2": {
-        "SKIP_CTS_REPAIR_TIMING": "0",
-        "GPL_TIMING_DRIVEN": "1",
-        "GPL_ROUTABILITY_DRIVEN": "1",
-        "SKIP_INCREMENTAL_REPAIR": "1",
-        "SETUP_SLACK_MARGIN": "-1200",
-    },
-    "3": {
-        "SKIP_CTS_REPAIR_TIMING": "0",
-        "GPL_TIMING_DRIVEN": "1",
-        "GPL_ROUTABILITY_DRIVEN": "1",
-        "SKIP_INCREMENTAL_REPAIR": "0",
-        "SETUP_SLACK_MARGIN": "-1000",
+        "variables": {
+            "SYNTH_HIERARCHICAL": "0",
+            "MACRO_PLACEMENT_TCL": "$(location :boomtile-macro-placement)",
+        },
     },
 }
 
@@ -430,10 +426,16 @@ write_binary(
 
 [orfs_flow(
     name = "BoomTile",
-    arguments = BOOMTILE_VARIABLES | SWEEP[variant],
-    macros = boom_tile_macros,
+    arguments = BOOMTILE_VARIABLES | SWEEP[variant].get("variables", {}),
+    macros = [
+        ":" + m + "_generate_abstract"
+        for m in (boom_regfile_rams.keys() + all_srams.keys())
+        if m not in SWEEP[variant].get("dissolve", [])
+    ],
+    previous_stage = {"floorplan": "BoomTile_synth"} if ((BOOMTILE_VARIABLES | SWEEP[variant].get("variables", {}))["SYNTH_HIERARCHICAL"] == "1" and
+                                                         SWEEP[variant].get("dissolve") == SWEEP["base"].get("dissolve") and
+                                                         "naja" not in variant) else {},
     # Share synthesis stage between all variants
-    previous_stage = {"floorplan": "BoomTile_synth"},
     renamed_inputs = {
         "naja": {
             "floorplan": {"1_synth.v": ":naja"},
@@ -443,8 +445,7 @@ write_binary(
         "synth": [":constraints-boomtile"],
         "floorplan": [
             ":io-boomtile",
-            ":boomtile-macro-placement",
-        ],
+        ] + (["macro_placement.tcl"] if "MACRO_PLACEMENT_TCL" in (BOOMTILE_VARIABLES | SWEEP[variant].get("variables", {})) else []),
         "place": [":io-boomtile"],
     },
     variant = variant,
