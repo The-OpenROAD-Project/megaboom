@@ -444,6 +444,13 @@ write_binary(
     verilog_files = all_source_files,
 ) for variant in SWEEP]
 
+[filegroup(
+    name = "BoomTile_" + variant + "_odb",
+    srcs = [":BoomTile_" + ("" if variant == "base" else variant + "_") + SWEEP_JSON["stage"]],
+    output_group = str(SWEEP_JSON["stages"].index(SWEEP_JSON["stage"]) + 2) + "_" + SWEEP_JSON["stage"] + ".odb",
+    visibility = [":__subpackages__"],
+) for variant in SWEEP]
+
 [orfs_run(
     name = "BoomTile_" + variant + "_report",
     src = ":BoomTile_" + ("" if variant == "base" else variant + "_") + SWEEP_JSON["stage"],
@@ -452,8 +459,9 @@ write_binary(
     ],
     arguments = {
         "OUTFILE": "$(location :BoomTile_" + variant + ".yaml)",
-        "REPORT_STAGE": SWEEP_JSON["stage"],
+        "ODB_FILE": "$(location :BoomTile_" + variant + "_odb)",
     },
+    data = [":BoomTile_" + variant + "_odb"],
     script = ":report-wns.tcl",
 ) for variant in SWEEP]
 
