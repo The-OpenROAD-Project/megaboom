@@ -458,37 +458,49 @@ write_binary(
     verilog_files = all_source_files,
 ) for variant in SWEEP]
 
-[orfs_run(
-    name = "BoomTile_" + variant + "_report",
-    src = ":BoomTile_" + ("" if variant == "base" else variant + "_") + SWEEP_JSON["stage"],
-    outs = [
-        "BoomTile_" + variant + ".yaml",
-    ],
-    arguments = {
-        "OUTFILE": "$(location :BoomTile_" + variant + ".yaml)",
-        "REPORT_STAGE": SWEEP_JSON["stage"],
-    },
-    script = ":report-wns.tcl",
-) for variant in SWEEP]
+[
+    orfs_run(
+        name = "BoomTile_" + variant + "_" + stage + "_report",
+        src = ":BoomTile_" + ("" if variant == "base" else variant + "_") + stage,
+        outs = [
+            "BoomTile_" + variant + "_" + stage + ".yaml",
+        ],
+        arguments = {
+            "OUTFILE": "$(location :BoomTile_" + variant + "_" + stage + ".yaml)",
+            "REPORT_STAGE": stage,
+        },
+        script = ":report-wns.tcl",
+    )
+    for variant in SWEEP
+    for stage in SWEEP_JSON["stages"]
+]
 
-[filegroup(
-    name = "BoomTile_" + variant + "_logs",
-    srcs = [":BoomTile_" + ("" if variant == "base" else variant + "_") + stage for stage in SWEEP_JSON["stages"]],
-    output_group = "logs",
-    visibility = [":__subpackages__"],
-) for variant in SWEEP]
+[
+    filegroup(
+        name = "BoomTile_" + variant + "_" + stage + "_logs",
+        srcs = [
+            ":BoomTile_" + ("" if variant == "base" else variant + "_") + SWEEP_JSON["stages"][i]
+            for i in range(SWEEP_JSON["stages"].index(stage) + 1)
+        ],
+        output_group = "logs",
+        visibility = [":__subpackages__"],
+    )
+    for variant in SWEEP
+    for stage in SWEEP_JSON["stages"]
+]
 
-genrule(
-    name = "wns_report",
+[genrule(
+    name = "wns_report_" + stage,
     srcs = [
                "wns_report.py",
                "sweep.json",
-           ] + [":BoomTile_" + variant + ".yaml" for variant in SWEEP] +
-           [":BoomTile_" + variant + "_logs" for variant in SWEEP],
-    outs = ["BoomTile_wns_report.md"],
+           ] + [":BoomTile_" + variant + "_" + stage + ".yaml" for variant in SWEEP] +
+           [":BoomTile_" + variant + "_" + stage + "_logs" for variant in SWEEP],
+    outs = ["BoomTile_wns_" + stage + "_report.md"],
     cmd = (
         "$(location :wns_report.py) > $@" +
-        " $(location :sweep.json)"
+        " $(location :sweep.json)" +
+        " " + stage
     ),
     visibility = ["//visibility:public"],
-)
+) for stage in SWEEP_JSON["stages"]]
