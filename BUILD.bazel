@@ -189,7 +189,7 @@ digital_top_srams = {
 }
 
 # combine SRAMs into one dictionary for processing
-all_srams = boom_tile_rams | boom_tile_small_srams | digital_top_srams
+all_srams = boom_regfile_rams | boom_tile_rams | boom_tile_small_srams | digital_top_srams
 
 write_binary(
     name = "srams",
