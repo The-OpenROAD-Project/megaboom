@@ -535,3 +535,24 @@ genrule(
            " $(location :naja_edit/install/share/naja/primitives/asap7_new.py)" +
            " -f verilog -t verilog -i $(location :BoomTile_synth_unedited) -o $@"),
 )
+
+filegroup(
+    name = "repair_logs",
+    srcs = [
+        ":BoomTile_" + ("" if variant == "base" else variant + "_") + stage
+        for stage in SWEEP_JSON["stages"]
+        for variant in WNS_REPORT_SWEEP
+    ],
+    output_group = "logs",
+)
+
+genrule(
+    name = "plot_repair",
+    srcs = [
+        "plot-retiming.py",
+        "repair_logs",
+    ],
+    outs = ["retiming.pdf"],
+    cmd = "$(location plot-retiming.py) $(location retiming.pdf) $(locations :repair_logs)",
+    visibility = ["//visibility:public"],
+)
