@@ -355,18 +355,17 @@ SWEEP = {
             # Saves hours of build time
             "SKIP_LAST_GASP": "1",
             "SETUP_SLACK_MARGIN": "-1300",
-         "REMOVE_ABC_BUFFERS": "0",
-         "GPL_TIMING_DRIVEN": "1",
-         "SKIP_CTS_REPAIR_TIMING": "0",
-         "SKIP_INCREMENTAL_REPAIR": "0",
+            "GPL_TIMING_DRIVEN": "1",
+            "SKIP_CTS_REPAIR_TIMING": "0",
+            "SKIP_INCREMENTAL_REPAIR": "0",
         },
     },
-    "2": {
-        "variables": {
-            "SYNTH_HIERARCHICAL": "0",
-            "MACRO_PLACEMENT_TCL": "macro_placement.tcl",
-        },
-    },
+    #"2": {
+    #    "variables": {
+    #        "SYNTH_HIERARCHICAL": "0",
+    #        "MACRO_PLACEMENT_TCL": "macro_placement.tcl",
+    #    },
+    #},
 }
 
 BOOMTILE_VARIABLES = SKIP_REPORT_METRICS | FAST_BUILD_SETTINGS | {
