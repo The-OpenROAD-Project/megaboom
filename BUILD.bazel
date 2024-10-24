@@ -362,6 +362,8 @@ FAST_BUILD_SETTINGS = {
 SWEEP = {
     "base": {
     },
+    "naja": {
+    },
     "1": {
         "SKIP_CTS_REPAIR_TIMING": "0",
         "GPL_TIMING_DRIVEN": "0",
@@ -431,7 +433,18 @@ write_binary(
     arguments = BOOMTILE_VARIABLES | SWEEP[variant],
     macros = boom_tile_macros,
     # Share synthesis stage between all variants
-    previous_stage = {"floorplan": "BoomTile_synth"},
+    previous_stage = {} if "naja" in variant else {"floorplan": "BoomTile_synth"},
+    renamed_inputs = {
+        "naja": {
+            "floorplan": {"1_synth.v": ":naja"},
+        },
+        "mock-naja": {
+            "floorplan": {"1_synth.v": ":mock-naja"},
+        },
+        "naja-error": {
+            "floorplan": {"1_synth.v": ":naja-error"},
+        },
+    }.get(variant, {}),
     stage_sources = {
         "synth": [":constraints-boomtile"],
         "floorplan": [
@@ -472,17 +485,59 @@ write_binary(
     visibility = [":__subpackages__"],
 ) for variant in SWEEP]
 
+WNS_REPORT_SWEEP = [variant for variant in SWEEP if "naja" not in variant]
+
 genrule(
     name = "wns_report",
     srcs = [
                "wns_report.py",
                "sweep.json",
-           ] + [":BoomTile_" + variant + ".yaml" for variant in SWEEP] +
-           [":BoomTile_" + variant + "_logs" for variant in SWEEP],
+           ] + [":BoomTile_" + variant + ".yaml" for variant in WNS_REPORT_SWEEP] +
+           [":BoomTile_" + variant + "_logs" for variant in WNS_REPORT_SWEEP],
     outs = ["BoomTile_wns_report.md"],
     cmd = (
         "$(location :wns_report.py) > $@" +
         " $(location :sweep.json)"
     ),
     visibility = ["//visibility:public"],
+)
+
+# fish out the file that we want as input to the "naja" rule
+# below.
+filegroup(
+    name = "BoomTile_synth_unedited",
+    srcs = ["BoomTile_synth"],
+    output_group = "1_synth.v",
+)
+
+[filegroup(
+    name = ram + "_lib",
+    srcs = [ram + "_generate_abstract"],
+    output_group = ram + ".lib",
+) for ram in all_srams.keys()]
+
+filegroup(
+    name = "BoomTile_synth_mergedlib",
+    srcs = ["BoomTile_synth"],
+    output_group = "merged.lib",
+)
+
+# Read in the renamed synthesis output from above and provide
+# the original name to the next stage
+genrule(
+    name = "naja",
+    srcs = [
+        ":BoomTile_synth_unedited",
+        ":BoomTile_synth_mergedlib",
+        "naja_edit/install/bin/naja_edit",
+        "naja_edit/install/lib/python",
+        "naja_edit/install/share/naja/primitives/asap7_new.py",
+    ] + [":" + ram + "_lib" for ram in all_srams.keys()],
+    outs = ["naja.v"],
+    #cmd = "mkdir -p `dirname $@`; export PYTHONPATH=$(location naja_edit/install/lib/python) && $(location naja_edit/install/bin/naja_edit) -a all -p $(location :BoomTile_synth_mergedlib) -f verilog -t verilog -i $(location :BoomTile_synth_unedited) -o $@",
+    #cmd = "mkdir -p `dirname $@`; export PYTHONPATH=$(location naja_edit/install/lib/python) && $(location naja_edit/install/bin/naja_edit) -a all -p $(location naja_edit/install/share/naja/primitives/asap7_new.py) -f verilog -t verilog -i $(location :BoomTile_synth_unedited) -o $@",
+    cmd = ("mkdir -p `dirname $@`; export PYTHONPATH=$(location naja_edit/install/lib/python) && $(location naja_edit/install/bin/naja_edit) -a all -p " +
+           " ".join(["$(location :" + ram + "_lib)" for ram in all_srams.keys()]) +
+           " $(location :naja_edit/install/share/naja/primitives/asap7_new.py)" +
+           " -f verilog -t verilog -i $(location :BoomTile_synth_unedited) -o $@"),
 )
