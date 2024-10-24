@@ -433,16 +433,10 @@ write_binary(
     arguments = BOOMTILE_VARIABLES | SWEEP[variant],
     macros = boom_tile_macros,
     # Share synthesis stage between all variants
-    previous_stage = {} if "naja" in variant else {"floorplan": "BoomTile_synth"},
+    previous_stage = {"floorplan": "BoomTile_synth"},
     renamed_inputs = {
         "naja": {
             "floorplan": {"1_synth.v": ":naja"},
-        },
-        "mock-naja": {
-            "floorplan": {"1_synth.v": ":mock-naja"},
-        },
-        "naja-error": {
-            "floorplan": {"1_synth.v": ":naja-error"},
         },
     }.get(variant, {}),
     stage_sources = {
