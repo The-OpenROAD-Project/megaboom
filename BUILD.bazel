@@ -69,14 +69,6 @@ filegroup(
     visibility = [":__subpackages__"],
 )
 
-filegroup(
-    name = "boomtile-macro-placement",
-    srcs = [
-        "macros.tcl",
-    ],
-    visibility = [":__subpackages__"],
-)
-
 BLOCK_FLOORPLAN = {
     "PDN_TCL": "$(PLATFORM_DIR)/openRoad/pdn/BLOCK_grid_strategy.tcl",
 }
@@ -377,7 +369,7 @@ SWEEP = {
     "2": {
         "variables": {
             "SYNTH_HIERARCHICAL": "0",
-            "MACRO_PLACEMENT_TCL": "$(location :boomtile-macro-placement)",
+            "MACRO_PLACEMENT_TCL": "macro_placement.tcl",
         },
     },
 }
@@ -445,7 +437,7 @@ write_binary(
         "synth": [":constraints-boomtile"],
         "floorplan": [
             ":io-boomtile",
-        ] + (["macro_placement.tcl"] if "MACRO_PLACEMENT_TCL" in (BOOMTILE_VARIABLES | SWEEP[variant].get("variables", {})) else []),
+        ] + (["write_macro_placement"] if "MACRO_PLACEMENT_TCL" in (BOOMTILE_VARIABLES | SWEEP[variant].get("variables", {})) else []),
         "place": [":io-boomtile"],
     },
     variant = variant,
@@ -556,4 +548,14 @@ genrule(
     outs = ["retiming.pdf"],
     cmd = "$(location plot-retiming.py) $(location retiming.pdf) $(locations :repair_logs)",
     visibility = ["//visibility:public"],
+)
+
+# Use the macro placement from a different flow
+orfs_run(
+    name = "write_macro_placement",
+    src = ":BoomTile_1_floorplan",
+    outs = [
+        ":macro_placement.tcl",
+    ],
+    script = ":write_macros.tcl",
 )
