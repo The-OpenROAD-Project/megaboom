@@ -69,14 +69,6 @@ filegroup(
     visibility = [":__subpackages__"],
 )
 
-filegroup(
-    name = "boomtile-macro-placement",
-    srcs = [
-        "macros.tcl",
-    ],
-    visibility = [":__subpackages__"],
-)
-
 BLOCK_FLOORPLAN = {
     "PDN_TCL": "$(PLATFORM_DIR)/openRoad/pdn/BLOCK_grid_strategy.tcl",
 }
@@ -334,11 +326,8 @@ orfs_run(
     script = ":report-kpi.tcl",
 )
 
-boom_tile_macros = [x + "_generate_abstract" for x in all_srams.keys()]
-
 FAST_BUILD_SETTINGS = {
     # repair_timing runs for hours in floorplan
-    "REMOVE_ABC_BUFFERS": "1",
     "TNS_END_PERCENT": "0",
     "SKIP_CTS_REPAIR_TIMING": "1",
     "GPL_TIMING_DRIVEN": "0",
@@ -351,50 +340,33 @@ FAST_BUILD_SETTINGS = {
 
 SWEEP = {
     "base": {
+        "dissolve": boom_regfile_rams.keys(),
+    },
+    "naja": {
     },
     "1": {
-        # Had to increase it to a minimum of 0.22 recommended
-        "PLACE_DENSITY": "0.24",
-        # Enable floorplan retiming
-        "REMOVE_ABC_BUFFERS": "0",
-        # Saves hours of build time
-        "SKIP_LAST_GASP": "1",
-        "SETUP_SLACK_MARGIN": "-1300",
+        "variables": {
+            # Had to increase it to a minimum of 0.22 recommended
+            "PLACE_DENSITY": "0.24",
+            # Enable floorplan retiming
+            "REMOVE_ABC_BUFFERS": "0",
+            # Saves hours of build time
+            "SKIP_LAST_GASP": "1",
+            "SETUP_SLACK_MARGIN": "-1300",
+        },
     },
-    # "2": {
-    #     "PLACE_DENSITY": "0.21",
-    # },
-    # "3": {
-    #     "PLACE_DENSITY": "0.22",
-    # },
-    # "4": {
-    #     "PLACE_DENSITY": "0.23",
-    # },
-    # Too slow for now...
-    # "5": {
-    #     "REMOVE_ABC_BUFFERS": "0",
-    # },
-    # "6": {
-    #     "REMOVE_ABC_BUFFERS": "0",
-    #     "GPL_TIMING_DRIVEN": "1",
-    # },
-    # "7": {
-    #     "REMOVE_ABC_BUFFERS": "0",
-    #     "GPL_TIMING_DRIVEN": "1",
-    #     "SKIP_CTS_REPAIR_TIMING": "0",
-    # },
-    # "8": {
-    #     "REMOVE_ABC_BUFFERS": "0",
-    #     "GPL_TIMING_DRIVEN": "1",
-    #     "SKIP_CTS_REPAIR_TIMING": "0",
-    #     "SKIP_INCREMENTAL_REPAIR": "0",
-    # },
+    "2": {
+        "variables": {
+            "SYNTH_HIERARCHICAL": "0",
+            "MACRO_PLACEMENT_TCL": "$(location write_macro_placement)",
+        },
+    },
 }
 
 BOOMTILE_VARIABLES = SKIP_REPORT_METRICS | FAST_BUILD_SETTINGS | {
     "PDN_TCL": "$(PLATFORM_DIR)/openRoad/pdn/BLOCKS_grid_strategy.tcl",
     "IO_CONSTRAINTS": "$(location :io-boomtile)",
-    "PLACE_DENSITY": "0.20",
+    "PLACE_DENSITY": "0.24",
     # We only need hierarchical synthesis when we are running through floorplan
     # write_macro_placement macros.tcl
     "SYNTH_HIERARCHICAL": "1",
@@ -409,8 +381,12 @@ BOOMTILE_VARIABLES = SKIP_REPORT_METRICS | FAST_BUILD_SETTINGS | {
     "MIN_ROUTING_LAYER": "M2",
     "MAX_ROUTING_LAYER": "M7",
     "ROUTING_LAYER_ADJUSTMENT": "0.45",
-    "DIE_AREA": "0 0 1500 1500",
-    "CORE_AREA": "2 2 1498 1498",
+    "DIE_AREA": "0 0 2000 2000",
+    "CORE_AREA": "2 2 1998 1998",
+    # Saves hours of build time
+    "SKIP_LAST_GASP": "1",
+    "SETUP_SLACK_MARGIN": "-1300",
+    "HOLD_SLACK_MARGIN": "-200",
 }
 
 SWEEP_JSON = {
@@ -431,20 +407,37 @@ write_binary(
 
 [orfs_flow(
     name = "BoomTile",
-    arguments = BOOMTILE_VARIABLES | SWEEP[variant],
-    macros = boom_tile_macros,
+    arguments = BOOMTILE_VARIABLES | SWEEP[variant].get("variables", {}),
+    macros = [
+        ":" + m + "_generate_abstract"
+        for m in (boom_regfile_rams.keys() + all_srams.keys())
+        if m not in SWEEP[variant].get("dissolve", [])
+    ],
+    previous_stage = {"floorplan": "BoomTile_synth"} if ((BOOMTILE_VARIABLES | SWEEP[variant].get("variables", {}))["SYNTH_HIERARCHICAL"] == "1" and
+                                                         SWEEP[variant].get("dissolve") == SWEEP["base"].get("dissolve") and
+                                                         "naja" not in variant) else {},
     # Share synthesis stage between all variants
-    previous_stage = {"floorplan": "BoomTile_synth"},
+    renamed_inputs = {
+        "naja": {
+            "floorplan": {"1_synth.v": ":naja"},
+        },
+    }.get(variant, {}),
     stage_sources = {
         "synth": [":constraints-boomtile"],
         "floorplan": [
             ":io-boomtile",
-            ":boomtile-macro-placement",
-        ],
+        ] + (["write_macro_placement"] if "MACRO_PLACEMENT_TCL" in (BOOMTILE_VARIABLES | SWEEP[variant].get("variables", {})) else []),
         "place": [":io-boomtile"],
     },
     variant = variant,
     verilog_files = all_source_files,
+) for variant in SWEEP]
+
+[filegroup(
+    name = "BoomTile_" + variant + "_odb",
+    srcs = [":BoomTile_" + ("" if variant == "base" else variant + "_") + SWEEP_JSON["stage"]],
+    output_group = str(SWEEP_JSON["stages"].index(SWEEP_JSON["stage"]) + 2) + "_" + SWEEP_JSON["stage"] + ".odb",
+    visibility = [":__subpackages__"],
 ) for variant in SWEEP]
 
 [orfs_run(
@@ -455,8 +448,9 @@ write_binary(
     ],
     arguments = {
         "OUTFILE": "$(location :BoomTile_" + variant + ".yaml)",
-        "REPORT_STAGE": SWEEP_JSON["stage"],
+        "ODB_FILE": "$(location :BoomTile_" + variant + "_odb)",
     },
+    data = [":BoomTile_" + variant + "_odb"],
     script = ":report-wns.tcl",
 ) for variant in SWEEP]
 
@@ -467,17 +461,90 @@ write_binary(
     visibility = [":__subpackages__"],
 ) for variant in SWEEP]
 
+WNS_REPORT_SWEEP = [variant for variant in SWEEP if "naja" not in variant]
+
 genrule(
     name = "wns_report",
     srcs = [
                "wns_report.py",
                "sweep.json",
-           ] + [":BoomTile_" + variant + ".yaml" for variant in SWEEP] +
-           [":BoomTile_" + variant + "_logs" for variant in SWEEP],
+           ] + [":BoomTile_" + variant + ".yaml" for variant in WNS_REPORT_SWEEP] +
+           [":BoomTile_" + variant + "_logs" for variant in WNS_REPORT_SWEEP],
     outs = ["BoomTile_wns_report.md"],
     cmd = (
         "$(location :wns_report.py) > $@" +
         " $(location :sweep.json)"
     ),
     visibility = ["//visibility:public"],
+)
+
+# fish out the file that we want as input to the "naja" rule
+# below.
+filegroup(
+    name = "BoomTile_synth_unedited",
+    srcs = ["BoomTile_synth"],
+    output_group = "1_synth.v",
+)
+
+[filegroup(
+    name = ram + "_lib",
+    srcs = [ram + "_generate_abstract"],
+    output_group = ram + ".lib",
+) for ram in all_srams.keys()]
+
+filegroup(
+    name = "BoomTile_synth_mergedlib",
+    srcs = ["BoomTile_synth"],
+    output_group = "merged.lib",
+)
+
+# Read in the renamed synthesis output from above and provide
+# the original name to the next stage
+genrule(
+    name = "naja",
+    srcs = [
+        ":BoomTile_synth_unedited",
+        ":BoomTile_synth_mergedlib",
+        "naja_edit/install/bin/naja_edit",
+        "naja_edit/install/lib/python",
+        "naja_edit/install/share/naja/primitives/asap7_new.py",
+    ] + [":" + ram + "_lib" for ram in all_srams.keys()],
+    outs = ["naja.v"],
+    #cmd = "mkdir -p `dirname $@`; export PYTHONPATH=$(location naja_edit/install/lib/python) && $(location naja_edit/install/bin/naja_edit) -a all -p $(location :BoomTile_synth_mergedlib) -f verilog -t verilog -i $(location :BoomTile_synth_unedited) -o $@",
+    #cmd = "mkdir -p `dirname $@`; export PYTHONPATH=$(location naja_edit/install/lib/python) && $(location naja_edit/install/bin/naja_edit) -a all -p $(location naja_edit/install/share/naja/primitives/asap7_new.py) -f verilog -t verilog -i $(location :BoomTile_synth_unedited) -o $@",
+    cmd = ("mkdir -p `dirname $@`; export PYTHONPATH=$(location naja_edit/install/lib/python) && $(location naja_edit/install/bin/naja_edit) -a all -p " +
+           " ".join(["$(location :" + ram + "_lib)" for ram in all_srams.keys()]) +
+           " $(location :naja_edit/install/share/naja/primitives/asap7_new.py)" +
+           " -f verilog -t verilog -i $(location :BoomTile_synth_unedited) -o $@"),
+)
+
+filegroup(
+    name = "repair_logs",
+    srcs = [
+        ":BoomTile_" + ("" if variant == "base" else variant + "_") + stage
+        for stage in SWEEP_JSON["stages"]
+        for variant in WNS_REPORT_SWEEP
+    ],
+    output_group = "logs",
+)
+
+genrule(
+    name = "plot_repair",
+    srcs = [
+        "plot-retiming.py",
+        "repair_logs",
+    ],
+    outs = ["retiming.pdf"],
+    cmd = "$(location plot-retiming.py) $(location retiming.pdf) $(locations :repair_logs)",
+    visibility = ["//visibility:public"],
+)
+
+# Use the macro placement from a different flow
+orfs_run(
+    name = "write_macro_placement",
+    src = ":BoomTile_1_floorplan",
+    outs = [
+        ":macro_placement.tcl",
+    ],
+    script = ":write_macros.tcl",
 )
