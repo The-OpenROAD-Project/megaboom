@@ -373,6 +373,13 @@ SWEEP = {
             "SKIP_REPORT_METRICS": "0",
         },
     },
+    "4": {
+        "variables": {
+            "SYNTH_HIERARCHICAL": "0",
+            "MACRO_PLACEMENT_TCL": "$(location write_macro_placement)",
+            "SETUP_SLACK_MARGIN": "0",
+        },
+    },
 }
 
 BOOMTILE_VARIABLES = SKIP_REPORT_METRICS | FAST_BUILD_SETTINGS | {
