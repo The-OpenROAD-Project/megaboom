@@ -82,7 +82,7 @@ def main():
     logs = sorted(map(os.path.basename, pathlib.Path(log_dir).glob("*.log")))
     logs_dir = os.path.join(log_dir, "..")
 
-    variables = sorted(set(k["variables"] for v in sweep.values() for k in v.keys()))
+    variables = sorted(set(k for v in sweep.values() for k in v.get("variables", {}).keys()))
 
     table_data = None
     for variant in sweep:
@@ -100,9 +100,9 @@ def main():
                 + [stats[name] for name in names]
                 + [
                     (
-                        sweep[variant]["variables"].get(variable, "")
+                        sweep[variant].get("variables", {}).get(variable, "")
                         if sweep_json["base"].get(variable, "")
-                        != sweep[variant]["variables"].get(variable, "")
+                        != sweep[variant].get("variables", {}).get(variable, "")
                         else ""
                     )
                     for variable in variables

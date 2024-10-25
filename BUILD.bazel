@@ -400,9 +400,11 @@ BOOMTILE_VARIABLES = SKIP_REPORT_METRICS | FAST_BUILD_SETTINGS | {
     "HOLD_SLACK_MARGIN": "-200",
 }
 
+WNS_REPORT_SWEEP = [variant for variant in SWEEP if "naja" not in variant]
+
 SWEEP_JSON = {
     "base": BOOMTILE_VARIABLES,
-    "sweep": SWEEP,
+    "sweep": {variant: SWEEP[variant] for variant in WNS_REPORT_SWEEP},
     "stage": "cts",
     "stages": [
         "floorplan",
@@ -471,8 +473,6 @@ write_binary(
     output_group = "logs",
     visibility = [":__subpackages__"],
 ) for variant in SWEEP]
-
-WNS_REPORT_SWEEP = [variant for variant in SWEEP if "naja" not in variant]
 
 genrule(
     name = "wns_report",
