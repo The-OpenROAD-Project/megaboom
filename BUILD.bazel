@@ -369,7 +369,7 @@ SWEEP = {
     "2": {
         "variables": {
             "SYNTH_HIERARCHICAL": "0",
-            "MACRO_PLACEMENT_TCL": "macro_placement.tcl",
+            "MACRO_PLACEMENT_TCL": "$(location write_macro_placement)",
         },
     },
 }
