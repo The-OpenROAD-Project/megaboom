@@ -435,6 +435,17 @@ write_binary(
             "floorplan": {"1_synth.v": ":naja"},
         },
     }.get(variant, {}),
+    # Explictily set arguments for a stage when stages are not listed in
+    # variables.yaml or we want to explicitly set a multi-stage argument
+    # for a specific stage, e.g. SETUP_SLACK_MARGIN could be useful to
+    # have a different value for floorplan, cts and grt.
+    stage_arguments = {
+        "grt": {
+            # global route is futile for now, so do a few iterations to
+            # get a global route artifact with .odb and .rpt file
+            "GLOBAL_ROUTE_ARGS": "-congestion_iterations 5 -congestion_report_iter_step 5 -verbose",
+        },
+    },
     stage_sources = {
         "synth": [":constraints-boomtile"],
         "floorplan": [
