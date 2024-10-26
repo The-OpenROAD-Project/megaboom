@@ -92,7 +92,7 @@
     "@@bazel-orfs~//:extension.bzl%orfs_repositories": {
       "general": {
         "bzlTransitiveDigest": "vmcGR7h5VgEPebKSKqrF0UgcqrgFTr0lE5jdk/LXXdg=",
-        "usagesDigest": "avcfo3vyEjhNTJbKgTwzhk54v7ieKagDOxgQ0m988Aw=",
+        "usagesDigest": "9NuwfNNaNeROwKbvaBoT6SbaVlxZDCG+5GJD90NRxMU=",
         "recordedFileInputs": {},
         "recordedDirentsInputs": {},
         "envVariables": {},
@@ -112,8 +112,8 @@
             "bzlFile": "@@bazel-orfs~//:docker.bzl",
             "ruleClassName": "docker_pkg",
             "attributes": {
-              "image": "europe-north1-docker.pkg.dev/ascenium/openroad-flow-script/flow-ubuntu22.04-builder:9af59c",
-              "sha256": "82bc4cab0a8b3d9401f2c0d7401986cab23ec314ed4120c333551a5ba32fbc02",
+              "image": "docker.io/openroad/orfs:v3.0-1712-g6f3494c4",
+              "sha256": "065e596d373a64f9ff69f75c0c50079ceec47bbfd62628b9efb4b15953c1b784",
               "build_file": "@@bazel-orfs~//:docker.BUILD.bazel",
               "timeout": 3600,
               "patch_cmds": [
