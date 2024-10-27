@@ -357,7 +357,8 @@ SWEEP = {
     },
     "1": {
         "variables": {
-            "SETUP_SLACK_MARGIN": "0",
+            # causes macro placement to fail
+            # "SETUP_SLACK_MARGIN": "0",
         },
     },
     "2": {
