@@ -144,13 +144,13 @@ boom_tile_small_srams = {
     },
     "data_2048x8": {
         "mock_area": 3.2,
-        "aspect_ratio": "58",
+        # "aspect_ratio": "58",
         "core_utilization": "10",
     },
     "mem_256x4": {
         "mock_area": 0.265,
-        "aspect_ratio": "36",
-    },  # close
+        # "aspect_ratio": "36",
+    },
 }
 
 boom_tile_rams = {
@@ -197,7 +197,7 @@ write_binary(
                     } | BLOCK_FLOORPLAN |
                     {
                         "CORE_UTILIZATION": ram_data.get("core_utilization", "40"),
-                        "CORE_ASPECT_RATIO": ram_data["aspect_ratio"],
+                        "CORE_ASPECT_RATIO": ram_data.get("aspect_ratio", "1"),
                     } | SRAM_FLOOR_PLACE_ARGUMENTS | {
             "PLACE_DENSITY": "0.65",
             "GPL_TIMING_DRIVEN": "0",
