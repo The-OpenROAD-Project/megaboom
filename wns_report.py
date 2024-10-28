@@ -82,7 +82,9 @@ def main():
     logs = sorted(map(os.path.basename, pathlib.Path(log_dir).glob("*.log")))
     logs_dir = os.path.join(log_dir, "..")
 
-    variables = sorted(set(k for v in sweep.values() for k in v.get("variables", {}).keys()))
+    variables = sorted(
+        set(k for v in sweep.values() for k in v.get("variables", {}).keys())
+    )
 
     table_data = None
     for variant in sweep:
@@ -93,7 +95,7 @@ def main():
             stats = yaml.safe_load(file)
         names = sorted(stats.keys())
         if table_data is None:
-            table_data = [["Variant"] + names + variables + logs]
+            table_data = [["Variant"] + names + variables + ["dissolve"] + logs]
         table_data.append(
             (
                 [variant]
@@ -107,6 +109,7 @@ def main():
                     )
                     for variable in variables
                 ]
+                + [" ".join(sweep[variant].get("dissolve", []))]
                 + [
                     print_log_dir_times(os.path.join(logs_dir, variant, log))
                     for log in logs
