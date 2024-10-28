@@ -3,8 +3,8 @@
 
 // Prevent builds stomping on each other and set a timeout to avoid runaways
 options {
-    disableConcurrentBuilds(abortPrevious: true),
-    timeout(time: 72, unit: 'HOURS')
+    disableConcurrentBuilds(abortPrevious: true);
+    timeout(time: 72, unit: 'HOURS');
 }
 
 // kick off worker using megaboom cloud definition
