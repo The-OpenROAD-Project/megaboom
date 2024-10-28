@@ -1,5 +1,12 @@
 @Library('utils@orfs-v2.2.2') _
 
+
+// Prevent builds stomping on each other and set a timeout to avoid runaways
+options {
+    disableConcurrentBuilds(abortPrevious: true),
+    timeout(time: 72, unit: 'HOURS')
+}
+
 // kick off worker using megaboom cloud definition
 node('gce-megaboom-central1') {
     properties([copyArtifactPermission('${JOB_NAME},'+env.BRANCH_NAME)]);
