@@ -360,29 +360,12 @@ SWEEP = {
             "floorplan": "BoomTile_synth",
         },
     },
-    "1": {
-        "variables": {
-            # Had to increase it to a minimum of 0.22 recommended
-            "PLACE_DENSITY": "0.24",
-            # Enable floorplan retiming
-            "REMOVE_ABC_BUFFERS": "0",
-            # Saves hours of build time
-            "SKIP_LAST_GASP": "1",
-            "SETUP_SLACK_MARGIN": "-1300",
-        },
-        "previous_stage": {
-            "floorplan": "BoomTile_synth",
-        },
-    },
     "2": {
         "variables": {
             "SYNTH_HIERARCHICAL": "0",
             "MACRO_PLACEMENT_TCL": "$(location write_macro_placement)",
         },
         "stage_sources": {"floorplan": ["write_macro_placement"]},
-        "previous_stage": {
-            "floorplan": "BoomTile_synth",
-        },
     },
 }
 
@@ -579,7 +562,7 @@ genrule(
 # Use the macro placement from a different flow
 orfs_run(
     name = "write_macro_placement",
-    src = ":BoomTile_1_floorplan",
+    src = ":BoomTile_floorplan",
     outs = [
         ":macro_placement.tcl",
     ],
