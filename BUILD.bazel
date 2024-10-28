@@ -351,9 +351,14 @@ FAST_BUILD_SETTINGS = {
 
 SWEEP = {
     "base": {
-        "dissolve": boom_regfile_rams.keys(),
     },
     "naja": {
+        "renamed_inputs": {
+            "floorplan": {"1_synth.v": ":naja"},
+        },
+        "previous_stage": {
+            "floorplan": "BoomTile_synth",
+        },
     },
     "1": {
         "variables": {
@@ -365,11 +370,18 @@ SWEEP = {
             "SKIP_LAST_GASP": "1",
             "SETUP_SLACK_MARGIN": "-1300",
         },
+        "previous_stage": {
+            "floorplan": "BoomTile_synth",
+        },
     },
     "2": {
         "variables": {
             "SYNTH_HIERARCHICAL": "0",
             "MACRO_PLACEMENT_TCL": "$(location write_macro_placement)",
+        },
+        "stage_sources": {"floorplan": ["write_macro_placement"]},
+        "previous_stage": {
+            "floorplan": "BoomTile_synth",
         },
     },
 }
@@ -418,6 +430,14 @@ write_binary(
     data = str(SWEEP_JSON),
 )
 
+BOOMTILE_SOURCES = {
+    "synth": [":constraints-boomtile"],
+    "floorplan": [
+        ":io-boomtile",
+    ],
+    "place": [":io-boomtile"],
+}
+
 [orfs_flow(
     name = "BoomTile",
     arguments = BOOMTILE_VARIABLES | SWEEP[variant].get("variables", {}),
@@ -426,15 +446,8 @@ write_binary(
         for m in (boom_regfile_rams.keys() + all_srams.keys())
         if m not in SWEEP[variant].get("dissolve", [])
     ],
-    previous_stage = {"floorplan": "BoomTile_synth"} if ((BOOMTILE_VARIABLES | SWEEP[variant].get("variables", {}))["SYNTH_HIERARCHICAL"] == "1" and
-                                                         SWEEP[variant].get("dissolve") == SWEEP["base"].get("dissolve") and
-                                                         "naja" not in variant) else {},
-    # Share synthesis stage between all variants
-    renamed_inputs = {
-        "naja": {
-            "floorplan": {"1_synth.v": ":naja"},
-        },
-    }.get(variant, {}),
+    previous_stage = SWEEP[variant].get("previous_stage", {}),
+    renamed_inputs = SWEEP[variant].get("renamed_inputs", {}),
     # Explictily set arguments for a stage when stages are not listed in
     # variables.yaml or we want to explicitly set a multi-stage argument
     # for a specific stage, e.g. SETUP_SLACK_MARGIN could be useful to
@@ -446,12 +459,14 @@ write_binary(
             "GLOBAL_ROUTE_ARGS": "-congestion_iterations 5 -congestion_report_iter_step 5 -verbose",
         },
     },
+    # Starlark does not have sets, nor can we define functions in BUILD files
+    # Use a dict to get a set of keys
     stage_sources = {
-        "synth": [":constraints-boomtile"],
-        "floorplan": [
-            ":io-boomtile",
-        ] + (["write_macro_placement"] if "MACRO_PLACEMENT_TCL" in (BOOMTILE_VARIABLES | SWEEP[variant].get("variables", {})) else []),
-        "place": [":io-boomtile"],
+        key: (SWEEP[variant].get("stage_sources", {}).get(key, []) + BOOMTILE_SOURCES.get(key, []))
+        for key in {
+            key: "dummy"
+            for key in (BOOMTILE_SOURCES.keys() + SWEEP[variant].get("stage_sources", {}).keys())
+        }.keys()
     },
     variant = variant,
     verilog_files = all_source_files,
