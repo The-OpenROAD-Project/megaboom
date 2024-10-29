@@ -464,11 +464,11 @@ BOOMTILE_SOURCES = {
     outs = [
         "BoomTile_" + variant + ".txt",
     ],
-    extra_args = "> $WORK_HOME/BoomTile_" + variant + ".txt",
     arguments = {
         "ODB_FILE": "$(location :BoomTile_" + variant + "_odb)",
     },
     data = [":BoomTile_" + variant + "_odb"],
+    extra_args = "> $WORK_HOME/BoomTile_" + variant + ".txt",
     script = ":report-wns.tcl",
 ) for variant in SWEEP]
 
