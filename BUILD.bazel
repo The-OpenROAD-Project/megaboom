@@ -360,13 +360,24 @@ SWEEP = {
             "floorplan": "BoomTile_synth",
         },
     },
+    "1": {
+        "description": "Flattend with automatic macro placement",
+        "variables": {
+            "SYNTH_HIERARCHICAL": "0",
+            # Macro placement fails with 0.24, tweak initial conditions
+            "PLACE_DENSITY": "0.25",
+        },
+    },
     "2": {
-        "description": "Same as base, but with flattend synthesis",
+        "description": "Macro placement as base, but with flattend synthesis",
         "variables": {
             "SYNTH_HIERARCHICAL": "0",
             "MACRO_PLACEMENT_TCL": "$(location write_macro_placement)",
         },
         "stage_sources": {"floorplan": ["write_macro_placement"]},
+        "previous_stage": {
+            "floorplan": "BoomTile_1_synth",
+        },
     },
     "3": {
         "description": "Same as base, only with CTS timing repair enabled",
@@ -410,6 +421,19 @@ SWEEP = {
             "place": "BoomTile_2_floorplan",
         },
         "stage_sources": {"floorplan": ["write_macro_placement"]},
+    },
+    "7": {
+        "description": "Flattend synthesis, CTS timing repair, timing driven placement and automatic macro placement",
+        "variables": {
+            "SYNTH_HIERARCHICAL": "0",
+            "SKIP_CTS_REPAIR_TIMING": "0",
+            "GPL_TIMING_DRIVEN": "1",
+            # Macro placement fails with 0.24, tweak initial conditions
+            "PLACE_DENSITY": "0.25",
+        },
+        "previous_stage": {
+            "place": "BoomTile_2_floorplan",
+        },
     },
 }
 
