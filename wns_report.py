@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import os
-import yaml
-import json
+import re
 import pathlib
 import sys
 from tabulate import tabulate
@@ -9,6 +8,60 @@ from tabulate import tabulate
 
 def transpose_table(table_data):
     return list(map(list, zip(*table_data)))
+
+
+# slack: 0.039060
+# Clock core_clock
+#    0.00 source latency ctrl.state.out[0]$_DFF_P_/CK ^
+#    0.00 target latency ctrl.state.out[0]$_DFF_P_/CK ^
+#    0.00 CRPR
+# --------------
+#    0.00 setup skew
+
+
+# tns 0.00
+# Cell type report:                       Count       Area
+#   Tap cell                                 48      12.77
+#   Buffer                                   14      19.95
+#   Inverter                                 85      51.34
+#   Sequential cell                          35     158.27
+#   Multi-Input combinational cell          369     420.55
+#   Total                                   551     662.87
+def parse_stats(report):
+    """Create a dictionary with the values above"""
+    stats = {}
+    report_start = False
+    for line in report.split("\n"):
+        if "slack" in line:
+            stats["slack"] = float(line.split()[1])
+        if "setup skew" in line:
+            stats["skew"] = line.split()[0]
+        # First line is "Cell type report", last line is "Total",
+        # fish out the values in between
+        if "Cell type report" in line:
+            report_start = True
+            continue
+        if report_start:
+            # fish out using regex first number column and use the label as key
+            # and the first number as the value.
+            #
+            # use regex, because split() would get confused by space
+            # in the label
+            # use regex, but don't get confused by one or more spaces in the label
+            #      Sequentialcell                          35     158.27
+            #   Tap cell                                 48      12.77
+            #      Multi-Input combinational cell          369     420.55
+            # some labels have spaces, some don't
+            m = re.match(r"\s*(\D+)(\d+)\s+(\d+\.\d+)", line)
+            if m:
+                stats[m.group(1).strip()] = int(m.group(2))
+        if "Total" in line:
+            report_start = False
+            continue
+
+    print(str(stats))
+
+    return stats
 
 
 # Extract Elapsed Time line from log file
@@ -86,11 +139,13 @@ def main():
 
     table_data = None
     for variant in sweep:
-        slack_file = os.path.join(
-            os.path.dirname(sweep_file), "BoomTile_" + variant + ".yaml"
-        )
-        with open(slack_file, "r") as file:
-            stats = yaml.safe_load(file)
+        with open(
+            os.path.join(os.path.dirname(sweep_file), "BoomTile_" + variant + ".txt"),
+            "r",
+        ) as file:
+            report = file.read()
+        stats = parse_stats(report)
+        print(str(stats))
         names = sorted(stats.keys())
         if table_data is None:
             table_data = [
