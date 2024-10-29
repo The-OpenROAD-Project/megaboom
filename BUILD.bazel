@@ -462,10 +462,10 @@ BOOMTILE_SOURCES = {
     name = "BoomTile_" + variant + "_report",
     src = ":BoomTile_" + ("" if variant == "base" else variant + "_") + SWEEP_JSON["stage"],
     outs = [
-        "BoomTile_" + variant + ".yaml",
+        "BoomTile_" + variant + ".txt",
     ],
+    extra_args = "> $WORK_HOME/BoomTile_" + variant + ".txt",
     arguments = {
-        "OUTFILE": "$(location :BoomTile_" + variant + ".yaml)",
         "ODB_FILE": "$(location :BoomTile_" + variant + "_odb)",
     },
     data = [":BoomTile_" + variant + "_odb"],
@@ -484,7 +484,7 @@ genrule(
     srcs = [
                "wns_report.py",
                "sweep.json",
-           ] + [":BoomTile_" + variant + ".yaml" for variant in WNS_REPORT_SWEEP] +
+           ] + [":BoomTile_" + variant + ".txt" for variant in WNS_REPORT_SWEEP] +
            [":BoomTile_" + variant + "_logs" for variant in WNS_REPORT_SWEEP],
     outs = ["BoomTile_wns_report.md"],
     cmd = (
