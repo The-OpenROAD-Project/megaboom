@@ -368,6 +368,15 @@ SWEEP = {
         },
         "stage_sources": {"floorplan": ["write_macro_placement"]},
     },
+    "3": {
+        "description": "Same as base, only with CTS timing repair enabled",
+        "variables": {
+            "SKIP_CTS_REPAIR_TIMING": "0",
+        },
+        "previous_stage": {
+            "cts": "BoomTile_place",
+        },
+    },
 }
 
 BOOMTILE_VARIABLES = SKIP_REPORT_METRICS | FAST_BUILD_SETTINGS | {
