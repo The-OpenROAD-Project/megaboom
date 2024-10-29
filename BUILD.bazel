@@ -377,19 +377,14 @@ BOOMTILE_VARIABLES = SKIP_REPORT_METRICS | FAST_BUILD_SETTINGS | {
     # write_macro_placement macros.tcl
     "SYNTH_HIERARCHICAL": "1",
     "SDC_FILE": "$(location :constraints-boomtile)",
-    #"CORE_UTILIZATION": "20",
-    # Tweak below to work around initial condition sensitive bugs in
-    # macro placement
     "MACRO_PLACE_HALO": "19 19",
-    "RTLMP_FLOW": "1",
-    # "MACRO_PLACEMENT_TCL": "$(location :boomtile-macro-placement)",
     "PLACE_PINS_ARGS": "-annealing",
     "MIN_ROUTING_LAYER": "M2",
     "MAX_ROUTING_LAYER": "M7",
     "ROUTING_LAYER_ADJUSTMENT": "0.45",
     "DIE_AREA": "0 0 2000 2000",
     "CORE_AREA": "2 2 1998 1998",
-    # Saves hours of build time
+    # Saves hours of build time, specific to BoomTile
     "SKIP_LAST_GASP": "1",
     "SETUP_SLACK_MARGIN": "-1300",
     "HOLD_SLACK_MARGIN": "-200",
