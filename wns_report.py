@@ -70,9 +70,11 @@ def print_log_dir_times(f):
     first = True
     totalElapsed = 0
     total_max_memory = 0
-    # print(logdir)
 
-    with open(str(f)) as logfile:
+    if not os.path.exists(f):
+        return "N/A"
+
+    with open(f) as logfile:
         found = False
         for line in logfile:
             elapsedTime = None
@@ -136,24 +138,34 @@ def main():
         set(k for v in sweep.values() for k in v.get("variables", {}).keys())
     )
 
-    table_data = None
-    for variant in sweep:
+    def read_file(variant):
         with open(
             os.path.join(os.path.dirname(sweep_file), "BoomTile_" + variant + ".txt"),
             "r",
         ) as file:
-            report = file.read()
-        stats = parse_stats(report)
-        names = sorted(stats.keys())
+            return file.read()
+
+    stats = {variant: parse_stats(read_file(variant)) for variant in sweep}
+    names = sorted({name for stat in stats.values() for name in stat.keys()})
+    variable_names = sorted(
+        set(k for v in sweep.values() for k in v.get("variables", {}).keys())
+    )
+
+    table_data = None
+    for variant in sweep:
         if table_data is None:
             table_data = [
-                ["Variant", "Description"] + names + variables + ["dissolve"] + logs
+                ["Variant", "Description"]
+                + names
+                + variable_names
+                + ["dissolve"]
+                + logs
             ]
         variables = sweep[variant].get("variables", {})
         table_data.append(
             (
                 [variant, sweep[variant].get("description", "")]
-                + [stats[name] for name in names]
+                + [stats[variant][name] for name in names]
                 + [
                     (
                         variables.get(variable, "")
@@ -161,7 +173,7 @@ def main():
                         != variables.get(variable, "")
                         else ""
                     )
-                    for variable in variables
+                    for variable in variable_names
                 ]
                 + [" ".join(sweep[variant].get("dissolve", []))]
                 + [
