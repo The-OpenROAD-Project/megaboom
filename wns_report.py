@@ -152,13 +152,20 @@ def main():
     )
 
     table_data = None
+
+    def previous_stage(previous_stage):
+        if len(previous_stage) == 0:
+            return ""
+        stage, previous = list(previous_stage.items())[0]
+        return f"{stage}: {previous}"
+
     for variant in sweep:
         if table_data is None:
             table_data = [
                 ["Variant", "Description"]
                 + names
                 + variable_names
-                + ["dissolve"]
+                + ["dissolve", "previous_stage"]
                 + logs
             ]
         variables = sweep[variant].get("variables", {})
@@ -175,7 +182,10 @@ def main():
                     )
                     for variable in variable_names
                 ]
-                + [" ".join(sweep[variant].get("dissolve", []))]
+                + [
+                    " ".join(sweep[variant].get("dissolve", [])),
+                    previous_stage(sweep[variant].get("previous_stage", {})),
+                ]
                 + [
                     print_log_dir_times(os.path.join(logs_dir, variant, log))
                     for log in logs
