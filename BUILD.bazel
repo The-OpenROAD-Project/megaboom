@@ -377,6 +377,15 @@ SWEEP = {
             "cts": "BoomTile_place",
         },
     },
+    "4": {
+        "description": "Same as base, but timing driven placement",
+        "variables": {
+            "GPL_TIMING_DRIVEN": "1",
+        },
+        "previous_stage": {
+            "place": "BoomTile_floorplan",
+        },
+    },
 }
 
 BOOMTILE_VARIABLES = SKIP_REPORT_METRICS | FAST_BUILD_SETTINGS | {
