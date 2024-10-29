@@ -3,7 +3,6 @@ import os
 import yaml
 import json
 import pathlib
-import subprocess
 import sys
 from tabulate import tabulate
 
@@ -12,21 +11,21 @@ def transpose_table(table_data):
     return list(map(list, zip(*table_data)))
 
 
+# Extract Elapsed Time line from log file
+# Elapsed time: 0:04.26[h:]min:sec. CPU time: user 4.08 sys 0.17 (99%). \
+# Peak memory: 671508KB.
 def print_log_dir_times(f):
     first = True
     totalElapsed = 0
     total_max_memory = 0
     # print(logdir)
 
-    # Extract Elapsed Time line from log file
     with open(str(f)) as logfile:
         found = False
         for line in logfile:
             elapsedTime = None
             peak_memory = None
 
-            # Example line:
-            # Elapsed time: 0:04.26[h:]min:sec. CPU time: user 4.08 sys 0.17 (99%). Peak memory: 671508KB.
             if "Elapsed time" in line:
                 found = True
                 # Extract the portion that has the time
@@ -58,7 +57,6 @@ def print_log_dir_times(f):
             print("No elapsed time found in", str(f), file=sys.stderr)
 
         # Print the name of the step and the corresponding elapsed time
-        format_str = "%-25s %20s %14s"
         if elapsedTime is not None and peak_memory is not None:
             if first:
                 first = False
@@ -95,16 +93,19 @@ def main():
             stats = yaml.safe_load(file)
         names = sorted(stats.keys())
         if table_data is None:
-            table_data = [["Variant"] + names + variables + ["dissolve"] + logs]
+            table_data = [
+                ["Variant", "Description"] + names + variables + ["dissolve"] + logs
+            ]
+        variables = sweep[variant].get("variables", {})
         table_data.append(
             (
-                [variant]
+                [variant, sweep[variant].get("description", "")]
                 + [stats[name] for name in names]
                 + [
                     (
-                        sweep[variant].get("variables", {}).get(variable, "")
+                        variables.get(variable, "")
                         if sweep_json["base"].get(variable, "")
-                        != sweep[variant].get("variables", {}).get(variable, "")
+                        != variables.get(variable, "")
                         else ""
                     )
                     for variable in variables
