@@ -361,6 +361,7 @@ SWEEP = {
         },
     },
     "2": {
+        "description": "Same as base, but with flattend synthesis",
         "variables": {
             "SYNTH_HIERARCHICAL": "0",
             "MACRO_PLACEMENT_TCL": "$(location write_macro_placement)",
