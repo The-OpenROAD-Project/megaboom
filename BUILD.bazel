@@ -273,9 +273,18 @@ genrule(
     visibility = ["//visibility:public"],
 )
 
+# Reg file sizes adjusted to line up with synthesized/flattened sizes 
 boom_regfile_rams = {
-    "regfile_128x64": ":io-sram-bottom",
-    "regfile_128x65": ":io-sram",
+    "regfile_128x64": {
+        "io_constraint": ":io-sram-bottom",
+        "die_area": "0 0 176 166",
+        "core_area": "2 2 174 164",
+    },
+    "regfile_128x65": {
+        "io_constraint": ":io-sram",
+        "die_area": "0 0 282 272",
+        "core_area": "2 2 280 270",
+    },
 }
 
 [
@@ -287,26 +296,26 @@ boom_regfile_rams = {
             "floorplan": BLOCK_FLOORPLAN | {
                 # "CORE_UTILIZATION": "200",
                 # "CORE_ASPECT_RATIO": "4",
-                "DIE_AREA": "0 0 400 400",
-                "CORE_AREA": "2 2 298 298",
-                "IO_CONSTRAINTS": "$(location {})".format(io_constraint),
+                "DIE_AREA": ram_data["die_area"],
+                "CORE_AREA": ram_data["core_area"],
+                "IO_CONSTRAINTS": "$(location {})".format(ram_data["io_constraint"]),
             },
             "place": {
                 "PLACE_DENSITY": {
                     "regfile_128x64": "0.42",
                     "regfile_128x65": "0.3",
                 }.get(ram),
-                "IO_CONSTRAINTS": "$(location {})".format(io_constraint),
+                "IO_CONSTRAINTS": "$(location {})".format(ram_data["io_constraint"]),
             },
         },
         stage_sources = {
             "synth": [":constraints-sram"],
-            "floorplan": [io_constraint],
-            "place": [io_constraint],
+            "floorplan": [ram_data["io_constraint"]],
+            "place": [ram_data["io_constraint"]],
         },
         verilog_files = ["mock/" + ram + ".sv"],
     )
-    for ram, io_constraint in boom_regfile_rams.items()
+    for ram, ram_data in boom_regfile_rams.items()
 ]
 
 orfs_run(
