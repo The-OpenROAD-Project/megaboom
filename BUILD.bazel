@@ -463,11 +463,12 @@ WNS_REPORT_SWEEP = [variant for variant in SWEEP if "naja" not in variant]
 SWEEP_JSON = {
     "base": BOOMTILE_VARIABLES,
     "sweep": {variant: SWEEP[variant] for variant in WNS_REPORT_SWEEP},
-    "stage": "cts",
+    "stage": "grt",
     "stages": [
         "floorplan",
         "place",
         "cts",
+        "grt",
     ],
 }
 
