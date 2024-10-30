@@ -521,7 +521,8 @@ BOOMTILE_SOURCES = {
 [filegroup(
     name = "BoomTile_" + variant + "_odb",
     srcs = [":BoomTile_" + ("" if variant == "base" else variant + "_") + SWEEP_JSON["stage"]],
-    output_group = str(SWEEP_JSON["stages"].index(SWEEP_JSON["stage"]) + 2) + "_" + SWEEP_JSON["stage"] + ".odb",
+    output_group = ("5_1_grt" if SWEEP_JSON["stage"] == "grt" else str(SWEEP_JSON["stages"].index(SWEEP_JSON["stage"]) + 2) + "_" + SWEEP_JSON["stage"]) +
+                   ".odb",
     visibility = [":__subpackages__"],
 ) for variant in SWEEP]
 
