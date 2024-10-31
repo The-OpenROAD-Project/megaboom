@@ -411,7 +411,7 @@ BOOMTILE_VARIABLES = SKIP_REPORT_METRICS | FAST_BUILD_SETTINGS | {
     "HOLD_SLACK_MARGIN": "-200",
 }
 
-WNS_REPORT_SWEEP = [variant for variant in SWEEP if "naja" not in variant]
+WNS_REPORT_SWEEP = [variant for variant in SWEEP if variant not in ["base", "naja"]]
 
 SWEEP_JSON = {
     "base": BOOMTILE_VARIABLES,
