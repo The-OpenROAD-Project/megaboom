@@ -14,17 +14,18 @@ def load_data(filename):
         for line in file:
             parts = line.split()
             if len(parts) == 4:
-                slack.append(float(parts[1]))
-                x.append(float(parts[2]))
-                y.append(float(parts[3]))
+                s = float(parts[1])
+                slack.append(s)
+                x.append(float(parts[2])/1000)
+                y.append(float(parts[3])/1000)
 
     return np.array(x), np.array(y), np.array(slack)
 
 
 def plot_3d(x, y, slack):
     # Create grid data for surface plot
-    grid_x, grid_y = np.mgrid[min(x) : max(x) : 100j, min(y) : max(y) : 100j]
-    grid_z = griddata((x, y), slack, (grid_x, grid_y), method="cubic")
+    grid_x, grid_y = np.mgrid[0: 2000: 100j, 0: 2000: 100j]
+    grid_z = griddata((x, y), slack, (grid_x, grid_y), method="linear")
 
     fig = plt.figure()
     ax = fig.add_subplot(111, projection="3d")
