@@ -310,20 +310,20 @@ boom_regfile_rams = {
 ]
 
 orfs_run(
-    name = "slack",
-    src = ":BoomTile_cts",
-    outs = ["slack.txt"],
+    name = "xy_stats",
+    src = ":BoomTile_1_cts",
+    outs = ["xy_stats"],
     arguments = {
-        "OUTPUT": "$(location :slack.txt)",
+        "OUTPUT": "$(location :xy_stats)",
     },
     script = ":slack-positions.tcl",
 )
 
 sh_binary(
-    name = "show_slack",
+    name = "show_skew",
     srcs = ["plot-3d-slack.py"],
-    args = ["$(location :slack)"],
-    data = ["slack"],
+    args = ["$(location :xy_stats)"],
+    data = ["xy_stats"],
     visibility = ["//visibility:public"],
 )
 
