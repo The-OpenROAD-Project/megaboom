@@ -30,6 +30,7 @@ def test_parse_stats():
         "Sequential cell": 35,
         "Multi-Input combinational cell": 369,
         "Total": 551,
+        "tns": 0.00,
     }
 
     assert wns_report.parse_stats(report) == expected_stats

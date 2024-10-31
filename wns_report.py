@@ -35,6 +35,8 @@ def parse_stats(report):
     for line in report.split("\n"):
         if "slack" in line:
             stats["slack"] = float(line.split()[1])
+        if "tns" in line:
+            stats["tns"] = float(line.split()[1])
         if "setup skew" in line:
             stats["skew"] = line.split()[0]
         # First line is "Cell type report", last line is "Total",
