@@ -312,9 +312,9 @@ boom_regfile_rams = {
 orfs_run(
     name = "xy_stats",
     src = ":BoomTile_1_cts",
-    outs = ["xy_stats"],
+    outs = ["xy_stats.txt"],
     arguments = {
-        "OUTPUT": "$(location :xy_stats)",
+        "OUTPUT": "$(location :xy_stats.txt)",
     },
     script = ":slack-positions.tcl",
 )
