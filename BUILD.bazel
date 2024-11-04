@@ -312,9 +312,9 @@ boom_regfile_rams = {
 orfs_run(
     name = "xy_stats",
     src = ":BoomTile_1_cts",
-    outs = ["xy_stats"],
+    outs = ["xy_stats.txt"],
     arguments = {
-        "OUTPUT": "$(location :xy_stats)",
+        "OUTPUT": "$(location :xy_stats.txt)",
     },
     script = ":slack-positions.tcl",
 )
@@ -381,7 +381,7 @@ SWEEP = {
             "GPL_TIMING_DRIVEN": "1",
             "SKIP_CTS_REPAIR_TIMING": "0",
             "MACRO_PLACEMENT_TCL": "$(location write_macro_placement)",
-            "SKIP_LAST_GASP": "1",
+            "SKIP_LAST_GASP": "0",
         },
         "previous_stage": {
             "floorplan": "BoomTile_1_synth",
