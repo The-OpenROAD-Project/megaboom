@@ -288,7 +288,7 @@ boom_regfile_rams = {
                 # "CORE_UTILIZATION": "200",
                 # "CORE_ASPECT_RATIO": "4",
                 "DIE_AREA": "0 0 400 400",
-                "CORE_AREA": "2 2 298 298",
+                "CORE_AREA": "2 2 398 398",
                 "IO_CONSTRAINTS": "$(location {})".format(io_constraint),
             },
             "place": {
