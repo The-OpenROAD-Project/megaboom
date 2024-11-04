@@ -437,12 +437,14 @@ BOOMTILE_SOURCES = {
     "place": [":io-boomtile"],
 }
 
+boomtile_all_rams = boom_regfile_rams.keys() + all_srams.keys()
+
 [orfs_flow(
     name = "BoomTile",
     arguments = BOOMTILE_VARIABLES | SWEEP[variant].get("variables", {}),
     macros = [
         ":" + m + "_generate_abstract"
-        for m in (boom_regfile_rams.keys() + all_srams.keys())
+        for m in boomtile_all_rams
         if m not in SWEEP[variant].get("dissolve", [])
     ],
     previous_stage = SWEEP[variant].get("previous_stage", {}),
@@ -527,7 +529,7 @@ filegroup(
     name = ram + "_lib",
     srcs = [ram + "_generate_abstract"],
     output_group = ram + ".lib",
-) for ram in all_srams.keys()]
+) for ram in all_srams.keys() + boom_regfile_rams.keys()]
 
 filegroup(
     name = "BoomTile_synth_mergedlib",
@@ -545,12 +547,12 @@ genrule(
         "naja_edit/install/bin/naja_edit",
         "naja_edit/install/lib/python",
         "naja_edit/install/share/naja/primitives/asap7_new.py",
-    ] + [":" + ram + "_lib" for ram in all_srams.keys()],
+    ] + [":" + ram + "_lib" for ram in boomtile_all_rams],
     outs = ["naja.v"],
     #cmd = "mkdir -p `dirname $@`; export PYTHONPATH=$(location naja_edit/install/lib/python) && $(location naja_edit/install/bin/naja_edit) -a all -p $(location :BoomTile_synth_mergedlib) -f verilog -t verilog -i $(location :BoomTile_synth_unedited) -o $@",
     #cmd = "mkdir -p `dirname $@`; export PYTHONPATH=$(location naja_edit/install/lib/python) && $(location naja_edit/install/bin/naja_edit) -a all -p $(location naja_edit/install/share/naja/primitives/asap7_new.py) -f verilog -t verilog -i $(location :BoomTile_synth_unedited) -o $@",
     cmd = ("mkdir -p `dirname $@`; export PYTHONPATH=$(location naja_edit/install/lib/python) && $(location naja_edit/install/bin/naja_edit) -a all -p " +
-           " ".join(["$(location :" + ram + "_lib)" for ram in all_srams.keys()]) +
+           " ".join(["$(location :" + ram + "_lib)" for ram in boomtile_all_rams]) +
            " $(location :naja_edit/install/share/naja/primitives/asap7_new.py)" +
            " -f verilog -t verilog -i $(location :BoomTile_synth_unedited) -o $@"),
 )
