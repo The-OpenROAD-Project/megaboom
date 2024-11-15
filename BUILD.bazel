@@ -353,7 +353,7 @@ SWEEP = {
     "base": {
         "description": "Base settings, provides macro placement from hierarchical synthesis",
         "variables": {
-            "GLOBAL_ROUTE_ARGS": "-congestion_iterations 30 -congestion_report_iter_step 5 -verbose",
+            #"GLOBAL_ROUTE_ARGS": "-congestion_iterations 30 -congestion_report_iter_step 5 -verbose",
         },
     },
     "naja": {
@@ -391,6 +391,9 @@ SWEEP = {
 }
 
 BOOMTILE_VARIABLES = SKIP_REPORT_METRICS | FAST_BUILD_SETTINGS | {
+    # global route is futile for now, so do a few iterations to
+    # get a global route artifact with .odb and .rpt file
+    "GLOBAL_ROUTE_ARGS": "-congestion_iterations 5 -congestion_report_iter_step 5 -verbose",
     "PDN_TCL": "$(PLATFORM_DIR)/openRoad/pdn/BLOCKS_grid_strategy.tcl",
     "IO_CONSTRAINTS": "$(location :io-boomtile)",
     "PLACE_DENSITY": "0.24",
@@ -454,11 +457,6 @@ boomtile_all_rams = boom_regfile_rams.keys() + all_srams.keys()
     # for a specific stage, e.g. SETUP_SLACK_MARGIN could be useful to
     # have a different value for floorplan, cts and grt.
     stage_arguments = {
-        "grt": {
-            # global route is futile for now, so do a few iterations to
-            # get a global route artifact with .odb and .rpt file
-            "GLOBAL_ROUTE_ARGS": "-congestion_iterations 5 -congestion_report_iter_step 5 -verbose",
-        },
     },
     # Starlark does not have sets, nor can we define functions in BUILD files
     # Use a dict to get a set of keys
