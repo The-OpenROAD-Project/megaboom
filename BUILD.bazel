@@ -377,6 +377,48 @@ SWEEP = {
         },
         "stage_sources": {"floorplan": ["write_macro_placement"]},
     },
+    "1": {
+        "description": "Routing layer adjustment 0.3",
+        "variables": {
+            "ROUTING_LAYER_ADJUSTMENT": "0.3",
+            "SYNTH_HIERARCHICAL": "0",
+            "GPL_TIMING_DRIVEN": "1",
+            "SKIP_CTS_REPAIR_TIMING": "0",
+            "MACRO_PLACEMENT_TCL": "$(location write_macro_placement)",
+            "SKIP_LAST_GASP": "0",
+        },
+        "previous_stage": {
+            "place": "BoomTile_floorplan",
+        },
+    },
+    "2": {
+        "description": "Routing layer adjustment 0.4",
+        "variables": {
+            "ROUTING_LAYER_ADJUSTMENT": "0.4",
+            "SYNTH_HIERARCHICAL": "0",
+            "GPL_TIMING_DRIVEN": "1",
+            "SKIP_CTS_REPAIR_TIMING": "0",
+            "MACRO_PLACEMENT_TCL": "$(location write_macro_placement)",
+            "SKIP_LAST_GASP": "0",
+        },
+        "previous_stage": {
+            "place": "BoomTile_floorplan",
+        },
+    },
+    "3": {
+        "description": "Routing layer adjustment 0.6",
+        "variables": {
+            "ROUTING_LAYER_ADJUSTMENT": "0.6",
+            "SYNTH_HIERARCHICAL": "0",
+            "GPL_TIMING_DRIVEN": "1",
+            "SKIP_CTS_REPAIR_TIMING": "0",
+            "MACRO_PLACEMENT_TCL": "$(location write_macro_placement)",
+            "SKIP_LAST_GASP": "0",
+        },
+        "previous_stage": {
+            "place": "BoomTile_floorplan",
+        },
+    },
 }
 
 BOOMTILE_VARIABLES = SKIP_REPORT_METRICS | FAST_BUILD_SETTINGS | {
@@ -403,11 +445,12 @@ BOOMTILE_VARIABLES = SKIP_REPORT_METRICS | FAST_BUILD_SETTINGS | {
 SWEEP_JSON = {
     "base": BOOMTILE_VARIABLES,
     "sweep": {variant: SWEEP[variant] for variant in SWEEP},
-    "stage": "cts",
+    "stage": "grt",
     "stages": [
         "floorplan",
         "place",
         "cts",
+        "grt",
     ],
 }
 
