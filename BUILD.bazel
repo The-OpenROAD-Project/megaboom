@@ -486,6 +486,13 @@ ALL_VARIANTS = SWEEP | OTHER_VARIANTS
     visibility = [":__subpackages__"],
 ) for variant in SWEEP]
 
+# This can be built in parallel, but grt needs to be build in serial
+filegroup(
+    name = "sweep_parallel",
+    srcs = ["BoomTile_" + ("" if variant == "base" else variant + "_") + "cts" for variant in SWEEP],
+    visibility = ["//visibility:public"],
+)
+
 genrule(
     name = "wns_report",
     srcs = [
