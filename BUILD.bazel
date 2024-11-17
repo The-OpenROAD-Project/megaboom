@@ -349,11 +349,10 @@ FAST_BUILD_SETTINGS = {
     "TAPCELL_TCL": "",
 }
 
-SWEEP = {
-    "base": {
+OTHER_VARIANTS = {
+    "macro": {
         "description": "Base settings, provides macro placement from hierarchical synthesis",
         "variables": {
-            "GLOBAL_ROUTE_ARGS": "-congestion_iterations 30 -congestion_report_iter_step 5 -verbose",
         },
     },
     "naja": {
@@ -364,27 +363,17 @@ SWEEP = {
             "floorplan": "BoomTile_synth",
         },
     },
-    "1": {
-        "description": "Flattend, timing driven placement, CTS timing repair enabled",
-        "variables": {
-            "SYNTH_HIERARCHICAL": "0",
-            "GPL_TIMING_DRIVEN": "1",
-            "SKIP_CTS_REPAIR_TIMING": "0",
-            "MACRO_PLACEMENT_TCL": "$(location write_macro_placement)",
-        },
-        "stage_sources": {"floorplan": ["write_macro_placement"]},
-    },
-    "2": {
-        "description": "Flattend, timing driven placement, CTS timing repair enabled, last gasp timing repair",
+}
+
+SWEEP = {
+    "base": {
+        "description": "Flattend, timing driven placement",
         "variables": {
             "SYNTH_HIERARCHICAL": "0",
             "GPL_TIMING_DRIVEN": "1",
             "SKIP_CTS_REPAIR_TIMING": "0",
             "MACRO_PLACEMENT_TCL": "$(location write_macro_placement)",
             "SKIP_LAST_GASP": "0",
-        },
-        "previous_stage": {
-            "floorplan": "BoomTile_1_synth",
         },
         "stage_sources": {"floorplan": ["write_macro_placement"]},
     },
@@ -411,11 +400,9 @@ BOOMTILE_VARIABLES = SKIP_REPORT_METRICS | FAST_BUILD_SETTINGS | {
     "HOLD_SLACK_MARGIN": "-200",
 }
 
-WNS_REPORT_SWEEP = [variant for variant in SWEEP if "naja" not in variant]
-
 SWEEP_JSON = {
     "base": BOOMTILE_VARIABLES,
-    "sweep": {variant: SWEEP[variant] for variant in WNS_REPORT_SWEEP},
+    "sweep": {variant: SWEEP[variant] for variant in SWEEP},
     "stage": "cts",
     "stages": [
         "floorplan",
@@ -439,39 +426,36 @@ BOOMTILE_SOURCES = {
 
 boomtile_all_rams = boom_regfile_rams.keys() + all_srams.keys()
 
+ALL_VARIANTS = SWEEP | OTHER_VARIANTS
+
 [orfs_flow(
     name = "BoomTile",
-    arguments = BOOMTILE_VARIABLES | SWEEP[variant].get("variables", {}),
+    arguments = BOOMTILE_VARIABLES | ALL_VARIANTS[variant].get("variables", {}),
     macros = [
         ":" + m + "_generate_abstract"
         for m in boomtile_all_rams
-        if m not in SWEEP[variant].get("dissolve", [])
+        if m not in ALL_VARIANTS[variant].get("dissolve", [])
     ],
-    previous_stage = SWEEP[variant].get("previous_stage", {}),
-    renamed_inputs = SWEEP[variant].get("renamed_inputs", {}),
+    previous_stage = ALL_VARIANTS[variant].get("previous_stage", {}),
+    renamed_inputs = ALL_VARIANTS[variant].get("renamed_inputs", {}),
     # Explictily set arguments for a stage when stages are not listed in
     # variables.yaml or we want to explicitly set a multi-stage argument
     # for a specific stage, e.g. SETUP_SLACK_MARGIN could be useful to
     # have a different value for floorplan, cts and grt.
     stage_arguments = {
-        "grt": {
-            # global route is futile for now, so do a few iterations to
-            # get a global route artifact with .odb and .rpt file
-            "GLOBAL_ROUTE_ARGS": "-congestion_iterations 5 -congestion_report_iter_step 5 -verbose",
-        },
     },
     # Starlark does not have sets, nor can we define functions in BUILD files
     # Use a dict to get a set of keys
     stage_sources = {
-        key: (SWEEP[variant].get("stage_sources", {}).get(key, []) + BOOMTILE_SOURCES.get(key, []))
+        key: (ALL_VARIANTS[variant].get("stage_sources", {}).get(key, []) + BOOMTILE_SOURCES.get(key, []))
         for key in {
             key: "dummy"
-            for key in (BOOMTILE_SOURCES.keys() + SWEEP[variant].get("stage_sources", {}).keys())
+            for key in (BOOMTILE_SOURCES.keys() + ALL_VARIANTS[variant].get("stage_sources", {}).keys())
         }.keys()
     },
     variant = variant,
     verilog_files = all_source_files,
-) for variant in SWEEP]
+) for variant in ALL_VARIANTS]
 
 [filegroup(
     name = "BoomTile_" + variant + "_odb",
@@ -507,8 +491,8 @@ genrule(
     srcs = [
                "wns_report.py",
                "sweep.json",
-           ] + [":BoomTile_" + variant + ".txt" for variant in WNS_REPORT_SWEEP] +
-           [":BoomTile_" + variant + "_logs" for variant in WNS_REPORT_SWEEP],
+           ] + [":BoomTile_" + variant + ".txt" for variant in SWEEP] +
+           [":BoomTile_" + variant + "_logs" for variant in SWEEP],
     outs = ["BoomTile_wns_report.md"],
     cmd = (
         "$(location :wns_report.py) > $@" +
@@ -562,7 +546,7 @@ filegroup(
     srcs = [
         ":BoomTile_" + ("" if variant == "base" else variant + "_") + stage
         for stage in SWEEP_JSON["stages"]
-        for variant in WNS_REPORT_SWEEP
+        for variant in SWEEP
     ],
     output_group = "logs",
 )
@@ -581,7 +565,7 @@ genrule(
 # Use the macro placement from a different flow
 orfs_run(
     name = "write_macro_placement",
-    src = ":BoomTile_floorplan",
+    src = ":BoomTile_macro_floorplan",
     outs = [
         ":macro_placement.tcl",
     ],
