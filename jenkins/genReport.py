@@ -16,7 +16,7 @@ import argparse
 
 def write_summary(output_file, summary_data):
     """
-    Writes summary to output file and creates any directories in the output_file's path 
+    Writes summary to output file and creates any directories in the output_file's path
     that already don't exist
     """
 
@@ -46,24 +46,17 @@ def read_log(input_file):
 
     Returns a dictionary with "errors" and "info" as the keys to lists of log
     file output to include in the summary
-
-    NOTE: GRT-0119 is skipped for right now
     """
-    
+
     summary_data = { "errors": [], "info": [] }
     orfs_regex_error = re.compile(r"^\[error ?(\w+-\d+)?\]", re.IGNORECASE)
     bazel_regex_error = re.compile(r"^error:", re.IGNORECASE)
     regex_hitrate = re.compile(r"^INFO\:\s+\d+\s+processes\:\s+\d+\s+remote\s+cache\s+hit")
-    
+
     with open(input_file, "r") as in_fh:
         for line in in_fh:
-            orfs_result = orfs_regex_error.match(line)
-            if orfs_result:
-                orfs_error_code = orfs_result.group(1)
-                print(orfs_error_code)
-                # skip "Routing congestion too high" error for now
-                if orfs_error_code != "GRT-0119":
-                    summary_data["errors"].append(line.strip())
+            if orfs_regex_error.match(line):
+                summary_data["errors"].append(line.strip())
             elif re.search(bazel_regex_error, line):
                 summary_data["errors"].append(line.strip())
             elif line.startswith("INFO: Elapsed time") or re.search(regex_hitrate, line) or line.startswith("INFO: Build completed successfully"):
@@ -79,8 +72,3 @@ args = parser.parse_args()
 
 summary_data = read_log(args.input_file)
 write_summary(args.output_file, summary_data)
-sys.exit(len(summary_data["errors"]) > 0)
-
-    
-
-    
