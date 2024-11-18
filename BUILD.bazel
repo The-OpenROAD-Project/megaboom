@@ -377,6 +377,15 @@ SWEEP = {
         },
         "stage_sources": {"floorplan": ["write_macro_placement"]},
     },
+    "1": {
+        "description": "Flattend, automatic macro placement",
+        "variables": {
+            "SYNTH_HIERARCHICAL": "0",
+            "GPL_TIMING_DRIVEN": "1",
+            "SKIP_CTS_REPAIR_TIMING": "0",
+            "SKIP_LAST_GASP": "0",
+        }
+    },
 }
 
 BOOMTILE_VARIABLES = SKIP_REPORT_METRICS | FAST_BUILD_SETTINGS | {
