@@ -75,8 +75,6 @@ BLOCK_FLOORPLAN = {
 
 SRAM_SYNTH_ARGUMENTS = {"SDC_FILE": "$(location :constraints-sram)"}
 
-SRAM_FLOOR_PLACE_ARGUMENTS = {"IO_CONSTRAINTS": "$(location :io-sram)"}
-
 SKIP_REPORT_METRICS = {"SKIP_REPORT_METRICS": "1"}
 
 mock_files = [
@@ -132,7 +130,8 @@ boom_tile_small_srams = {
     },  # close
     "meta_128x120": {
         "mock_area": 0.31,
-        "aspect_ratio": "0.25",
+        "aspect_ratio": "4",
+        "io": "io-sram-bottom",
     },
     "lb_32x128": {
         "mock_area": 0.32,
@@ -192,25 +191,29 @@ write_binary(
     orfs_flow(
         name = ram,
         abstract_stage = "cts",
-        arguments = SRAM_SYNTH_ARGUMENTS | SKIP_REPORT_METRICS | {"SYNTH_MEMORY_MAX_BITS": "16384"} | {
-                        "PLACE_PINS_ARGS": "-min_distance 1 -min_distance_in_tracks",
-                    } | BLOCK_FLOORPLAN |
-                    {
-                        "CORE_UTILIZATION": ram_data.get("core_utilization", "40"),
-                        "CORE_ASPECT_RATIO": ram_data.get("aspect_ratio", "1"),
-                    } | SRAM_FLOOR_PLACE_ARGUMENTS | {
+        arguments = SRAM_SYNTH_ARGUMENTS | SKIP_REPORT_METRICS | BLOCK_FLOORPLAN | {
+            "SYNTH_MEMORY_MAX_BITS": "16384",
+            "PLACE_PINS_ARGS": "-min_distance 1 -min_distance_in_tracks",
+            "CORE_UTILIZATION": ram_data.get("core_utilization", "40"),
+            "CORE_ASPECT_RATIO": ram_data.get("aspect_ratio", "1"),
             "PLACE_DENSITY": "0.65",
             "GPL_TIMING_DRIVEN": "0",
-        } | {
             "SKIP_CTS_REPAIR_TIMING": "0",
             "SKIP_LAST_GASP": "1",
             "SETUP_SLACK_MARGIN": "-500",
+            "IO_CONSTRAINTS": "$(location :" + ram_data.get("io", "io-sram") + ")",
         },
         mock_area = ram_data["mock_area"],
         stage_sources = {
             "synth": [":constraints-sram"],
-            "floorplan": [":io-sram"],
-            "place": [":io-sram"],
+            "floorplan": [
+                ":io-sram",
+                ":io-sram-bottom",
+            ],
+            "place": [
+                ":io-sram",
+                ":io-sram-bottom",
+            ],
         },
         verilog_files = [
             {
