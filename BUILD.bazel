@@ -377,6 +377,16 @@ SWEEP = {
         },
         "stage_sources": {"floorplan": ["write_macro_placement"]},
     },
+    "1": {
+        "description": "Hierarchical, branch predictors as macros",
+        "variables": {
+            "HOLD_SLACK_MARGIN": "-900",
+            "PDN_TCL": "$(location :pdn.tcl)",
+            "MAX_ROUTING_LAYER": "M9",
+        },
+        "macros": ["ComposedBranchPredictorBank_generate_abstract"],
+        "stage_sources": {"floorplan": ["pdn.tcl"]},
+    },
 }
 
 BOOMTILE_VARIABLES = SKIP_REPORT_METRICS | FAST_BUILD_SETTINGS | {
@@ -428,6 +438,36 @@ boomtile_all_rams = boom_regfile_rams.keys() + all_srams.keys()
 
 ALL_VARIANTS = SWEEP | OTHER_VARIANTS
 
+BRANCH_PREDICTOR_VARIABLES = SKIP_REPORT_METRICS | FAST_BUILD_SETTINGS | {
+    "PDN_TCL": "$(PLATFORM_DIR)/openRoad/pdn/BLOCKS_grid_strategy.tcl",
+    "IO_CONSTRAINTS": "$(location :io-boomtile)",
+    "PLACE_DENSITY": "0.24",
+    # We only need hierarchical synthesis when we are running through floorplan
+    # write_macro_placement macros.tcl
+    "SYNTH_HIERARCHICAL": "1",
+    "SDC_FILE": "$(location :constraints-boomtile)",
+    "MACRO_PLACE_HALO": "4 4",
+    "PLACE_PINS_ARGS": "-annealing",
+    "DIE_AREA": "0 0 300 400",
+    "CORE_AREA": "0 0 298 398",
+    # Saves hours of build time, specific to BoomTile
+    "SKIP_LAST_GASP": "1",
+    "SETUP_SLACK_MARGIN": "-1300",
+    "HOLD_SLACK_MARGIN": "-200",
+}
+
+orfs_flow(
+    name = "ComposedBranchPredictorBank",
+    abstract_stage = "cts",
+    arguments = BRANCH_PREDICTOR_VARIABLES,
+    macros = [
+        ":" + m + "_generate_abstract"
+        for m in boomtile_all_rams
+    ],
+    stage_sources = BOOMTILE_SOURCES,
+    verilog_files = all_source_files,
+)
+
 [orfs_flow(
     name = "BoomTile",
     arguments = BOOMTILE_VARIABLES | ALL_VARIANTS[variant].get("variables", {}),
@@ -435,7 +475,7 @@ ALL_VARIANTS = SWEEP | OTHER_VARIANTS
         ":" + m + "_generate_abstract"
         for m in boomtile_all_rams
         if m not in ALL_VARIANTS[variant].get("dissolve", [])
-    ],
+    ] + ALL_VARIANTS[variant].get("macros", []),
     previous_stage = ALL_VARIANTS[variant].get("previous_stage", {}),
     renamed_inputs = ALL_VARIANTS[variant].get("renamed_inputs", {}),
     # Explictily set arguments for a stage when stages are not listed in
