@@ -14,6 +14,7 @@ import os
 import sys
 import argparse
 
+
 def write_summary(output_file, summary_data):
     """
     Writes summary to output file and creates any directories in the output_file's path
@@ -39,6 +40,7 @@ def write_summary(output_file, summary_data):
             out_fh.write("\n".join(summary_data["info"]))
             out_fh.write("\n")
 
+
 def read_log(input_file):
     """
     Reads the build log and extracts any interesting errors or info to include
@@ -48,10 +50,12 @@ def read_log(input_file):
     file output to include in the summary
     """
 
-    summary_data = { "errors": [], "info": [] }
+    summary_data = {"errors": [], "info": []}
     orfs_regex_error = re.compile(r"^\[error ?(\w+-\d+)?\]", re.IGNORECASE)
     bazel_regex_error = re.compile(r"^error:", re.IGNORECASE)
-    regex_hitrate = re.compile(r"^INFO\:\s+\d+\s+processes\:\s+\d+\s+remote\s+cache\s+hit")
+    regex_hitrate = re.compile(
+        r"^INFO\:\s+\d+\s+processes\:\s+\d+\s+remote\s+cache\s+hit"
+    )
 
     with open(input_file, "r") as in_fh:
         for line in in_fh:
@@ -59,14 +63,21 @@ def read_log(input_file):
                 summary_data["errors"].append(line.strip())
             elif re.search(bazel_regex_error, line):
                 summary_data["errors"].append(line.strip())
-            elif line.startswith("INFO: Elapsed time") or re.search(regex_hitrate, line) or line.startswith("INFO: Build completed successfully"):
+            elif (
+                line.startswith("INFO: Elapsed time")
+                or re.search(regex_hitrate, line)
+                or line.startswith("INFO: Build completed successfully")
+            ):
                 summary_data["info"].append(line.strip())
     return summary_data
+
 
 # Define args and defaults
 parser = argparse.ArgumentParser(prog="genReport.py")
 parser.add_argument("-i", "--input_file", help="Bazel build log", default="build.log")
-parser.add_argument("-o", "--output_file", help="Summary log", default="flow/reports/report-summary.log")
+parser.add_argument(
+    "-o", "--output_file", help="Summary log", default="flow/reports/report-summary.log"
+)
 
 args = parser.parse_args()
 
