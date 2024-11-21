@@ -282,6 +282,9 @@ boom_regfile_rams = {
     orfs_flow(
         name = ram,
         abstract_stage = all_srams_stage,
+        arguments = {
+            "PLACE_PINS_ARGS": "-min_distance 1 -min_distance_in_tracks",
+        },
         stage_arguments = {
             "synth": SRAM_SYNTH_ARGUMENTS,
             "floorplan": BLOCK_FLOORPLAN | {
