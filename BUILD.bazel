@@ -387,6 +387,16 @@ SWEEP = {
         "macros": ["ComposedBranchPredictorBank_generate_abstract"],
         "stage_sources": {"floorplan": ["pdn.tcl"]},
     },
+    "2": {
+        "description": "Hierarchical, branch predictors as macros",
+        "variables": {
+            "HOLD_SLACK_MARGIN": "-900",
+            "PDN_TCL": "$(location :pdn.tcl)",
+            "MAX_ROUTING_LAYER": "M9",
+        },
+        "macros": ["BranchPredictor_generate_abstract"],
+        "stage_sources": {"floorplan": ["pdn.tcl"]},
+    },
 }
 
 BOOMTILE_VARIABLES = SKIP_REPORT_METRICS | FAST_BUILD_SETTINGS | {
@@ -448,25 +458,35 @@ BRANCH_PREDICTOR_VARIABLES = SKIP_REPORT_METRICS | FAST_BUILD_SETTINGS | {
     "SDC_FILE": "$(location :constraints-boomtile)",
     "MACRO_PLACE_HALO": "4 4",
     "PLACE_PINS_ARGS": "-annealing",
-    "DIE_AREA": "0 0 300 400",
-    "CORE_AREA": "0 0 298 398",
     # Saves hours of build time, specific to BoomTile
     "SKIP_LAST_GASP": "1",
     "SETUP_SLACK_MARGIN": "-1300",
     "HOLD_SLACK_MARGIN": "-200",
 }
 
-orfs_flow(
-    name = "ComposedBranchPredictorBank",
+[orfs_flow(
+    name = module,
     abstract_stage = "cts",
-    arguments = BRANCH_PREDICTOR_VARIABLES,
+    arguments = BRANCH_PREDICTOR_VARIABLES | {
+        "ComposedBranchPredictorBank": {
+            "DIE_AREA": "0 0 300 400",
+            "CORE_AREA": "0 0 298 398",
+        },
+        "BranchPredictor": {
+            "DIE_AREA": "0 0 600 400",
+            "CORE_AREA": "0 0 598 398",
+        },
+    }[module],
     macros = [
         ":" + m + "_generate_abstract"
         for m in boomtile_all_rams
     ],
     stage_sources = BOOMTILE_SOURCES,
     verilog_files = all_source_files,
-)
+) for module in [
+    "ComposedBranchPredictorBank",
+    "BranchPredictor",
+]]
 
 [orfs_flow(
     name = "BoomTile",
