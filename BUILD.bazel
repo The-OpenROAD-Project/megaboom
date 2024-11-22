@@ -412,8 +412,8 @@ BOOMTILE_VARIABLES = SKIP_REPORT_METRICS | FAST_BUILD_SETTINGS | {
     "MIN_ROUTING_LAYER": "M2",
     "MAX_ROUTING_LAYER": "M7",
     "ROUTING_LAYER_ADJUSTMENT": "0.45",
-    "DIE_AREA": "0 0 1250 1250",
-    "CORE_AREA": "2 2 1248 1248",
+    "DIE_AREA": "0 0 1000 1000",
+    "CORE_AREA": "2 2 998 998",
     # Saves hours of build time, specific to BoomTile
     "SKIP_LAST_GASP": "1",
     "SETUP_SLACK_MARGIN": "-1300",
