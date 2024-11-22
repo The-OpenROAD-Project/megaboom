@@ -377,7 +377,19 @@ SWEEP = {
         },
         "stage_sources": {"floorplan": ["write_macro_placement"]},
     },
-}
+} | {str(i + 1): {
+    "description": "Placement density sweep",
+    "variables": {
+        "SYNTH_HIERARCHICAL": "0",
+        "GPL_TIMING_DRIVEN": "1",
+        "SKIP_CTS_REPAIR_TIMING": "0",
+        "MACRO_PLACEMENT_TCL": "$(location write_macro_placement)",
+        "SKIP_LAST_GASP": "0",
+        "PLACE_DENSITY": str(0.60 + (i + 1) * 0.05),
+    },
+    "previous_stage": {"floorplan": "BoomTile_synth"},
+    "stage_sources": {"floorplan": ["write_macro_placement"]},
+} for i in [0, 1, 2, 3]}
 
 BOOMTILE_VARIABLES = SKIP_REPORT_METRICS | FAST_BUILD_SETTINGS | {
     "PDN_TCL": "$(PLATFORM_DIR)/openRoad/pdn/BLOCKS_grid_strategy.tcl",
