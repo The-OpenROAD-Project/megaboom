@@ -377,32 +377,12 @@ SWEEP = {
         },
         "stage_sources": {"floorplan": ["write_macro_placement"]},
     },
-    "1": {
-        "description": "Hierarchical, branch predictors as macros",
-        "variables": {
-            "HOLD_SLACK_MARGIN": "-900",
-            "PDN_TCL": "$(location :pdn.tcl)",
-            "MAX_ROUTING_LAYER": "M9",
-        },
-        "macros": ["ComposedBranchPredictorBank_generate_abstract"],
-        "stage_sources": {"floorplan": ["pdn.tcl"]},
-    },
-    "2": {
-        "description": "Hierarchical, branch predictors as macros",
-        "variables": {
-            "HOLD_SLACK_MARGIN": "-900",
-            "PDN_TCL": "$(location :pdn.tcl)",
-            "MAX_ROUTING_LAYER": "M9",
-        },
-        "macros": ["BranchPredictor_generate_abstract"],
-        "stage_sources": {"floorplan": ["pdn.tcl"]},
-    },
 }
 
 BOOMTILE_VARIABLES = SKIP_REPORT_METRICS | FAST_BUILD_SETTINGS | {
     "PDN_TCL": "$(PLATFORM_DIR)/openRoad/pdn/BLOCKS_grid_strategy.tcl",
     "IO_CONSTRAINTS": "$(location :io-boomtile)",
-    "PLACE_DENSITY": "0.24",
+    "PLACE_DENSITY": "0.54",
     # We only need hierarchical synthesis when we are running through floorplan
     # write_macro_placement macros.tcl
     "SYNTH_HIERARCHICAL": "1",
@@ -412,8 +392,8 @@ BOOMTILE_VARIABLES = SKIP_REPORT_METRICS | FAST_BUILD_SETTINGS | {
     "MIN_ROUTING_LAYER": "M2",
     "MAX_ROUTING_LAYER": "M7",
     "ROUTING_LAYER_ADJUSTMENT": "0.45",
-    "DIE_AREA": "0 0 1500 1500",
-    "CORE_AREA": "2 2 1498 1498",
+    "DIE_AREA": "0 0 1250 1250",
+    "CORE_AREA": "2 2 1248 1248",
     # Saves hours of build time, specific to BoomTile
     "SKIP_LAST_GASP": "1",
     "SETUP_SLACK_MARGIN": "-1300",
