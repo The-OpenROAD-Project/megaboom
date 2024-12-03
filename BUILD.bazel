@@ -1,5 +1,5 @@
 load("@bazel-orfs//:openroad.bzl", "orfs_flow", "orfs_run")
-load("@bazel-orfs//:sweep.bzl", "sweep")
+load("@bazel-orfs//:sweep.bzl", "orfs_sweep")
 load(":write_binary.bzl", "write_binary")
 
 filegroup(
@@ -451,9 +451,9 @@ BRANCH_PREDICTOR_VARIABLES = SKIP_REPORT_METRICS | FAST_BUILD_SETTINGS | {
     "BranchPredictor",
 ]]
 
-sweep(
+orfs_sweep(
     name = "BoomTile",
-    variables = BOOMTILE_VARIABLES,
+    arguments = BOOMTILE_VARIABLES,
     macros = [
         ":" + m + "_generate_abstract"
         for m in boomtile_all_rams
