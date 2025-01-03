@@ -366,20 +366,6 @@ OTHER_VARIANTS = {
     },
 }
 
-SWEEP = {
-    "base": {
-        "description": "Flattend, timing driven placement",
-        "variables": {
-            "SYNTH_HIERARCHICAL": "0",
-            "GPL_TIMING_DRIVEN": "1",
-            "SKIP_CTS_REPAIR_TIMING": "0",
-            "MACRO_PLACEMENT_TCL": "$(location write_macro_placement)",
-            "SKIP_LAST_GASP": "0",
-        },
-        "stage_sources": {"floorplan": ["write_macro_placement"]},
-    },
-}
-
 BOOMTILE_VARIABLES = SKIP_REPORT_METRICS | FAST_BUILD_SETTINGS | {
     "PDN_TCL": "$(PLATFORM_DIR)/openRoad/pdn/BLOCKS_grid_strategy.tcl",
     "IO_CONSTRAINTS": "$(location :io-boomtile)",
@@ -458,10 +444,22 @@ orfs_sweep(
         ":" + m + "_generate_abstract"
         for m in boomtile_all_rams
     ],
-    stage_sources = BOOMTILE_SOURCES,
-    verilog_files = all_source_files,
-    sweep = SWEEP,
     other_variants = OTHER_VARIANTS,
+    stage_sources = BOOMTILE_SOURCES,
+    sweep = {
+        "base": {
+            "description": "Flattend, timing driven placement",
+            "variables": {
+                "SYNTH_HIERARCHICAL": "0",
+                "GPL_TIMING_DRIVEN": "1",
+                "SKIP_CTS_REPAIR_TIMING": "0",
+                "MACRO_PLACEMENT_TCL": "$(location write_macro_placement)",
+                "SKIP_LAST_GASP": "0",
+            },
+            "stage_sources": {"floorplan": ["write_macro_placement"]},
+        },
+    },
+    verilog_files = all_source_files,
 )
 
 # fish out the file that we want as input to the "naja" rule
