@@ -9,13 +9,13 @@ module(
 # 1. comment git_override() below
 # 2. uncomment local_path_override below
 #
-#local_path_override(
+# local_path_override(
 #   module_name = "bazel-orfs", path = "../bazel-orfs"
-#)
+# )
 bazel_dep(name = "bazel-orfs")
 git_override(
     module_name = "bazel-orfs",
-    commit = "380bb8553cd0795923c4204299e79bcbec851c17",
+    commit = "aa566715a49ae8777c92921d7cc1efb20c03f0d4",
     remote = "https://github.com/The-OpenROAD-Project/bazel-orfs.git",
 )
 

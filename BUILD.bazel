@@ -353,7 +353,7 @@ FAST_BUILD_SETTINGS = {
 OTHER_VARIANTS = {
     "macro": {
         "description": "Base settings, provides macro placement from hierarchical synthesis",
-        "variables": {
+        "arguments": {
         },
     },
     "naja": {
@@ -449,7 +449,7 @@ orfs_sweep(
     sweep = {
         "base": {
             "description": "Flattend, timing driven placement",
-            "variables": {
+            "arguments": {
                 "SYNTH_HIERARCHICAL": "0",
                 "GPL_TIMING_DRIVEN": "1",
                 "SKIP_CTS_REPAIR_TIMING": "0",
