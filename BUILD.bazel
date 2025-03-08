@@ -4,6 +4,8 @@ load("@bazel-orfs//:sweep.bzl", "orfs_sweep")
 #load(":snapshots/kept.bzl", "KEPT_MODULES")
 load(":write_binary.bzl", "write_binary")
 
+SRAM_ABSTRACT_STAGE = "floorplan"
+
 filegroup(
     name = "io-sram",
     srcs = [
@@ -194,7 +196,7 @@ write_binary(
 [
     orfs_flow(
         name = ram,
-        abstract_stage = "cts",
+        abstract_stage = SRAM_ABSTRACT_STAGE,
         arguments = SRAM_SYNTH_ARGUMENTS | SKIP_REPORT_METRICS | {"SYNTH_MEMORY_MAX_BITS": "16384"} | {
                         "PLACE_PINS_ARGS": "-min_distance 1 -min_distance_in_tracks",
                     } | BLOCK_FLOORPLAN |
@@ -233,19 +235,23 @@ write_binary(
     for ram, ram_data in all_srams.items()
 ]
 
-all_srams_stage_num = "4"
-
-all_srams_stage = "cts"
+all_srams_stage_num = {
+    "floorplan": "2",
+    "place": "3",
+    "cts": "4",
+    "grt": "5_1",
+    "route": "5_2",
+}[SRAM_ABSTRACT_STAGE]
 
 [orfs_run(
     name = ram + "_timing_report",
-    src = ":" + ram + "_" + all_srams_stage,
+    src = ":" + ram + "_" + SRAM_ABSTRACT_STAGE,
     outs = [
         ram + ".yaml",
     ],
     arguments = {
         "OUTFILE": "$(location :" + ram + ".yaml)",
-        "STAGE": all_srams_stage_num + "_" + all_srams_stage,
+        "STAGE": all_srams_stage_num + "_" + SRAM_ABSTRACT_STAGE,
     },
     script = ":report-sram.tcl",
 ) for ram in all_srams.keys()]
@@ -284,7 +290,7 @@ boom_regfile_rams = {
 [
     orfs_flow(
         name = ram,
-        abstract_stage = all_srams_stage,
+        abstract_stage = SRAM_ABSTRACT_STAGE,
         stage_arguments = {
             "synth": SRAM_SYNTH_ARGUMENTS,
             "floorplan": BLOCK_FLOORPLAN | {
@@ -511,10 +517,23 @@ orfs_run(
     name = "write_macro_placement",
     src = ":BoomTile_macro_floorplan",
     outs = [
-        ":kept.bzl",
         ":macro_placement.tcl",
     ],
     script = ":write_macros.tcl",
+)
+
+orfs_run(
+    name = "write_kept",
+    src = ":BoomTile_macro_synth",
+    outs = [
+        ":kept.bzl",
+    ],
+    cmd = """ \
+    run-yosys \"RUN_YOSYS_ARGS=-c $(location :write_kept.tcl)\"""",
+    data = [
+        ":write_kept.tcl",
+    ],
+    script = ":write_kept.tcl",
 )
 
 sh_binary(
