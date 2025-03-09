@@ -1,7 +1,6 @@
 load("@bazel-orfs//:openroad.bzl", "orfs_flow", "orfs_run")
 load("@bazel-orfs//:sweep.bzl", "orfs_sweep")
-
-#load(":snapshots/kept.bzl", "KEPT_MODULES")
+load(":snapshots/kept.bzl", "KEPT_MODULES")
 load(":write_binary.bzl", "write_binary")
 
 SRAM_ABSTRACT_STAGE = "floorplan"
@@ -552,108 +551,10 @@ sh_binary(
     ],
 )
 
-# BLACKBOXES are those listed in SYNTH_HIERARCHICAL=1
-#
-# 33.1. IC_DATA_ICACHE_TAG_HIGH12_ICACHE_TAG_LOW6_ICACHE_IC_DEPTH8' to `<abc-temp-dir>/input.blif'..
-
-BLACKBOXES = [
-    "ALU",
-    "ALUUnit",
-    "ALUUnit_1",
-    "ALUUnit_2",
-    "AMOALU",
-    "Arbiter_5",
-    "Arbiter_6",
-    "Arbiter_7",
-    "BIMBranchPredictorBank",
-    "BTBBranchPredictorBank",
-    "BoomCore",
-    "BoomDuplicatedDataArray",
-    "BoomFrontend",
-    "BoomIOMSHR",
-    "BoomMSHR",
-    "BoomMSHRFile",
-    "BoomNonBlockingDCache",
-    "BoomRAS",
-    "BoomTile",
-    "BranchDecode",
-    "BranchKillableQueue",
-    "BranchKillableQueue_10",
-    "BranchKillableQueue_11",
-    "BranchKillableQueue_9",
-    "BranchMaskGenerationLogic",
-    "BranchPredictor",
-    "CSRFile",
-    "DecodeUnit",
-    "DivSqrtRecF64ToRaw_mulAddZ31",
-    "FAMicroBTBBranchPredictorBank",
-    "FDivSqrtUnit",
-    "FPToInt",
-    "FPU",
-    "FPUExeUnit",
-    "FPUUnit",
-    "FetchBuffer",
-    "FetchTargetQueue",
-    "ForwardingAgeLogic",
-    "FpPipeline",
-    "ICache",
-    "INToRecFN",
-    "INToRecFN_1",
-    "IntToFP",
-    "IntToFPUnit",
-    "IssueSlot_32",
-    "IssueUnitCollapsing",
-    "IssueUnitCollapsing_1",
-    "IssueUnitCollapsing_2",
-    "L1MetadataArray",
-    "LSU",
-    "LoopBranchPredictorColumn",
-    "MulAddRecFNToRaw_postMul",
-    "MulAddRecFNToRaw_postMul_1",
-    "MulAddRecFNToRaw_preMul",
-    "MulAddRecFNToRaw_preMul_1",
-    "MulDiv",
-    "NBDTLB",
-    "PMPChecker",
-    "PMPChecker_1",
-    "PTW",
-    "Queue_20",
-    "Queue_22",
-    "RVCExpander",
-    "RecFNToIN",
-    "RecFNToIN_1",
-    "RegisterFileSynthesizable",
-    "RegisterFileSynthesizable_1",
-    "RegisterRead",
-    "RegisterRead_1",
-    "RenameBusyTable",
-    "RenameBusyTable_1",
-    "RenameFreeList",
-    "RenameFreeList_1",
-    "RenameMapTable",
-    "RenameMapTable_1",
-    "RenameStage",
-    "RenameStage_1",
-    "Rob",
-    "RoundAnyRawFNToRecFN_2",
-    "RoundAnyRawFNToRecFN_3",
-    "RoundAnyRawFNToRecFN_4",
-    "RoundAnyRawFNToRecFN_7",
-    "TLB",
-    "TLWidthWidget_9",
-    "TageBranchPredictorBank",
-    "TageTable",
-    "TageTable_1",
-    "TageTable_2",
-    "TageTable_3",
-    "TageTable_4",
-    "TageTable_5",
-]
-
 [orfs_flow(
     name = "{name}".format(name = name),
     arguments = BOOMTILE_VARIABLES | {
-        "SYNTH_BLACKBOXES": " ".join([b for b in BLACKBOXES if b != name]),
+        "SYNTH_BLACKBOXES": " ".join([b for b in KEPT_MODULES if b != name]),
         "SYNTH_HIERARCHICAL": "0",
     },
     macros = [
@@ -663,16 +564,16 @@ BLACKBOXES = [
     stage_sources = BOOMTILE_SOURCES,
     variant = "netlist",
     verilog_files = all_source_files,
-) for name in BLACKBOXES]
+) for name in KEPT_MODULES]
 
 [filegroup(
     name = "{name}_netlist".format(name = name),
     srcs = ["{name}_netlist_synth".format(name = name)],
     output_group = "1_synth.v",
-) for name in BLACKBOXES]
+) for name in KEPT_MODULES]
 
 # ca. 540 seconds for sequential synthesis, vs 90 seconds for netlist synthesis.
 filegroup(
     name = "netlists",
-    srcs = [":{}_netlist".format(name) for name in BLACKBOXES],
+    srcs = [":{}_netlist".format(name) for name in KEPT_MODULES],
 )
