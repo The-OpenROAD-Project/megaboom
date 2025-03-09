@@ -365,6 +365,9 @@ OTHER_VARIANTS = {
         "arguments": {
         },
     },
+    "hierarchical": {
+        "description": "Base settings, hierarchical synthesis",
+    },
     "naja": {
         "renamed_inputs": {
             "floorplan": {"1_synth.v": ":naja"},
@@ -524,7 +527,7 @@ orfs_run(
 
 orfs_run(
     name = "write_kept",
-    src = ":BoomTile_macro_synth",
+    src = ":BoomTile_hierarchical_synth",
     outs = [
         ":kept.bzl",
     ],

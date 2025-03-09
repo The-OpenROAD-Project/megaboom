@@ -3,7 +3,7 @@ yosys -import
 # stdcells are in .v file
 read_verilog $::env(RESULTS_DIR)/1_synth.v
 
-tee -q -o keep.txt -s kept ls A:keep*=1
+tee -q -o keep.txt -s kept ls A:keep_hierarchy=1
 
 set f [open keep.txt]
 set lines [split [read $f] \n]
