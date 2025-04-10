@@ -3,7 +3,7 @@ load("@bazel-orfs//:sweep.bzl", "orfs_sweep")
 load(":snapshots/kept.bzl", "KEPT_MODULES")
 load(":write_binary.bzl", "write_binary")
 
-SRAM_ABSTRACT_STAGE = "floorplan"
+SRAM_ABSTRACT_STAGE = "cts"
 
 filegroup(
     name = "io-sram",
