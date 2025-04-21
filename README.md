@@ -62,50 +62,6 @@ Operations
 
 Here is some operational information to help you use megaboom.
 
-Using the OpenROAD project Bazel artifact server to download pre-built results
-------------------------------------------------------------------------------
-
-If you only have a single Google account that you use for Google Cloud locally, you can use
-`--google_default_credentials`.
-
-If you are use multiple google accounts, using the default credentials can be cumbersome when
-switching between projects. To avoid this, you can use the `--credential_helper` option
-instead, and pass a script that fetches credentials for the account you want to use. This
-account needs to have logged in using `gcloud auth login` and have access to the bucket
-specified.
-
-`.bazelrc` is under git version control and it will try to read in `.user-bazelrc`, which is
-not under git version control, which means that for git checkout or rebase operations will
-ignore the user configuration in `.user-bazelrc`.
-
-Copy the snippet below into `.user-bazelrc` and specify your username by modifying `# user: myname@openroad.tools`:
-
-    # user: myname@openroad.tools
-    build --credential_helper=%workspace%/cred_helper.py --remote_cache=https://storage.googleapis.com/megaboom-bazel-artifacts --remote_cache_compression=true
-
-`cred_helper.py` will parse `.user-bazelrc` and look for the username in the comment.
-
-To test, run:
-
-    $ ./cred_helper.py test
-    Running: gcloud auth print-access-token oyvind@openroad.tools
-    {
-      "kind": "storage#testIamPermissionsResponse",
-      "permissions": [
-        "storage.buckets.get",
-        "storage.objects.create"
-      ]
-    }
-
-> **Note:** To test the credential helper, make sure to restart Bazel to avoid using a previous
-cached authorization:
-
-    bazel shutdown
-    bazel build BoomTile_final_scripts
-
-To gain access to the https://storage.googleapis.com/megaboom-bazel-artifacts bucket,
-reach out to Tom Spyrou, Precision Innovations (https://www.linkedin.com/in/tomspyrou/).
-
 Updating the ORFS Version
 -------------------------
 To update the orfs version that megaboom uses, update the image and sha256 in the orfs.default section of the [MODULE.bazel](./MODULE.bazel) file with the appropriate orfs-version-tag and orfs-version-sha256 values.
