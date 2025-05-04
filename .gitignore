@@ -13,6 +13,6 @@ megaboom.qsf
 megaboom.qws
 tmp-clearbox/
 .vscode/
-.user-bazelrc
+user.bazelrc
 __pycache__/
 naja_edit/
