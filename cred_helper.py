@@ -22,7 +22,7 @@ def get_gcloud_auth_token(test):
     Returns the gcloud auth token based on the .user-bazelrc
     """
 
-    with open(".user-bazelrc") as f:
+    with open("user.bazelrc") as f:
         all = f.read()
     match = re.search(r"# user: (.*)", all)
     if match is None:
