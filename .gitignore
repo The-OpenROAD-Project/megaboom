@@ -1,5 +1,6 @@
 bazel-bin
 bazel-megaboom
+bazel-megaboom2
 bazel-out
 bazel-testlogs
 .vscode/
