@@ -394,8 +394,8 @@ BOOMTILE_VARIABLES = SKIP_REPORT_METRICS | FAST_BUILD_SETTINGS | {
     "CORE_AREA": "2 2 1248 1248",
     # Saves hours of build time, specific to BoomTile
     "SKIP_LAST_GASP": "1",
-    "SETUP_SLACK_MARGIN": "-1300",
-    "HOLD_SLACK_MARGIN": "-200",
+    "SETUP_SLACK_MARGIN": "-2500",
+    "HOLD_SLACK_MARGIN": "-400",
 }
 
 BOOMTILE_SOURCES = {
