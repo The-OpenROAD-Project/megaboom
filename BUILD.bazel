@@ -290,27 +290,19 @@ boom_regfile_rams = {
     orfs_flow(
         name = ram,
         abstract_stage = SRAM_ABSTRACT_STAGE,
-        stage_arguments = {
-            "synth": SRAM_SYNTH_ARGUMENTS,
-            "floorplan": BLOCK_FLOORPLAN | {
-                # "CORE_UTILIZATION": "200",
-                # "CORE_ASPECT_RATIO": "4",
-                "DIE_AREA": "0 0 400 400",
-                "CORE_AREA": "2 2 398 398",
-                "IO_CONSTRAINTS": "$(location {})".format(io_constraint),
-            },
-            "place": {
-                "PLACE_DENSITY": {
-                    "regfile_128x64": "0.42",
-                    "regfile_128x65": "0.3",
-                }.get(ram),
-                "IO_CONSTRAINTS": "$(location {})".format(io_constraint),
-            },
+        arguments = BLOCK_FLOORPLAN | {
+            "DIE_AREA": "0 0 400 400",
+            "CORE_AREA": "2 2 398 398",
+        } | {
+            "PLACE_DENSITY": {
+                "regfile_128x64": "0.42",
+                "regfile_128x65": "0.3",
+            }.get(ram),
         },
-        stage_sources = {
-            "synth": [":constraints-sram"],
-            "floorplan": [io_constraint],
-            "place": [io_constraint],
+        mock_area = 0.5,
+        sources = {
+            "IO_CONSTRAINTS": [io_constraint],
+            "SDC_FILE": [":constraints-sram"],
         },
         verilog_files = ["mock/" + ram + ".sv"],
     )
