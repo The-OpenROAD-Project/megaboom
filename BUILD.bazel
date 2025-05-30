@@ -372,7 +372,7 @@ OTHER_VARIANTS = {
 BOOMTILE_VARIABLES = SKIP_REPORT_METRICS | FAST_BUILD_SETTINGS | {
     "PDN_TCL": "$(PLATFORM_DIR)/openRoad/pdn/BLOCKS_grid_strategy.tcl",
     "IO_CONSTRAINTS": "$(location :io-boomtile)",
-    "PLACE_DENSITY": "0.54",
+    "PLACE_DENSITY": "0.40",
     # We only need hierarchical synthesis when we are running through floorplan
     # write_macro_placement macros.tcl
     "SYNTH_HIERARCHICAL": "1",
@@ -381,7 +381,7 @@ BOOMTILE_VARIABLES = SKIP_REPORT_METRICS | FAST_BUILD_SETTINGS | {
     "PLACE_PINS_ARGS": "-annealing",
     "MIN_ROUTING_LAYER": "M2",
     "MAX_ROUTING_LAYER": "M7",
-    "ROUTING_LAYER_ADJUSTMENT": "0.45",
+    # "ROUTING_LAYER_ADJUSTMENT": "0.45",
     "DIE_AREA": "0 0 1250 1250",
     "CORE_AREA": "2 2 1248 1248",
     # Saves hours of build time, specific to BoomTile
