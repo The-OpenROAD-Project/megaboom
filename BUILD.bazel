@@ -377,7 +377,7 @@ BOOMTILE_VARIABLES = SKIP_REPORT_METRICS | FAST_BUILD_SETTINGS | {
     # write_macro_placement macros.tcl
     "SYNTH_HIERARCHICAL": "1",
     "SDC_FILE": "$(location :constraints-boomtile)",
-    "MACRO_PLACE_HALO": "19 19",
+    "MACRO_PLACE_HALO": "5 5",
     "PLACE_PINS_ARGS": "-annealing",
     "MIN_ROUTING_LAYER": "M2",
     "MAX_ROUTING_LAYER": "M7",
