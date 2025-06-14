@@ -311,7 +311,7 @@ boom_regfile_rams = {
 
 orfs_run(
     name = "xy_stats",
-    src = ":BoomTile_1_cts",
+    src = ":BoomTile_cts",
     outs = ["xy_stats.txt"],
     arguments = {
         "OUTPUT": "$(location :xy_stats.txt)",
@@ -477,7 +477,7 @@ filegroup(
 [filegroup(
     name = ram + "_lib",
     srcs = [ram + "_generate_abstract"],
-    output_group = ram + ".lib",
+    output_group = ram + "_typ.lib",
 ) for ram in all_srams.keys() + boom_regfile_rams.keys()]
 
 filegroup(
