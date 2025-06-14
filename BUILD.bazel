@@ -569,3 +569,8 @@ filegroup(
     name = "netlists",
     srcs = [":{}_netlist".format(name) for name in KEPT_MODULES],
 )
+
+py_binary(
+    name = "print_python_version",
+    srcs = ["print_python_version.py"],
+)
