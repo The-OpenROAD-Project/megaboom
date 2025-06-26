@@ -56,23 +56,3 @@ Create Verilog code:
 ```
 make CONFIG=MegaBoomConfig tech_name=asap7 VLSI_TOP=ChipTop INPUT_CONFS=example-asap7.yml TOP_MACROCOMPILER_MODE='--mode synflops' verilog
 ```
-
-Operations
-==========
-
-Here is some operational information to help you use megaboom.
-
-Updating the ORFS Version
--------------------------
-To update the orfs version that megaboom uses, update the image and sha256 in the orfs.default section of the [MODULE.bazel](./MODULE.bazel) file with the appropriate orfs-version-tag and orfs-version-sha256 values.
-
-    orfs.default(
-        image = "openroad/orfs:<orfs-version-tag>",
-        sha256 = "<orfs-version-sha256>",
-    )
-
-The list of available orfs docker images can be found at the [orfs Docker Hub](https://hub.docker.com/r/openroad/orfs/tags).
-
-After [MODULE.bazel](./MODULE.bazel) has been modified, execute the following command to update the [MODULE.bazel.lock](./MODULE.bazel.lock) file:
-
-    bazel mod tidy
