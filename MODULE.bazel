@@ -31,7 +31,7 @@ python.toolchain(
 bazel_dep(name = "bazel-orfs")
 git_override(
     module_name = "bazel-orfs",
-    commit = "da9578aad654db0a69d4dc545554f7a335cf1363",
+    commit = "8d8e005107e0d9c8d93bf79a3eda6e76558e798e",
     remote = "https://github.com/The-OpenROAD-Project/bazel-orfs.git",
 )
 
@@ -51,8 +51,8 @@ git_override(
 
 orfs = use_extension("@bazel-orfs//:extension.bzl", "orfs_repositories")
 orfs.default(
-    image = "docker.io/openroad/orfs:v3.0-3327-g73e5053d",
-    sha256 = "3a1bcc495ef750868bb4c22c1c4ff59aa2e1ab0be610bfac962b8fe6438b77a4",
+    image = "docker.io/openroad/orfs:v3.0-3362-g9c8c69e9",
+    sha256 = "a2b3af1cc9785133b94b766fca5bfe6aee251a74d81ec44165dae2955389b72a",
 )
 use_repo(orfs, "com_github_nixos_patchelf_download")
 use_repo(orfs, "docker_orfs")
