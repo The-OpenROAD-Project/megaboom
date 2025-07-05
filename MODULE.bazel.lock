@@ -153,7 +153,7 @@
   "moduleExtensions": {
     "@@aspect_bazel_lib+//lib:extensions.bzl%toolchains": {
       "general": {
-        "bzlTransitiveDigest": "QYzNsxOEydJ+3EvC2QMD9H0UjNzWD4r3AZ3bgke1PYY=",
+        "bzlTransitiveDigest": "UfKjxMAQ94cuKIbBsDE6MbwA27mO+4CW4lZ1JQ10fLc=",
         "usagesDigest": "CQSbuAOddmyCsl1NaCgpKVbIYqIFVYnDbsWnUHzJNuE=",
         "recordedFileInputs": {},
         "recordedDirentsInputs": {},
@@ -621,25 +621,9 @@
         ]
       }
     },
-    "@@platforms//host:extension.bzl%host_platform": {
-      "general": {
-        "bzlTransitiveDigest": "xelQcPZH8+tmuOHVjL9vDxMnnQNMlwj0SlvgoqBkm4U=",
-        "usagesDigest": "SeQiIN/f8/Qt9vYQk7qcXp4I4wJeEC0RnQDiaaJ4tb8=",
-        "recordedFileInputs": {},
-        "recordedDirentsInputs": {},
-        "envVariables": {},
-        "generatedRepoSpecs": {
-          "host_platform": {
-            "repoRuleId": "@@platforms//host:extension.bzl%host_platform_repo",
-            "attributes": {}
-          }
-        },
-        "recordedRepoMappingEntries": []
-      }
-    },
     "@@rules_kotlin+//src/main/starlark/core/repositories:bzlmod_setup.bzl%rules_kotlin_extensions": {
       "general": {
-        "bzlTransitiveDigest": "sFhcgPbDQehmbD1EOXzX4H1q/CD5df8zwG4kp4jbvr8=",
+        "bzlTransitiveDigest": "hUTp2w+RUVdL7ma5esCXZJAFnX7vLbVfLd7FwnQI6bU=",
         "usagesDigest": "QI2z8ZUR+mqtbwsf2fLqYdJAkPOHdOV+tF2yVAUgRzw=",
         "recordedFileInputs": {},
         "recordedDirentsInputs": {},
@@ -824,7 +808,7 @@
     },
     "@@rules_python+//python/extensions:pip.bzl%pip": {
       "general": {
-        "bzlTransitiveDigest": "ouX/B418vzXubGa7sZUg0SiHVVe359gqb//X5Kx/AKE=",
+        "bzlTransitiveDigest": "qLxUTStEK4/tRBJ9hCsaCK4Zsqut7Ouu8gr+PVx8N/E=",
         "usagesDigest": "Boye0tBDbFg2rbTuiuItdORT4l5IQOVhkDPzml+cRQI=",
         "recordedFileInputs": {
           "@@bazel-orfs+//requirements_lock_3_13.txt": "6d409e2c9f81ceee67c23e6f26b6742b4ee6c32826c7d0591c5c57df72a6a16b",
