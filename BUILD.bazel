@@ -454,6 +454,7 @@ orfs_sweep(
             "description": "Flattend, timing driven placement",
             "arguments": {
                 "SYNTH_HIERARCHICAL": "0",
+                "SYNTH_RETIME_MODULES": "BoomTile",
                 "GPL_TIMING_DRIVEN": "1",
                 "SKIP_CTS_REPAIR_TIMING": "0",
                 "SKIP_LAST_GASP": "0",
