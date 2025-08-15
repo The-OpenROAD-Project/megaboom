@@ -562,8 +562,8 @@
     },
     "@@bazel-orfs+//:extension.bzl%orfs_repositories": {
       "general": {
-        "bzlTransitiveDigest": "iyNJmQefNHFxk2IZ05Ws8xMhCV33ensoUHYLn+DsXWA=",
-        "usagesDigest": "FJMPyzOSR8nmkRudbVFc4t3VeuYnOV35RlSKotTj29k=",
+        "bzlTransitiveDigest": "hyqlyIKmHhc/aIKGpRDRHrtzfibw/p5egldJWKofAlc=",
+        "usagesDigest": "uHliZQPUuS6Yxh+EwtzcozLQ/WjYvDUbcd5ebZERdAw=",
         "recordedFileInputs": {},
         "recordedDirentsInputs": {},
         "envVariables": {},
@@ -581,12 +581,20 @@
           "docker_orfs": {
             "repoRuleId": "@@bazel-orfs+//:docker.bzl%docker_pkg",
             "attributes": {
-              "image": "docker.io/openroad/orfs:v3.0-3447-gd46660a2",
-              "sha256": "c73abb7c34e196a12f0196681af949e6379096d4da90a7df9b260f2f17a9ee00",
+              "image": "docker.io/openroad/orfs:v3.0-3576-g3ede9e43",
+              "sha256": "97ef6a71516845cf1b11b40a73ab5bb96d62e2f2a1bb978c76a4f70c38ff92f2",
               "build_file": "@@bazel-orfs+//:docker.BUILD.bazel",
               "timeout": 3600,
               "patch_cmds": [
                 "find . -name BUILD.bazel -delete"
+              ],
+              "patches": [
+                "@@bazel-orfs+//:orfs-patch.txt"
+              ],
+              "patch_args": [
+                "-p1",
+                "-d",
+                "OpenROAD-flow-scripts"
               ]
             }
           },
