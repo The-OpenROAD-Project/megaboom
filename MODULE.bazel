@@ -4,6 +4,25 @@ module(
     compatibility_level = 1,
 )
 
+bazel_dep(name = "rules_verilator", version = "5.034")
+single_version_override(
+    module_name = "rules_verilator",
+    registry = "https://raw.githubusercontent.com/Pinata-Consulting/ascenium-registry/683f93e670a04f8d3d47316c42d197d8ac095a00/",
+    version = "5.034",
+)
+
+single_version_override(
+    module_name = "verilator",
+    registry = "https://raw.githubusercontent.com/Pinata-Consulting/ascenium-registry/683f93e670a04f8d3d47316c42d197d8ac095a00/",
+    version = "5.034.ar.1",
+)
+
+single_version_override(
+    module_name = "systemc",
+    registry = "https://raw.githubusercontent.com/Pinata-Consulting/ascenium-registry/683f93e670a04f8d3d47316c42d197d8ac095a00/",
+    version = "3.0.1",
+)
+
 bazel_dep(
     name = "rules_python",
     version = "1.2.0",
@@ -31,7 +50,7 @@ python.toolchain(
 bazel_dep(name = "bazel-orfs")
 git_override(
     module_name = "bazel-orfs",
-    commit = "dcc1401175ea58754590af41b7ca2bc84c8a7411",
+    commit = "b6231d82b888d55846b03892159a2b6ab2fd830d",
     remote = "https://github.com/The-OpenROAD-Project/bazel-orfs.git",
 )
 
@@ -51,8 +70,8 @@ git_override(
 
 orfs = use_extension("@bazel-orfs//:extension.bzl", "orfs_repositories")
 orfs.default(
-    image = "docker.io/openroad/orfs:v3.0-3668-g6c8dd110",
-    sha256 = "9299a204f823dc56bc3eb9d33c8ac6cdda39105bf6078f8b65746246889e542c",
+    image = "docker.io/openroad/orfs:v3.0-4169-g6edb3e778",
+    sha256 = "d905eb8749771a5be072e1479342273b40e62899608eea72f990af94ec0b87a6",
 )
 use_repo(orfs, "com_github_nixos_patchelf_download")
 use_repo(orfs, "docker_orfs")
