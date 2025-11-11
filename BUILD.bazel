@@ -337,7 +337,7 @@ orfs_run(
     script = ":report-kpi.tcl",
 )
 
-FAST_BUILD_SETTINGS = {
+SHARED_SETTINGS = {
     # repair_timing runs for hours in floorplan
     "TNS_END_PERCENT": "0",
     "SKIP_CTS_REPAIR_TIMING": "1",
@@ -347,6 +347,7 @@ FAST_BUILD_SETTINGS = {
     "SKIP_INCREMENTAL_REPAIR": "1",
     "FILL_CELLS": "",
     "TAPCELL_TCL": "",
+    "SYNTH_HDL_FRONTEND": "slang",
 }
 
 OTHER_VARIANTS = {
@@ -369,7 +370,7 @@ OTHER_VARIANTS = {
     },
 }
 
-BOOMTILE_VARIABLES = SKIP_REPORT_METRICS | FAST_BUILD_SETTINGS | {
+BOOMTILE_VARIABLES = SKIP_REPORT_METRICS | SHARED_SETTINGS | {
     "PDN_TCL": "$(PLATFORM_DIR)/openRoad/pdn/BLOCKS_grid_strategy.tcl",
     "IO_CONSTRAINTS": "$(location :io-boomtile)",
     "PLACE_DENSITY": "0.40",
@@ -389,7 +390,6 @@ BOOMTILE_VARIABLES = SKIP_REPORT_METRICS | FAST_BUILD_SETTINGS | {
     "SETUP_SLACK_MARGIN": "-2500",
     "HOLD_SLACK_MARGIN": "-400",
     "OPENROAD_HIERARCHICAL": "1",
-    "SYNTH_HDL_FRONTEND": "slang",
 }
 
 BOOMTILE_SOURCES = {
@@ -402,7 +402,7 @@ BOOMTILE_SOURCES = {
 
 boomtile_all_rams = boom_regfile_rams.keys() + all_srams.keys()
 
-BRANCH_PREDICTOR_VARIABLES = SKIP_REPORT_METRICS | FAST_BUILD_SETTINGS | {
+BRANCH_PREDICTOR_VARIABLES = SKIP_REPORT_METRICS | SHARED_SETTINGS | {
     "PDN_TCL": "$(PLATFORM_DIR)/openRoad/pdn/BLOCKS_grid_strategy.tcl",
     "IO_CONSTRAINTS": "$(location :io-boomtile)",
     "PLACE_DENSITY": "0.24",
