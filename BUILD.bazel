@@ -87,6 +87,8 @@ SHARED_SETTINGS = {
     "SYNTH_MOCK_LARGE_MEMORIES": "1",
     # Stress test slang
     "SYNTH_HDL_FRONTEND": "slang",
+    # smoketest
+    "SWAP_ARITH_OPERATORS": "1",
 }
 
 BLOCK_FLOORPLAN = {
