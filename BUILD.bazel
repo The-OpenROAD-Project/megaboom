@@ -459,9 +459,9 @@ orfs_sweep(
     stage_sources = BOOMTILE_SOURCES,
     sweep = {
         "base": {
-            "description": "Flattend, timing driven placement",
+            "description": "Timing driven placement",
             "arguments": {
-                "SYNTH_HIERARCHICAL": "0",
+                "SYNTH_HIERARCHICAL": "1",
                 "SYNTH_RETIME_MODULES": "BoomTile",
                 "GPL_TIMING_DRIVEN": "1",
                 "SKIP_CTS_REPAIR_TIMING": "0",
