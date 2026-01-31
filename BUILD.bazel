@@ -88,7 +88,8 @@ SHARED_SETTINGS = {
     # Stress test slang
     "SYNTH_HDL_FRONTEND": "slang",
     # smoketest
-    "SWAP_ARITH_OPERATORS": "1",
+    #"SWAP_ARITH_OPERATORS": "1",
+    "OPENROAD_HIERARCHICAL": "1",
 }
 
 BLOCK_FLOORPLAN = {
