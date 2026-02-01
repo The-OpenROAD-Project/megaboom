@@ -1,9 +1,19 @@
 load("@bazel-orfs//:openroad.bzl", "orfs_flow", "orfs_run", "orfs_synth")
+load("@bazel-orfs//:orfs_libs.bzl", "orfs_libs")
 load("@bazel-orfs//:sweep.bzl", "orfs_sweep")
+load("@rules_python//python:defs.bzl", "py_binary")
+load("@rules_python//python:pip.bzl", "compile_pip_requirements")
 load(":snapshots/kept.bzl", "KEPT_MODULES")
 load(":write_binary.bzl", "write_binary")
 
 SRAM_ABSTRACT_STAGE = "cts"
+
+compile_pip_requirements(
+    name = "requirements",
+    src = "requirements.in",
+    python_version = "3.13",
+    requirements_txt = "requirements_lock_3_13.txt",
+)
 
 filegroup(
     name = "io-sram",
@@ -448,7 +458,7 @@ orfs_sweep(
     ],
     other_variants = OTHER_VARIANTS,
     sources = {
-        "SYNTH_NETLIST_FILES": [":netlists"],
+        "SYNTH_NETLIST_FILES": [":BoomTile_cleaned_netlist"],
     },
     stage_sources = BOOMTILE_SOURCES,
     sweep = {
@@ -574,4 +584,46 @@ filegroup(
 py_binary(
     name = "print_python_version",
     srcs = ["print_python_version.py"],
+)
+
+filegroup(
+    name = "BoomTile_vars",
+    # Pick one, they all have the same settings
+    srcs = [":ALU_netlist_synth"],
+    output_group = "1_synth.vars",
+)
+
+py_binary(
+    name = "naja_clean",
+    srcs = ["naja_clean.py"],
+    deps = [
+        "@megaboom-pip//najaeda",
+        "@megaboom-pip//pyyaml",
+    ],
+)
+
+orfs_libs(
+    name = "BoomTile_libs",
+    src = ":ALU_netlist_synth",
+)
+
+genrule(
+    name = "BoomTile_cleaned_netlist",
+    srcs = [
+        ":BoomTile_libs",
+        ":BoomTile_vars",
+        ":netlists",
+    ] + [":" + ram + "_lib" for ram in boomtile_all_rams],
+    outs = ["BoomTile_cleaned_netlist.v"],
+    cmd = """
+    set -ex
+    $(execpath :naja_clean) \
+      --libs {libs} \
+      --vars $(location :BoomTile_vars) \
+      --output $(location :BoomTile_cleaned_netlist.v) \
+      $(locations :netlists)""".format(
+        libs = " ".join(["$(location :" + ram + "_lib)" for ram in boomtile_all_rams]),
+    ),
+    tags = ["manual"],
+    tools = [":naja_clean"],
 )

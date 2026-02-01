@@ -25,19 +25,27 @@ single_version_override(
 
 bazel_dep(
     name = "rules_python",
-    version = "1.2.0",
+    version = "1.6.3",
     # reduce namespace collisions by prefixing with bazel_orfs
-    repo_name = "megaboom_rules_python",
+    repo_name = "rules_python",
 )
 
 # FIXME why do we need to lock down 3.13 to match bazel-orfs? Without this, 3.11 might get picked
 PYTHON_VERSION = "3.13"
 
-python = use_extension("@megaboom_rules_python//python/extensions:python.bzl", "python")
+python = use_extension("@rules_python//python/extensions:python.bzl", "python")
 python.toolchain(
     ignore_root_user_error = True,
     python_version = PYTHON_VERSION,
 )
+
+pip = use_extension("@rules_python//python/extensions:pip.bzl", "pip")
+pip.parse(
+    hub_name = "megaboom-pip",
+    python_version = "3.13",
+    requirements_lock = "//:requirements_lock_3_13.txt",
+)
+use_repo(pip, "megaboom-pip")
 
 # To test with local bazel-orfs, read: https://github.com/The-OpenROAD-Project/bazel-orfs?tab=readme-ov-file#usage
 #
