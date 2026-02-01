@@ -50,7 +50,7 @@ python.toolchain(
 bazel_dep(name = "bazel-orfs")
 git_override(
     module_name = "bazel-orfs",
-    commit = "a1b6ee18ff73ca375cc2b643a6e995705a7e9ff3",
+    commit = "e3c90ee43c83c79c650bff47e940e9911b70ad99",
     remote = "https://github.com/The-OpenROAD-Project/bazel-orfs.git",
 )
 
