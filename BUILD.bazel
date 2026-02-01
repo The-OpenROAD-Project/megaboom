@@ -359,20 +359,11 @@ orfs_run(
 OTHER_VARIANTS = {
     "macro": {
         "description": "Base settings, provides macro placement from hierarchical synthesis",
-        "sources": {"SYNTH_NETLIST_FILES": [":netlists"]},
         "arguments": {
         },
     },
     "hierarchical": {
         "description": "Base settings, hierarchical synthesis",
-    },
-    "naja": {
-        "renamed_inputs": {
-            "floorplan": {"1_synth.v": ":naja"},
-        },
-        "previous_stage": {
-            "floorplan": "BoomTile_synth",
-        },
     },
 }
 
@@ -456,6 +447,9 @@ orfs_sweep(
         for m in boomtile_all_rams
     ],
     other_variants = OTHER_VARIANTS,
+    sources = {
+        "SYNTH_NETLIST_FILES": [":netlists"],
+    },
     stage_sources = BOOMTILE_SOURCES,
     sweep = {
         "base": {
@@ -468,7 +462,7 @@ orfs_sweep(
                 "SKIP_LAST_GASP": "0",
             },
             "sources": {
-                "MACRO_PLACEMENT_TCL": [":macro_placement.tcl"],
+                #"MACRO_PLACEMENT_TCL": [":macro_placement.tcl"],
             },
         },
     },
@@ -570,7 +564,7 @@ sh_binary(
 [filegroup(
     name = "{name}_netlist".format(name = name),
     srcs = ["{name}_netlist_synth".format(name = name)],
-    output_group = "1_synth.v",
+    output_group = "1_2_yosys.v",
 ) for name in KEPT_MODULES]
 
 # ca. 540 seconds for sequential synthesis, vs 90 seconds for netlist synthesis.
