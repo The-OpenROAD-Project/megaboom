@@ -1,4 +1,4 @@
-load("@bazel-orfs//:openroad.bzl", "orfs_flow", "orfs_run")
+load("@bazel-orfs//:openroad.bzl", "orfs_flow", "orfs_run", "orfs_synth")
 load("@bazel-orfs//:sweep.bzl", "orfs_sweep")
 load(":snapshots/kept.bzl", "KEPT_MODULES")
 load(":write_binary.bzl", "write_binary")
@@ -546,16 +546,14 @@ sh_binary(
     ],
 )
 
-[orfs_flow(
-    name = "{name}".format(name = name),
+[orfs_synth(
+    name = "{name}_netlist_synth".format(name = name),
     arguments = BOOMTILE_VARIABLES | {
-        "SYNTH_BLACKBOXES": " ".join([b for b in KEPT_MODULES if b != name]),
+        "SYNTH_BLACKBOXES": " ".join([b for b in KEPT_MODULES if b != name] + boomtile_all_rams),
         "SYNTH_HIERARCHICAL": "0",
     },
-    macros = [
-        ":" + m + "_generate_abstract"
-        for m in boomtile_all_rams
-    ],
+    module_top = name,
+    save_odb = False,
     stage_sources = BOOMTILE_SOURCES,
     variant = "netlist",
     verilog_files = all_source_files,
