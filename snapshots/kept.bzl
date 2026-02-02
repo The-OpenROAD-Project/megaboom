@@ -92,4 +92,5 @@ KEPT_MODULES = [
     "TageTable_3",
     "TageTable_4",
     "TageTable_5",
+    "CompareRecFN",
 ]
