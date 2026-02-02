@@ -561,6 +561,7 @@ sh_binary(
     arguments = BOOMTILE_VARIABLES | {
         "SYNTH_BLACKBOXES": " ".join([b for b in KEPT_MODULES if b != name] + boomtile_all_rams),
         "SYNTH_HIERARCHICAL": "0",
+        "SYNTH_RETIME_MODULES": name,
     },
     module_top = name,
     save_odb = False,
