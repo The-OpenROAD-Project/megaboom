@@ -1,5 +1,4 @@
 # buildifier: disable=module-docstring
-# asdfsafds
 KEPT_MODULES = [
     "ALU",
     "ALUUnit",
@@ -27,6 +26,7 @@ KEPT_MODULES = [
     "BranchKillableQueue_9",
     "BranchMaskGenerationLogic",
     "BranchPredictor",
+    "CompareRecFN",
     "CSRFile",
     "DecodeUnit",
     "DivSqrtRecF64ToRaw_mulAddZ31",
@@ -92,5 +92,4 @@ KEPT_MODULES = [
     "TageTable_3",
     "TageTable_4",
     "TageTable_5",
-    "CompareRecFN",
 ]

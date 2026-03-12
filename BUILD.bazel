@@ -48,26 +48,6 @@ filegroup(
 )
 
 filegroup(
-    name = "io",
-    srcs = [
-        "io.tcl",
-    ],
-    data = [
-        "util.tcl",
-    ],
-)
-
-filegroup(
-    name = "io-top",
-    srcs = [
-        "io-top.tcl",
-    ],
-    data = [
-        "util.tcl",
-    ],
-)
-
-filegroup(
     name = "constraints-sram",
     srcs = [
         "constraints.sdc",
@@ -97,8 +77,6 @@ SHARED_SETTINGS = {
     "SYNTH_MOCK_LARGE_MEMORIES": "1",
     # Stress test slang
     "SYNTH_HDL_FRONTEND": "slang",
-    # smoketest
-    #"SWAP_ARITH_OPERATORS": "1",
     "OPENROAD_HIERARCHICAL": "1",
 }
 
@@ -135,8 +113,6 @@ all_source_files = sorted(glob(
     ]),
 ) + mock_files)
 
-# Haven't tried mocking any SRAMs with mock_area of None. Rest have been tried
-# with experiment notes on the same line
 boom_tile_small_srams = {
     "tag_array_64x184": {
         "mock_area": 0.62,
@@ -146,23 +122,22 @@ boom_tile_small_srams = {
         "mock_area": 0.31,
         "aspect_ratio": "0.36",
     },
-    # "data_2048x2": { "mock_area": None, "aspect_ratio": "2" },
     "table_256x48": {
         "mock_area": 0.31,
         "aspect_ratio": "1.25",
-    },  #close
+    },
     "table_128x52": {
         "mock_area": 0.31,
         "aspect_ratio": "0.58",
-    },  #close
+    },
     "table_128x44": {
         "mock_area": 0.31,
         "aspect_ratio": "0.68",
-    },  # close
+    },
     "btb_128x56": {
         "mock_area": 0.309,
         "aspect_ratio": "0.53",
-    },  # close
+    },
     "meta_128x120": {
         "mock_area": 0.31,
         "aspect_ratio": "0.25",
@@ -177,40 +152,33 @@ boom_tile_small_srams = {
     },
     "data_2048x8": {
         "mock_area": 3.2,
-        # "aspect_ratio": "58",
         "core_utilization": "10",
     },
     "mem_256x4": {
         "mock_area": 0.265,
-        # "aspect_ratio": "36",
     },
 }
 
 boom_tile_rams = {
-    # "l2_tlb_ram_0_512x46": { "mock_area": None, "aspect_ratio": "2" },
     "ebtb_128x40": {
         "mock_area": 0.86,
         "aspect_ratio": "0.75",
-    },  # close
+    },
     "array_256x128": {
         "mock_area": 1.225,
         "aspect_ratio": "0.47",
-    },  # close
+    },
     "dataArrayB_256x64": {
         "mock_area": 1.23,
         "aspect_ratio": "0.94",
-    },  # close
-    # "l2_tlb_ram_0_512x45": { "mock_area": None, "aspect_ratio": "2" },
+    },
 }
 
 digital_top_srams = {
-    # "cc_dir_1024x168": { "mock_area": None, "aspect_ratio": "2" },
-    # "data_data_40x128": { "mock_area": None, "aspect_ratio": "2" },
-    # "ghist_40x64": { "mock_area": None, "aspect_ratio": "2" },
     "meta_40x240": {
         "mock_area": 0.48,
         "aspect_ratio": "0.64",
-    },  # ran out of left edge pin slots - can get closer by adjusting aspect ratio but only to within 1000 um^2
+    },
 }
 
 # combine SRAMs into one dictionary for processing
@@ -248,13 +216,8 @@ write_binary(
         verilog_files = [
             {
                 "array_256x128": "mock/",
-                "cc_dir_1024x168": "mock/",
-                "data_2048x2": "mock/",
                 "dataArrayB_256x64": "mock/",
-                "data_data_40x128": "mock/",
                 "ebtb_128x40": "mock/",
-                "ghist_40x64": "mock/",
-                "l2_tlb_ram_0_512x45": "mock/",
                 "tag_array_64x184": "mock/",
                 "data_2048x8": "mock/",
             }.get(ram, "rtl/") + ram + ".sv",
@@ -389,7 +352,6 @@ BOOMTILE_VARIABLES = SKIP_REPORT_METRICS | SHARED_SETTINGS | {
     "PLACE_PINS_ARGS": "-annealing",
     "MIN_ROUTING_LAYER": "M2",
     "MAX_ROUTING_LAYER": "M7",
-    # "ROUTING_LAYER_ADJUSTMENT": "0.45",
     "DIE_AREA": "0 0 1000 1000",
     "CORE_AREA": "2 2 998 998",
     # Saves hours of build time, specific to BoomTile
@@ -408,46 +370,6 @@ BOOMTILE_SOURCES = {
 }
 
 boomtile_all_rams = boom_regfile_rams.keys() + all_srams.keys()
-
-BRANCH_PREDICTOR_VARIABLES = SKIP_REPORT_METRICS | SHARED_SETTINGS | {
-    "PDN_TCL": "$(PLATFORM_DIR)/openRoad/pdn/BLOCKS_grid_strategy.tcl",
-    "IO_CONSTRAINTS": "$(location :io-boomtile)",
-    "PLACE_DENSITY": "0.24",
-    # We only need hierarchical synthesis when we are running through floorplan
-    # write_macro_placement macros.tcl
-    "SYNTH_HIERARCHICAL": "1",
-    "SDC_FILE": "$(location :constraints-boomtile)",
-    "MACRO_PLACE_HALO": "4 4",
-    "PLACE_PINS_ARGS": "-annealing",
-    # Saves hours of build time, specific to BoomTile
-    "SKIP_LAST_GASP": "1",
-    "SETUP_SLACK_MARGIN": "-1300",
-    "HOLD_SLACK_MARGIN": "-200",
-}
-
-[orfs_flow(
-    name = module,
-    abstract_stage = "cts",
-    arguments = BRANCH_PREDICTOR_VARIABLES | {
-        "ComposedBranchPredictorBank": {
-            "DIE_AREA": "0 0 300 400",
-            "CORE_AREA": "0 0 298 398",
-        },
-        "BranchPredictor": {
-            "DIE_AREA": "0 0 600 400",
-            "CORE_AREA": "0 0 598 398",
-        },
-    }[module],
-    macros = [
-        ":" + m + "_generate_abstract"
-        for m in boomtile_all_rams
-    ],
-    stage_sources = BOOMTILE_SOURCES,
-    verilog_files = all_source_files,
-) for module in [
-    "ComposedBranchPredictorBank",
-    "BranchPredictor",
-]]
 
 orfs_sweep(
     name = "BoomTile",
@@ -472,19 +394,10 @@ orfs_sweep(
                 "SKIP_LAST_GASP": "0",
             },
             "sources": {
-                #"MACRO_PLACEMENT_TCL": [":macro_placement.tcl"],
             },
         },
     },
     verilog_files = all_source_files,
-)
-
-# fish out the file that we want as input to the "naja" rule
-# below.
-filegroup(
-    name = "BoomTile_synth_unedited",
-    srcs = ["BoomTile_synth"],
-    output_group = "1_synth.v",
 )
 
 [filegroup(
@@ -492,32 +405,6 @@ filegroup(
     srcs = [ram + "_generate_abstract"],
     output_group = ram + "_typ.lib",
 ) for ram in all_srams.keys() + boom_regfile_rams.keys()]
-
-filegroup(
-    name = "BoomTile_synth_mergedlib",
-    srcs = ["BoomTile_synth"],
-    output_group = "merged.lib",
-)
-
-# Read in the renamed synthesis output from above and provide
-# the original name to the next stage
-genrule(
-    name = "naja",
-    srcs = [
-        ":BoomTile_synth_unedited",
-        ":BoomTile_synth_mergedlib",
-        "naja_edit/install/bin/naja_edit",
-        "naja_edit/install/lib/python",
-        "naja_edit/install/share/naja/primitives/asap7_new.py",
-    ] + [":" + ram + "_lib" for ram in boomtile_all_rams],
-    outs = ["naja.v"],
-    #cmd = "mkdir -p `dirname $@`; export PYTHONPATH=$(location naja_edit/install/lib/python) && $(location naja_edit/install/bin/naja_edit) -a all -p $(location :BoomTile_synth_mergedlib) -f verilog -t verilog -i $(location :BoomTile_synth_unedited) -o $@",
-    #cmd = "mkdir -p `dirname $@`; export PYTHONPATH=$(location naja_edit/install/lib/python) && $(location naja_edit/install/bin/naja_edit) -a all -p $(location naja_edit/install/share/naja/primitives/asap7_new.py) -f verilog -t verilog -i $(location :BoomTile_synth_unedited) -o $@",
-    cmd = ("mkdir -p `dirname $@`; export PYTHONPATH=$(location naja_edit/install/lib/python) && $(location naja_edit/install/bin/naja_edit) -a all -p " +
-           " ".join(["$(location :" + ram + "_lib)" for ram in boomtile_all_rams]) +
-           " $(location :naja_edit/install/share/naja/primitives/asap7_new.py)" +
-           " -f verilog -t verilog -i $(location :BoomTile_synth_unedited) -o $@"),
-)
 
 # Use the macro placement from a different flow
 orfs_run(
@@ -580,11 +467,6 @@ sh_binary(
 filegroup(
     name = "netlists",
     srcs = [":{}_netlist".format(name) for name in KEPT_MODULES],
-)
-
-py_binary(
-    name = "print_python_version",
-    srcs = ["print_python_version.py"],
 )
 
 filegroup(

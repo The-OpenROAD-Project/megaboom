@@ -3,5 +3,6 @@ bazel-megaboom
 bazel-megaboom2
 bazel-out
 bazel-testlogs
+synth/
 .vscode/
 user.bazelrc
